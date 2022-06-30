@@ -23,11 +23,11 @@ The scaffolding focuses on monorepo tooling and package management and is precon
 ## Versioning & Publishing Packages
 
 Package publishing is automated through changeset and github workflows. To instigate publication:
-1. Create a branch and make a change to one or both `flatfile-core` or `flatfile-ui` package 
-2. Run `npm run changeset`, choose any pacakges that were modified, and fill out relevent changelog details
+1. Create a branch and make a change to the `@flatfile/platform-sdk` package 
+2. Run `npm run changeset`, choose any package that were modified, and fill out relevent changelog details
 3. Push the resulting `.changeset` file along with the package changes from the first step
 4. Create PR and merge into main
 5. A github action will run and create a new Pull Request with updated changeset additions
 6. Merge this new PR
-7. A github action will run, build and publish changes to NPM  
+7. A github action will run, build and publish changes to NPM under the package name `@flatfile/platform-sdk`
 
