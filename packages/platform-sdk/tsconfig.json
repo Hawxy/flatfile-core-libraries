@@ -1,0 +1,13 @@
+
+{
+  "extends": "@flatfile/ts-config-platform-sdk/base.json",
+//  "baseUrl": "./src",
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "lib": ["ES2019"],
+    "module": "ESNext",
+    "target": "ES6"
+  },
+  "esModuleInterop": true,
+}
