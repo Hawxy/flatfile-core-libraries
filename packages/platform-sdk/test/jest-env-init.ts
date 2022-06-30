@@ -17,19 +17,4 @@ function pushLambdas(initialArgs: any[]) {
   }
   return initialArgs
 }
-
-/*
-test('anonymous type functions in decorators return as expected', () => {
-  for (const f of LAMBDAS) {
-    try {
-      let type = f(null)
-      while (Array.isArray(type)) {
-        type = f[0]
-      }
-      expect(type).toBeDefined()
-    } catch {
-      // Not a type function, ignore
-    }
-  }
-})
-*/
+export {};

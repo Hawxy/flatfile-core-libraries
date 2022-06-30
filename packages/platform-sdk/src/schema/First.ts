@@ -1,5 +1,7 @@
 import { IJsonSchema } from '../types'
+//import { IJsonSchema } from "@flatfile/platform-sdk/types/ISchema";
 import * as _ from 'lodash'
+
 
 // export type ColSpec = Record<string, any>;
 // export type ColumnDesc = Record<string, ColSpec>;

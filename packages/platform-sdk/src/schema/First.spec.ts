@@ -1,5 +1,9 @@
-import { IJsonSchema } from "@flatfile/platform-sdk/types/ISchema";
-import { DDLSchema, DDLCompile, DDLSimpleField } from "@flatfile/platform-sdk/schema/First";
+//import { IJsonSchema } from "@flatfile/platform-sdk/types/ISchema";
+//import { DDLSchema, DDLCompile, DDLSimpleField } from "@flatfile/platform-sdk/schema/First";
+
+//import { IJsonSchema } from "../types/ISchema";
+import { IJsonSchema } from '../types'
+import { DDLSchema, DDLCompile, DDLSimpleField } from "./First";
 
 const jsonSchema: IJsonSchema = {
 	properties: {

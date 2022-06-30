@@ -1,4 +1,4 @@
-import { ColumnMapping, SchemaTest } from "@flatfile/platform-sdk/schema/SchemaTest"
+import { ColumnMapping, SchemaTest } from "../schema/SchemaTest"
 
 const testMapping: ColumnMapping = { id: 'id', name: 'first_name', lastName: 'last_name', admin: 'is_admin' };
 const sc = new SchemaTest(
