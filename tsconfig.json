@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "target": "es5",
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "pretty": true,
+    "types": ["node", "jest"],
+    "isolatedModules": false
+  },
+  "exclude": ["node_modules", "dist", "**/*.test.*", "**/*.spec.*", "__sandbox__"]
+}

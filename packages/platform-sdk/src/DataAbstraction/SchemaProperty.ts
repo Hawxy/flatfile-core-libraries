@@ -1,9 +1,8 @@
-import { JsonSchemaPropertyWithArrayTypes } from '../types'
+import { JsonSchemaPropertyWithArrayTypes, TPrimitive } from '../types'
 
 import md5 from 'md5'
 
 import {
-  TPrimitive,
   EPropertyType,
   IEnumOption,
   ISchema,

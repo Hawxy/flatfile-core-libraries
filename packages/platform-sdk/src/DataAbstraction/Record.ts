@@ -1,13 +1,11 @@
-import { EMessageLevel, Levels } from '../types'
+import { EMessageLevel, EValidationState, Levels, TPrimitive } from '../types'
 import { Cell } from './Cell'
 import { SPSanitize } from './SchemaProperty'
 import {
   IValidation,
   EPropertyType,
   RecordCells,
-  TPrimitive,
   mapObject,
-  EValidationState,
   EAuthorType,
   ICell,
   RawRecord,

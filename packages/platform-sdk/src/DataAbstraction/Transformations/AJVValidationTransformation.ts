@@ -2,11 +2,12 @@ import {
   JsonSchema,
   EMessageLevel,
   IJsonSchema,
-  ISchemaProperty,
+  IRawSchemaProperty,
   IValidationError,
+  TPrimitive,
 } from '../../types'
 
-import { TPrimitive, EValidationType, ICell, IRecord } from '../SchemaPrime'
+import { EValidationType, ICell, IRecord } from '../SchemaPrime'
 
 import { validatePhoneNumber } from './ValidationUtils'
 import Ajv, { ErrorObject } from 'ajv'
@@ -113,7 +114,7 @@ export class AJVValidationTransformation extends Transformation<
 
   public updateValidationMessage(
     error: ErrorObject,
-    prop: ISchemaProperty
+    prop: IRawSchemaProperty
   ): ErrorObject {
     switch (error.keyword) {
       case 'maximum': {

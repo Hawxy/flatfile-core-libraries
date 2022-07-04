@@ -1,0 +1,126 @@
+{
+  "name": "@flatfile/sdk",
+  "version": "2.0.0-rc13",
+  "description": "Flatfile SDK",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlatFilers/sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FlatFilers/sdk/issues"
+  },
+  "homepage": "https://github.com/FlatFilers/sdk#readme",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --external react",
+    "start": "tsup src/index.ts --format esm,cjs --watch --external react",
+    "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "prebuild": "rm -rf ./dist",
+    "lint:fix": "eslint ./src --ext '.ts,.tsx' --fix",
+    "prepack": "npm run build",
+    "todo": "npx --no-install leasot src/**/*.ts > TODO"
+  },
+  "author": "Max Blank <max@flatfile.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@flatfile/orm": "*"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.6",
+    "@babel/plugin-transform-react-jsx": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.14.5",
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@types/backo2": "^1.0.1",
+    "@types/jest": "^27.0.3",
+    "@types/react": "^17.0.11",
+    "@types/react-dom": "^17.0.8",
+    "@types/simple-mock": "^0.8.2",
+    "@types/styled-components": "^5.1.10",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "babel-jest": "^27.0.5",
+    "babel-loader": "^8.2.2",
+    "bulma": "^0.9.3",
+    "css-loader": "^6.6.0",
+    "cz-conventional-changelog": "^3.0.1",
+    "dotenv-webpack": "^7.0.3",
+    "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eventemitter3": "^4.0.7",
+    "graphql": "^15.5.0",
+    "graphql-request": "^3.4.0",
+    "graphql-subscriptions-client": "^0.16.0",
+    "jest": "^27.0.3",
+    "lint-staged": "^11.0.0",
+    "nock": "^13.2.2",
+    "nqr": "^1.0.0",
+    "prettier": "^2.3.1",
+    "react": "^17.0.2",
+    "react-bulma-components": "^4.0.7",
+    "react-dom": "^17.0.2",
+    "react-highlight": "^0.14.0",
+    "simple-mock": "^0.8.0",
+    "style-loader": "^3.3.1",
+    "styled-components": "^5.3.0",
+    "transferable-function": "^1.0.2",
+    "ts-jest": "^27.0.3",
+    "tslib": "^2.3.0",
+    "typedoc": "^0.23.0",
+    "typedoc-plugin-markdown": "^3.11.12",
+    "typescript": "^4.3.4"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "collectCoverage": false,
+    "moduleNameMapper": {
+      "src/(.*)": "<rootDir>/src/$1"
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|tsx|js)",
+      "**/?(*.)+(spec|test).+(ts|tsx|js)"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootdir>/node_modules/"
+    ],
+    "testEnvironment": "jsdom",
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "tsx",
+      "json"
+    ]
+  },
+  "ts-jest": {
+    "isolatedModules": false
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "npm run lint",
+      "prettier --check"
+    ]
+  }
+}

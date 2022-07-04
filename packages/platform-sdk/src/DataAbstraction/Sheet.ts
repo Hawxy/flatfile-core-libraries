@@ -1,13 +1,8 @@
 import { Record } from './Record'
 import { Schema } from './Schema'
 import { SchemaProperty } from './SchemaProperty'
-import {
-  TPrimitive,
-  RawRecord,
-  RawRecordArray,
-  IRecord,
-  MinSheet,
-} from './SchemaPrime'
+import { RawRecord, RawRecordArray, IRecord, MinSheet } from './SchemaPrime'
+import { TPrimitive } from '../types'
 
 export class SmallSheet implements MinSheet {
   constructor(

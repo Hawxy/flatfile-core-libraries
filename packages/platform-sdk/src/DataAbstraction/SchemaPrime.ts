@@ -2,6 +2,7 @@ import {
   EMessageLevel,
   IJsonSchema,
   JsonSchemaPropertyWithArrayTypes,
+  TPrimitive,
 } from '../types'
 
 export enum EPropertyType {
@@ -44,16 +45,6 @@ export enum EValidationType {
   unlinkedError = 'unlinked',
   missingPreviewWarning = 'missingPreview',
 }
-
-export enum EValidationState {
-  review = 'review',
-  dismissed = 'dismissed',
-  pushed = 'pushed',
-  accepted = 'accepted',
-  rejected = 'rejected',
-}
-
-export type TPrimitive = string | boolean | number | Date | null
 
 export enum EAuthorType {
   USER = 'User',

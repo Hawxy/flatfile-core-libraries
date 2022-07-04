@@ -1,9 +1,8 @@
-import { EMessageLevel } from '../types'
+import { EMessageLevel, TPrimitive } from '../types'
 import { Record } from './Record'
 import {
   EPropertyType,
   IValidation,
-  TPrimitive,
   EAuthorType,
   IStorage,
   ICell,

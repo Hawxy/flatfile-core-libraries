@@ -53,18 +53,18 @@ export interface JsonSchemaPropertyWithArrayTypes extends JsonSchemaProperty {
   type: string[]
 }
 
-export interface ISchemaProperty extends JsonSchemaProperty {
+export interface IRawSchemaProperty extends JsonSchemaProperty {
   field: string
-  linkedProperties?: Record<string, ISchemaProperty>
+  linkedProperties?: Record<string, IRawSchemaProperty>
 }
 
 export interface IJsonSchema {
-  properties: Record<string, ISchemaProperty>
+  properties: Record<string, IRawSchemaProperty>
   type: string
   required?: string[]
   unique?: string[]
   primary?: string
-  linkedProperties?: Record<string, ISchemaProperty>
+  linkedProperties?: Record<string, IRawSchemaProperty>
   allowCustomFields?: boolean
 }
 

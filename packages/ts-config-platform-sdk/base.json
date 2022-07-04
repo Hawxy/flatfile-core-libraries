@@ -2,13 +2,15 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "display": "Default",
     "compilerOptions": {
+        "types": ["node", "jest"],
         "composite": false,
         "declaration": true,
         "declarationMap": true,
         "esModuleInterop": true,
+        "pretty": true,
         "forceConsistentCasingInFileNames": true,
         "inlineSources": false,
-        "isolatedModules": true,
+        "isolatedModules": false,
         "moduleResolution": "node",
         "noUnusedLocals": false,
         "noUnusedParameters": false,
@@ -16,5 +18,5 @@
         "skipLibCheck": true,
         "strict": true
     },
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "dist", "**/*.test.*", "**/*.spec.*", "__sandbox__"]
 }
