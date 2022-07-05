@@ -60,6 +60,8 @@
     "isolatedModules": false
   },
   "dependencies": {
-    "case-anything": "^2.1.10"
+    "case-anything": "^2.1.10",
+    "@flatfile/orm": "*",
+    "@flatfile/platform-sdk": "*"
   }
 }
