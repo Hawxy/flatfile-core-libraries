@@ -20,7 +20,8 @@
     "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
-    "launch": "npm run build && serve -s dist",
+    "build": "tsc -t es5 flatfile/setup.ts -esModuleInterop true --outDir ./dist",
+    "deploy": "node dist/deploy.js",
     "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
