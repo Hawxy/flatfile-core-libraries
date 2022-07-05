@@ -1,5 +1,10 @@
-import { HookProvider } from '../lib/HookProvider'
-import type { IJsonSchema, ISchemaProperty } from '@flatfile/platform-sdk'
+import { HookContract, HookProvider } from '../lib/HookProvider'
+import type {
+  IJsonSchema,
+  IRawSchemaProperty,
+  ISchemaProperty,
+} from '@flatfile/platform-sdk'
+import { capitalCase } from 'case-anything'
 
 export class Field<
   O extends Record<string, any>
@@ -63,17 +68,27 @@ export function makeField<
 export function setProp(
   base: IJsonSchema,
   key: string,
-  prop: Partial<ISchemaProperty>
+  prop: Partial<IRawSchemaProperty>
 ): IJsonSchema {
   return {
     ...base,
     properties: {
       ...base.properties,
       [key]: {
+        field: key,
         label: capitalCase(key),
         type: 'string',
         ...prop,
       },
     },
   }
+}
+
+export interface GenericFieldOptions {
+  /**
+   * Describe the field
+   */
+  description?: string
+  required?: boolean
+  unique?: boolean
 }

@@ -10,5 +10,6 @@
 //   logger: any
 // }
 
-export { FlatfileSession } from './src/classes/FlatfileSession'
-export { FlatfileRecords } from './src/classes/FlatfileRecords'
+export * from './src/classes/FlatfileRecord'
+export * from './src/classes/FlatfileRecords'
+export * from './src/classes/FlatfileSession'

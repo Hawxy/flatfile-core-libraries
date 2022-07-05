@@ -1,14 +1,16 @@
-import { IRawRecord } from '../types/Record'
 import { FlatfileRecord } from './FlatfileRecord'
+import { IRawRecord, TRecordData } from '../types/Record'
 
-export class FlatfileRecords {
-  private readonly _records: FlatfileRecord[]
+export class FlatfileRecords<M extends TRecordData> {
+  private readonly _records: FlatfileRecord<M>[]
 
   constructor(rawRecords: IRawRecord[]) {
-    this._records = rawRecords.map((rawRecord) => new FlatfileRecord(rawRecord))
+    this._records = rawRecords.map(
+      (rawRecord: IRawRecord) => new FlatfileRecord<M>(rawRecord)
+    )
   }
 
-  get records(): FlatfileRecord[] {
+  get records(): FlatfileRecord<M>[] {
     return this._records
   }
 

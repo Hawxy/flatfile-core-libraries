@@ -1,7 +1,7 @@
 import { makeField, setProp } from '../ddl/Field'
 
 export const EmailField = makeField<{ nonPublic?: boolean }>((field) => {
-  field.on('change', ({ body: { value } }) => {
+  field.on('change', ({ data: { value } }) => {
     if (field.options.nonPublic && value.includes('gmail')) {
       throw new Error('GMail addresses not allowed')
     }

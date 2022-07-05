@@ -1,5 +1,5 @@
-import { makeField } from '../old/models/Field'
+import { makeField } from '../ddl/Field'
 
-export const NumberField = makeField((field) => {
+export const NumberField = makeField(() => {
   return (base) => ({ ...base, type: 'number' })
 })

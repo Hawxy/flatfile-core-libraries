@@ -1,7 +1,13 @@
 import { HookContract, HookProvider } from '../lib/HookProvider'
-import { FlatfileRecord } from '@flatfile/orm'
-import { FlatfileRecords, FlatfileSession } from '@flatfile/hooks'
+import { TPrimitive } from '@flatfile/orm'
+import {
+  FlatfileRecords,
+  FlatfileSession,
+  FlatfileRecord,
+} from '@flatfile/hooks'
 import { FlatfileEvent } from '../lib/FlatfileEvent'
+import { Field } from './Field'
+import { IJsonSchema } from '@flatfile/platform-sdk'
 
 export class Sheet<
   FC extends FieldConfig
@@ -28,7 +34,7 @@ export class Sheet<
         const batch = e.data
 
         return Promise.all(
-          batch.records.map((r) => {
+          batch.records.map((r: FlatfileRecord) => {
             // @ts-ignore
             return options.onChange(r, e.session)
           })
@@ -83,7 +89,6 @@ export class Sheet<
 }
 
 export type FieldConfig = Record<string, Field<any>>
-export type TPrimitive = string | boolean | number | Date | null
 
 export type ModelEventRegistry = {
   change: HookContract<FlatfileRecords<any>, void>

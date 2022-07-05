@@ -9,13 +9,13 @@ export interface IRawRecord {
 }
 
 export type TRecordInfoLevel = 'error' | 'warn' | 'info'
-export interface IRecordInfo {
+export interface IRecordInfo<M extends TRecordData = TRecordData, K = keyof M> {
   level: TRecordInfoLevel
-  field: string
+  field: K
   message: string
 }
 
-export interface IRawRecordWithInfo {
+export interface IRawRecordWithInfo<M extends TRecordData = TRecordData> {
   row: IRawRecord
-  info: IRecordInfo[]
+  info: IRecordInfo<M>[]
 }

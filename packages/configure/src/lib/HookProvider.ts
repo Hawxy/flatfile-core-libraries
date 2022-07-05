@@ -1,3 +1,5 @@
+import { FlatfileEvent } from './FlatfileEvent'
+
 export class HookProvider<R extends HookRegistry> {
   public hooks: ListenerRegistry<R> = [];
 

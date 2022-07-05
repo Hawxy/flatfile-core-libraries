@@ -13,7 +13,6 @@
     "url": "https://github.com/FlatFilers/platform-sdk-mono/issues"
   },
   "homepage": "https://github.com/FlatFilers/platform-sdk-mono#readme",
-
   "files": [
     "dist/**"
   ],
@@ -59,5 +58,8 @@
   },
   "ts-jest": {
     "isolatedModules": false
+  },
+  "dependencies": {
+    "case-anything": "^2.1.10"
   }
 }

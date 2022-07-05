@@ -6,15 +6,15 @@ import {
   TRecordData,
 } from '../types/Record'
 
-export class FlatfileRecord {
-  private readonly data: TRecordData
-  private readonly mutated: TRecordData
+export class FlatfileRecord<M extends TRecordData = TRecordData> {
+  private readonly data: M
+  private readonly mutated: M
   private readonly _rowId: number
-  private _info: IRecordInfo[] = []
+  private _info: IRecordInfo<M>[] = []
 
   constructor(raw: IRawRecord) {
-    this.mutated = Object.assign({}, raw.rawData)
-    this.data = Object.assign({}, raw.rawData)
+    this.mutated = Object.assign({}, raw.rawData) as M
+    this.data = Object.assign({}, raw.rawData) as M
     this._rowId = raw.rowId
   }
 
@@ -97,7 +97,7 @@ export class FlatfileRecord {
     return this
   }
 
-  public toJSON(): IRawRecordWithInfo {
+  public toJSON(): IRawRecordWithInfo<M> {
     return {
       row: {
         rawData: this.mutated,

@@ -24,6 +24,8 @@ module.exports = {
         "react/prop-types": [0, {}],
         "react/no-unescaped-entities": [0, {}],
         "no-unused-vars": [1, {}],
+        "no-case-declarations": [0, {}],
+        "no-redeclare": [0, {}],
     },
     overrides: [
         {

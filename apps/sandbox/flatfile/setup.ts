@@ -1,3 +1,5 @@
+import { Sheet, TextField } from '@flatfile/configure'
+
 const Contact = new Sheet(
   "Contact",
   {
