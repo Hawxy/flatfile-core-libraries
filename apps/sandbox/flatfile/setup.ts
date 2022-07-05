@@ -26,29 +26,29 @@ const Contact = new Sheet(
     startDate: TextField(),
 
     testField: TextField(),
-    fooField: TextField({ internal: true }),
+    // fooField: TextField({ internal: true }),
   },
   {
     allowCustomFields: true,
     readOnly: true,
-    hooks: {
-      transform(castRow: { startDate: Date }) {
-        // move data around but always honor the right type
-      },
-      compute(value?: Date, row) {
-        if (!value) {
-          return new Date()
-        }
-      },
-      validate(value?: Date): Date {
-        if (value > new Date()) {
-          throw new Error("You can't be an idiot")
-        }
-      },
-      render(value: Date) {
-        return value.toLocaleDateString()
-      },
-    },
+    // hooks: {
+    //   transform(castRow: { startDate: Date }) {
+    //     // move data around but always honor the right type
+    //   },
+    //   compute(value?: Date, row) {
+    //     if (!value) {
+    //       return new Date()
+    //     }
+    //   },
+    //   validate(value?: Date): Date {
+    //     if (value > new Date()) {
+    //       throw new Error("You can't be an idiot")
+    //     }
+    //   },
+    //   render(value: Date) {
+    //     return value.toLocaleDateString()
+    //   },
+    // },
     onChange(record, session, logger) {
       const fName = record.get('firstName')
       logger.info(`lastName was ${record.get('lastName')}`)
@@ -97,21 +97,23 @@ const ContactOnboardingWorkbook = new Workbook({
   },
 })
 
-ContactOnboardingWorkbook.toJSONSchema(session) // => produces raw JSON / Text = stored in database
+export default ContactOnboardingWorkbook
 
-// - after manual transform
-// - - onChange:OfficialAddressV1Normalize
-// - - onChange:anonymous
+// ContactOnboardingWorkbook.toJSONSchema(session) // => produces raw JSON / Text = stored in database
 
-ContactOnboardingWorkbook.routeEvents(event, {
-  target: ['change', 'runtime', '8y9843hyiouahsdf'],
-})
+// // - after manual transform
+// // - - onChange:OfficialAddressV1Normalize
+// // - - onChange:anonymous
 
-ContactOnboardingWorkbook.getHook('contact', [
-  'change',
-  'runtime',
-  '8y9843hyiouahsdf',
-]) // => () =>
+// ContactOnboardingWorkbook.routeEvents(event, {
+//   target: ['change', 'runtime', '8y9843hyiouahsdf'],
+// })
+
+// ContactOnboardingWorkbook.getHook('contact', [
+//   'change',
+//   'runtime',
+//   '8y9843hyiouahsdf',
+// ]) // => () =>
 
 // many possible events here
 

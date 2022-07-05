@@ -2,7 +2,7 @@
   "name": "@flatfile/configure",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FlatFilers/platform-sdk-mono.git"
