@@ -61,6 +61,7 @@ export interface IRawSchemaProperty extends JsonSchemaProperty {
 export interface IJsonSchema {
   properties: Record<string, IRawSchemaProperty>
   type: string
+  name?: string
   required?: string[]
   unique?: string[]
   primary?: string
