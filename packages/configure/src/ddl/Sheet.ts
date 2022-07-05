@@ -20,7 +20,8 @@ export class Sheet<
       readOnly: boolean
       onChange<CB extends FlatfileRecord<Record<keyof FC, TPrimitive>>>(
         record: CB,
-        session: FlatfileSession
+        session: FlatfileSession,
+        logger: any
       ): CB
     }>
   ) {
@@ -50,6 +51,7 @@ export class Sheet<
     switch (event.name) {
       case 'records/change':
         const modelListeners = this.getHookListeners('change')
+
         console.log('foundListeners', modelListeners)
         // const fieldListeners = this.fieldArray.reduce((acc, field) => {
         //   return [...acc, ...field.getHookListeners("change")];
@@ -93,3 +95,15 @@ export type FieldConfig = Record<string, Field<any>>
 export type ModelEventRegistry = {
   change: HookContract<FlatfileRecords<any>, void>
 }
+
+// fieldA: {
+//   hooks: [
+//     ['transform', 'package-a@1.01', 'addressCleanUp'],
+//     ['cast', 'runtime', '8y9843hyiouahsdf'],
+//     ['transform', 'runtime', '8y9843hyiouahsdf', ['parallel', 'high-cpu', 'high-memory', 'lazy']],
+// -> HighPerformanceLambda
+// ->
+//     ['validate', 'runtime', '8y9843hyiouahsdf'],
+//   ]
+// }
+
