@@ -12,7 +12,6 @@ import {
   SchemaILModel,
   SchemaILToJsonSchema,
 } from '@flatfile/schema'
-import { AsymmetricQueue, getAsymmetricPromise } from '../lib/AsymmetricPromise'
 
 export class Sheet<
   FC extends FieldConfig
@@ -55,29 +54,11 @@ export class Sheet<
     // handle record events
     switch (event.name) {
       case 'records/change':
+        this.fieldArray.map((field) => {
+          return field.routeEvents(event)
+        })
+
         const modelListeners = this.getHookListeners('change')
-
-        console.log('foundListeners', modelListeners)
-        const castQueue = new AsymmetricQueue<string, number>('cast')
-        const computeQueue = new AsymmetricQueue<number, number>('transform')
-        const validateQueue = new AsymmetricQueue<number, number>('validate')
-
-        this.fieldArray.forEach((field) => {
-          field.getHookListeners('cast').forEach((listener) => {
-            castQueue.push(listener)
-          })
-          field.getHookListeners('compute').forEach((listener) => {
-            computeQueue.push(listener)
-          })
-          field.getHookListeners('validate').forEach((listener) => {
-            validateQueue.push(listener)
-          })
-          const fieldResults: num = getAsymmetricPromise(
-            castQueue,
-            transformQueue,
-            validateQueue
-          )
-        }, [] as any[])
 
         // todo: make this run in series tooo
         await Promise.all(modelListeners.map((l) => l(event)))
@@ -90,7 +71,7 @@ export class Sheet<
     // no-op other events
   }
 
-  public get fieldArray(): Field<any>[] {
+  public get fieldArray(): Field<any, any>[] {
     const out = []
     for (const key in this.fields) {
       out.push(this.fields[key])
@@ -117,7 +98,7 @@ export class Sheet<
   }
 }
 
-export type FieldConfig = Record<string, Field<any>>
+export type FieldConfig = Record<string, Field<any, any>>
 
 export type ModelEventRegistry = {
   change: HookContract<FlatfileRecords<any>, void>
