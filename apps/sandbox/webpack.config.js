@@ -2,7 +2,7 @@ const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
   mode: "development",
-  entry: "./flatfile/hook.ts",
+  entry: "./src/hook.ts",
   externalsPresets: { node: true },
   output: {
     filename: "hook.js", // <-- Important
