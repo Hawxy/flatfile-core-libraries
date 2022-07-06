@@ -1,9 +1,10 @@
-import { HookContract, HookProvider, Tuple } from '../lib/HookProvider'
+import { HookContract, HookProvider } from '../lib/HookProvider'
 import { capitalCase } from 'case-anything'
-import { SchemaILModel, SchemaILField } from '@flatfile/schema'
+import { SchemaILField, SchemaILModel } from '@flatfile/schema'
 import { TPrimitive } from '@flatfile/orm'
-import { forEachObj } from 'remeda'
+import { forEachObj, isError } from 'remeda'
 import { FlatfileEvent } from '../lib/FlatfileEvent'
+import { FlatfileRecord } from '@flatfile/hooks'
 
 export class Field<
   T extends any,
@@ -22,16 +23,58 @@ export class Field<
     this.configFactory = cb
   }
 
-  public async routeEvents(e: FlatfileEvent<any>) {
-    // run all cast in series, abandon if promise rejection or exception, get final value, apply to record
-    // run all empty in series, abandon if promise rejection or exception, get final value, apply to record
-    // run all value in series, abandon if promise rejection or exception, get final value, apply to record
-    // run all validate in series, abandon if promise rejection or exception, get final value, apply to record
-    const castedValue = await this.pipeHookListeners('cast', e)
+  public async routeEvents<E extends FlatfileEvent<FlatfileRecord>>(
+    key: string,
+    event: E
+  ) {
+    try {
+      let e: any
+      e = event.fork('cast', { value: event.data.get(key) })
+      e = await this.pipeHookListeners('cast', e)
+
+      if (e.data.value === null) {
+        e = await this.pipeHookListeners('empty', e)
+      }
+
+      if (e.data.value !== null) {
+        e = await this.pipeHookListeners('value', e)
+      }
+
+      this.applyHookResponseToRecord(event.data, key, e.data.value)
+      e = await this.pipeHookListeners('validate', e)
+      this.applyHookResponseToRecord(
+        event.data,
+        key,
+        undefined,
+        e.data.messages
+      )
+    } catch (err: any) {
+      this.applyHookResponseToRecord(event.data, key, undefined, err)
+    }
   }
 
   public toSchemaIL(baseSchema: SchemaILModel, key: string): SchemaILModel {
     return this.configFactory(baseSchema, key)
+  }
+
+  public applyHookResponseToRecord(
+    record: FlatfileRecord,
+    key: string,
+    value?: TPrimitive,
+    message?: string | Error | Message | Message[]
+  ) {
+    if (value !== undefined) {
+      record.set(key, value)
+    }
+    if (message !== undefined) {
+      if (isError(message)) {
+        record.addError(key, message.message)
+      } else if (typeof message === 'string') {
+        record.addError(key, message)
+      } else if (message instanceof Message) {
+        record.pushInfoMessage(key, message.message, message.level)
+      }
+    }
   }
 
   private attachListenersFromOptions() {

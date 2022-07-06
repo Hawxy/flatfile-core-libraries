@@ -78,7 +78,7 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
     return this.pushInfoMessage(fields, message, 'warn')
   }
 
-  private pushInfoMessage(
+  public pushInfoMessage(
     fields: string | string[],
     message: string,
     level: IRecordInfo['level']

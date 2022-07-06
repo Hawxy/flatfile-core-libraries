@@ -1,18 +1,18 @@
 import { FlatfileEvent } from './FlatfileEvent'
 
 export class HookProvider<R extends HookRegistry> {
-  public hooks: ListenerRegistry<R> = [];
+  public hooks: ListenerRegistry<R> = []
 
   on<E extends keyof R, HL extends HookListener<E, R>>(event: E, callback: HL) {
     // @ts-ignore
-    this.hooks.push({ event, callback });
-    return this;
+    this.hooks.push({ event, callback })
+    return this
   }
 
   getHookListeners<E extends keyof R>(event: E): Array<HookListener<E, R>> {
     return this.hooks
-    .filter((l) => l.event === event)
-    .map((l) => l.callback) as any;
+      .filter((l) => l.event === event)
+      .map((l) => l.callback) as any
   }
 
   /**
@@ -24,45 +24,51 @@ export class HookProvider<R extends HookRegistry> {
     name: E,
     event: FlatfileEvent<TupleKey<R[E]>>
   ): Array<Promise<TupleValue<R[E]>>> {
-    return this.getHookListeners(name).map(async (cb) => cb(event));
+    return this.getHookListeners(name).map(async (cb) => cb(event))
   }
 
   /**
-   * @todo make this be way more sophisticated (parallel, serial, etc)
-   * @param e
-   * @param raw
+   * @param name
+   * @param event
    */
-  public pipeHookListeners<E extends keyof R>(
+  public async pipeHookListeners<E extends keyof R>(
     name: E,
     event: FlatfileEvent<TupleKey<R[E]>>
-  ): Array<Promise<TupleValue<R[E]>>> {
-    // todo this needs to pipe changes and fail on exceptions
-    return this.getHookListeners(name).map(async (cb) => cb(event));
+  ): Promise<FlatfileEvent<TupleValue<R[E]>>> {
+    const listeners = this.getHookListeners(name)
+    let e = event
+    for (const i in listeners) {
+      const res = await listeners[i](e)
+      if (res) {
+        e = e.fork(name as string, res)
+      }
+    }
+    return e as unknown as Promise<FlatfileEvent<TupleValue<R[E]>>>
   }
 }
 
 export type ListenerRegistry<R extends HookRegistry> = Array<
   ListenerRegistryEntry<keyof R, R>
-  >;
+>
 
 export interface ListenerRegistryEntry<
   E extends keyof R,
   R extends HookRegistry
-  > {
-  event: E;
-  callback: HookListener<E, R>;
+> {
+  event: E
+  callback: HookListener<E, R>
 }
 
 export type HookListener<
   E extends keyof R,
   R extends HookRegistry,
   T extends R[E] = R[E]
-  > = (event: FlatfileEvent<T[0]>) => T[1] | Promise<T[1]>;
+> = (event: FlatfileEvent<T[0]>) => T[1] | Promise<T[1]>
 
-export type HookRegistry = Record<any, HookContract<any, any>>;
+export type HookRegistry = Record<any, HookContract<any, any>>
 
-export type TupleKey<T> = T extends Tuple<infer K> ? K : never;
-export type TupleValue<T> = T extends Tuple<any, infer V> ? V : never;
-export type Tuple<K extends any = any, V extends any = any> = [K, V];
+export type TupleKey<T> = T extends Tuple<infer K> ? K : never
+export type TupleValue<T> = T extends Tuple<any, infer V> ? V : never
+export type Tuple<K extends any = any, V extends any = any> = [K, V]
 
-export type HookContract<Payload, Response> = Tuple<Payload, Response>;
+export type HookContract<Payload, Response> = Tuple<Payload, Response>

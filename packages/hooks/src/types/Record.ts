@@ -1,5 +1,5 @@
 
-export type TPrimitive = string | boolean | number | Date | null
+export type TPrimitive = string | boolean | number | null
 
 export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = { [key: string]: T }
 
