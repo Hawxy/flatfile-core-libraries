@@ -21,10 +21,23 @@ export class HookProvider<R extends HookRegistry> {
    * @param raw
    */
   public runHookListeners<E extends keyof R>(
-    e: E,
-    raw: FlatfileEvent<TupleKey<R[E]>>
+    name: E,
+    event: FlatfileEvent<TupleKey<R[E]>>
   ): Array<Promise<TupleValue<R[E]>>> {
-    return this.getHookListeners(e).map(async (cb) => cb(raw));
+    return this.getHookListeners(name).map(async (cb) => cb(event));
+  }
+
+  /**
+   * @todo make this be way more sophisticated (parallel, serial, etc)
+   * @param e
+   * @param raw
+   */
+  public pipeHookListeners<E extends keyof R>(
+    name: E,
+    event: FlatfileEvent<TupleKey<R[E]>>
+  ): Array<Promise<TupleValue<R[E]>>> {
+    // todo this needs to pipe changes and fail on exceptions
+    return this.getHookListeners(name).map(async (cb) => cb(event));
   }
 }
 

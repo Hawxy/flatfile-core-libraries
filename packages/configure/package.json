@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@flatfile/ts-config-platform-sdk": "*",
+    "@promises/map-series": "^0.5.0",
     "@types/jest": "^28.1.4",
     "eslint": "^8.19.0",
     "jest": "^28.1.2",
@@ -65,6 +66,7 @@
     "@flatfile/orm": "*",
     "@flatfile/schema": "*",
     "case-anything": "^2.1.10",
+    "es6-promise-series": "^0.2.2",
     "remeda": "^0.0.35"
   }
 }

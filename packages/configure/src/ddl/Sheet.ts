@@ -12,6 +12,7 @@ import {
   SchemaILModel,
   SchemaILToJsonSchema,
 } from '@flatfile/schema'
+import { AsymmetricQueue, getAsymmetricPromise } from '../lib/AsymmetricPromise'
 
 export class Sheet<
   FC extends FieldConfig
@@ -57,13 +58,28 @@ export class Sheet<
         const modelListeners = this.getHookListeners('change')
 
         console.log('foundListeners', modelListeners)
-        // const fieldListeners = this.fieldArray.reduce((acc, field) => {
-        //   return [...acc, ...field.getHookListeners("change")];
-        // }, [] as any[]);
+        const castQueue = new AsymmetricQueue<string, number>('cast')
+        const computeQueue = new AsymmetricQueue<number, number>('transform')
+        const validateQueue = new AsymmetricQueue<number, number>('validate')
 
-        // in order, pipe onCast, onTransform, onValidate -> results
-        // todo: this is running in parallel, should run in the right order I think?
-        // @ts-ignore
+        this.fieldArray.forEach((field) => {
+          field.getHookListeners('cast').forEach((listener) => {
+            castQueue.push(listener)
+          })
+          field.getHookListeners('compute').forEach((listener) => {
+            computeQueue.push(listener)
+          })
+          field.getHookListeners('validate').forEach((listener) => {
+            validateQueue.push(listener)
+          })
+          const fieldResults: num = getAsymmetricPromise(
+            castQueue,
+            transformQueue,
+            validateQueue
+          )
+        }, [] as any[])
+
+        // todo: make this run in series tooo
         await Promise.all(modelListeners.map((l) => l(event)))
 
         // loop through fields and run hooks
