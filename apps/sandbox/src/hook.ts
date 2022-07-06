@@ -1,7 +1,7 @@
 import example from '../src/setup'
 import { FlatfileRecords, FlatfileSession } from '@flatfile/hooks'
 
-module.exports = async ({
+export default async ({
   recordBatch,
   session,
   logger,

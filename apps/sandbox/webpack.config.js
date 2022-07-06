@@ -7,6 +7,7 @@ module.exports = {
   output: {
     filename: "hook.js", 
     library: {
+      export: "default",
       name: 'hook',
       type: 'umd',
     },
