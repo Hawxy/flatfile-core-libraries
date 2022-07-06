@@ -106,20 +106,19 @@ const UPDATE_DATAHOOK_SCHEMA = gql`
 `
 
 async function sendSchemasToServer() {
-  const { models, namespace } = example.options
-  const schemaSlugs = Object.keys(models)
+  const { sheets, namespace } = example.options
+  const schemaSlugs = Object.keys(sheets)
 
   const newSchemaVersions = await Promise.all(
     schemaSlugs.map(async (slug) => {
-      const model = example.options.models[slug]
+      const model = example.options.sheets[slug]
       const name = model.name
       return await client.request(MUTATION_UPDATE_SCHEMA, {
-        // schemaId: `${namespace}/${slug}`,
-        slug: name,
+        slug: `${namespace}/${slug}`,
         teamId: '1', // TODO IMPROVE THIS
         name,
         jsonSchema: {
-          schema: model.toJSONSchema(),
+          schema: model.toJSONSchema(example.options.namespace, slug),
         },
       })
     })

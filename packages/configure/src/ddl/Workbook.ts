@@ -1,21 +1,27 @@
 import { FlatfileRecords, FlatfileSession } from '@flatfile/hooks'
 import { FlatfileEvent } from '../lib/FlatfileEvent'
 import { Sheet } from './Sheet'
+import { mapValues, pipe, values } from 'remeda'
+import { IJsonSchema } from '@flatfile/schema'
 
 export class Workbook {
   constructor(public readonly options: IWorkbookOptions) {}
 
   public async routeEvents(event: FlatfileEvent<FlatfileRecords<any>>) {
     // find models identified by target
-    const targets = Object.keys(this.options.models)
+    const targets = Object.keys(this.options.sheets)
     const foundTarget = targets.find((t) => event.target.includes(t))
     if (foundTarget) {
-      await this.options.models[foundTarget].routeEvents(event)
+      await this.options.sheets[foundTarget].routeEvents(event)
     }
   }
 
-  public toJSONSchema() {
-    return Object.values(this.options.models).map((m) => m.toJSONSchema())
+  public toJSONSchema(): Array<IJsonSchema> {
+    return pipe(
+      this.options.sheets,
+      mapValues((m, k) => m.toJSONSchema(this.options.namespace, k)),
+      values
+    )
   }
 
   public async handleLegacyDataHook(payload: IHookPayload) {
@@ -62,7 +68,7 @@ interface IHookPayload {
 interface IWorkbookOptions {
   namespace: string
   name: string
-  models: Record<string, Sheet<any>>
+  sheets: Record<string, Sheet<any>>
   ref?: string
   options?: {
     // tbd

@@ -1,10 +1,6 @@
-import { HookContract, HookProvider } from '../lib/HookProvider'
-import type {
-  IJsonSchema,
-  IRawSchemaProperty,
-  ISchemaProperty,
-} from '@flatfile/platform-sdk'
-import { capitalCase } from 'case-anything'
+import { HookContract, HookProvider } from "../lib/HookProvider";
+import { capitalCase } from "case-anything";
+import { SchemaILEntity, SchemaILField } from "@flatfile/schema";
 
 export class Field<
   O extends Record<string, any>
@@ -14,18 +10,17 @@ export class Field<
   }
 
   public registerSerializer(
-    cb: (base: IJsonSchema, key: string) => IJsonSchema
+    cb: (base: SchemaILEntity, key: string) => SchemaILEntity
   ) {
     this.configFactory = cb
   }
 
-  public toJSONSchema(baseSchema: IJsonSchema, key: string): IJsonSchema {
+  public toSchemaIL(baseSchema: SchemaILEntity, key: string): SchemaILEntity {
     return this.configFactory(baseSchema, key)
   }
 
-  private configFactory: (base: IJsonSchema, key: string) => IJsonSchema = (
-    base
-  ) => base
+  private configFactory: (base: SchemaILEntity, key: string) => SchemaILEntity =
+    (base) => base
 }
 
 export type FieldEventRegistry = {
@@ -41,7 +36,7 @@ export function makeField<
 >(
   factory: (
     field: Field<O & GenericFieldOptions>
-  ) => (base: IJsonSchema, key: string) => IJsonSchema
+  ) => (base: SchemaILEntity, key: string) => SchemaILEntity
 ) {
   function fieldHelper(): Field<O>
   function fieldHelper(opts?: O & GenericFieldOptions): Field<O>
@@ -66,16 +61,15 @@ export function makeField<
 }
 
 export function setProp(
-  base: IJsonSchema,
+  base: SchemaILEntity,
   key: string,
-  prop: Partial<IRawSchemaProperty>
-): IJsonSchema {
+  prop: Partial<SchemaILField>
+): SchemaILEntity {
   return {
     ...base,
-    properties: {
-      ...base.properties,
+    fields: {
+      ...base.fields,
       [key]: {
-        field: key,
         label: capitalCase(key),
         type: 'string',
         ...prop,

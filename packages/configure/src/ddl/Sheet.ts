@@ -1,13 +1,17 @@
 import { HookContract, HookProvider } from '../lib/HookProvider'
 import { TPrimitive } from '@flatfile/orm'
 import {
+  FlatfileRecord,
   FlatfileRecords,
   FlatfileSession,
-  FlatfileRecord,
 } from '@flatfile/hooks'
 import { FlatfileEvent } from '../lib/FlatfileEvent'
 import { Field } from './Field'
-import { IJsonSchema } from '@flatfile/platform-sdk'
+import {
+  IJsonSchema,
+  SchemaILEntity,
+  SchemaILToJsonSchema,
+} from '@flatfile/schema'
 
 export class Sheet<
   FC extends FieldConfig
@@ -57,6 +61,8 @@ export class Sheet<
         //   return [...acc, ...field.getHookListeners("change")];
         // }, [] as any[]);
 
+        // in order, pipe onCast, onTransform, onValidate -> results
+        // todo: this is running in parallel, should run in the right order I think?
         // @ts-ignore
         await Promise.all(modelListeners.map((l) => l(event)))
 
@@ -76,17 +82,22 @@ export class Sheet<
     return out
   }
 
-  public toJSONSchema() {
-    let base: IJsonSchema = {
+  public toSchemaIL(namespace: string, slug: string): SchemaILEntity {
+    let base: SchemaILEntity = {
       name: this.name,
-      type: 'object',
-      properties: {},
+      slug,
+      namespace,
+      fields: {},
     }
 
     for (const key in this.fields) {
-      base = this.fields[key].toJSONSchema(base, key)
+      base = this.fields[key].toSchemaIL(base, key)
     }
     return base
+  }
+
+  public toJSONSchema(namespace: string, slug: string): IJsonSchema {
+    return SchemaILToJsonSchema(this.toSchemaIL(namespace, slug))
   }
 }
 
@@ -106,4 +117,3 @@ export type ModelEventRegistry = {
 //     ['validate', 'runtime', '8y9843hyiouahsdf'],
 //   ]
 // }
-

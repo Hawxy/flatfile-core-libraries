@@ -91,7 +91,7 @@ const OtherContact = new Sheet(
 const ContactOnboardingWorkbook = new Workbook({
   name: 'Contact Onboarding',
   namespace: 'onboarding-1',
-  models: {
+  sheets: {
     Contact,
     OtherContact,
   },

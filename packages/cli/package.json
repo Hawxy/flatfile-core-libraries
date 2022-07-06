@@ -1,0 +1,54 @@
+{
+  "name": "@flatfile/cli",
+  "version": "0.0.0",
+  "description": "Flatfile CLI",
+  "bin": {
+    "flatfile": "./bin/run"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "/bin",
+    "/dist",
+    "/oclif.manifest.json"
+  ],
+  "dependencies": {
+    "@oclif/core": "^1",
+    "@oclif/plugin-help": "^5",
+    "@oclif/plugin-plugins": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.9.4",
+    "globby": "^11",
+    "oclif": "^3",
+    "shx": "^0.3.3"
+  },
+  "oclif": {
+    "bin": "flatfile",
+    "dirname": "flatfile",
+    "commands": "./dist/commands",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "hello": {
+        "description": "Say hello to the world and others"
+      }
+    }
+  },
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "prepack": "yarn build && oclif manifest && oclif readme",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "version": "oclif readme && git add README.md"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "keywords": [
+    "oclif"
+  ],
+  "types": "dist/index.d.ts"
+}

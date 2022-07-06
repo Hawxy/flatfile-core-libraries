@@ -11,6 +11,11 @@ The scaffolding focuses on monorepo tooling and package management and is precon
 - [Prettier](https://prettier.io)
 
 
+TODO
+- [] Guidance on hello world setup (can't run npm install)
+- []
+
+
 ### Useful Commands
 
 - `npm run build` - Build all packages including the Storybook site

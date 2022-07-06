@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FlatFilers/platform-sdk-mono.git"
@@ -60,8 +62,9 @@
     "isolatedModules": false
   },
   "dependencies": {
-    "case-anything": "^2.1.10",
     "@flatfile/orm": "*",
-    "@flatfile/platform-sdk": "*"
+    "@flatfile/schema": "*",
+    "case-anything": "^2.1.10",
+    "remeda": "^0.0.35"
   }
 }
