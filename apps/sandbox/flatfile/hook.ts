@@ -1,4 +1,4 @@
-import example from './setup'
+import example from '../src/setup'
 import { FlatfileRecords, FlatfileSession } from '@flatfile/hooks'
 
 module.exports = async ({

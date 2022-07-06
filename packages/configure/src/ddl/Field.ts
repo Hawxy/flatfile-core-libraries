@@ -11,10 +11,12 @@ export class Field<
   O extends Record<string, any>
 > extends HookProvider<FieldEventRegistry<T>> {
   public constructor(
-    public options: O & GenericFieldOptions & Partial<IFieldEvents<T>> = {} as O
+    public readonly options: O &
+      GenericFieldOptions &
+      Partial<IFieldEvents<T>> = {} as O
   ) {
     super()
-    this.attachListenersFromOptions()
+    this.attachListenersFromOptions(options)
   }
 
   public registerSerializer(
@@ -77,8 +79,10 @@ export class Field<
     }
   }
 
-  private attachListenersFromOptions() {
-    forEachObj.indexed(this.options, (key: string, cb: any) => {
+  private attachListenersFromOptions(
+    options: O & GenericFieldOptions & Partial<IFieldEvents<T>>
+  ) {
+    forEachObj.indexed(options, (cb: any, key) => {
       switch (key) {
         case 'onCast':
           this.on('cast', (e) => {
@@ -126,14 +130,16 @@ export function makeField<
   ) => (base: SchemaILModel, key: string) => SchemaILModel
 ) {
   function fieldHelper(): Field<T, O>
-  function fieldHelper(opts?: O & GenericFieldOptions): Field<T, O>
+  function fieldHelper(
+    opts?: O & GenericFieldOptions & Partial<IFieldEvents<T>>
+  ): Field<T, O>
   function fieldHelper(
     label: string,
-    opts?: O & GenericFieldOptions
+    opts?: O & GenericFieldOptions & Partial<IFieldEvents<T>>
   ): Field<T, O>
   function fieldHelper(
     labelOpts?: string | O,
-    opts?: O & GenericFieldOptions
+    opts?: O & GenericFieldOptions & Partial<IFieldEvents<T>>
   ): Field<T, O> {
     const label = typeof labelOpts === 'string' ? labelOpts : undefined
     const mergedOpts = (labelOpts !== 'string' ? labelOpts : opts) ?? {}
@@ -182,16 +188,6 @@ export interface IFieldEvents<T> {
   onEmpty: TPrimitive | (() => Writable<Nullable<T>>)
   onValue: (value: T) => Writable<T>
   onValidate: (value: T) => Waitable<void | Message[] | Message>
-}
-
-const foo: Partial<IFieldEvents<number>> = {
-  onValidate: (v) => {
-    if (v > 1) {
-      throw 'Stop being an idiot'
-    } else {
-      return new Message('Hey david, good going')
-    }
-  },
 }
 
 export type Dirty<T> = string | null | T

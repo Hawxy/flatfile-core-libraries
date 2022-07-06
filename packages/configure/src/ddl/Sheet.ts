@@ -12,6 +12,7 @@ import {
   SchemaILModel,
   SchemaILToJsonSchema,
 } from '@flatfile/schema'
+import { toPairs } from 'remeda'
 
 export class Sheet<
   FC extends FieldConfig
@@ -34,8 +35,6 @@ export class Sheet<
     if (options?.onChange) {
       // @ts-ignore
       this.on('change', (e) => {
-        console.log('running change listener')
-
         const batch = e.data
 
         return Promise.all(
@@ -54,9 +53,13 @@ export class Sheet<
     // handle record events
     switch (event.name) {
       case 'records/change':
-        this.fieldArray.map((field) => {
-          return field.routeEvents(event)
-        })
+        await Promise.all(
+          event.data.records.map((r: FlatfileRecord) => {
+            return toPairs(this.fields).map(([key, field]) => {
+              return field.routeEvents(key as string, event.fork('change', r))
+            })
+          })
+        )
 
         const modelListeners = this.getHookListeners('change')
 

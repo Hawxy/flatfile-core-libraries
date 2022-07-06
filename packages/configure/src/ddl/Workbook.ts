@@ -11,8 +11,11 @@ export class Workbook {
     // find models identified by target
     const targets = Object.keys(this.options.sheets)
     const foundTarget = targets.find((t) => event.target.includes(t))
+    console.log('FOUND TARGET', foundTarget, targets, event.target)
     if (foundTarget) {
       await this.options.sheets[foundTarget].routeEvents(event)
+    } else {
+      throw new Error('no target found')
     }
   }
 
@@ -29,7 +32,12 @@ export class Workbook {
       payload.rows.map((r: { row: any }) => r.row)
     )
     const session = new FlatfileSession(payload)
-    const event = new FlatfileEvent('records/change', recordBatch, session)
+    const event = new FlatfileEvent(
+      'records/change',
+      recordBatch,
+      session,
+      console
+    )
     console.log({ event })
     await this.routeEvents(event)
     return recordBatch.toJSON()
