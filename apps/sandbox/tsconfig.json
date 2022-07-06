@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+      "declaration": false,
+      "strict": true,
+      "esModuleInterop": true,
+      "target": "es5",
+      "moduleResolution": "node",
+      "isolatedModules": false
+    }
+  }
+  

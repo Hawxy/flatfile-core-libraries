@@ -9,8 +9,9 @@ export class Workbook {
 
   public async routeEvents(event: FlatfileEvent<FlatfileRecords<any>>) {
     // find models identified by target
+    const { namespace } = this.options
     const targets = Object.keys(this.options.sheets)
-    const foundTarget = targets.find((t) => event.target.includes(t))
+    const foundTarget = targets.find((t) => event.target.includes(namespace + '/' + t))
     console.log('FOUND TARGET', foundTarget, targets, event.target)
     if (foundTarget) {
       await this.options.sheets[foundTarget].routeEvents(event)

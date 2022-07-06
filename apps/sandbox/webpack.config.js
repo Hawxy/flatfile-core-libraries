@@ -5,11 +5,13 @@ module.exports = {
   entry: "./src/hook.ts",
   externalsPresets: { node: true },
   output: {
-    filename: "hook.js", // <-- Important
-    library: "my-library",
-    libraryTarget: "umd"
+    filename: "hook.js", 
+    library: {
+      name: 'hook',
+      type: 'umd',
+    },
   },
-  target: "node", // <-- Important
+  target: "node", 
   module: {
     rules: [
       {
@@ -26,5 +28,5 @@ module.exports = {
   },
   externals: [nodeExternals({
     allowlist: ['case-anything']
-  })], // <-- Important
+  })], 
 };
