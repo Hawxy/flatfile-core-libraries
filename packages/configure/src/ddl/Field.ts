@@ -1,6 +1,6 @@
-import { HookContract, HookProvider } from "../lib/HookProvider";
-import { capitalCase } from "case-anything";
-import { SchemaILEntity, SchemaILField } from "@flatfile/schema";
+import { HookContract, HookProvider } from '../lib/HookProvider'
+import { capitalCase } from 'case-anything'
+import { SchemaILModel, SchemaILField } from '@flatfile/schema'
 
 export class Field<
   O extends Record<string, any>
@@ -10,17 +10,18 @@ export class Field<
   }
 
   public registerSerializer(
-    cb: (base: SchemaILEntity, key: string) => SchemaILEntity
+    cb: (base: SchemaILModel, key: string) => SchemaILModel
   ) {
     this.configFactory = cb
   }
 
-  public toSchemaIL(baseSchema: SchemaILEntity, key: string): SchemaILEntity {
+  public toSchemaIL(baseSchema: SchemaILModel, key: string): SchemaILModel {
     return this.configFactory(baseSchema, key)
   }
 
-  private configFactory: (base: SchemaILEntity, key: string) => SchemaILEntity =
-    (base) => base
+  private configFactory: (base: SchemaILModel, key: string) => SchemaILModel = (
+    base
+  ) => base
 }
 
 export type FieldEventRegistry = {
@@ -36,7 +37,7 @@ export function makeField<
 >(
   factory: (
     field: Field<O & GenericFieldOptions>
-  ) => (base: SchemaILEntity, key: string) => SchemaILEntity
+  ) => (base: SchemaILModel, key: string) => SchemaILModel
 ) {
   function fieldHelper(): Field<O>
   function fieldHelper(opts?: O & GenericFieldOptions): Field<O>
@@ -61,10 +62,10 @@ export function makeField<
 }
 
 export function setProp(
-  base: SchemaILEntity,
+  base: SchemaILModel,
   key: string,
   prop: Partial<SchemaILField>
-): SchemaILEntity {
+): SchemaILModel {
   return {
     ...base,
     fields: {

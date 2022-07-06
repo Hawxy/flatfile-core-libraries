@@ -9,7 +9,7 @@ import { FlatfileEvent } from '../lib/FlatfileEvent'
 import { Field } from './Field'
 import {
   IJsonSchema,
-  SchemaILEntity,
+  SchemaILModel,
   SchemaILToJsonSchema,
 } from '@flatfile/schema'
 
@@ -82,8 +82,8 @@ export class Sheet<
     return out
   }
 
-  public toSchemaIL(namespace: string, slug: string): SchemaILEntity {
-    let base: SchemaILEntity = {
+  public toSchemaIL(namespace: string, slug: string): SchemaILModel {
+    let base: SchemaILModel = {
       name: this.name,
       slug,
       namespace,

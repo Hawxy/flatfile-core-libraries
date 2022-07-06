@@ -7,7 +7,7 @@ export interface SchemaILField {
   unique?: boolean
 }
 
-export interface SchemaILEntity<Fields extends Record<string, SchemaILField> = Record<string, SchemaILField>> {
+export interface SchemaILModel<Fields extends Record<string, SchemaILField> = Record<string, SchemaILField>> {
   name: string
   slug: string
   namespace: string

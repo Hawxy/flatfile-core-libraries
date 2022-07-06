@@ -1,4 +1,4 @@
-import { SchemaILEntity, SchemaILField } from './types/SchemaIL'
+import { SchemaILModel, SchemaILField } from './types/SchemaIL'
 import { IJsonSchema } from './types/JsonSchema'
 import {
   filter,
@@ -11,7 +11,7 @@ import {
   values,
 } from 'remeda'
 
-export const SchemaILToJsonSchema = (ddl: SchemaILEntity): IJsonSchema => {
+export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
   // probably refactor
   const fields = pipe(
     ddl.fields,
