@@ -25,7 +25,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
-    "build": "tsc -t es5 src/deploy.ts -esModuleInterop true --outDir ./dist",
+    "build": "parcel build index.html",
     "deploy": "flatfile deploy --file src/setup.ts",
     "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
