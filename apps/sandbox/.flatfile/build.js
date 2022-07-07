@@ -2700,7 +2700,7 @@ var Contact = new Sheet("Contact", {
 }, {
   allowCustomFields: true,
   readOnly: true,
-  onChange(record, session, logger) {
+  onChange(record) {
     const fName = record.get("firstName");
     console.log(`lastName was ${record.get("lastName")}`);
     record.set("lastName", fName);

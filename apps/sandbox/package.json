@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build": "parcel build index.html",
-    "deploy": "flatfile deploy --file src/setup.ts",
+    "deploy": "flatfile publish src/setup.ts",
     "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests",
