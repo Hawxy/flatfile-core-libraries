@@ -2,17 +2,17 @@ const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
   mode: "development",
-  entry: "./src/hook.ts",
+  entry: "./src/setup.ts",
   externalsPresets: { node: true },
   output: {
-    filename: "hook.js", 
+    filename: "hook.js",
     library: {
       export: "default",
       name: 'hook',
       type: 'umd',
     },
   },
-  target: "node", 
+  target: "node",
   module: {
     rules: [
       {
@@ -29,5 +29,5 @@ module.exports = {
   },
   externals: [nodeExternals({
     allowlist: ['case-anything']
-  })], 
+  })],
 };
