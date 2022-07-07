@@ -18,7 +18,7 @@ const Contact = new Sheet(
   {
     allowCustomFields: true,
     readOnly: true,
-    onChange(record, session, logger) {
+    onChange(record) {
       const fName = record.get('firstName')
       console.log(`lastName was ${record.get('lastName')}`)
       record.set('lastName', fName)
@@ -34,45 +34,3 @@ export default new Workbook({
     contact: Contact,
   },
 })
-
-// ContactOnboardingWorkbook.toJSONSchema(session) // => produces raw JSON / Text = stored in database
-
-// // - after manual transform
-// // - - onChange:OfficialAddressV1Normalize
-// // - - onChange:anonymous
-
-// ContactOnboardingWorkbook.routeEvents(event, {
-//   target: ['change', 'runtime', '8y9843hyiouahsdf'],
-// })
-
-// ContactOnboardingWorkbook.getHook('contact', [
-//   'change',
-//   'runtime',
-//   '8y9843hyiouahsdf',
-// ]) // => () =>
-
-// many possible events here
-
-// execution
-// | 1. Field Soft Cast
-// | Field Compute
-// | Row Transform '2020-01-01'
-//   | Field Hard Cast
-//   | Field Compute
-// |
-
-//
-// () 1 -> () 2 -> () 3 ()
-// cast -> compute -> validate
-//
-//
-// onCast
-// onBulkCast
-// beforeCast
-// afterCast
-//
-// date
-// "later" -> cast fails -> custom cast (later = new Date('next year')) -> compute -> validate
-//
-// boolean
-// "nein" -> raw cast fails -> custom cast = false -> compute -> validate

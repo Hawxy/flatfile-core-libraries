@@ -1,0 +1,22 @@
+{
+  "name": "@flatfile/cli",
+  "version": "0.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "bin": {
+    "flatfile": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "commander": "^9.3.0",
+    "cosmiconfig": "^7.0.1",
+    "figlet": "^1.5.2",
+    "tsup": "^6.1.3"
+  }
+}

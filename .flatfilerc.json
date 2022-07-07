@@ -1,5 +1,4 @@
 {
   "team": "1",
-  "apiUrl": "http://localhost:3000",
-  "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhdmlkQGZsYXRmaWxlLmlvIiwic3ViIjoiMSIsImlhdCI6MTY1NzI0MTc4OSwiZXhwIjoxNjU3Mjg0OTg5fQ.1cLGa-svVTavq6yj66Zn48avvnSntLR5MIPF1J-8gxo"
+  "apiUrl": "http://localhost:3000"
 }
