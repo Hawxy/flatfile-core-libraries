@@ -3,7 +3,7 @@ import { ApiService } from '../graphql/ApiService'
 import { ImportSession } from '../importer/ImportSession'
 import { createChunk, mockGraphQLRequest } from '../lib/test-helper'
 import { FlatfileRecord } from '@flatfile/orm'
-import { BASE_RECORD } from '@flatfile/orm.spec'
+import { DATA_RECORD_BASIC } from '@flatfile/orm'
 import { RecordsChunk } from './RecordsChunk'
 
 describe('RecordsChunk', function () {
@@ -13,7 +13,9 @@ describe('RecordsChunk', function () {
   let records: FlatfileRecord[]
 
   beforeEach(async () => {
-    records = [1, 2, 3, 4, 5].map((id) => new FlatfileRecord({ ...BASE_RECORD, id }))
+    records = [1, 2, 3, 4, 5].map(
+      (id) => new FlatfileRecord({ ...DATA_RECORD_BASIC, id })
+    )
 
     flatfile = new Flatfile('token', { apiUrl: 'http://localhost:3000' })
     flatfile.api = new ApiService('token', 'http://localhost:3000')

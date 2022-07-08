@@ -14,6 +14,7 @@ const rawRecords: IRawRecord[] = [
 ]
 
 const sample: IPayload = {
+  schemaSlug: 'slug',
   workspaceId: '123abc',
   workbookId: '345def',
   schemaId: 1010,
@@ -61,5 +62,9 @@ describe('FlatfileSession', () => {
 
   it('should return envSignature', () => {
     expect(session.envSignature).toBe(sample.envSignature)
+  })
+
+  it('should return schemaSlug', () => {
+    expect(session.schemaSlug).toBe(sample.schemaSlug)
   })
 })

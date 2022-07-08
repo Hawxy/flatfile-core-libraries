@@ -1,6 +1,7 @@
+
 {
   "extends": "@flatfile/ts-config-platform-sdk/base.json",
-  "include": ["."],
+  "include": ["./src"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "lib": ["ES2019"],

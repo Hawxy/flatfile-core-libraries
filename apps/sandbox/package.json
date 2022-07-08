@@ -5,6 +5,7 @@
   "description": "",
   "devDependencies": {
     "@flatfile/ts-config-platform-sdk": "*",
+    "@flatfile/configure": "*",
     "@types/node": "^14.14.10",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
@@ -27,7 +28,7 @@
     "deploy": "node dist/deploy.js",
     "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests",
     "start": "parcel -p 7088 --no-cache index.html"
   },
   "repository": {

@@ -3,13 +3,9 @@
   "version": "0.0.0",
   "description": "",
   "main": "./dist/index.js",
-  "tsup": {
-    "entry": ["src/index.ts"],
-    "splitting": false,
-    "dts": true,
-    "sourcemap": true,
-    "clean": true
-  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "private": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FlatFilers/platform-sdk-mono.git"
@@ -21,41 +17,21 @@
   },
   "homepage": "https://github.com/FlatFilers/platform-sdk-mono#readme",
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup src/index.ts --format esm,cjs --watch --dts --external react",
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
     "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "test": "jest --runInBand --detectOpenHandles --forceExit"
+    "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests"
   },
   "devDependencies": {
-    "@flatfile/ts-config-platform-sdk": "*"
+    "@flatfile/eslint-config-platform-sdk": "*",
+    "@flatfile/ts-config-platform-sdk": "*",
+    "@types/jest": "^28.1.4",
+    "eslint": "^8.19.0",
+    "jest": "^28.1.2",
+    "ts-jest": "^28.0.5"
   },
-  "jest": {
-    "roots": [
-      "<rootDir>/src"
-    ],
-    "collectCoverage": false,
-    "moduleNameMapper": {
-      "src/(.*)": "<rootDir>/src/$1"
-    },
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testMatch": [
-      "**/__tests__/**/*.+(ts|tsx|js)",
-      "**/?(*.)+(spec|test).+(ts|tsx|js)"
-    ],
-    "testPathIgnorePatterns": [
-      "<rootdir>/node_modules/"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "ts",
-      "tsx",
-      "json"
-    ]
-  },
-  "ts-jest": {
-    "isolatedModules": false
+  "publishConfig": {
+    "access": "public"
   }
 }

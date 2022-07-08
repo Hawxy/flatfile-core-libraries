@@ -1,10 +1,10 @@
+import { TPrimitive } from '@flatfile/orm'
+import { FlatfileRecord } from '@flatfile/hooks'
+import { SchemaILField, SchemaILModel } from '@flatfile/schema'
 import { HookContract, HookProvider } from '../lib/HookProvider'
 import { capitalCase } from 'case-anything'
-import { SchemaILField, SchemaILModel } from '@flatfile/schema'
-import { TPrimitive } from '@flatfile/orm'
 import { forEachObj, isError } from 'remeda'
 import { FlatfileEvent } from '../lib/FlatfileEvent'
-import { FlatfileRecord } from '@flatfile/hooks'
 
 export class Field<
   T extends any,

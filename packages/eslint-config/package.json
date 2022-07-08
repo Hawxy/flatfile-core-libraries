@@ -1,10 +1,16 @@
 {
+    "name": "@flatfile/eslint-config-platform-sdk",
+    "version": "0.1.0",
+    "license": "MIT",
     "private": true,
-    "name": "@private/cfg-eslint",
     "main": "index.js",
     "dependencies": {
         "@typescript-eslint/parser": "^5.30.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-react": "^7.30.1"
+    },
+
+    "publishConfig": {
+        "access": "restricted"
     }
 }

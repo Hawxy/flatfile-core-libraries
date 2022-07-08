@@ -2,6 +2,7 @@
 # Editors
 .idea
 .vscode
+.editorconfig
 
 # Logs
 logs

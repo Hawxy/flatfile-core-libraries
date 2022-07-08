@@ -1,12 +1,12 @@
 import { ELevel, FlatfileRecord } from './FlatfileRecord'
-import { BASE_RECORD } from './FlatfileRecord.spec'
 import { RecordMutation } from './RecordMutation'
+import { DATA_RECORD_BASIC } from './data/basic'
 
 describe('RecordMutation', () => {
   let record: FlatfileRecord
   let mutation: RecordMutation
   beforeEach(() => {
-    record = new FlatfileRecord(BASE_RECORD)
+    record = new FlatfileRecord(DATA_RECORD_BASIC)
     mutation = record.getMutation()
   })
 
@@ -27,23 +27,26 @@ describe('RecordMutation', () => {
 
   test('calling addInfo for a field stages an info level message', () => {
     mutation.addInfo('full_name', 'Nice name bro')
-    expect(mutation.toGraphQLEdits().messages.find((m) => m.error === 'info')?.message).toEqual(
-      'Nice name bro'
-    )
+    expect(
+      mutation.toGraphQLEdits().messages.find((m) => m.error === 'info')
+        ?.message
+    ).toEqual('Nice name bro')
   })
 
   test('calling addError for a field stages an error level message', () => {
     mutation.addError('full_name', 'Get that name changed')
-    expect(mutation.toGraphQLEdits().messages.find((m) => m.error === 'error')?.message).toEqual(
-      'Get that name changed'
-    )
+    expect(
+      mutation.toGraphQLEdits().messages.find((m) => m.error === 'error')
+        ?.message
+    ).toEqual('Get that name changed')
   })
 
   test('calling addWarning for a field stages an warning level message', () => {
     mutation.addWarning('full_name', 'How do you pronounce that?')
-    expect(mutation.toGraphQLEdits().messages.find((m) => m.error === 'warn')?.message).toEqual(
-      'How do you pronounce that?'
-    )
+    expect(
+      mutation.toGraphQLEdits().messages.find((m) => m.error === 'warn')
+        ?.message
+    ).toEqual('How do you pronounce that?')
   })
 
   test('calling pushMessage with an array of fields creates a message for each', () => {

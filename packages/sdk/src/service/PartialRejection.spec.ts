@@ -4,28 +4,34 @@ import { ApiService } from '../graphql/ApiService'
 import { ImportSession } from '../importer/ImportSession'
 import { mockGraphQLRequest } from '../lib/test-helper'
 import { FlatfileRecord } from '@flatfile/orm'
-import { BASE_RECORD } from '@flatfile/orm.spec'
 import { PartialRejection } from './PartialRejection'
-import { RecordError } from './RecordError'
+import { RecordError } from '@flatfile/orm'
+import { DATA_RECORD_BASIC } from '@flatfile/orm/src'
 
 describe('PartialRejection', () => {
   let records: FlatfileRecord[]
   let rejection: PartialRejection
   beforeEach(() => {
-    records = [1, 2, 3, 4, 5].map((id) => new FlatfileRecord({ ...BASE_RECORD, id }))
+    records = [1, 2, 3, 4, 5].map(
+      (id) => new FlatfileRecord({ ...DATA_RECORD_BASIC, id })
+    )
     rejection = new PartialRejection(
       records
         .slice(0, 3)
         .map(
           (record) =>
-            new RecordError(record.recordId, [{ field: 'full_name', message: 'test error' }])
+            new RecordError(record.recordId, [
+              { field: 'full_name', message: 'test error' },
+            ])
         )
     )
   })
 
   test('can accept a single record failure', () => {
     const record = records[0]
-    const err = new RecordError(record.recordId, [{ field: 'full_name', message: 'test error' }])
+    const err = new RecordError(record.recordId, [
+      { field: 'full_name', message: 'test error' },
+    ])
     rejection = new PartialRejection(err)
     expect(rejection.recordIds).toEqual([1])
   })
@@ -35,7 +41,9 @@ describe('PartialRejection', () => {
       .slice(0, 3)
       .map(
         (record) =>
-          new RecordError(record.recordId, [{ field: 'full_name', message: 'test error' }])
+          new RecordError(record.recordId, [
+            { field: 'full_name', message: 'test error' },
+          ])
       )
     const rejection = new PartialRejection(errs)
     expect(rejection.recordIds).toEqual([1, 2, 3])
@@ -62,7 +70,9 @@ describe('PartialRejection', () => {
 
     test('handles a network failure', async () => {
       mockGraphQLRequest('updateWorkbookRows', 500, { rows: [] })
-      await expect(rejection.executeResponse(session)).rejects.toThrow(RequestError)
+      await expect(rejection.executeResponse(session)).rejects.toThrow(
+        RequestError
+      )
     })
   })
 })

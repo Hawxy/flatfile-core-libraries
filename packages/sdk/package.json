@@ -21,7 +21,7 @@
     "start": "tsup src/index.ts --format esm,cjs --watch --external react",
     "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests",
     "prebuild": "rm -rf ./dist",
     "lint:fix": "eslint ./src --ext '.ts,.tsx' --fix",
     "prepack": "npm run build",
@@ -122,5 +122,8 @@
       "npm run lint",
       "prettier --check"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

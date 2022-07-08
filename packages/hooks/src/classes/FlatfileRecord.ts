@@ -31,7 +31,7 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
   }
 
   private verifyField(field: string): boolean {
-    if (!this.data.hasOwnProperty(field)) {
+    if (!Object.prototype.hasOwnProperty.call(this.data, field)) {
       // TODO: make sure user's aware of this message
       console.error(`Record does not have field "${field}".`)
       return false
