@@ -50,6 +50,7 @@ program.command('publish <file>').action((file, options) => {
         entry: { build: file },
         outDir,
         format: 'cjs',
+        noExternal: [/.*/],
       }).then(() => {
         const buildFile = path.join(outDir, 'build.js')
         deploy(buildFile, {
