@@ -23,6 +23,7 @@ Running `npm install` from the root directory will install dependencies for all 
 - `npm run clean` - Removes all `node_modules`, `dist` folders, and `.turbo` caches (runs each package's clean script)
 - `npm install somePackage -w packageName -w anotherPackage` - Run a command only in the context of a specific package. This example would install `somePackage` in the `packageName` workspace and the `anotherPackage` within the monorepo
 - `turbo run dev --filter packageName` - Run the turbo dev command but only for `pacakgeName`
+- `./dev make:package foo-bar` - Generates a new package under the packages directory using a pre-configured package template
 
 ### Apps and Packages
 Workspaces are configured in the root level `package.json`:
@@ -35,9 +36,13 @@ Workspaces are configured in the root level `package.json`:
 }
 ```
 Any directory inside a workspace that also defines their own `package.json` will be considered an independent workspace.
+ 
 > **Note**
 > 
 >When you move, delete, or rename your workspaces, you will have to make sure that all folders linked within your package.json matches. Anytime you change the configuration of your workspace, make sure all the dependencies of the workspace are also updated. Re-run your npm client's install command to check your configuration. If there are any problems after that, you may have to delete your node_modules folder and run an install again.
+
+#### Dev cli
+A light weight dev cli is provided to quickly scaffold a new package for this mono repo. Running `./dev make:package <package>` with create a package pre-configured with typescript, eslint, jest, and tsup. The package will be placed in the **packages** directory by default.
 
 #### Managing dependencies
 To use dependencies from one workspace in another define it the `package.json` like so:
