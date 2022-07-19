@@ -11,5 +11,3 @@ export * from './service/PartialRejection'
 export * from './service/RecordsChunk'
 export * from './lib/RecordChunkIterator'
 export * from './lib/serializeHook'
-
-export * from '@flatfile/orm'
