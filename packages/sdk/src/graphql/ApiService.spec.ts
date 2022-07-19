@@ -5,7 +5,7 @@ import { UnauthorizedError } from '../errors/UnauthorizedError'
 import { Flatfile } from '../Flatfile'
 import { ImportSession } from '../importer/ImportSession'
 import { mockGraphQLRequest } from '../lib/test-helper'
-import { ERecordStatus } from '../service/FlatfileRecord'
+import { ERecordStatus } from '@flatfile/orm'
 import { ApiService } from './ApiService'
 
 describe('ApiService', () => {
@@ -70,7 +70,9 @@ describe('ApiService', () => {
         workbookId: '422f8c35-66f9-4b9e-8ab1-e7dfda4b90d1',
       }
       mockGraphQLRequest('preflightBatch', 200, payload)
-      await expect(req()).resolves.toEqual('422f8c35-66f9-4b9e-8ab1-e7dfda4b90d1')
+      await expect(req()).resolves.toEqual(
+        '422f8c35-66f9-4b9e-8ab1-e7dfda4b90d1'
+      )
     })
     test('handles errors', async () => {
       mockError()
@@ -80,7 +82,8 @@ describe('ApiService', () => {
 
   describe('getAllRecords', () => {
     describe('single page', () => {
-      const req = () => api.getAllRecords('d7f5e4d2-24d8-4e76-bfbb-bcc4eeb6c881')
+      const req = () =>
+        api.getAllRecords('d7f5e4d2-24d8-4e76-bfbb-bcc4eeb6c881')
 
       test('resolves successfully', async () => {
         const payload = { rows: [], totalRows: 10 }
@@ -100,7 +103,12 @@ describe('ApiService', () => {
         totalRows: 10,
       }
       const spy = mockGraphQLRequest('getFinalDatabaseView', 200, payload, 2)
-      const res = await api.getAllRecords('d7f5e4d2-24d8-4e76-bfbb-bcc4eeb6c881', 0, false, 5)
+      const res = await api.getAllRecords(
+        'd7f5e4d2-24d8-4e76-bfbb-bcc4eeb6c881',
+        0,
+        false,
+        5
+      )
 
       expect(res.rows.length).toBe(10)
       expect(spy.isDone())
@@ -127,7 +135,8 @@ describe('ApiService', () => {
   })
 
   describe('updateRecordStatus', () => {
-    const req = () => api.updateRecordStatus(session, [1, 2, 3, 4, 5], ERecordStatus.REVIEW)
+    const req = () =>
+      api.updateRecordStatus(session, [1, 2, 3, 4, 5], ERecordStatus.REVIEW)
 
     test('resolves successfully', async () => {
       const payload = { id: 'd1422070-24ba-4a7f-92ea-687c9bc28f58' }
@@ -160,21 +169,23 @@ describe('ApiService', () => {
     test('handles unauthorized specifically', async () => {
       const payload = { errors: true }
       mockGraphQLRequest('updateWorkspaceEnvironment', 200, payload)
-      await expect(() => api.handleGraphQLErrors([{ message: 'Unauthorized' }])).toThrow(
-        UnauthorizedError
-      )
+      await expect(() =>
+        api.handleGraphQLErrors([{ message: 'Unauthorized' }])
+      ).toThrow(UnauthorizedError)
     })
     test('handles generic error', async () => {
       const payload = { errors: true }
       mockGraphQLRequest('updateWorkspaceEnvironment', 200, payload)
-      await expect(() => api.handleGraphQLErrors([], 'Something is awry.')).toThrowError(
-        'Something is awry.'
-      )
+      await expect(() =>
+        api.handleGraphQLErrors([], 'Something is awry.')
+      ).toThrowError('Something is awry.')
     })
     test('handles no error payload', async () => {
       const payload = { errors: true }
       mockGraphQLRequest('updateWorkspaceEnvironment', 200, payload)
-      await expect(() => api.handleGraphQLErrors([])).toThrowError('Something went wrong')
+      await expect(() => api.handleGraphQLErrors([])).toThrowError(
+        'Something went wrong'
+      )
     })
   })
 
@@ -183,7 +194,13 @@ describe('ApiService', () => {
   })
 })
 
-const defaultRow = { id: 1, valid: true, status: ERecordStatus.REVIEW, data: {}, info: [] }
+const defaultRow = {
+  id: 1,
+  valid: true,
+  status: ERecordStatus.REVIEW,
+  data: {},
+  info: [],
+}
 
 const mockError = () => {
   mockGraphQLRequest('notrelevant', 500, {

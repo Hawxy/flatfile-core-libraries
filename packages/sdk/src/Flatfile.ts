@@ -1,7 +1,11 @@
 import { FlatfileError } from './errors/FlatfileError'
 import { ImplementationError } from './errors/ImplementationError'
 import { ApiService } from './graphql/ApiService'
-import { IChunkOptions, ImportSession, IUrlOptions } from './importer/ImportSession'
+import {
+  IChunkOptions,
+  ImportSession,
+  IUrlOptions,
+} from './importer/ImportSession'
 import { isJWT, sign } from './lib/jwt'
 import { IteratorCallback } from './lib/RecordChunkIterator'
 import { TypedEventManager } from './lib/TypedEventManager'
@@ -37,7 +41,9 @@ export class Flatfile extends TypedEventManager<IEvents> {
   ) {
     super()
     const configWithToken =
-      typeof tokenOrConfig === 'object' ? tokenOrConfig : { ...config, token: tokenOrConfig }
+      typeof tokenOrConfig === 'object'
+        ? tokenOrConfig
+        : { ...config, token: tokenOrConfig }
     this.config = this.mergeConfigDefaults(configWithToken)
     this.ui = new UIService()
     if (this.config.onError) {
@@ -54,7 +60,11 @@ export class Flatfile extends TypedEventManager<IEvents> {
     } else if (this.config.embedId) {
       return Flatfile.getDevelopmentToken(this.config.embedId, {
         org: this.config.org || { id: 1, name: 'Company' },
-        user: this.config.user || { id: 1, name: 'John Doe', email: 'john@email.com' },
+        user: this.config.user || {
+          id: 1,
+          name: 'John Doe',
+          email: 'john@email.com',
+        },
       })
     } else {
       throw new ImplementationError(
@@ -118,7 +128,8 @@ export class Flatfile extends TypedEventManager<IEvents> {
             session.iframe?.close()
             options.onComplete?.({
               batchId: meta.batchId,
-              data: (sample = false) => api.getAllRecords(meta.batchId, 0, sample),
+              data: (sample = false) =>
+                api.getAllRecords(meta.batchId, 0, sample),
             })
           }
         } else {
@@ -126,10 +137,13 @@ export class Flatfile extends TypedEventManager<IEvents> {
             session.iframe?.close()
             options.onComplete?.({
               batchId: meta.batchId,
-              data: (sample = false) => api.getAllRecords(meta.batchId, 0, sample),
+              data: (sample = false) =>
+                api.getAllRecords(meta.batchId, 0, sample),
             })
           } else {
-            console.log('[Flatfile]: Register `onComplete` event to receive your payload')
+            console.log(
+              '[Flatfile]: Register `onComplete` event to receive your payload'
+            )
           }
         }
       })
@@ -141,7 +155,9 @@ export class Flatfile extends TypedEventManager<IEvents> {
       }, 0)
 
       if (options?.open === 'iframe') {
-        const importFrame = session.openInEmbeddedIframe({ autoContinue: options?.autoContinue })
+        const importFrame = session.openInEmbeddedIframe({
+          autoContinue: options?.autoContinue,
+        })
         importFrame.on('load', () => this.ui.hideLoader())
       }
       if (options?.open === 'window') {
@@ -162,15 +178,20 @@ export class Flatfile extends TypedEventManager<IEvents> {
    * also provides some level of backwards compatability
    */
   public requestDataFromUser(): void
+  // eslint-disable-next-line no-dupe-class-members
   public requestDataFromUser(opts: DataReqOptions): void
+  // eslint-disable-next-line no-dupe-class-members
   public requestDataFromUser(cb: IteratorCallback, opts?: DataReqOptions): void
+  // eslint-disable-next-line no-dupe-class-members
   public requestDataFromUser(
     callbackOrOptions?: IteratorCallback | DataReqOptions,
     opts?: DataReqOptions
   ): void {
     let options: DataReqOptions = { open: 'iframe' }
     if (typeof callbackOrOptions === 'function') {
-      options = opts ? { ...options, ...opts, onData: callbackOrOptions } : options
+      options = opts
+        ? { ...options, ...opts, onData: callbackOrOptions }
+        : options
     } else if (typeof callbackOrOptions === 'object') {
       options = { ...options, ...callbackOrOptions }
     }
@@ -219,28 +240,47 @@ export class Flatfile extends TypedEventManager<IEvents> {
         ...(body?.org ? body.org : {}),
       },
     }
-    return sign({ embed: embedId, sub: payload.user.email, ...payload, devModeOnly: true }, key)
+    return sign(
+      {
+        embed: embedId,
+        sub: payload.user.email,
+        ...payload,
+        devModeOnly: true,
+      },
+      key
+    )
   }
 
-  public static requestDataFromUser(options: DataReqOptions & IFlatfileImporterConfig = {}): void {
-    const { sessionConfig, importerConfig } = Flatfile.extractImporterOptions(options)
+  public static requestDataFromUser(
+    options: DataReqOptions & IFlatfileImporterConfig = {}
+  ): void {
+    const { sessionConfig, importerConfig } =
+      Flatfile.extractImporterOptions(options)
     const flatfile = new Flatfile(importerConfig)
     return flatfile.requestDataFromUser(sessionConfig)
   }
 
-  public static extractImporterOptions(options: DataReqOptions & IFlatfileImporterConfig): {
+  public static extractImporterOptions(
+    options: DataReqOptions & IFlatfileImporterConfig
+  ): {
     sessionConfig: DataReqOptions
     importerConfig: IFlatfileImporterConfig
   } {
     const sessionConfig = {} as DataReqOptions
     const importerConfig = {} as IFlatfileImporterConfig
+
     Object.entries(options).forEach(([key, val]) => {
       if (SESSION_CONFIG_KEYS.indexOf(key as keyof DataReqOptions) !== -1) {
-        sessionConfig[key as keyof DataReqOptions] = val
-      } else if (IMPORTER_CONFIG_KEYS.indexOf(key as keyof IFlatfileImporterConfig) !== -1) {
-        importerConfig[key as keyof IFlatfileImporterConfig] = val
+        sessionConfig[key] = val
+      } else if (
+        IMPORTER_CONFIG_KEYS.indexOf(key as keyof IFlatfileImporterConfig) !==
+        -1
+      ) {
+        importerConfig[key] = val
       } else {
-        throw new ImplementationError(`Field "${key}" should not exist on the config.`)
+        throw new ImplementationError(
+          `Field "${key}" should not exist on the config.`
+        )
       }
     })
 
@@ -256,7 +296,9 @@ export class Flatfile extends TypedEventManager<IEvents> {
    * @param config User provided configuration
    * @private
    */
-  private mergeConfigDefaults(config: IFlatfileImporterConfig): IFlatfileConfig {
+  private mergeConfigDefaults(
+    config: IFlatfileImporterConfig
+  ): IFlatfileConfig {
     return {
       apiUrl: process.env.API_URL as string,
       mountUrl: process.env.MOUNT_URL as string,

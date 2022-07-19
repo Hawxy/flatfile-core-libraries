@@ -120,6 +120,7 @@ export class RecordChunkIterator extends TypedEventManager<IIteratorEvents> {
    * Run through this chunk iterator once using the available rules.
    */
   public process(): Promise<void> {
+  // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       const chunk = await this.beforeFirst()
       this.runCallback(chunk)

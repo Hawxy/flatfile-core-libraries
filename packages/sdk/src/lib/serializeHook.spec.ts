@@ -1,11 +1,9 @@
 import { deserializeFn } from 'transferable-function'
-
 import { serializeFunction, serializeHook } from './serializeHook'
 
 describe('serializeHook', () => {
   test('serializes a basic hook', () => {
     const serialized = serializeHook((payload) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       payload.mapRecords(function (record: any) {
         return new Promise<void>(function (resolve) {
           record.set('foo', 'bar')

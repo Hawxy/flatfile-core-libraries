@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 
-import { ELevel, ERecordStatus, TRecordData } from '../../service/FlatfileRecord'
+import { ERecordStatus, ELevel, TRecordData } from '@flatfile/orm'
 
 export interface IRowResponse {
   id: number

@@ -4,6 +4,7 @@ import {
   IRecordInfo,
   TPrimitive,
   TRecordData,
+  TRecordStageLevel
 } from '../types/Record'
 
 export class FlatfileRecord<M extends TRecordData = TRecordData> {
@@ -60,7 +61,7 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
   }
 
   public addInfo(fields: string | string[], message: string): this {
-    return this.pushInfoMessage(fields, message, 'info')
+    return this.pushInfoMessage(fields, message, 'info', 'other')
   }
 
   /**
@@ -71,17 +72,18 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
   }
 
   public addError(fields: string | string[], message: string): this {
-    return this.pushInfoMessage(fields, message, 'error')
+    return this.pushInfoMessage(fields, message, 'error', 'other')
   }
 
   public addWarning(fields: string | string[], message: string) {
-    return this.pushInfoMessage(fields, message, 'warn')
+    return this.pushInfoMessage(fields, message, 'warn', 'other')
   }
 
   public pushInfoMessage(
     fields: string | string[],
     message: string,
-    level: IRecordInfo['level']
+    level: IRecordInfo['level'],
+    stage: TRecordStageLevel
   ): this {
     fields = Array.isArray(fields) ? fields : [fields]
 
@@ -91,6 +93,7 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
           field,
           message,
           level,
+	  stage
         })
       }
     })

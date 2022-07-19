@@ -6,6 +6,9 @@ import { capitalCase } from 'case-anything'
 import { forEachObj, isError } from 'remeda'
 import { FlatfileEvent } from '../lib/FlatfileEvent'
 
+export type TRecordStageLevel = 'onCast' | 'onEmpty' | 'onValue' | 'onValidate' | 'apply' | 'other';
+
+
 export class Field<
   T extends any,
   O extends Record<string, any>
@@ -29,19 +32,37 @@ export class Field<
     key: string,
     event: E
   ) {
-    try {
+
       let e: any
       e = event.fork('cast', { value: event.data.get(key) })
+    try {
       e = await this.pipeHookListeners('cast', e)
-
+    } catch (err: any) {
+      const castErrMessage = new Message(err, 'error', 'onCast')
+      this.applyHookResponseToRecord(event.data, key, undefined, castErrMessage)
+      return;
+    }
+    try {
       if (e.data.value === null) {
         e = await this.pipeHookListeners('empty', e)
       }
-
+    } catch (err: any) {
+      const emptyErrMessage = new Message(err, 'error', 'onEmpty')
+      this.applyHookResponseToRecord(
+	event.data, key, undefined, emptyErrMessage)
+      return
+    }
+    try {
       if (e.data.value !== null) {
         e = await this.pipeHookListeners('value', e)
       }
-
+    } catch (err: any) {
+      const valueErrMessage = new Message(err, 'error', 'onValue')
+      this.applyHookResponseToRecord(
+	event.data, key, undefined, valueErrMessage)
+      return
+    }
+    try {
       this.applyHookResponseToRecord(event.data, key, e.data.value)
       e = await this.pipeHookListeners('validate', e)
       this.applyHookResponseToRecord(
@@ -51,7 +72,9 @@ export class Field<
         e.data.messages
       )
     } catch (err: any) {
-      this.applyHookResponseToRecord(event.data, key, undefined, err)
+      const validateErrMessage = new Message(err, 'error', 'onValidate')
+      this.applyHookResponseToRecord(
+	event.data, key, undefined, validateErrMessage)
     }
   }
 
@@ -74,7 +97,7 @@ export class Field<
       } else if (typeof message === 'string') {
         record.addError(key, message)
       } else if (message instanceof Message) {
-        record.pushInfoMessage(key, message.message, message.level)
+        record.pushInfoMessage(key, message.message, message.level, message.stage)
       }
     }
   }
@@ -202,12 +225,16 @@ class Value<T> {
   ) {}
 }
 
-class Message {
+export class Message {
   constructor(
     public readonly message: string,
-    public readonly level: 'error' | 'warn' | 'info' = 'info'
+    public readonly level: 'error' | 'warn' | 'info' = 'info',
+    public readonly stage: TRecordStageLevel
   ) {}
 }
 
 // - grouping identifier
 // - actions (callbacks
+
+
+

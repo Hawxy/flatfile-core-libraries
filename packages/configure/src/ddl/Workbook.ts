@@ -14,7 +14,6 @@ export class Workbook {
     const foundTarget = targets.find((t) =>
       event.target.includes(namespace + '/' + t)
     )
-    console.log('FOUND TARGET', foundTarget, targets, event.target)
     if (foundTarget) {
       await this.options.sheets[foundTarget].routeEvents(event)
     } else {
@@ -41,7 +40,6 @@ export class Workbook {
       session,
       console
     )
-    console.log({ event })
     await this.routeEvents(event)
     return recordBatch.toJSON()
   }
@@ -63,7 +61,7 @@ export class Workbook {
   }
 }
 
-interface IHookPayload {
+export interface IHookPayload {
   workspaceId: string
   workbookId: string
   schemaId: number

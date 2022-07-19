@@ -1,8 +1,11 @@
-import { IImportMeta, IImportSessionEvents, ImportSession } from 'importer/ImportSession'
-import { IteratorCallback } from 'lib/RecordChunkIterator'
-
 import { FlatfileError } from './errors/FlatfileError'
 import { GetFinalDatabaseViewResponse } from './graphql/queries/GET_FINAL_DATABASE_VIEW'
+import {
+  IImportMeta,
+  IImportSessionEvents,
+  ImportSession,
+} from './importer/ImportSession'
+import { IteratorCallback } from './lib/RecordChunkIterator'
 
 export interface IFlatfileImporterConfig {
   mountUrl?: string
@@ -22,7 +25,9 @@ export interface IFlatfileConfig extends IFlatfileImporterConfig {
 export interface IImportSessionConfig {
   onInit?: (payload: IImportSessionEvents['init']) => void | Promise<void>
   onData?: IteratorCallback
-  onComplete?: (payload: IImportSessionEvents['complete']) => void | Promise<void>
+  onComplete?: (
+    payload: IImportSessionEvents['complete']
+  ) => void | Promise<void>
 }
 
 export interface IEvents {
@@ -41,7 +46,9 @@ export interface IEvents {
   }
   complete: {
     batchId: string
-    data: (sample?: boolean) => Promise<GetFinalDatabaseViewResponse['getFinalDatabaseView']>
+    data: (
+      sample?: boolean
+    ) => Promise<GetFinalDatabaseViewResponse['getFinalDatabaseView']>
   }
   close: void
 }

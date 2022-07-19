@@ -6,7 +6,8 @@ import { FlatfileError } from '../errors/FlatfileError'
 import { RequestError } from '../errors/RequestError'
 import { UnauthorizedError } from '../errors/UnauthorizedError'
 import { IImportMeta, ImportSession } from '../importer/ImportSession'
-import { ERecordStatus, FlatfileRecord, TPrimitive } from '@flatfile/orm'
+import { ERecordStatus } from '@flatfile/orm'
+import { FlatfileRecord, TPrimitive } from '@flatfile/orm'
 import { RecordsChunk } from '../service/RecordsChunk'
 import {
   INITIALIZE_EMPTY_BATCH,

@@ -37,7 +37,7 @@ describe('UI Service', () => {
 
   describe('destroy', () => {
     it('should remove flatfile ui from document', () => {
-      /* eslint-disable  @typescript-eslint/no-explicit-any */
+
       const untypedUi = ui as any
       expect(document.getElementById('flatfile-loader')).toBeDefined()
 

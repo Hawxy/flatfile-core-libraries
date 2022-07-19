@@ -64,30 +64,35 @@ describe('FlatfileRecord', () => {
       field: 'name',
       message: 'Rad name',
       level: 'info',
+      stage: 'other'
     })
 
     expect(comment).toEqual({
       field: 'age',
       message: 'What a name',
       level: 'info',
+      stage: 'other'
     })
 
     expect(error).toEqual({
       field: 'age',
       message: 'So immature',
       level: 'error',
+      stage: 'other'
     })
 
     expect(nameWarning).toEqual({
       field: 'name',
       message: 'Name too rad, age too immature',
       level: 'warn',
+      stage: 'other'
     })
 
     expect(ageWarning).toEqual({
       field: 'age',
       message: 'Name too rad, age too immature',
       level: 'warn',
+      stage: 'other'
     })
   })
 

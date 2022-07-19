@@ -48,15 +48,11 @@ export class DeprecatedImporter extends TypedEventManager<IEvents> {
    * @deprecated use flatfile.startOrResumeImport({open: 'iframe'})
    */
   async launch(mode: 'iframe' | 'window' = 'iframe'): Promise<{ batchId: string }> {
-    try {
-      const importer = await this.ff.startOrResumeImportSession({ open: mode })
-      importer.proxyTo(this)
-      this.importer = importer
-      return {
-        batchId: importer.batchId,
-      }
-    } catch (e) {
-      throw e
+    const importer = await this.ff.startOrResumeImportSession({ open: mode })
+    importer.proxyTo(this)
+    this.importer = importer
+    return {
+      batchId: importer.batchId,
     }
   }
 

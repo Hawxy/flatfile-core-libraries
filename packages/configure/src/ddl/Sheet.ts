@@ -53,22 +53,23 @@ export class Sheet<
     // handle record events
     switch (event.name) {
       case 'records/change':
+        const modelListeners = this.getHookListeners('change')
+
         await Promise.all(
-          event.data.records.map((r: FlatfileRecord) => {
-            return toPairs(this.fields).map(([key, field]) => {
-              return field.routeEvents(key as string, event.fork('change', r))
-            })
+          event.data.records.map(async (r: FlatfileRecord) => {
+            await Promise.all(
+              toPairs(this.fields).map(async ([key, field]) => {
+                return await field.routeEvents(
+                  key as string,
+                  event.fork('change', r)
+                )
+              })
+            )
           })
         )
 
-        const modelListeners = this.getHookListeners('change')
-
-        // todo: make this run in series tooo
         await Promise.all(modelListeners.map((l) => l(event)))
 
-        // loop through fields and run hooks
-        // loop through rows and run hooks
-        // any other things
         break
     }
     // no-op other events

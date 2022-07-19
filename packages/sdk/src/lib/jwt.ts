@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function sign(payload: Record<string, any>, key: string): Promise<string> {
   if (!key) {
     throw new Error('Key is required.')
@@ -22,11 +21,7 @@ export function sign(payload: Record<string, any>, key: string): Promise<string>
 
   let payloadAsJSON: string
 
-  try {
-    payloadAsJSON = JSON.stringify(payload)
-  } catch (err) {
-    throw err
-  }
+  payloadAsJSON = JSON.stringify(payload)
 
   const header = { alg: 'HS256', typ: 'JWT' }
   const headerAsJSON = JSON.stringify(header)
@@ -43,7 +38,6 @@ export function sign(payload: Record<string, any>, key: string): Promise<string>
     const it = utf8ToUint8Array(payloadAsJSON).entries()
     let i = 0
     const result = []
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let current: IteratorResult<[number, number], any>
 
     while (!(current = it.next()).done) {
@@ -61,6 +55,7 @@ export function sign(payload: Record<string, any>, key: string): Promise<string>
 }
 
 function isBase64(str: string): boolean {
+  // eslint-disable-next-line no-useless-escape
   return /^[A-Z0-9_\-]*$/i.test(str)
 }
 

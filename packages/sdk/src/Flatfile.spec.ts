@@ -10,7 +10,10 @@ import { IFlatfileImporterConfig } from './types'
 window.alert = jest.fn()
 window.open = jest.fn(() => window)
 jest.mock('./graphql/ApiService')
-jest.mock('./lib/jwt', () => ({ sign: jest.fn(() => 'token'), isJWT: jest.fn(() => true) }))
+jest.mock('./lib/jwt', () => ({
+  sign: jest.fn(() => 'token'),
+  isJWT: jest.fn(() => true),
+}))
 
 const env = process.env
 const fakeImportMeta = { batchId: 'bId', workspaceId: 'wId', schemaIds: [] }
@@ -22,7 +25,11 @@ describe('Flatfile', () => {
     jest.clearAllMocks()
     jest.spyOn(ApiService.prototype, 'init').mockResolvedValue(fakeImportMeta)
     flatfile = new Flatfile('token', { apiUrl: 'http://localhost:3000' })
-    process.env = { ...env, API_URL: 'http://localhost:3002', MOUNT_URL: 'http://localhost:3001' }
+    process.env = {
+      ...env,
+      API_URL: 'http://localhost:3002',
+      MOUNT_URL: 'http://localhost:3001',
+    }
   })
 
   afterAll(() => {
@@ -60,8 +67,12 @@ describe('Flatfile', () => {
       test('should open flatfile importer inside iframe', async () => {
         jest.spyOn(ImportSession.prototype, 'openInEmbeddedIframe')
         await flatfile.startOrResumeImportSession({ open: 'iframe' })
-        expect(ImportSession.prototype.openInEmbeddedIframe).toHaveBeenCalledTimes(1)
-        expect(ImportSession.prototype.openInEmbeddedIframe).toHaveBeenCalledWith(
+        expect(
+          ImportSession.prototype.openInEmbeddedIframe
+        ).toHaveBeenCalledTimes(1)
+        expect(
+          ImportSession.prototype.openInEmbeddedIframe
+        ).toHaveBeenCalledWith(
           expect.objectContaining({ autoContinue: undefined })
         )
       })
@@ -96,26 +107,29 @@ describe('Flatfile', () => {
         ['user', { user }, { org: defaultConfig.org, user }],
         ['user and org', { org, user }, { org, user }],
         ['no user and no org', {}, defaultConfig],
-      ])('and %p info is proided', (_, orgAndUserConfig, expectedOrAndUserConfig) => {
-        test('should create a development token', async () => {
-          jest.spyOn(Flatfile, 'getDevelopmentToken')
-          jest.spyOn(console, 'warn').mockImplementationOnce(() => null)
+      ])(
+        'and %p info is proided',
+        (_, orgAndUserConfig, expectedOrAndUserConfig) => {
+          test('should create a development token', async () => {
+            jest.spyOn(Flatfile, 'getDevelopmentToken')
+            jest.spyOn(console, 'warn').mockImplementationOnce(() => null)
 
-          const flatfile = new Flatfile({
-            embedId: 'embedId',
-            apiUrl: 'http://localhost:3000',
-            ...orgAndUserConfig,
+            const flatfile = new Flatfile({
+              embedId: 'embedId',
+              apiUrl: 'http://localhost:3000',
+              ...orgAndUserConfig,
+            })
+
+            await flatfile.startOrResumeImportSession({ open: 'window' })
+            expect(console.warn).toHaveBeenCalled()
+            expect(Flatfile.getDevelopmentToken).toHaveBeenCalledTimes(1)
+            expect(Flatfile.getDevelopmentToken).toHaveBeenCalledWith(
+              'embedId',
+              expectedOrAndUserConfig
+            )
           })
-
-          await flatfile.startOrResumeImportSession({ open: 'window' })
-          expect(console.warn).toHaveBeenCalled()
-          expect(Flatfile.getDevelopmentToken).toHaveBeenCalledTimes(1)
-          expect(Flatfile.getDevelopmentToken).toHaveBeenCalledWith(
-            'embedId',
-            expectedOrAndUserConfig
-          )
-        })
-      })
+        }
+      )
     })
 
     describe('when no token or embedId info is provided', () => {
@@ -144,13 +158,17 @@ describe('Flatfile', () => {
       await flatfile.startOrResumeImportSession({ open: 'window' })
       await new Promise((resolve) => setTimeout(resolve, 0))
       expect(flatfile.emit).toHaveBeenCalledTimes(1)
-      expect(flatfile.emit).toHaveBeenCalledWith('launch', { batchId: fakeImportMeta.batchId })
+      expect(flatfile.emit).toHaveBeenCalledWith('launch', {
+        batchId: fakeImportMeta.batchId,
+      })
     })
 
     describe('when import session config is provided ', () => {
       beforeEach(async () => {
         jest.spyOn(ImportSession.prototype, 'processPendingRecords')
-        jest.spyOn(ApiService.prototype, 'getWorkbookId').mockResolvedValueOnce('wId')
+        jest
+          .spyOn(ApiService.prototype, 'getWorkbookId')
+          .mockResolvedValueOnce('wId')
         jest
           .spyOn(RecordChunkIterator.prototype, 'process')
           .mockImplementation(() => Promise.resolve())
@@ -166,9 +184,18 @@ describe('Flatfile', () => {
         }
         await flatfile.startOrResumeImportSession(importSessionConfig)
         expect(ImportSession.prototype.on).toHaveBeenCalledTimes(3)
-        expect(ImportSession.prototype.on).toHaveBeenCalledWith('error', expect.any(Function))
-        expect(ImportSession.prototype.on).toHaveBeenCalledWith('submit', expect.any(Function))
-        expect(ImportSession.prototype.on).toHaveBeenCalledWith('init', importSessionConfig.onInit)
+        expect(ImportSession.prototype.on).toHaveBeenCalledWith(
+          'error',
+          expect.any(Function)
+        )
+        expect(ImportSession.prototype.on).toHaveBeenCalledWith(
+          'submit',
+          expect.any(Function)
+        )
+        expect(ImportSession.prototype.on).toHaveBeenCalledWith(
+          'init',
+          importSessionConfig.onInit
+        )
       })
 
       test('should call on-complete event handler when rejected ids length is zero and on-data callback is provided', async () => {
@@ -177,7 +204,9 @@ describe('Flatfile', () => {
           onData: jest.fn(),
           onComplete: jest.fn(),
         }
-        const session = await flatfile.startOrResumeImportSession(importSessionConfig)
+        const session = await flatfile.startOrResumeImportSession(
+          importSessionConfig
+        )
         session.emit('submit')
         await new Promise(process.nextTick)
 
@@ -186,19 +215,22 @@ describe('Flatfile', () => {
           batchId: fakeImportMeta.batchId,
           data: expect.any(Function),
         })
-        expect(ImportSession.prototype.processPendingRecords).toHaveBeenCalledWith(
-          importSessionConfig.onData,
-          { chunkSize: 10 }
-        )
+        expect(
+          ImportSession.prototype.processPendingRecords
+        ).toHaveBeenCalledWith(importSessionConfig.onData, { chunkSize: 10 })
       })
 
       test('should only call on-complete event handler when on-data callback is not provided', async () => {
         const importSessionConfig = { onComplete: jest.fn() }
-        const session = await flatfile.startOrResumeImportSession(importSessionConfig)
+        const session = await flatfile.startOrResumeImportSession(
+          importSessionConfig
+        )
         session.emit('submit')
         await new Promise(process.nextTick)
 
-        expect(ImportSession.prototype.processPendingRecords).not.toHaveBeenCalled()
+        expect(
+          ImportSession.prototype.processPendingRecords
+        ).not.toHaveBeenCalled()
         expect(importSessionConfig.onComplete).toHaveBeenCalledTimes(1)
         expect(importSessionConfig.onComplete).toHaveBeenCalledWith({
           batchId: fakeImportMeta.batchId,
@@ -210,11 +242,15 @@ describe('Flatfile', () => {
         jest.spyOn(console, 'log').mockImplementation((s) => s)
 
         const importSessionConfig = {}
-        const session = await flatfile.startOrResumeImportSession(importSessionConfig)
+        const session = await flatfile.startOrResumeImportSession(
+          importSessionConfig
+        )
         session.emit('submit')
         await new Promise(process.nextTick)
 
-        expect(ImportSession.prototype.processPendingRecords).not.toHaveBeenCalled()
+        expect(
+          ImportSession.prototype.processPendingRecords
+        ).not.toHaveBeenCalled()
         expect(console.log).toHaveBeenCalledWith(
           '[Flatfile]: Register `onComplete` event to receive your payload'
         )
@@ -261,6 +297,7 @@ describe('Flatfile', () => {
         onInit: jest.fn(),
         onData: jest.fn(),
       }
+      console.log('extractImporterOptions', { importerConfig, sessionConfig })
       expect(
         Flatfile.extractImporterOptions({
           ...importerConfig,
@@ -276,7 +313,9 @@ describe('Flatfile', () => {
         unexpectedProp: '1',
       }
       expect(() =>
-        Flatfile.extractImporterOptions(importerConfig as IFlatfileImporterConfig)
+        Flatfile.extractImporterOptions(
+          importerConfig as IFlatfileImporterConfig
+        )
       ).toThrowError('Field "unexpectedProp" should not exist on the config.')
     })
   })
@@ -299,11 +338,16 @@ describe('Flatfile', () => {
         onData: jest.fn(),
       }
 
-      await Flatfile.requestDataFromUser({ ...flatfileConfig, ...importSessionConfig })
-      expect(Flatfile.prototype.startOrResumeImportSession).toHaveBeenCalledTimes(1)
-      expect(Flatfile.prototype.startOrResumeImportSession).toHaveBeenCalledWith(
-        importSessionConfig
-      )
+      await Flatfile.requestDataFromUser({
+        ...flatfileConfig,
+        ...importSessionConfig,
+      })
+      expect(
+        Flatfile.prototype.startOrResumeImportSession
+      ).toHaveBeenCalledTimes(1)
+      expect(
+        Flatfile.prototype.startOrResumeImportSession
+      ).toHaveBeenCalledWith(importSessionConfig)
     })
   })
 })

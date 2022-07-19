@@ -5,7 +5,6 @@ import { IEvents } from '../types'
 export const eventManager = new EventEmitter()
 
 export class TypedEventManager<T> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private em: any
   private proxies: TypedEventManager<T>[] = []
   constructor() {
@@ -50,7 +49,6 @@ export class TypedEventManager<T> {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public proxyTo(em1: TypedEventManager<any>): this {
     this.proxies.push(em1)
     return this
