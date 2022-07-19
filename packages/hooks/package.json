@@ -27,9 +27,9 @@
     "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests"
   },
   "devDependencies": {
-    "@flatfile/ts-config-platform-sdk": "*",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/jest-preset-platform-sdk": "*",
+    "@flatfile/ts-config-platform-sdk": "*",
     "@types/jest": "^28.1.4",
     "eslint": "^8.18.0",
     "jest": "^28.1.2",

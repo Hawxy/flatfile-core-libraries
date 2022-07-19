@@ -1,68 +1,75 @@
 #!/usr/bin/env node
-import { cosmiconfig } from 'cosmiconfig'
-
 import { build } from 'tsup'
 import { program } from 'commander'
 import * as path from 'path'
 import { deploy } from './deploy'
+import packageJSON from '../package.json'
+import dotenv from 'dotenv'
+import { generateAccessToken } from './auth/acessToken'
+import chalk from 'chalk'
+
+dotenv.config()
 
 program
   .name('flatfile')
-  .description('Flatfile Developer CLI')
-  .version('0.0.1')
-  .option('-t, --team <team-id>')
-  .option('--api-url <url>')
-  .option('--api-key <api-key>')
+  .description('Flatfile CLI')
+  .version(`${packageJSON.version}`)
 
-program.command('publish <file>').action((file, options) => {
-  cosmiconfig('flatfile')
-    .search()
-    .then((result) => {
-      const cfg = result?.config || {}
+program
+  .command('publish <file>')
+  .description('publish a schema')
+  .option('-t, --team <team-id>', 'the Team ID to publish to')
+  .option('--api-url <url>', 'the API url to use')
+  .action(async (file, options) => {
+    const teamId = options.team || process.env.FLATFILE_TEAM_ID
+    const apiUrl =
+      options.apiUrl ||
+      process.env.FLATFILE_API_URL ||
+      'https://api.us.flatfile.io'
 
-      const team = options.team || process.env.FLATFILE_TEAM_ID || cfg.team
-      const apiUrl =
-        options.apiUrl ||
-        process.env.FLATFILE_API_URL ||
-        cfg.apiUrl ||
-        'https://api.us.flatfile.io'
-      const apiKey =
-        options.apiKey || process.env.FLATFILE_API_KEY || cfg.apiKey
+    if (!teamId) {
+      console.log(
+        `You must provide a Team ID. Either set the ${chalk.bold(
+          'FLATFILE_TEAM_ID'
+        )} environment variable or pass the ID in as an option to this command with ${chalk.bold(
+          '--team'
+        )}`
+      )
+      process.exit(1)
+    }
 
-      if (!team) {
-        return console.error(
-          'You must provide a team id in either a configuration file such as .flatfilerc or as an option to this command with --team'
-        )
-      }
-      if (!file) {
-        return console.error('You must provide a <file> to build')
-      }
+    const token = await generateAccessToken({ apiUrl })
 
-      if (!apiKey) {
-        return console.error(
-          'You must provide a flatfile api key to authenticate'
-        )
-      }
-      const outDir = path.join(process.cwd(), '.flatfile')
+    const outDir = path.join(process.cwd(), '.flatfile')
 
-      build({
+    try {
+      await build({
         config: false,
         entry: { build: file },
         outDir,
         format: 'cjs',
         noExternal: [/.*/],
-      }).then(() => {
-        const buildFile = path.join(outDir, 'build.js')
-        deploy(buildFile, {
-          apiUrl,
-          apiKey,
-          team,
-        }).then(() => {
-          console.log('code is deployed')
-        })
-        console.log('file is built')
       })
-    })
-})
+    } catch (e) {
+      console.log('Build failed')
+      console.log(chalk.red(e))
+
+      process.exit(1)
+    }
+
+    try {
+      const buildFile = path.join(outDir, 'build.js')
+      await deploy(buildFile, {
+        apiUrl,
+        apiKey: token,
+        team: teamId,
+      })
+    } catch (e) {
+      console.log('Deploy failed')
+      console.log(chalk.red(e))
+
+      process.exit(1)
+    }
+  })
 
 program.parse()

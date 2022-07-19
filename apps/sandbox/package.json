@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "description": "",
   "devDependencies": {
-    "@flatfile/ts-config-platform-sdk": "*",
-    "@flatfile/configure": "*",
     "@flatfile/cli": "*",
+    "@flatfile/configure": "*",
+    "@flatfile/ts-config-platform-sdk": "*",
     "@types/node": "^14.14.10",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",

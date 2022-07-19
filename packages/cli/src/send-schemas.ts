@@ -32,7 +32,6 @@ export async function sendSchemasToServer(
       return id
     })
   )
-  console.log({ newSchemaVersions })
 
   newSchemaVersions.map((schemaId) => {
     buildPayloadForLambda(client, schemaId, buildFile)

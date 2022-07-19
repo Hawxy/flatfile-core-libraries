@@ -5,6 +5,7 @@
     "compilerOptions": {
         "lib": ["ESNext"],
         "module": "ESNext",
-        "target": "ES6"
+        "target": "ES6",
+        "resolveJsonModule": true,
     },
 }

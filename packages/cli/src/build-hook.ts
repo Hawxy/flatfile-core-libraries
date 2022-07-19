@@ -1,6 +1,8 @@
 import fs from 'fs'
 import { GraphQLClient } from 'graphql-request'
 import { MUTATION_UPSERT_DATAHOOK } from './MUTATION_UPSERT_DATAHOOK'
+import chalk from 'chalk'
+import ora from 'ora'
 
 export async function buildPayloadForLambda(
   client: GraphQLClient,
@@ -18,8 +20,8 @@ export async function buildPayloadForLambda(
       code: data,
     })
 
-    console.log({ newSchemaId: newSchema.id })
+    ora(`Schema created with id ${chalk.white.bold(newSchema.id)}`).succeed()
   } catch (err) {
-    console.log(err)
+    console.log(chalk.red(err))
   }
 }
