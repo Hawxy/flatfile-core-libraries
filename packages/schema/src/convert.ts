@@ -36,7 +36,6 @@ export const compileEnum = (inputField: SchemaILField): IJsonSchemaProperty => {
 
 export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
   // probably refactor
-  // console.log('ddl', JSON.stringify(ddl, null, 2))
   const fields = pipe(
     ddl.fields,
     mapValues(
@@ -52,6 +51,12 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
   const required = pipe(
     fields,
     filter((f) => isTruthy(f.required)),
+    map((f) => f.field)
+  )
+
+  const unique = pipe(
+    fields,
+    filter((f) => isTruthy(f.unique)),
     map((f) => f.field)
   )
 
@@ -82,7 +87,7 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
     properties,
     type: 'object',
     required: required,
-    unique: pks,
+    unique: unique,
     primary: pks[0],
   }
 }

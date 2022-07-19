@@ -1,13 +1,23 @@
 import { TPrimitive } from '@flatfile/orm'
 import { FlatfileRecord } from '@flatfile/hooks'
-import { BaseSchemaILField, SchemaILEnumField, SchemaILField, SchemaILModel } from '@flatfile/schema'
+import {
+  BaseSchemaILField,
+  SchemaILEnumField,
+  SchemaILField,
+  SchemaILModel,
+} from '@flatfile/schema'
 import { HookContract, HookProvider } from '../lib/HookProvider'
 import { capitalCase } from 'case-anything'
 import { forEachObj, isError } from 'remeda'
 import { FlatfileEvent } from '../lib/FlatfileEvent'
 
-export type TRecordStageLevel = 'onCast' | 'onEmpty' | 'onValue' | 'onValidate' | 'apply' | 'other';
-
+export type TRecordStageLevel =
+  | 'onCast'
+  | 'onEmpty'
+  | 'onValue'
+  | 'onValidate'
+  | 'apply'
+  | 'other'
 
 export class Field<
   T extends any,
@@ -32,15 +42,14 @@ export class Field<
     key: string,
     event: E
   ) {
-
-      let e: any
-      e = event.fork('cast', { value: event.data.get(key) })
+    let e: any
+    e = event.fork('cast', { value: event.data.get(key) })
     try {
       e = await this.pipeHookListeners('cast', e)
     } catch (err: any) {
       const castErrMessage = new Message(err, 'error', 'onCast')
       this.applyHookResponseToRecord(event.data, key, undefined, castErrMessage)
-      return;
+      return
     }
     try {
       if (e.data.value === null) {
@@ -49,7 +58,11 @@ export class Field<
     } catch (err: any) {
       const emptyErrMessage = new Message(err, 'error', 'onEmpty')
       this.applyHookResponseToRecord(
-	event.data, key, undefined, emptyErrMessage)
+        event.data,
+        key,
+        undefined,
+        emptyErrMessage
+      )
       return
     }
     try {
@@ -59,7 +72,11 @@ export class Field<
     } catch (err: any) {
       const valueErrMessage = new Message(err, 'error', 'onValue')
       this.applyHookResponseToRecord(
-	event.data, key, undefined, valueErrMessage)
+        event.data,
+        key,
+        undefined,
+        valueErrMessage
+      )
       return
     }
     try {
@@ -74,12 +91,18 @@ export class Field<
     } catch (err: any) {
       const validateErrMessage = new Message(err, 'error', 'onValidate')
       this.applyHookResponseToRecord(
-	event.data, key, undefined, validateErrMessage)
+        event.data,
+        key,
+        undefined,
+        validateErrMessage
+      )
     }
   }
 
   public toSchemaIL(baseSchema: SchemaILModel, key: string): SchemaILModel {
-    return this.configFactory(baseSchema, key)
+    const builtSchema = this.configFactory(baseSchema, key)
+    builtSchema.fields[key] = { ...builtSchema.fields[key], ...this.options }
+    return builtSchema
   }
 
   public applyHookResponseToRecord(
@@ -97,7 +120,12 @@ export class Field<
       } else if (typeof message === 'string') {
         record.addError(key, message)
       } else if (message instanceof Message) {
-        record.pushInfoMessage(key, message.message, message.level, message.stage)
+        record.pushInfoMessage(
+          key,
+          message.message,
+          message.level,
+          message.stage
+        )
       }
     }
   }
@@ -235,6 +263,3 @@ export class Message {
 
 // - grouping identifier
 // - actions (callbacks
-
-
-

@@ -1,5 +1,5 @@
-import { makeField } from '../ddl/Field'
+import { makeField, setProp } from '../ddl/Field'
 
 export const NumberField = makeField<number>(() => {
-  return (base) => ({ ...base, type: 'number' })
+  return (base, key) => setProp(base, key, { type: 'number' })
 })

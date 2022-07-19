@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import {
   EmailField,
   Sheet,
@@ -21,6 +22,24 @@ export class WorkbookTester {
     })
     this.workbook = TestWorkbook
   }
+
+  public async checkRows(rawDs:any[]): Promise<void> {
+    const targets = Object.keys(this.workbook.options.sheets)
+    const rows =  _.map(rawDs, (rawData:any, i:number) => {
+	return {row: {rawData, rowId: i+1}, info:[]}
+    });
+    const formattedpayload = {
+      schemaSlug: this.workbook.options.namespace + '/' + targets[0],
+      rows
+    } as IHookPayload
+    const result = await this.workbook.handleLegacyDataHook(formattedpayload)
+
+    console.log('toJSONSchema', this.workbook.options.sheets['TestSheet'].toJSONSchema('test', 'test'))
+    console.log('result', result);
+
+  }
+
+
 
   public async checkRowResult({
     rawData,
@@ -56,9 +75,7 @@ export class WorkbookTester {
     } as IHookPayload
     const result = await this.workbook.handleLegacyDataHook(formattedpayload)
     expect(message).toBeTruthy()
-    if(message) {
-      console.log("result[0]", result)
-    }
+
     message && expect(result[0].info[0].message).toBe(message)
   }
 

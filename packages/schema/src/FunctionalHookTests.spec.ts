@@ -14,6 +14,23 @@ const BaseFieldArgs = {
 }
 
 // First sets of Workbook Tests
+describe('Unique tests ->', () => {
+  test('Sending non unique rwos throws an Error', async () => {
+    const rawData = { firstNumber: { a: 'asdf' } }
+
+    const TestSchema = new WorkbookTester(
+      {
+        a: NumberField({...BaseFieldArgs, unique:true}),
+        b: NumberField({...BaseFieldArgs, required:true}),
+      },
+      {}
+    )
+    // this should throw some type of error
+    await TestSchema.checkRows([{a:1,b:2}, {a:1, b:3}])
+  })
+})
+
+// First sets of Workbook Tests
 describe('Field Hook ->', () => {
   describe('onCast()', () => {
     test('correctly casts object to default number', async () => {

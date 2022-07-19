@@ -34,6 +34,7 @@ const ddlSchema: SchemaILModel = {
       label: 'Id',
       required: true,
       primary: true,
+      unique: true,
       field: 'id',
     },
     is_admin: {
