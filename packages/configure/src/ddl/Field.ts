@@ -1,6 +1,6 @@
 import { TPrimitive } from '@flatfile/orm'
 import { FlatfileRecord } from '@flatfile/hooks'
-import { SchemaILField, SchemaILModel } from '@flatfile/schema'
+import { BaseSchemaILField, SchemaILEnumField, SchemaILField, SchemaILModel } from '@flatfile/schema'
 import { HookContract, HookProvider } from '../lib/HookProvider'
 import { capitalCase } from 'case-anything'
 import { forEachObj, isError } from 'remeda'
@@ -192,7 +192,7 @@ export function setProp(
         label: capitalCase(key),
         type: 'string',
         ...prop,
-      },
+      } as SchemaILField,
     },
   }
 }

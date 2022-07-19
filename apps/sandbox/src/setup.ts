@@ -1,7 +1,14 @@
-import { EmailField, Sheet, TextField, Workbook } from '@flatfile/configure'
+import {
+  BooleanField,
+  CategoryField,
+  EmailField,
+  TextField,
+  Sheet,
+  Workbook,
+} from '@flatfile/configure'
 
-const Contact = new Sheet(
-  'Contact',
+const CategoryAndBoolean = new Sheet(
+  'CategoryAndBoolean',
   {
     firstName: TextField({
       required: true,
@@ -11,6 +18,10 @@ const Contact = new Sheet(
     email: EmailField({
       nonPublic: true,
       onValue: (v) => v.toUpperCase(),
+    }),
+    boolean: BooleanField(),
+    selectOptions: CategoryField({
+      categories: { red: 'Red', blue: 'Blue', green: 'Green' }
     }),
     phoneNumber: TextField(),
     startDate: TextField(),
@@ -28,9 +39,9 @@ const Contact = new Sheet(
 )
 
 export default new Workbook({
-  name: 'Contact Onboarding',
+  name: 'Category And Boolean Onboarding',
   namespace: 'onboarding',
   sheets: {
-    contact: Contact,
+    CategoryAndBoolean,
   },
 })

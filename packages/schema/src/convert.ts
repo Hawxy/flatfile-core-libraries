@@ -1,5 +1,10 @@
-import { SchemaILModel, SchemaILField } from './types/SchemaIL'
-import { IJsonSchema } from './types/JsonSchema'
+import {
+  SchemaILModel,
+  SchemaILField,
+  SchemaILEnumField,
+  BaseSchemaILField,
+} from './types/SchemaIL'
+import { IJsonSchema, IJsonSchemaProperty } from './types/JsonSchema'
 import {
   filter,
   fromPairs,
@@ -8,17 +13,39 @@ import {
   mapValues,
   pick,
   pipe,
+  toPairs,
   values,
 } from 'remeda'
 
+//note the second any is for properties that should be contributed to
+//the larger schema outside of just this field
+export const compileEnum = (inputField: SchemaILField): IJsonSchemaProperty => {
+  // return the field if it is not an enum type
+  if (inputField.type !== 'enum') {
+    return inputField
+  }
+
+  return {
+    type: 'string',
+    label: inputField.label,
+    ...(inputField.required ? { required: inputField.required } : {}),
+    enum: map(Object.keys(inputField.labelEnum), (key) => key),
+    enumLabel: map(Object.values(inputField.labelEnum), (key) => key),
+  }
+}
+
 export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
   // probably refactor
+  // console.log('ddl', JSON.stringify(ddl, null, 2))
   const fields = pipe(
     ddl.fields,
-    mapValues((value, field): SchemaILField & { field: string } => ({
-      ...value,
-      field,
-    })),
+    mapValues(
+      (value, field): SchemaILField =>
+        ({
+          field,
+          ...compileEnum(value),
+        } as SchemaILField)
+    ),
     values
   )
 
@@ -36,7 +63,18 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
 
   const properties = pipe(
     fields,
-    map((f) => tuple(f.field, pick(f, ['type', 'label', 'field']))),
+    map((f) =>
+      tuple(
+        f.field,
+        pick(f as IJsonSchemaProperty, [
+          'type',
+          'label',
+          'field',
+          'enum',
+          'enumLabel',
+        ])
+      )
+    ),
     (v) => fromPairs(v)
   )
 
@@ -48,6 +86,8 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
     primary: pks[0],
   }
 }
+
+export const compileToJsonSchema = SchemaILToJsonSchema
 
 function tuple<A, B>(a: A, b: B): [A, B] {
   return [a, b]

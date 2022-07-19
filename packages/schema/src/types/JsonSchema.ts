@@ -1,7 +1,7 @@
 export interface IJsonSchemaProperty {
   title?: string
   description?: string
-  enum?: { label: string; value: string }[]
+  enum?: string[]
   enumArray?: { label: string; value: string }[]
   enumLabel?: string[]
   enumLabelArray?: string[]
