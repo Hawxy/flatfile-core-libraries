@@ -55,20 +55,38 @@ export class Sheet<
       case 'records/change':
         const modelListeners = this.getHookListeners('change')
 
+        // Run first 3 Field hooks: 'cast', 'empty', 'value',
         await Promise.all(
           event.data.records.map(async (r: FlatfileRecord) => {
             await Promise.all(
               toPairs(this.fields).map(async ([key, field]) => {
-                return await field.routeEvents(
-                  key as string,
-                  event.fork('change', r)
-                )
+                return await field.routeEvents({
+                  key,
+                  event: event.fork('change', r),
+                  events: ['cast', 'empty', 'value'],
+                })
               })
             )
           })
         )
 
+        // Run onChange record hook
         await Promise.all(modelListeners.map((l) => l(event)))
+
+        // Run first 'validate' Field hook
+        await Promise.all(
+          event.data.records.map(async (r: FlatfileRecord) => {
+            await Promise.all(
+              toPairs(this.fields).map(async ([key, field]) => {
+                return await field.routeEvents({
+                  key,
+                  event: event.fork('change', r),
+                  events: ['validate'],
+                })
+              })
+            )
+          })
+        )
 
         break
     }

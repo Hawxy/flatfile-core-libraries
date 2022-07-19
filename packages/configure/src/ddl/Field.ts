@@ -1,4 +1,4 @@
-import { TPrimitive } from '@flatfile/orm'
+import { TPrimitive, TRecordData } from '@flatfile/orm'
 import { FlatfileRecord } from '@flatfile/hooks'
 import {
   BaseSchemaILField,
@@ -38,64 +38,51 @@ export class Field<
     this.configFactory = cb
   }
 
-  public async routeEvents<E extends FlatfileEvent<FlatfileRecord>>(
-    key: string,
+  public async routeEvents<E extends FlatfileEvent<FlatfileRecord>>({
+    key,
+    event,
+    events = Object.keys(EventNames) as (keyof typeof EventNames)[],
+  }: {
+    key: string
     event: E
-  ) {
-    let e: any
+    events?: (keyof typeof EventNames)[]
+  }) {
+    let e: FlatfileEvent<any>
     e = event.fork('cast', { value: event.data.get(key) })
-    try {
-      e = await this.pipeHookListeners('cast', e)
-    } catch (err: any) {
-      const castErrMessage = new Message(err, 'error', 'onCast')
-      this.applyHookResponseToRecord(event.data, key, undefined, castErrMessage)
-      return
-    }
-    try {
-      if (e.data.value === null) {
-        e = await this.pipeHookListeners('empty', e)
+
+    for (const eventName of events) {
+      try {
+        switch (eventName) {
+          case 'cast':
+            e = await this.pipeHookListeners(eventName, e)
+            break
+          case 'empty':
+            if (e.data.value === null) {
+              e = await this.pipeHookListeners(eventName, e)
+              this.applyHookResponseToRecord(event.data, key, e.data.value)
+            }
+            break
+          case 'value':
+            if (e.data.value !== null) {
+              e = await this.pipeHookListeners(eventName, e)
+              this.applyHookResponseToRecord(event.data, key, e.data.value)
+            }
+            break
+          case 'validate':
+            e = await this.pipeHookListeners(eventName, e)
+            this.applyHookResponseToRecord(
+              event.data,
+              key,
+              undefined,
+              e.data.messages
+            )
+            break
+        }
+      } catch (err: any) {
+        const errorMessage = new Message(err, 'error', EventNames[eventName])
+        this.applyHookResponseToRecord(event.data, key, undefined, errorMessage)
+        return
       }
-    } catch (err: any) {
-      const emptyErrMessage = new Message(err, 'error', 'onEmpty')
-      this.applyHookResponseToRecord(
-        event.data,
-        key,
-        undefined,
-        emptyErrMessage
-      )
-      return
-    }
-    try {
-      if (e.data.value !== null) {
-        e = await this.pipeHookListeners('value', e)
-      }
-    } catch (err: any) {
-      const valueErrMessage = new Message(err, 'error', 'onValue')
-      this.applyHookResponseToRecord(
-        event.data,
-        key,
-        undefined,
-        valueErrMessage
-      )
-      return
-    }
-    try {
-      this.applyHookResponseToRecord(event.data, key, e.data.value)
-      e = await this.pipeHookListeners('validate', e)
-      this.applyHookResponseToRecord(
-        event.data,
-        key,
-        undefined,
-        e.data.messages
-      )
-    } catch (err: any) {
-      const validateErrMessage = new Message(err, 'error', 'onValidate')
-      this.applyHookResponseToRecord(
-        event.data,
-        key,
-        undefined,
-        validateErrMessage
-      )
     }
   }
 
@@ -259,6 +246,13 @@ export class Message {
     public readonly level: 'error' | 'warn' | 'info' = 'info',
     public readonly stage: TRecordStageLevel
   ) {}
+}
+
+enum EventNames {
+  cast = 'onCast',
+  value = 'onValue',
+  empty = 'onEmpty',
+  validate = 'onValidate',
 }
 
 // - grouping identifier
