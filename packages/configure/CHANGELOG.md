@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.1.1
+
+### Patch Changes
+
+- 1ba90f5: Fix: Adds labels back in to Fields when exporting from SchemaIL
+
 ## 0.1.0
 
 ### Minor Changes
