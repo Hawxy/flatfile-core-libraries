@@ -88,7 +88,14 @@ export class Field<
 
   public toSchemaIL(baseSchema: SchemaILModel, key: string): SchemaILModel {
     const builtSchema = this.configFactory(baseSchema, key)
-    builtSchema.fields[key] = { ...builtSchema.fields[key], ...this.options }
+
+    const { required, unique, primary } = this.options
+    builtSchema.fields[key] = {
+      ...builtSchema.fields[key],
+      required,
+      unique,
+      primary,
+    }
     return builtSchema
   }
 
