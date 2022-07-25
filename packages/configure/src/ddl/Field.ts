@@ -229,15 +229,15 @@ export interface GenericFieldOptions {
 }
 
 export interface IFieldEvents<T> {
-  cast: (value: Dirty<T>) => Writable<Nullable<T>>
-  empty: TPrimitive | (() => Writable<Nullable<T>>)
-  compute: (value: T) => Writable<T>
+  cast: (value: Dirty<T>) => Nullable<T>
+  empty: () => T
+  compute: (value: T) => T
   validate: (value: T) => Waitable<void | Message[] | Message>
 }
 
 export type Dirty<T> = string | null | T
 export type Nullable<T> = null | T
-export type Waitable<T> = T | Promise<T>
+export type Waitable<T> = T
 export type Writable<T> = Waitable<T | Value<T>>
 
 class Value<T> {

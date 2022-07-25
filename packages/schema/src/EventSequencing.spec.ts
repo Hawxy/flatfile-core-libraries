@@ -8,6 +8,15 @@ const Constant = (rv: any) => {
   }
 }
 
+const AConstant = (rv: any) => {
+  return (...args: any[]) => {
+    return new Promise((resolve, reject) => {
+      resolve(rv);
+    });
+  }
+}
+
+
 const Undefined = Constant(undefined)
 const Null = Constant(null)
 
@@ -28,6 +37,19 @@ const parseFinite = (v: any): any => {
   //throw `${v} is not finite`
   return undefined
 }
+
+/*
+  These throw errors because they return an async function
+
+NumberField({required:false, cast:AConstant(1)})
+NumberField({required:false, validate:AConstant(1)})
+*/
+
+
+NumberField({required:false, cast:Constant(1)})
+NumberField({required:false, empty:():number => {return 1}})
+NumberField({required:false, compute:(val:number):number => {return 1}});
+NumberField({required:false, validate:Constant(1)})
 
 const BaseField = { type: 'number', label: 'a', required: true }
 describe('Field Hook ->', () => {
