@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.2.0
+
+### Minor Changes
+
+- efe44a0: @paddymulrenamed hooks onCast -> cast, onEmpty -> empty, onValue -> compute, o…6ec5414…nValidate -> validate
+
 ## 0.1.1
 
 ### Patch Changes
