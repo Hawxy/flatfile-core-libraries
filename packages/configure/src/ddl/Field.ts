@@ -12,10 +12,10 @@ import { forEachObj, isError } from 'remeda'
 import { FlatfileEvent } from '../lib/FlatfileEvent'
 
 export type TRecordStageLevel =
-  | 'onCast'
-  | 'onEmpty'
-  | 'onValue'
-  | 'onValidate'
+  | 'cast'
+  | 'empty'
+  | 'compute'
+  | 'validate'
   | 'apply'
   | 'other'
 
@@ -129,22 +129,22 @@ export class Field<
   ) {
     forEachObj.indexed(options, (cb: any, key) => {
       switch (key) {
-        case 'onCast':
+        case 'cast':
           this.on('cast', (e) => {
             return { value: cb(e.data.value, e) }
           })
           break
-        case 'onValue':
+        case 'compute':
           this.on('value', (e) => {
             return { value: cb(e.data.value, e) }
           })
           break
-        case 'onEmpty':
+        case 'empty':
           this.on('empty', (e) => {
             return { value: cb(null, e) }
           })
           break
-        case 'onValidate':
+        case 'validate':
           this.on('validate', (e) => {
             return { messages: cb(e.data.value, e) }
           })
@@ -229,10 +229,10 @@ export interface GenericFieldOptions {
 }
 
 export interface IFieldEvents<T> {
-  onCast: (value: Dirty<T>) => Writable<Nullable<T>>
-  onEmpty: TPrimitive | (() => Writable<Nullable<T>>)
-  onValue: (value: T) => Writable<T>
-  onValidate: (value: T) => Waitable<void | Message[] | Message>
+  cast: (value: Dirty<T>) => Writable<Nullable<T>>
+  empty: TPrimitive | (() => Writable<Nullable<T>>)
+  compute: (value: T) => Writable<T>
+  validate: (value: T) => Waitable<void | Message[] | Message>
 }
 
 export type Dirty<T> = string | null | T
@@ -256,10 +256,10 @@ export class Message {
 }
 
 enum EventNames {
-  cast = 'onCast',
-  value = 'onValue',
-  empty = 'onEmpty',
-  validate = 'onValidate',
+  cast = 'cast',
+  value = 'compute',
+  empty = 'empty',
+  validate = 'validate',
 }
 
 // - grouping identifier

@@ -9,7 +9,7 @@ export interface IRawRecord {
 }
 
 export type TRecordInfoLevel = 'error' | 'warn' | 'info'
-export type TRecordStageLevel = 'onCast' | 'onEmpty' | 'onValue' | 'onValidate' | 'apply' | 'other';
+export type TRecordStageLevel = 'cast' | 'empty' | 'compute' | 'validate' | 'apply' | 'other';
 export interface IRecordInfo<M extends TRecordData = TRecordData, K = keyof M> {
   level: TRecordInfoLevel
   field: K

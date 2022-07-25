@@ -32,7 +32,7 @@ describe('Unique tests ->', () => {
 
 // First sets of Workbook Tests
 describe('Field Hook ->', () => {
-  describe('onCast()', () => {
+  describe('cast()', () => {
     test('correctly casts object to default number', async () => {
       const rawData = { firstNumber: { a: 'asdf' } }
       const expectedOutput = { firstNumber: 0 }
@@ -41,7 +41,7 @@ describe('Field Hook ->', () => {
         {
           firstNumber: NumberField({
             ...BaseFieldArgs,
-            onCast: (v) => {
+            cast: (v) => {
               if (isNaN(Number(v))) {
                 return 0
               }
@@ -56,14 +56,14 @@ describe('Field Hook ->', () => {
       await TestSchema.checkRowResult({ rawData, expectedOutput })
     })
   })
-  describe('onEmpty()', () => {
+  describe('empty()', () => {
     test('correctly casts null to default number', async () => {
       const rawData = { firstNumber: null }
       const expectedOutput = { firstNumber: 0 }
 
       const TestSchema = new WorkbookTester(
         {
-          firstNumber: NumberField({ ...BaseFieldArgs, onEmpty: () => 0 }),
+          firstNumber: NumberField({ ...BaseFieldArgs, empty: () => 0 }),
         },
         {}
       )
@@ -72,7 +72,7 @@ describe('Field Hook ->', () => {
     })
   })
 
-  describe('onValue()', () => {
+  describe('compute()', () => {
     test('correctly change value', async () => {
       const rawData = { firstNumber: 100 }
       const expectedOutput = { firstNumber: 102 }
@@ -80,7 +80,7 @@ describe('Field Hook ->', () => {
         {
           firstNumber: NumberField({
             ...BaseFieldArgs,
-            onValue: (v) => v + 2,
+            compute: (v) => v + 2,
           }),
         },
         {}
@@ -89,7 +89,7 @@ describe('Field Hook ->', () => {
     })
   })
 
-  describe('onValidate()', () => {
+  describe('validate()', () => {
     test('correctly throw error message and apply to field', async () => {
       const rawData = { firstNumber: 101 }
       const message = 'too big'
@@ -97,7 +97,7 @@ describe('Field Hook ->', () => {
         {
           firstNumber: NumberField({
             ...BaseFieldArgs,
-            onValidate: (v) => {
+            validate: (v) => {
               if (v > 100) {
                 throw message
               }
@@ -134,22 +134,22 @@ describe('Record Hook ->', () => {
       await TestSchema.checkRowResult({ rawData, expectedOutput })
     })
 
-    test('onCast() + onValue() + onValidate() + onChange() expected output is correct', async () => {
+    test('cast() + compute() + validate() + onChange() expected output is correct', async () => {
       const rawData = { firstNumber: "99" }
       const expectedOutput = { firstNumber: 202 }
       const TestSchema = new WorkbookTester(
         {
           firstNumber: NumberField({
             ...BaseFieldArgs,
-            onCast: (v) => {
+            cast: (v) => {
               if (isNaN(Number(v))) {
                 return 0
               }
 
               return Number(v)
             },
-            onValue: (v) => v + 2,
-            onValidate: (v) => {
+            compute: (v) => v + 2,
+            validate: (v) => {
               if (v > 100) {
                 throw 'too big'
               }
