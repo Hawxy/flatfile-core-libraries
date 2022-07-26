@@ -88,13 +88,14 @@ export class Field<
 
   public toSchemaIL(baseSchema: SchemaILModel, key: string): SchemaILModel {
     const builtSchema = this.configFactory(baseSchema, key)
-
-    const { required, unique, primary } = this.options
+    const { required, unique, primary, description, label } = this.options
     builtSchema.fields[key] = {
       ...builtSchema.fields[key],
-      required,
-      unique,
-      primary,
+      ...(required ? { required } : {}),
+      ...(unique ? { unique } : {}),
+      ...(primary ? { primary } : {}),
+      ...(description ? { description } : {}),
+      label: label || capitalCase(key),
     }
     return builtSchema
   }
@@ -165,11 +166,7 @@ export type FieldEventRegistry<T> = {
   validate: HookContract<{ value: T }, { messages: void | Message[] | Message }>
 }
 
-export function makeField<
-  T extends any,
-  O extends Record<string, any> = {},
-  A extends [] = []
->(
+export function makeField<T extends any, O extends Record<string, any> = {}>(
   factory: (
     field: Field<T, O>
   ) => (base: SchemaILModel, key: string) => SchemaILModel
@@ -187,11 +184,12 @@ export function makeField<
     opts?: O & GenericFieldOptions & Partial<IFieldEvents<T>>
   ): Field<T, O> {
     const label = typeof labelOpts === 'string' ? labelOpts : undefined
-    const mergedOpts = (labelOpts !== 'string' ? labelOpts : opts) ?? {}
+    const mergedOpts = (typeof labelOpts !== 'string' ? labelOpts : opts) ?? {}
     const options = {
       label,
       ...mergedOpts,
     } as unknown as O
+
     const field = new Field<T, O>(options)
     const serializer = factory(field)
     field.registerSerializer(serializer)
@@ -224,6 +222,7 @@ export interface GenericFieldOptions {
    * Describe the field
    */
   description?: string
+  primary?: boolean
   required?: boolean
   unique?: boolean
 }

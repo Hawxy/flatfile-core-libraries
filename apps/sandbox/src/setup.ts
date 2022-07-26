@@ -7,21 +7,25 @@ import {
   Workbook,
 } from '@flatfile/configure'
 
-const CategoryAndBoolean = new Sheet(
-  'CategoryAndBoolean',
+const NewTemplateFromSDK = new Sheet(
+  'NewTemplateFromSDK',
   {
-    firstName: TextField({
+    firstName: TextField('First', {
       required: true,
       description: 'foo',
     }),
-    lastName: TextField(),
-    email: EmailField({
+    lastName: TextField('Last'),
+    email: EmailField('E-mail', {
       nonPublic: true,
       compute: (v) => v.toUpperCase(),
     }),
     boolean: BooleanField(),
-    selectOptions: CategoryField({
-      categories: { red: 'Red', blue: 'Blue', green: 'Green' }
+    selectOptions: CategoryField('Lots of options', {
+      categories: {
+        red: 'Red Thing',
+        blue: 'Blue Label',
+        green: 'Green is the best',
+      },
     }),
     phoneNumber: TextField(),
     startDate: TextField(),
@@ -42,6 +46,6 @@ export default new Workbook({
   name: 'Category And Boolean Onboarding',
   namespace: 'onboarding',
   sheets: {
-    CategoryAndBoolean,
+    NewTemplateFromSDK,
   },
 })
