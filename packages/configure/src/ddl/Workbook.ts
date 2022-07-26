@@ -21,23 +21,6 @@ export class Workbook {
     }
   }
 
-  // public toJSONSchema(): Array<IJsonSchema> {
-  //   return pipe(
-  //     this.options.sheets,
-  //     mapValues((m, k) => m.toJSONSchema(this.options.namespace, k)),
-  //     values
-  //   )
-  // }
-
-  // public toSchemaIL(): Array<any> {
-  //   return pipe(
-  //     this.options.sheets,
-  //     mapValues((m, k) => m.toSchemaIL(this.options.namespace, k)),
-  //     values
-  //   )
-  // }
-
-
   public async handleLegacyDataHook(payload: IHookPayload) {
     const recordBatch = new FlatfileRecords(
       payload.rows.map((r: { row: any }) => r.row)

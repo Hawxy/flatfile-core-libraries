@@ -17,6 +17,9 @@ import { toPairs } from 'remeda'
 export class Sheet<
   FC extends FieldConfig
 > extends HookProvider<ModelEventRegistry> {
+  public plugins: {
+    [name: string]: (fields: FC, records: FlatfileRecord<any>[]) => any
+  } = {}
   constructor(
     public name: string,
     public fields: FC,
@@ -47,7 +50,15 @@ export class Sheet<
     }
   }
 
-  public usePlugin(plugin: any, config: any) {}
+  public usePlugin(
+    name: string,
+    plugin: {
+      run: (fields: FieldConfig, records: FlatfileRecord<any>[]) => void
+    }
+  ) {
+    const { run } = plugin
+    this.plugins[name] = run
+  }
 
   public async routeEvents(event: FlatfileEvent<FlatfileRecords<any>>) {
     // handle record events
@@ -88,9 +99,18 @@ export class Sheet<
           })
         )
 
+        // Run check on local dataset for uniques for testing
+        if (this.plugins['test']) {
+          this.plugins.test(this.fields, event.data.records)
+        }
+
         break
     }
     // no-op other events
+  }
+
+  public get getFields(): FC {
+    return this.fields
   }
 
   public get fieldArray(): Field<any, any>[] {
