@@ -1,6 +1,4 @@
-
-export interface BaseSchemaILField {
-  type: 'string' | 'number' | 'boolean' | 'composite'
+interface BaseField {
   label: string
   field: string
   description?: string
@@ -9,27 +7,25 @@ export interface BaseSchemaILField {
   unique?: boolean
 }
 
-export interface SchemaILEnumField {
+export interface BaseSchemaILField extends BaseField {
+  type: 'string' | 'number' | 'boolean' | 'composite'
+}
+
+export interface SchemaILEnumField extends BaseField {
   type: 'enum'
-  // enum: { label: string; value: string }[]
-  // enumLabel: string[]
   labelEnum: Record<string, string>
-  label: string
-  field: string
-  description?: string
-  required?: boolean
-  primary?: boolean
-  unique?: boolean
 }
 
 export type SchemaILField = BaseSchemaILField | SchemaILEnumField
 
-
-export interface SchemaILModel<Fields extends Record<string, SchemaILField> = Record<string, SchemaILField>> {
+export interface SchemaILModel<
+  Fields extends Record<string, SchemaILField> = Record<string, SchemaILField>
+> {
   name: string
   slug: string
   namespace: string
   fields: Fields
+  required?: Array<keyof Fields | Array<keyof Fields>>
   unique?: Array<keyof Fields | Array<keyof Fields>>
   primary?: keyof Fields
 }

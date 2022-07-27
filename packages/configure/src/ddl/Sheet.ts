@@ -29,7 +29,7 @@ export class Sheet<
       onChange<CB extends FlatfileRecord<Record<keyof FC, TPrimitive>>>(
         record: CB,
         session: FlatfileSession,
-        logger: any
+        logger?: any
       ): CB
     }>
   ) {
@@ -41,10 +41,11 @@ export class Sheet<
         const batch = e.data
 
         return Promise.all(
-          batch.records.map((r: FlatfileRecord) => {
-            // @ts-ignore
-            return options.onChange(r, e.session)
-          })
+          batch.records.map(
+            (r: FlatfileRecord<Record<keyof FC, TPrimitive>>) => {
+              return options.onChange?.(r, e.session)
+            }
+          )
         )
       })
     }

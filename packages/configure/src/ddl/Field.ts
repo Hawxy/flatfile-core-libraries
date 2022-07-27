@@ -1,11 +1,6 @@
-import { TPrimitive, TRecordData } from '@flatfile/orm'
+import { TPrimitive } from '@flatfile/orm'
 import { FlatfileRecord } from '@flatfile/hooks'
-import {
-  BaseSchemaILField,
-  SchemaILEnumField,
-  SchemaILField,
-  SchemaILModel,
-} from '@flatfile/schema'
+import { SchemaILField, SchemaILModel } from '@flatfile/schema'
 import { HookContract, HookProvider } from '../lib/HookProvider'
 import { capitalCase } from 'case-anything'
 import { forEachObj, isError } from 'remeda'
@@ -89,14 +84,17 @@ export class Field<
   public toSchemaIL(baseSchema: SchemaILModel, key: string): SchemaILModel {
     const builtSchema = this.configFactory(baseSchema, key)
     const { required, unique, primary, description, label } = this.options
+
     builtSchema.fields[key] = {
       ...builtSchema.fields[key],
+      ...(description ? { description } : {}),
+      ...(primary ? { primary } : {}),
       ...(required ? { required } : {}),
       ...(unique ? { unique } : {}),
-      ...(primary ? { primary } : {}),
-      ...(description ? { description } : {}),
+
       label: label || capitalCase(key),
     }
+
     return builtSchema
   }
 
@@ -166,31 +164,38 @@ export type FieldEventRegistry<T> = {
   validate: HookContract<{ value: T }, { messages: void | Message[] | Message }>
 }
 
+/*
+ * OptionsAndEvents are Options and Events and are used to create a Field
+ */
+type OptionsAndEvents<T, O> = O & GenericFieldOptions & Partial<IFieldEvents<T>>
+
 export function makeField<T extends any, O extends Record<string, any> = {}>(
   factory: (
     field: Field<T, O>
   ) => (base: SchemaILModel, key: string) => SchemaILModel
 ) {
-  function fieldHelper(): Field<T, O>
-  function fieldHelper(
-    opts?: O & GenericFieldOptions & Partial<IFieldEvents<T>>
-  ): Field<T, O>
+  function fieldHelper(options?: OptionsAndEvents<T, O>): Field<T, O>
   function fieldHelper(
     label: string,
-    opts?: O & GenericFieldOptions & Partial<IFieldEvents<T>>
+    options?: OptionsAndEvents<T, O>
   ): Field<T, O>
   function fieldHelper(
-    labelOpts?: string | O,
-    opts?: O & GenericFieldOptions & Partial<IFieldEvents<T>>
+    labelOptions?: string | O,
+    options?: OptionsAndEvents<T, O>
   ): Field<T, O> {
-    const label = typeof labelOpts === 'string' ? labelOpts : undefined
-    const mergedOpts = (typeof labelOpts !== 'string' ? labelOpts : opts) ?? {}
-    const options = {
-      label,
-      ...mergedOpts,
-    } as unknown as O
+    // if labelOptions is a string, then it is the label
+    const label = typeof labelOptions === 'string' ? labelOptions : undefined
+    // if labelOptions is an object, then it is the options
+    const labelOrOptions =
+      (typeof labelOptions !== 'string' ? labelOptions : options) ?? {}
 
-    const field = new Field<T, O>(options)
+    // merge the label and options
+    const mergedOptions = {
+      label,
+      ...labelOrOptions,
+    }
+
+    const field = new Field<T, O>(mergedOptions as unknown as O)
     const serializer = factory(field)
     field.registerSerializer(serializer)
     return field
@@ -209,7 +214,6 @@ export function setProp(
     fields: {
       ...base.fields,
       [key]: {
-        label: capitalCase(key),
         type: 'string',
         ...prop,
       } as SchemaILField,
@@ -260,6 +264,3 @@ enum EventNames {
   empty = 'empty',
   validate = 'validate',
 }
-
-// - grouping identifier
-// - actions (callbacks

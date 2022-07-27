@@ -1,8 +1,6 @@
 import {
   SchemaILModel,
   SchemaILField,
-  SchemaILEnumField,
-  BaseSchemaILField,
 } from './types/SchemaIL'
 import { IJsonSchema, IJsonSchemaProperty } from './types/JsonSchema'
 import {
@@ -13,7 +11,6 @@ import {
   mapValues,
   pick,
   pipe,
-  toPairs,
   values,
 } from 'remeda'
 
