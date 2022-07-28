@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.3.0
+
+### Minor Changes
+
+- 744bc73: Make field hooks synchronous
+
 ## 0.2.0
 
 ### Minor Changes
