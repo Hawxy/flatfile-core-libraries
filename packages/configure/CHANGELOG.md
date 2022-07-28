@@ -1,5 +1,13 @@
 # @flatfile/configure
 
+## 0.3.1
+
+### Patch Changes
+
+- 7684411: fix: declaring label and options on a field
+- Updated dependencies [7684411]
+  - @flatfile/schema@0.1.1
+
 ## 0.3.0
 
 ### Minor Changes
