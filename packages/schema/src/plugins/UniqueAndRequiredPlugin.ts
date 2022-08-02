@@ -31,7 +31,7 @@ export class UniqueAndRequiredPlugin {
       // add to unique fields if not already in there
       for (let uniqueFieldKey in uniques) {
         const value = String(record.get(uniqueFieldKey))
-        if (!!uniques[uniqueFieldKey][value]) {
+        if (uniques[uniqueFieldKey][value]) {
           uniques[uniqueFieldKey][value].push(index)
         } else {
           // only add to uniques array if value is not null || undefined || ''
