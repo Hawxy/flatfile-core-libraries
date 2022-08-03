@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/simple-mock": "^0.8.2",
+    "boxen": "^7.0.0",
     "chalk": "^4.1.2"
   }
 }

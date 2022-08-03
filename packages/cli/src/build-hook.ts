@@ -21,6 +21,8 @@ export async function buildPayloadForLambda(
     })
 
     ora(`Schema created with id ${chalk.white.bold(newSchema.id)}`).succeed()
+
+    return newSchema.id
   } catch (err) {
     console.log(chalk.red(err))
   }

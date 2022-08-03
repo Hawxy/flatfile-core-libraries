@@ -2,11 +2,11 @@ import { buildPayloadForLambda } from './build-hook'
 import { GraphQLClient } from 'graphql-request'
 import { MUTATION_UPSERT_SCHEMA } from './MUTATION_UPSERT_SCHEMA'
 
-export async function sendSchemasToServer(
+export const sendSchemasToServer = async (
   client: GraphQLClient,
   buildFile: string,
   options: { team: string }
-) {
+): Promise<number[]> => {
   const config = require(buildFile).default
   const { sheets, namespace } = config.options
 
@@ -33,7 +33,9 @@ export async function sendSchemasToServer(
     })
   )
 
-  newSchemaVersions.map((schemaId) => {
-    buildPayloadForLambda(client, schemaId, buildFile)
-  })
+  return Promise.all(
+    newSchemaVersions.map(async (schemaId) => {
+      return await buildPayloadForLambda(client, schemaId, buildFile)
+    })
+  )
 }

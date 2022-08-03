@@ -7,14 +7,17 @@ import { sendSchemasToServer } from './send-schemas'
  * @param buildFile
  * @param options
  */
-export const deploy = async (buildFile: string, options: IDeployOptions) => {
+export const deploy = async (
+  buildFile: string,
+  options: IDeployOptions
+): Promise<number[]> => {
   const client = new GraphQLClient(`${options.apiUrl}/graphql`, {
     headers: {
       Authorization: `Bearer ${options.apiKey}`,
     },
   })
 
-  await sendSchemasToServer(client, buildFile, options)
+  return sendSchemasToServer(client, buildFile, options)
 }
 
 interface IDeployOptions {

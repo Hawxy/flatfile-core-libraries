@@ -7,6 +7,8 @@ import packageJSON from '../package.json'
 import dotenv from 'dotenv'
 import { generateAccessToken } from './auth/acessToken'
 import chalk from 'chalk'
+import { info } from './ui/info'
+import { summary } from './publish/summary'
 
 dotenv.config()
 
@@ -22,7 +24,7 @@ program
   .option('--api-url <url>', 'the API url to use')
   .action(async (file, options) => {
     const teamId = options.team || process.env.FLATFILE_TEAM_ID
-    const apiUrl =
+    const apiUrl: string =
       options.apiUrl ||
       process.env.FLATFILE_API_URL ||
       'https://api.us.flatfile.io'
@@ -38,11 +40,11 @@ program
       process.exit(1)
     }
 
-    const token = await generateAccessToken({ apiUrl })
-
     const outDir = path.join(process.cwd(), '.flatfile')
 
     try {
+      info('Build schema')
+
       await build({
         config: false,
         entry: { build: file },
@@ -57,13 +59,21 @@ program
       process.exit(1)
     }
 
+    info('Generate token')
+    const token = await generateAccessToken({ apiUrl })
+
+    info('Deploy schema to Flatfile')
+
     try {
       const buildFile = path.join(outDir, 'build.js')
-      await deploy(buildFile, {
+      const schemaIds = await deploy(buildFile, {
         apiUrl,
         apiKey: token,
         team: teamId,
       })
+
+      console.log(`🎉 Deploy successful! 🎉`)
+      summary({ teamId, apiURL: apiUrl, schemaId: schemaIds[0] })
     } catch (e) {
       console.log('Deploy failed')
       console.log(chalk.red(e))
