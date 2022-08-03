@@ -51,7 +51,9 @@ describe('FlatfileRecord', () => {
 
     const res = person.toJSON()
     const info = res.info.find((message) => message.level === 'info')
-    const comment = res.info.find((message) => message.level === 'info' && message.field === 'age')
+    const comment = res.info.find(
+      (message) => message.level === 'info' && message.field === 'age'
+    )
     const error = res.info.find((message) => message.level === 'error')
     const nameWarning = res.info.find(
       (message) => message.level === 'warn' && message.field === 'name'
@@ -64,35 +66,35 @@ describe('FlatfileRecord', () => {
       field: 'name',
       message: 'Rad name',
       level: 'info',
-      stage: 'other'
+      stage: 'other',
     })
 
     expect(comment).toEqual({
       field: 'age',
       message: 'What a name',
       level: 'info',
-      stage: 'other'
+      stage: 'other',
     })
 
     expect(error).toEqual({
       field: 'age',
       message: 'So immature',
       level: 'error',
-      stage: 'other'
+      stage: 'other',
     })
 
     expect(nameWarning).toEqual({
       field: 'name',
       message: 'Name too rad, age too immature',
       level: 'warn',
-      stage: 'other'
+      stage: 'other',
     })
 
     expect(ageWarning).toEqual({
       field: 'age',
       message: 'Name too rad, age too immature',
       level: 'warn',
-      stage: 'other'
+      stage: 'other',
     })
   })
 

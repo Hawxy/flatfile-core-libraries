@@ -17,7 +17,9 @@ const rawRecords = [
 describe('FlatfileRecords', () => {
   it('should transform raw records to records', () => {
     const people = new FlatfileRecords(rawRecords)
-    const peopleToRecords = rawRecords.map((rawRecord) => new FlatfileRecord(rawRecord))
+    const peopleToRecords = rawRecords.map(
+      (rawRecord) => new FlatfileRecord(rawRecord)
+    )
 
     expect(people.records).toEqual(peopleToRecords)
   })
@@ -25,7 +27,9 @@ describe('FlatfileRecords', () => {
   it('should transform records to json', () => {
     const people = new FlatfileRecords(rawRecords)
     // manually generate set of records
-    const peopleToRecords = rawRecords.map((rawRecord) => new FlatfileRecord(rawRecord))
+    const peopleToRecords = rawRecords.map(
+      (rawRecord) => new FlatfileRecord(rawRecord)
+    )
     // manually generate set of json records
     const peopleToJson = peopleToRecords.map((record) => record.toJSON())
 

@@ -4,7 +4,7 @@ import {
   IRecordInfo,
   TPrimitive,
   TRecordData,
-  TRecordStageLevel
+  TRecordStageLevel,
 } from '../types/Record'
 
 export class FlatfileRecord<M extends TRecordData = TRecordData> {
@@ -93,7 +93,7 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
           field,
           message,
           level,
-	  stage
+          stage,
         })
       }
     })

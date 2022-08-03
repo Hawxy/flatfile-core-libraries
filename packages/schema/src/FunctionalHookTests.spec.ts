@@ -75,7 +75,9 @@ describe('Unique tests ->', () => {
 
     const expectedDuplicates = null
 
-    expect(await TestSchema.checkForDuplicates(dataWithDuplicates)).toBe(expectedDuplicates)
+    expect(await TestSchema.checkForDuplicates(dataWithDuplicates)).toBe(
+      expectedDuplicates
+    )
   })
 })
 

@@ -1,4 +1,9 @@
-import { ELevel, FlatfileRecord, IRecordInfo, TPrimitive } from './FlatfileRecord'
+import {
+  ELevel,
+  FlatfileRecord,
+  IRecordInfo,
+  TPrimitive,
+} from './FlatfileRecord'
 
 export class RecordMutation {
   private $edits: Record<string, TPrimitive> = {}
@@ -76,7 +81,11 @@ export class RecordMutation {
    * @param message
    * @param level
    */
-  public addMessage(fields: string | string[], message: string, level: IRecordInfo['level']): this {
+  public addMessage(
+    fields: string | string[],
+    message: string,
+    level: IRecordInfo['level']
+  ): this {
     fields = Array.isArray(fields) ? fields : [fields]
 
     fields.forEach((key) => {
@@ -101,7 +110,11 @@ export class RecordMutation {
     return {
       _id: this.recordId,
       data: this.$edits,
-      messages: this.$info.map((i) => ({ error: i.level, key: i.key, message: i.message })),
+      messages: this.$info.map((i) => ({
+        error: i.level,
+        key: i.key,
+        message: i.message,
+      })),
     }
   }
 }

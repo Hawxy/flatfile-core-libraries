@@ -5,10 +5,14 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testRegex: '.*\\.spec\\.[tj]s$',
-  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/', '<rootDir>/coverage/'],
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/dist/',
+    '<rootDir>/coverage/',
+  ],
   moduleFileExtensions: ['ts', 'js', 'json'],
   moduleNameMapper: {
-//    '@flatfile/api/(.*)': '<rootDir>/src/$1',
+    //    '@flatfile/api/(.*)': '<rootDir>/src/$1',
     '@flatfile/platform-sdk/(.*)': '<rootDir>/src/$1',
   },
   transform: {
@@ -27,5 +31,8 @@ module.exports = {
   //   },
   // },
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
-  coveragePathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/src/types/'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/src/types/',
+  ],
 }

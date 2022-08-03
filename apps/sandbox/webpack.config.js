@@ -1,23 +1,23 @@
-const nodeExternals = require("webpack-node-externals");
+const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
-  mode: "development",
-  entry: "./src/setup.ts",
+  mode: 'development',
+  entry: './src/setup.ts',
   externalsPresets: { node: true },
   output: {
-    filename: "hook.js",
+    filename: 'hook.js',
     library: {
-      export: "default",
+      export: 'default',
       name: 'hook',
       type: 'umd',
     },
   },
-  target: "node",
+  target: 'node',
   module: {
     rules: [
       {
         test: /\.ts?$/,
-        loader: "ts-loader",
+        loader: 'ts-loader',
         options: {
           transpileOnly: true,
         },
@@ -25,9 +25,11 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"],
+    extensions: ['.ts', '.tsx', '.js'],
   },
-  externals: [nodeExternals({
-    allowlist: ['case-anything']
-  })],
-};
+  externals: [
+    nodeExternals({
+      allowlist: ['case-anything'],
+    }),
+  ],
+}

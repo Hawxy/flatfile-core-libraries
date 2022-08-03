@@ -1,4 +1,3 @@
-
 type FunctionDescriptor<T> = [T, string & jest.FunctionPropertyNames<T>]
 
 const LAMBDAS: ((...args: any[]) => any)[] = []
@@ -17,4 +16,4 @@ function pushLambdas(initialArgs: any[]) {
   }
   return initialArgs
 }
-export {};
+export {}

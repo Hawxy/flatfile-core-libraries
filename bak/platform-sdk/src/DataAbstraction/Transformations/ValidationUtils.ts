@@ -2,7 +2,7 @@
 import * as EmailValidator from 'email-validator'
 import parsePhoneNumber from 'libphonenumber-js'
 
-const  FLATFILE_ALLOWED_EMAIL_DOMAINS:string = '';
+const FLATFILE_ALLOWED_EMAIL_DOMAINS: string = ''
 
 /**
  * Validate an email address and throw a GraphQL error if it's not valid.
@@ -13,12 +13,12 @@ const  FLATFILE_ALLOWED_EMAIL_DOMAINS:string = '';
  */
 export function validateEmailOrFail(email: string, field = 'email'): string {
   if (!EmailValidator.validate(email)) {
-      throw new Error(`'${email}' is not a valid email address`)// , {invalidArgs: [field],})
+    throw new Error(`'${email}' is not a valid email address`) // , {invalidArgs: [field],})
   }
   if (FLATFILE_ALLOWED_EMAIL_DOMAINS !== '') {
     const [, domain] = email.split('@')
     if (FLATFILE_ALLOWED_EMAIL_DOMAINS.split(',').indexOf(domain) === -1) {
-	throw new Error(`Domain '${domain}' is not allowed`) // , {invalidArgs: [field],})
+      throw new Error(`Domain '${domain}' is not allowed`) // , {invalidArgs: [field],})
     }
   }
   return email
@@ -37,7 +37,7 @@ export const validateEmojisOrFail = (value: string, field: string) => {
       value
     )
   ) {
-      throw new Error(`The value '${value}' is invalid`)// , {invalidArgs: [field],})
+    throw new Error(`The value '${value}' is invalid`) // , {invalidArgs: [field],})
   }
 }
 
@@ -59,7 +59,10 @@ export const validatePhoneNumber = (phone: string): any => {
     : strippedPhoneNumber
   let phoneNumber
 
-  if ((phoneNumLength === 11 && isFormattedInternational) || phoneNumLength === 10) {
+  if (
+    (phoneNumLength === 11 && isFormattedInternational) ||
+    phoneNumLength === 10
+  ) {
     // assume US phone number
     phoneNumber = parsePhoneNumber(numToValidate, 'US')
   } else {

@@ -1,8 +1,7 @@
 import { IPayload } from '../types/IPayload'
 
 export class FlatfileSession {
-  constructor(private payload: IPayload) {
-  }
+  constructor(private payload: IPayload) {}
 
   get workspaceId() {
     return this.payload.workspaceId
