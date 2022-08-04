@@ -1,5 +1,15 @@
 # @flatfile/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- 8732a95: Adds passing the environment slug along with deployments and schemas
+
+### Patch Changes
+
+- 4e9f937: organize publish steps, provide summary
+
 ## 0.1.0
 
 ### Minor Changes
