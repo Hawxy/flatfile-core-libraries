@@ -24,6 +24,7 @@ program
   .option('--api-url <url>', 'the API url to use')
   .action(async (file, options) => {
     const teamId = options.team || process.env.FLATFILE_TEAM_ID
+    const env = options.env || process.env.FLATFILE_ENV
     const apiUrl: string =
       options.apiUrl ||
       process.env.FLATFILE_API_URL ||
@@ -70,10 +71,11 @@ program
         apiUrl,
         apiKey: token,
         team: teamId,
+        env,
       })
 
       console.log(`🎉 Deploy successful! 🎉`)
-      summary({ teamId, apiURL: apiUrl, schemaId: schemaIds[0] })
+      summary({ teamId, apiURL: apiUrl, schemaId: schemaIds[0], env })
     } catch (e) {
       console.log('Deploy failed')
       console.log(chalk.red(e))

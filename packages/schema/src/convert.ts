@@ -1,7 +1,4 @@
-import {
-  SchemaILModel,
-  SchemaILField,
-} from './types/SchemaIL'
+import { SchemaILModel, SchemaILField } from './types/SchemaIL'
 import { IJsonSchema, IJsonSchemaProperty } from './types/JsonSchema'
 import {
   filter,

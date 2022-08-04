@@ -7,7 +7,8 @@ import ora from 'ora'
 export async function buildPayloadForLambda(
   client: GraphQLClient,
   schemaId: number,
-  buildFile: string
+  buildFile: string,
+  deploymentId: string
 ) {
   try {
     const data = fs.readFileSync(buildFile, 'utf8')
@@ -18,6 +19,7 @@ export async function buildPayloadForLambda(
       name: 'Datahook From SDK',
       schemaId,
       code: data,
+      deploymentId,
     })
 
     ora(`Schema created with id ${chalk.white.bold(newSchema.id)}`).succeed()

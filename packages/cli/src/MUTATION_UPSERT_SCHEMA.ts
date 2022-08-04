@@ -8,6 +8,8 @@ export const MUTATION_UPSERT_SCHEMA = gql`
     $jsonSchema: JsonSchemaDto
     $name: String
     $previewFieldKey: String
+    $deploymentId: String
+    $environment: String
   ) {
     upsertSchema(
       slug: $slug
@@ -16,8 +18,11 @@ export const MUTATION_UPSERT_SCHEMA = gql`
       jsonSchema: $jsonSchema
       name: $name
       previewFieldKey: $previewFieldKey
+      deploymentId: $deploymentId
+      environment: $environment
     ) {
       id
+      slug
     }
   }
 `

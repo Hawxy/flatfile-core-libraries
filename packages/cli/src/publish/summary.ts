@@ -7,7 +7,7 @@ export const summary = ({
   teamId,
   schemaId,
   apiURL,
-  env = 'prod',
+  env = 'test',
 }: PublishSchema) => {
   const url = schemaURL({
     teamId,

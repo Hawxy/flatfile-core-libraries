@@ -1,6 +1,8 @@
 export type TPrimitive = string | boolean | number | null
 
-export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = { [key: string]: T }
+export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = {
+  [key: string]: T
+}
 
 export interface IRawRecord {
   rawData: TRecordData
@@ -8,7 +10,14 @@ export interface IRawRecord {
 }
 
 export type TRecordInfoLevel = 'error' | 'warn' | 'info'
-export type TRecordStageLevel = 'cast' | 'empty' | 'required' | 'compute' | 'validate' | 'apply' | 'other';
+export type TRecordStageLevel =
+  | 'cast'
+  | 'empty'
+  | 'required'
+  | 'compute'
+  | 'validate'
+  | 'apply'
+  | 'other'
 export interface IRecordInfo<M extends TRecordData = TRecordData, K = keyof M> {
   level: TRecordInfoLevel
   field: K
@@ -21,7 +30,6 @@ export interface IRawRecordWithInfo<M extends TRecordData = TRecordData> {
   info: IRecordInfo<M>[]
 }
 
-
 export interface IPayload {
   workspaceId: string
   workbookId: string
@@ -33,8 +41,6 @@ export interface IPayload {
   envSignature?: string
   rows: IRawRecord[]
 }
-
-
 
 export class FlatfileRecord<M extends TRecordData = TRecordData> {
   private readonly data: M

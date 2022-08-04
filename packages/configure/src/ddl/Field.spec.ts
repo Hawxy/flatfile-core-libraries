@@ -42,19 +42,22 @@ describe('NumberField tests ->', () => {
   })
 })
 
-
 describe('OptionField tests ->', () => {
   test('toSchemaIL works', () => {
-    expect(OptionField({label: 'Custom Label', options: {'foo': 'Foo', 'bar': 'Display label for bar'}}).toSchemaILField('option_field')).toMatchObject({
+    expect(
+      OptionField({
+        label: 'Custom Label',
+        options: { foo: 'Foo', bar: 'Display label for bar' },
+      }).toSchemaILField('option_field')
+    ).toMatchObject({
       description: '',
       field: 'option_field',
       label: 'Custom Label',
       primary: false,
       required: false,
-      labelEnum: {'foo': 'Foo', 'bar': 'Display label for bar'},
+      labelEnum: { foo: 'Foo', bar: 'Display label for bar' },
       type: 'enum',
       unique: false,
     })
-
   })
 })

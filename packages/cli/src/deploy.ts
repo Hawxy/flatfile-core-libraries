@@ -24,4 +24,5 @@ interface IDeployOptions {
   apiUrl: string
   apiKey: string
   team: string
+  env: string
 }

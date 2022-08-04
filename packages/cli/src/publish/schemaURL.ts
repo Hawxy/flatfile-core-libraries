@@ -4,12 +4,12 @@ export const schemaURL = ({ teamId, schemaId, apiURL, env }: PublishSchema) => {
   const { hostname } = new URL(apiURL)
 
   if (hostname === 'localhost') {
-    return `http://localhost:8080/a/${teamId}/env/prod/templates/${schemaId}`
+    return `http://localhost:8080/a/${teamId}/env/${env}/templates/${schemaId}`
   }
 
   // onprem follows a different url pattern than all others
   if (hostname === 'onprem.flatfile.com') {
-    return `https://onprem.flatfile.com/a/${teamId}/env/prod/templates/${schemaId}`
+    return `https://onprem.flatfile.com/a/${teamId}/env/${env}/templates/${schemaId}`
   }
 
   const region = hostname.split('.')[1]

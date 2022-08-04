@@ -8,6 +8,7 @@ export const MUTATION_UPSERT_DATAHOOK = gql`
     $code: String
     $packageJSON: String
     $archived: Boolean
+    $deploymentId: String
   ) {
     upsertDataHook(
       name: $name
@@ -16,6 +17,7 @@ export const MUTATION_UPSERT_DATAHOOK = gql`
       description: $description
       code: $code
       packageJSON: $packageJSON
+      deploymentId: $deploymentId
     ) {
       schema {
         id
