@@ -1,11 +1,40 @@
-import {
-  IRawRecord,
-  IRawRecordWithInfo,
-  IRecordInfo,
-  TPrimitive,
-  TRecordData,
-  TRecordStageLevel,
-} from '../types/Record'
+export type TPrimitive = string | boolean | number | null
+
+export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = { [key: string]: T }
+
+export interface IRawRecord {
+  rawData: TRecordData
+  rowId: number
+}
+
+export type TRecordInfoLevel = 'error' | 'warn' | 'info'
+export type TRecordStageLevel = 'cast' | 'empty' | 'required' | 'compute' | 'validate' | 'apply' | 'other';
+export interface IRecordInfo<M extends TRecordData = TRecordData, K = keyof M> {
+  level: TRecordInfoLevel
+  field: K
+  message: string
+  stage: TRecordStageLevel
+}
+
+export interface IRawRecordWithInfo<M extends TRecordData = TRecordData> {
+  row: IRawRecord
+  info: IRecordInfo<M>[]
+}
+
+
+export interface IPayload {
+  workspaceId: string
+  workbookId: string
+  schemaId: number
+  schemaSlug: string
+  uploads: string[]
+  endUser?: any // TODO
+  env?: Record<string, string | boolean | number>
+  envSignature?: string
+  rows: IRawRecord[]
+}
+
+
 
 export class FlatfileRecord<M extends TRecordData = TRecordData> {
   private readonly data: M

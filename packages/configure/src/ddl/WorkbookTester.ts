@@ -7,19 +7,24 @@ import {
   IHookPayload,
   Message,
 } from '@flatfile/configure'
+
 import {
   IRawRecordWithInfo,
   IRecordInfo,
   TPrimitive,
   TRecordData,
 } from '@flatfile/hooks'
-import { UniqueAndRequiredPlugin } from './plugins/UniqueAndRequiredPlugin'
+import { SheetOptions } from './Sheet'
+//import { UniqueAndRequiredPlugin } from './plugins/UniqueAndRequiredPlugin'
 
 export class WorkbookTester {
   public workbook
-  constructor(public readonly fields: any, public readonly hooks: any) {
-    const TestSheet = new Sheet('test', fields, hooks)
-    TestSheet.usePlugin('test', new UniqueAndRequiredPlugin())
+  constructor(
+    public readonly fields: any,
+    public readonly passedOptions: Partial<SheetOptions<any>>
+  ) {
+    const TestSheet = new Sheet('test', fields, passedOptions)
+    //TestSheet.usePlugin('test', new UniqueAndRequiredPlugin())
 
     const TestWorkbook = new Workbook({
       name: `Test Workbook`,
@@ -244,7 +249,7 @@ export class FieldTester {
 
   public async matchFieldMessage(
     inputVal: any,
-    expectedMessage: Message
+    expectedMessage: Message | boolean
   ): Promise<void> {
     const targets = Object.keys(this.workbook.options.sheets)
     const rawData = { a: inputVal }
@@ -254,6 +259,11 @@ export class FieldTester {
     } as IHookPayload
     const result = await this.workbook.handleLegacyDataHook(formattedpayload)
 
+    if (expectedMessage === false) {
+      //in this case we are expecting no messages
+      expect(result[0].info[0]).toBe(undefined)
+      return
+    }
     expect(expectedMessage).toBeTruthy()
     expectedMessage && expect(result[0].info[0]).toMatchObject(expectedMessage)
   }

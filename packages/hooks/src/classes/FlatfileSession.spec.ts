@@ -1,5 +1,4 @@
-import { IPayload } from '../types/IPayload'
-import { IRawRecord } from '../types/Record'
+import { IPayload, IRawRecord } from './FlatfileRecord'
 import { FlatfileSession } from './FlatfileSession'
 
 const rawRecords: IRawRecord[] = [

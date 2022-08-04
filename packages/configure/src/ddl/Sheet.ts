@@ -1,125 +1,152 @@
-import { HookContract, HookProvider } from '../lib/HookProvider'
-import { TPrimitive } from '@flatfile/orm'
-import {
-  FlatfileRecord,
-  FlatfileRecords,
-  FlatfileSession,
-} from '@flatfile/hooks'
-import { FlatfileEvent } from '../lib/FlatfileEvent'
-import { Field } from './Field'
+import { FlatfileRecord, FlatfileRecords } from '@flatfile/hooks'
 import {
   IJsonSchema,
   SchemaILModel,
   SchemaILToJsonSchema,
 } from '@flatfile/schema'
-import { toPairs } from 'remeda'
 
-export class Sheet<
-  FC extends FieldConfig
-> extends HookProvider<ModelEventRegistry> {
+import { Field } from './Field'
+import { toPairs } from 'remeda'
+import { isFullyPresent } from '../utils/isFullyPresent'
+
+type Unique = {
+  [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
+}
+export class UniqueAndRequiredPlugin {
+  public run(fields: FieldConfig, records: FlatfileRecord<any>[]): void {
+    const uniques: Unique = {} as Unique
+
+    const requiredFields: Extract<keyof FieldConfig, string>[] = []
+
+    // build initial uniques and requiredFields
+    for (let x in fields) {
+      if (fields[x].options.unique === true) {
+        uniques[x] = {}
+      }
+      if (fields[x].options.required === true) {
+        requiredFields.push(x)
+      }
+    }
+
+    records.map((record, index) => {
+      // check required fields and add error if missing
+      requiredFields.forEach((field) => {
+        const value = record.get(field)
+        if (!isFullyPresent(value)) {
+          record.addError(field, 'Required Value')
+        }
+      })
+
+      // add to unique fields if not already in there
+      for (let uniqueFieldKey in uniques) {
+        const value = String(record.get(uniqueFieldKey))
+        if (!!uniques[uniqueFieldKey][value]) {
+          uniques[uniqueFieldKey][value].push(index)
+        } else {
+          // only add to uniques array if value is not null || undefined
+          if (isFullyPresent(value)) {
+            uniques[uniqueFieldKey][value] = [index]
+          }
+        }
+      }
+    })
+
+    // add errors for unique fields
+    for (let uniqueFieldKey in uniques) {
+      for (let value in uniques[uniqueFieldKey]) {
+        if (uniques[uniqueFieldKey][value].length > 1) {
+          const indexes = uniques[uniqueFieldKey][value]
+          indexes.forEach((index) => {
+            records[index].addError(uniqueFieldKey, 'Value must be unique')
+          })
+        }
+      }
+    }
+  }
+}
+
+export type RecordsComputeType = (
+  records: FlatfileRecords<any>
+) => Promise<void>
+
+export const DEFAULT_RECORDS_COMPUTE: RecordsComputeType = async (
+  records: FlatfileRecords<any>
+) => {}
+
+export interface SheetOptions<FC> {
+  allowCustomFields: boolean
+  readOnly: boolean
+  recordCompute(record: FlatfileRecord<any>, logger?: any): void
+  asyncRecordsCompute: RecordsComputeType
+}
+
+export class Sheet<FC extends FieldConfig> {
   public plugins: {
     [name: string]: (fields: FC, records: FlatfileRecord<any>[]) => any
   } = {}
+  public options: SheetOptions<FC> = {
+    allowCustomFields: true,
+    readOnly: false,
+    recordCompute(): void {},
+    asyncRecordsCompute: DEFAULT_RECORDS_COMPUTE,
+  }
+
   constructor(
     public name: string,
     public fields: FC,
-    public options?: Partial<{
-      allowCustomFields: boolean
-      readOnly: boolean
-      onChange<CB extends FlatfileRecord<Record<keyof FC, TPrimitive>>>(
-        record: CB,
-        session: FlatfileSession,
-        logger?: any
-      ): CB
-    }>
+    public passedOptions?: Partial<SheetOptions<FC>>
   ) {
-    super()
-
-    if (options?.onChange) {
-      // @ts-ignore
-      this.on('change', (e) => {
-        const batch = e.data
-
-        return Promise.all(
-          batch.records.map(
-            (r: FlatfileRecord<Record<keyof FC, TPrimitive>>) => {
-              return options.onChange?.(r, e.session)
-            }
-          )
-        )
-      })
+    if (passedOptions) {
+      Object.assign(this.options, passedOptions)
     }
   }
 
-  public usePlugin(
-    name: string,
-    plugin: {
-      run: (fields: FieldConfig, records: FlatfileRecord<any>[]) => void
-    }
-  ) {
-    const { run } = plugin
-    this.plugins[name] = run
-  }
-
-  public async routeEvents(event: FlatfileEvent<FlatfileRecords<any>>) {
-    // handle record events
-    switch (event.name) {
-      case 'records/change':
-        const modelListeners = this.getHookListeners('change')
-
-        // Run first 3 Field hooks: 'cast', 'empty', 'value',
-        await Promise.all(
-          event.data.records.map(async (r: FlatfileRecord) => {
-            await Promise.all(
-              toPairs(this.fields).map(async ([key, field]) => {
-                return await field.routeEvents({
-                  key,
-                  event: event.fork('change', r),
-                  events: ['cast', 'empty', 'value'],
-                })
-              })
-            )
-          })
-        )
-
-        // Run onChange record hook
-        await Promise.all(modelListeners.map((l) => l(event)))
-
-        // Run first 'validate' Field hook
-        await Promise.all(
-          event.data.records.map(async (r: FlatfileRecord) => {
-            await Promise.all(
-              toPairs(this.fields).map(async ([key, field]) => {
-                return await field.routeEvents({
-                  key,
-                  event: event.fork('change', r),
-                  events: ['validate'],
-                })
-              })
-            )
-          })
-        )
-
-        // Run check on local dataset for uniques for testing
-        if (this.plugins['test']) {
-          this.plugins.test(this.fields, event.data.records)
+  public async runProcess(records: FlatfileRecords<any>, logger: any) {
+    records.records.map((record: FlatfileRecord) => {
+      toPairs(this.fields).map(([key, field]) => {
+        const origVal = record.get(key)
+        const [newVal, message] = field.computeToValue(origVal)
+        if (newVal !== undefined) {
+          record.set(key, newVal)
         }
+        if (message) {
+          record.pushInfoMessage(
+            key,
+            message.message,
+            message.level,
+            message.stage
+          )
+        }
+        return record
+      })
+    })
 
-        break
+    records.records.map(async (record: FlatfileRecord) => {
+      this.options.recordCompute(record, logger) //, session, logger)
+    })
+
+    // Run recordCompute record hook
+    if (this.options.asyncRecordsCompute !== DEFAULT_RECORDS_COMPUTE) {
+      await this.options.asyncRecordsCompute(records)
     }
-    // no-op other events
-  }
 
-  public get getFields(): FC {
-    return this.fields
-  }
+    records.records.map(async (record: FlatfileRecord) => {
+      toPairs(this.fields).map(async ([key, field]) => {
+        const origVal = record.get(key)
+        const messages = field.validate(origVal)
+        if (messages) {
+          messages.map((m) => {
+            record.addError(key, m.message)
+          })
+        }
+      })
+    })
 
-  public get fieldArray(): Field<any, any>[] {
-    const out = []
-    for (const key in this.fields) {
-      out.push(this.fields[key])
+    // Checks if running on Lambda based on if the logger is defined
+    if (!logger) {
+      const testPlugin = new UniqueAndRequiredPlugin()
+      testPlugin.run(this.fields, records.records)
     }
-    return out
   }
 
   public toSchemaIL(namespace: string, slug: string): SchemaILModel {
@@ -131,7 +158,7 @@ export class Sheet<
     }
 
     for (const key in this.fields) {
-      base = this.fields[key].toSchemaIL(base, key)
+      base.fields[key] = this.fields[key].toSchemaILField(key)
     }
     return base
   }
@@ -142,18 +169,3 @@ export class Sheet<
 }
 
 export type FieldConfig = Record<string, Field<any, any>>
-
-export type ModelEventRegistry = {
-  change: HookContract<FlatfileRecords<any>, void>
-}
-
-// fieldA: {
-//   hooks: [
-//     ['transform', 'package-a@1.01', 'addressCleanUp'],
-//     ['cast', 'runtime', '8y9843hyiouahsdf'],
-//     ['transform', 'runtime', '8y9843hyiouahsdf', ['parallel', 'high-cpu', 'high-memory', 'lazy']],
-// -> HighPerformanceLambda
-// ->
-//     ['validate', 'runtime', '8y9843hyiouahsdf'],
-//   ]
-// }

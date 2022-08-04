@@ -1,4 +1,7 @@
-import { SchemaILModel, SchemaILField } from './types/SchemaIL'
+import {
+  SchemaILModel,
+  SchemaILField,
+} from './types/SchemaIL'
 import { IJsonSchema, IJsonSchemaProperty } from './types/JsonSchema'
 import {
   filter,
@@ -71,6 +74,7 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
           'field',
           'enum',
           'enumLabel',
+          'description',
         ])
       )
     ),

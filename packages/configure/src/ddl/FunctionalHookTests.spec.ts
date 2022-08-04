@@ -1,5 +1,6 @@
 import { NumberField } from '@flatfile/configure'
 import { WorkbookTester } from './WorkbookTester'
+import { FlatfileRecord, FlatfileRecords } from '@flatfile/hooks'
 
 /*
   This test file is supposed to look like a traditional jest test, it is used for developers of the SchemaIL, FlatfileDDL, and Hook runtimes.
@@ -36,8 +37,8 @@ describe('Unique tests ->', () => {
     const dataWithDuplicates = [
       { a: 1, b: null, c: 100 },
       { a: 1, b: 3, c: 100 },
-      { a: '', b: undefined, c: 100 },
-      { a: 2, b: '', c: 100 },
+      { a: null, b: 8, c: 100 },
+      { a: 2, b: 9, c: 100 },
       { a: 1, b: 3, c: 300 },
     ]
 
@@ -102,8 +103,8 @@ describe('Required tests ->', () => {
     const dataWithMissingFields = [
       { a: 1, b: null, c: 100 },
       { a: 2, b: 3, c: 100 },
-      { a: '', b: undefined, c: 100 },
-      { a: 4, b: '', c: 100 },
+      { a: null, b: null, c: 100 },
+      { a: 4, b: null, c: 100 },
       { a: 5, b: 3, c: 300 },
     ]
 
@@ -181,7 +182,7 @@ describe('Unique, Required, Values and Messages tests ->', () => {
     const data = [
       { a: 1, b: null, c: 100 },
       { a: 1, b: 3, c: 100 },
-      { a: '', b: undefined, c: 100 },
+      { a: null, b: undefined, c: 100 },
       { a: 2, b: '', c: 100 },
       { a: 1, b: 3, c: 300 },
     ]
@@ -189,7 +190,7 @@ describe('Unique, Required, Values and Messages tests ->', () => {
     const expectedOutput = [
       { a: 1, b: 0, c: 100 },
       { a: 1, b: 6, c: 100 },
-      { a: '', b: 0, c: 100 },
+      { a: null, b: 0, c: 100 },
       { a: 2, b: 0, c: 100 },
       { a: 1, b: 6, c: 300 },
     ]
@@ -234,16 +235,15 @@ describe('Field Hook ->', () => {
   })
   describe('empty()', () => {
     test('correctly casts null to default number', async () => {
-      const rawData = { firstNumber: null }
-      const expectedOutput = { firstNumber: 0 }
-
       const TestSchema = new WorkbookTester(
         {
-          firstNumber: NumberField({ ...BaseFieldArgs, empty: () => 0 }),
+          firstNumber: NumberField({ ...BaseFieldArgs, default: 0 }),
         },
         {}
       )
 
+      const rawData = { firstNumber: null }
+      const expectedOutput = { firstNumber: 0 }
       await TestSchema.checkRowResult({ rawData, expectedOutput })
     })
   })
@@ -288,9 +288,13 @@ describe('Field Hook ->', () => {
   })
 })
 
+const wait = (milliseconds: number) => {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
+}
+
 describe('Record Hook ->', () => {
-  describe('onChange()', () => {
-    test('onChange expected output is correct', async () => {
+  describe('recordCompute()', () => {
+    test('recordCompute expected output is correct', async () => {
       const rawData = { firstNumber: 50 }
       const expectedOutput = { firstNumber: 100 }
       const TestSchema = new WorkbookTester(
@@ -300,8 +304,8 @@ describe('Record Hook ->', () => {
           }),
         },
         {
-          onChange: (record: any) => {
-            const firstNumber = record.get('firstNumber')
+          recordCompute: (record) => {
+            const firstNumber = record.get('firstNumber') as number
             record.set('firstNumber', firstNumber * 2)
           },
         }
@@ -309,8 +313,30 @@ describe('Record Hook ->', () => {
 
       await TestSchema.checkRowResult({ rawData, expectedOutput })
     })
+    test('asyncRecordsCompute expected output is correct', async () => {
+      const rawData = { firstNumber: 50 }
+      const expectedOutput = { firstNumber: 100 }
+      const TestSchema = new WorkbookTester(
+        {
+          firstNumber: NumberField({
+            ...BaseFieldArgs,
+          }),
+        },
+        {
+          asyncRecordsCompute: async (records: FlatfileRecords<any>) => {
+            await wait(30)
+            records.records.map((record: FlatfileRecord) => {
+              const firstNumber = record.get('firstNumber') as number
+              record.set('firstNumber', firstNumber * 2)
+            })
+          },
+        }
+      )
 
-    test('cast() + compute() + validate() + onChange() expected output is correct', async () => {
+      await TestSchema.checkRowResult({ rawData, expectedOutput })
+    })
+
+    test('cast() + compute() + validate() + recordCompute() expected output is correct', async () => {
       const rawData = { firstNumber: '99' }
       const expectedOutput = { firstNumber: 202 }
       const TestSchema = new WorkbookTester(
@@ -333,9 +359,53 @@ describe('Record Hook ->', () => {
           }),
         },
         {
-          onChange: (record: any) => {
+          recordCompute: (record: any) => {
             const firstNumber = record.get('firstNumber')
             record.set('firstNumber', firstNumber * 2)
+          },
+        }
+      )
+
+      await TestSchema.checkRowResult({
+        rawData,
+        expectedOutput,
+        message: 'too big',
+      })
+    })
+
+    test('cast() + compute() + validate() + recordCompute() + asyncRecordsCompute() expected output is correct', async () => {
+      const rawData = { firstNumber: '99' }
+      const expectedOutput = { firstNumber: 202 }
+      const TestSchema = new WorkbookTester(
+        {
+          firstNumber: NumberField({
+            ...BaseFieldArgs,
+            cast: (v) => {
+              if (isNaN(Number(v))) {
+                return 0
+              }
+
+              return Number(v)
+            },
+            compute: (v) => v + 2,
+            validate: (v) => {
+              if (v > 100) {
+                throw 'too big'
+              }
+            },
+          }),
+        },
+        {
+          recordCompute: (record: any) => {
+            const firstNumber = record.get('firstNumber')
+            record.set('firstNumber', firstNumber / 2)
+          },
+          asyncRecordsCompute: async (records: FlatfileRecords<any>) => {
+            await wait(30)
+            records.records.map((record: FlatfileRecord) => {
+              const firstNumber = record.get('firstNumber') as number
+              record.set('firstNumber', firstNumber * 4)
+            })
           },
         }
       )

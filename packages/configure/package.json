@@ -31,6 +31,7 @@
     "@flatfile/hooks": "*",
     "@flatfile/schema": "*",
     "@flatfile/ts-config-platform-sdk": "*",
+    "@flatfile/jest-preset-platform-sdk": "*",
     "@types/jest": "^28.1.4",
     "eslint": "^8.19.0",
     "jest": "^28.1.2",

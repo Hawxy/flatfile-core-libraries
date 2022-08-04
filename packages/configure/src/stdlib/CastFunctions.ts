@@ -1,5 +1,5 @@
-//import { isValid, parse } from "date-fns";
 import { isValid, toDate } from 'date-fns'
+let num: number
 
 export const NumberCast = (
   raw: string | undefined | null | number
@@ -9,7 +9,6 @@ export const NumberCast = (
   } else if (raw === null) {
     return null
   } else {
-    var num: number = Infinity // hack to get around typing
     if (typeof raw === 'number') {
       num = raw
     } else if (typeof raw === 'string') {
@@ -28,6 +27,16 @@ export const NumberCast = (
   }
 }
 
+// Some other truthy/falsy values I found lurking around in Mono:
+// Mono/core/portal/src/utils/truthy.regex.ts
+// export const falsyRegex = /^(0|n|no|false|off|disabled|falsch|nein)$/i
+// export const truthyRegex = /^(1|y|yes|true|on|enabled|wahr|ja)$/i
+
+// Mono/core/api/src/modules/DataAbstractionModule/Transformations/AJVValidationTransformation.ts
+// Probably best not to inlcude other languages until we actually think through internationaliation
+const TRUTHY_VALUES = ['1', 'yes', 'true', 'on', 't', 'y']
+const FALSY_VALUES = ['-1', '0', 'no', 'false', 'off', 'f', 'n']
+
 export const BooleanCast = (
   raw: string | undefined | null | boolean
 ): boolean | null => {
@@ -43,12 +52,10 @@ export const BooleanCast = (
         return null
       }
       const normString = raw.toLowerCase()
-      const trueStrings = ['yes', 'true', 'affirmative', '1']
-      if (trueStrings.includes(normString)) {
+      if (TRUTHY_VALUES.includes(normString)) {
         return true
       }
-      const falseStrings = ['no', 'false', 'negative', '0', '-1']
-      if (falseStrings.includes(normString)) {
+      if (FALSY_VALUES.includes(normString)) {
         return false
       }
       throw new Error(`'${raw}' can't be converted to boolean`)

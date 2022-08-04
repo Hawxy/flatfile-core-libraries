@@ -1,4 +1,4 @@
-import { IPayload } from '../types/IPayload'
+import { IPayload } from './FlatfileRecord'
 
 export class FlatfileSession {
   constructor(private payload: IPayload) {}

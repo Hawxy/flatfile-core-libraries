@@ -1,5 +1,4 @@
 import { FlatfileRecords, FlatfileSession } from '@flatfile/hooks'
-import { FlatfileEvent } from '../lib/FlatfileEvent'
 import { Sheet } from './Sheet'
 import { mapValues, pipe, values } from 'remeda'
 import { IJsonSchema } from '@flatfile/schema'
@@ -7,15 +6,19 @@ import { IJsonSchema } from '@flatfile/schema'
 export class Workbook {
   constructor(public readonly options: IWorkbookOptions) {}
 
-  public async routeEvents(event: FlatfileEvent<FlatfileRecords<any>>) {
+  public async processRecords(
+    sheetTarget: string,
+    records: FlatfileRecords<any>,
+    logger?: any
+  ) {
     // find models identified by target
     const { namespace } = this.options
     const targets = Object.keys(this.options.sheets)
     const foundTarget = targets.find((t) =>
-      event.target.includes(namespace + '/' + t)
+      sheetTarget.includes(namespace + '/' + t)
     )
     if (foundTarget) {
-      await this.options.sheets[foundTarget].routeEvents(event)
+      await this.options.sheets[foundTarget].runProcess(records, logger)
     } else {
       throw new Error('no target found')
     }
@@ -25,14 +28,8 @@ export class Workbook {
     const recordBatch = new FlatfileRecords(
       payload.rows.map((r: { row: any }) => r.row)
     )
-    const session = new FlatfileSession(payload)
-    const event = new FlatfileEvent(
-      'records/change',
-      recordBatch,
-      session,
-      console
-    )
-    await this.routeEvents(event)
+    await this.processRecords(payload.schemaSlug, recordBatch)
+
     return recordBatch.toJSON()
   }
 
@@ -47,8 +44,7 @@ export class Workbook {
     logger: any
     eventType?: string
   }) => {
-    const event = new FlatfileEvent(eventType, recordBatch, session, logger)
-    await this.routeEvents(event)
+    await this.processRecords(session.schemaSlug, recordBatch, logger)
     return recordBatch.toJSON()
   }
 }

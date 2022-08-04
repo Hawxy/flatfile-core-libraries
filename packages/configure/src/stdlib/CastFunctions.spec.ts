@@ -30,19 +30,18 @@ describe('Cast Function tests ->', () => {
     assertNC('5', 5)
     assertNC('500,000', 500000)
 
-    //throwing an error on 'four' allows the user to realize an error and rewrite 'four' to 4
+    // throwing an error on 'four' allows the user to realize an error and rewrite 'four' to 4
     // even though 'four' could be interpreted as a number, we have chosen not to
     assertThrow('four', "'four' parsed to 'NaN' which is non-finite")
 
-    /*
-    NaNs are a complex topic, the basic reason we don't include them
-    is that they don't work well future computations or comparisons.
-    https://en.wikipedia.org/wiki/NaN
-    
-    NaN !== NaN
-    (NaN > Nan) === false
-    (NaN < Nan) === false
-    */
+    // NaNs are a complex topic, the basic reason we don't include them
+    // is that they don't work well future computations or comparisons.
+    // https://en.wikipedia.org/wiki/NaN
+
+    // NaN !== NaN
+    // (NaN > Nan) === false
+    // (NaN < Nan) === false
+
     assertThrow('asdf', "'asdf' parsed to 'NaN' which is non-finite")
     assertThrow('nan', "'nan' parsed to 'NaN' which is non-finite")
     assertThrow(NaN, "'NaN' parsed to 'NaN' which is non-finite")
@@ -79,14 +78,18 @@ describe('Cast Function tests ->', () => {
     assertBC('trUe', true)
     assertBC('yes', true)
     assertBC('1', true)
-    assertBC('affirmative', true)
+    assertBC('y', true)
+    assertBC('t', true)
+    assertBC('on', true)
 
     assertBC('false', false)
     assertBC('fAlse', false)
     assertBC('no', false)
-    assertBC('negative', false)
+    assertBC('n', false)
+    assertBC('f', false)
     assertBC('0', false)
     assertBC('-1', false)
+    assertBC('off', false)
 
     assertThrow('foobar', "'foobar' can't be converted to boolean")
   })
@@ -114,14 +117,11 @@ describe('Cast Function tests ->', () => {
     )
   })
 
-  /*
-How do you plan to handle ambiguous dates where it's not clear from the numbers the position of Day and Month values e.g. 2022-04-06? I get this question from prospects and don't have a clear answer since we rely on date-fns and I'm not sure the exact behavior.
+  // How do you plan to handle ambiguous dates where it's not clear from the numbers the position of Day and Month values e.g. 2022-04-06? I get this question from prospects and don't have a clear answer since we rely on date-fns and I'm not sure the exact behavior.
 
+  // That's a good question.  for this release I think we're best off sticking with ISO Date parsing.
+  // in an upcoming release we will start adding cast options
+  // as `cast:{args for cast function}` or `castArgs:{args for cast function}`
 
-That's a good question.  for this release I think we're best off sticking with ISO Date parsing.
-in an upcoming release we will start adding cast options
-as `cast:{args for cast function}` or `castArgs:{args for cast function}`
-
-The longterm goal is to make this part of mapping.  Looking at a single date, you can't tell the order of month vs day, looking at a whole column, you can, the position that has values over 12 is the day column, that dictates your cast function.  This doesn't even require reading a model built off of all of our imports, it could be inferred from most single imports.  I'm sure @stephen has thoughts about this.  The cast function should have access to metatdata about the import, informed by mapping.
-*/
+  // The longterm goal is to make this part of mapping.  Looking at a single date, you can't tell the order of month vs day, looking at a whole column, you can, the position that has values over 12 is the day column, that dictates your cast function.  This doesn't even require reading a model built off of all of our imports, it could be inferred from most single imports.  I'm sure @stephen has thoughts about this.  The cast function should have access to metatdata about the import, informed by mapping.
 })

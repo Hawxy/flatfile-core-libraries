@@ -1,3 +1,4 @@
+export type BaseFieldTypes = 'string' | 'number' | 'boolean' | 'composite'
 interface BaseField {
   label: string
   field: string
@@ -8,16 +9,14 @@ interface BaseField {
 }
 
 export interface BaseSchemaILField extends BaseField {
-  type: 'string' | 'number' | 'boolean' | 'composite'
+  type: BaseFieldTypes
 }
-
 export interface SchemaILEnumField extends BaseField {
   type: 'enum'
   labelEnum: Record<string, string>
 }
 
 export type SchemaILField = BaseSchemaILField | SchemaILEnumField
-
 export interface SchemaILModel<
   Fields extends Record<string, SchemaILField> = Record<string, SchemaILField>
 > {
