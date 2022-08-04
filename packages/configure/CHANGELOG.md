@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.3.2
+
+### Patch Changes
+
+- ed38f4f: Refactor internals and add CategoryField
+
 ## 0.3.1
 
 ### Patch Changes
