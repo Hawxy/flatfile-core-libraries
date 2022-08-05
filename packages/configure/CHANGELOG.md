@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.3.3
+
+### Patch Changes
+
+- 9df81f1: Added DateField and batchRecordsCompute
+
 ## 0.3.2
 
 ### Patch Changes
