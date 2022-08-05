@@ -3,7 +3,12 @@ import { mapValues } from 'remeda'
 
 import { BaseFieldTypes, SchemaILField } from '@flatfile/schema'
 import { isFullyPresent } from '../utils/isFullyPresent'
-import { BooleanCast, NumberCast, StringCast } from '../stdlib/CastFunctions'
+import {
+  DateCast,
+  BooleanCast,
+  NumberCast,
+  StringCast,
+} from '../stdlib/CastFunctions'
 
 export type TRecordStageLevel =
   | 'cast'
@@ -232,6 +237,14 @@ export const NumberField = makeField<number>((field, passedOptions) => {
   return () => {
     const cast = passedOptions.cast ?? NumberCast
     return field.setProp({ type: 'number', cast })
+  }
+})
+
+// NumberField
+export const DateField = makeField<Date>((field, passedOptions) => {
+  return () => {
+    const cast = passedOptions.cast ?? DateCast
+    return field.setProp({ type: 'string', cast })
   }
 })
 

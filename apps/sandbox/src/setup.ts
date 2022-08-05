@@ -48,7 +48,7 @@ const NewTemplateFromSDK = new Sheet(
         green: { label: 'Green is the best' },
       },
     }),
-    startDate: TextField('Date that Started'),
+    startDate: DateField('Start Date'),
   },
   {
     allowCustomFields: true,
@@ -69,3 +69,7 @@ export default new Workbook({
     NewTemplateFromSDK,
   },
 })
+function DateField(arg0: string): any {
+  throw new Error('Function not implemented.')
+}
+

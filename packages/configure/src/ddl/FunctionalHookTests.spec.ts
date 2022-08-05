@@ -1,4 +1,5 @@
-import { NumberField } from '@flatfile/configure'
+import fetch from 'node-fetch'
+import { Message, TextField, NumberField } from '@flatfile/configure'
 import { WorkbookTester } from './WorkbookTester'
 import { FlatfileRecord, FlatfileRecords } from '@flatfile/hooks'
 
@@ -40,6 +41,7 @@ describe('Unique tests ->', () => {
       { a: null, b: 8, c: 100 },
       { a: 2, b: 9, c: 100 },
       { a: 1, b: 3, c: 300 },
+      { a: null, b: 4, c: 301 },
     ]
 
     const expectedDuplicates = { a: [1, 2, 5], b: [2, 5], c: [1, 2, 3, 4] }
@@ -80,95 +82,50 @@ describe('Unique tests ->', () => {
       expectedDuplicates
     )
   })
-})
-
-describe('Required tests ->', () => {
-  test('Sending data without required fields returns location of missing fields', async () => {
+  test('validate() can return messages ', async () => {
     const TestSchema = new WorkbookTester(
       {
-        a: NumberField({ ...BaseFieldArgs, unique: true }),
-        b: NumberField({ ...BaseFieldArgs, required: true }),
-        c: NumberField({
-          ...BaseFieldArgs,
-          validate: (v) => {
-            if (v > 100) {
-              throw 'too big'
+        salary: NumberField({
+          validate: (salary: number) => {
+            const minSalary = 30_000
+            if (salary < minSalary) {
+              return [
+                new Message(
+                  `${salary} is less than minimum wage ${minSalary}`,
+                  'warn',
+                  'validate'
+                ),
+              ]
             }
           },
         }),
       },
       {}
     )
+    const rawData = { salary: '25,000' }
+    const expectedOutput = { salary: 25_000 }
 
-    const dataWithMissingFields = [
-      { a: 1, b: null, c: 100 },
-      { a: 2, b: 3, c: 100 },
-      { a: null, b: null, c: 100 },
-      { a: 4, b: null, c: 100 },
-      { a: 5, b: 3, c: 300 },
-    ]
-
-    const expectedMissingFields = {
-      a: [3],
-      b: [1, 3, 4],
-    }
-
-    expect(
-      await TestSchema.checkForMissingFields(dataWithMissingFields)
-    ).toStrictEqual(expectedMissingFields)
+    await TestSchema.checkRowResult({
+      rawData,
+      expectedOutput,
+      message: '25000 is less than minimum wage 30000',
+    })
   })
-
-  test('Sending data with required fields returns null', async () => {
+  test('cast() + compute() + validate() + recordCompute() expected output is correct', async () => {
+    const rawData = { firstNumber: '99' }
+    const expectedOutput = { firstNumber: 202 }
     const TestSchema = new WorkbookTester(
       {
-        a: NumberField({ ...BaseFieldArgs, unique: true }),
-        b: NumberField({ ...BaseFieldArgs, required: true }),
-        c: NumberField({
-          ...BaseFieldArgs,
-          validate: (v) => {
-            if (v > 100) {
-              throw 'too big'
-            }
-          },
-        }),
-      },
-      {}
-    )
-
-    const dataWithMissingFields = [
-      { a: 1, b: 2, c: 100 },
-      { a: 2, b: 2, c: 100 },
-      { a: 3, b: 6, c: 100 },
-      { a: 4, b: 7, c: 100 },
-      { a: 5, b: 3, c: 300 },
-    ]
-
-    const expectedMissingFields = null
-
-    expect(await TestSchema.checkForMissingFields(dataWithMissingFields)).toBe(
-      expectedMissingFields
-    )
-  })
-})
-
-describe('Unique, Required, Values and Messages tests ->', () => {
-  test('Check that result matches expected output with validation and messages', async () => {
-    const TestSchema = new WorkbookTester(
-      {
-        a: NumberField({ ...BaseFieldArgs, unique: true }),
-        b: NumberField({
+        firstNumber: NumberField({
           ...BaseFieldArgs,
           cast: (v) => {
             if (isNaN(Number(v))) {
               return 0
             }
+
             return Number(v)
           },
-          compute: (v) => v * 2,
-          required: true,
-        }),
-        c: NumberField({
-          ...BaseFieldArgs,
+          compute: (v) => v + 2,
           validate: (v) => {
             if (v > 100) {
               throw 'too big'
@@ -176,245 +133,94 @@ describe('Unique, Required, Values and Messages tests ->', () => {
           },
         }),
       },
-      {}
+      {
+        recordCompute: (record: any) => {
+          const firstNumber = record.get('firstNumber')
+          record.set('firstNumber', firstNumber * 2)
+        },
+      }
     )
 
-    const data = [
-      { a: 1, b: null, c: 100 },
-      { a: 1, b: 3, c: 100 },
-      { a: null, b: undefined, c: 100 },
-      { a: 2, b: '', c: 100 },
-      { a: 1, b: 3, c: 300 },
-    ]
-
-    const expectedOutput = [
-      { a: 1, b: 0, c: 100 },
-      { a: 1, b: 6, c: 100 },
-      { a: null, b: 0, c: 100 },
-      { a: 2, b: 0, c: 100 },
-      { a: 1, b: 6, c: 300 },
-    ]
-
-    const expectedDuplicates = { a: [1, 2, 5] }
-    const expectedMissingFields = { a: [3] }
-
-    await TestSchema.checkRows({
-      data,
+    await TestSchema.checkRowResult({
+      rawData,
       expectedOutput,
-      expectedDuplicates,
-      expectedMissingFields,
-    })
-  })
-})
-
-// First sets of Workbook Tests
-describe('Field Hook ->', () => {
-  describe('cast()', () => {
-    test('correctly casts object to default number', async () => {
-      const rawData = { firstNumber: { a: 'asdf' } }
-      const expectedOutput = { firstNumber: 0 }
-
-      const TestSchema = new WorkbookTester(
-        {
-          firstNumber: NumberField({
-            ...BaseFieldArgs,
-            cast: (v) => {
-              if (isNaN(Number(v))) {
-                return 0
-              }
-
-              return Number(v)
-            },
-          }),
-        },
-        {}
-      )
-
-      await TestSchema.checkRowResult({ rawData, expectedOutput })
-    })
-  })
-  describe('empty()', () => {
-    test('correctly casts null to default number', async () => {
-      const TestSchema = new WorkbookTester(
-        {
-          firstNumber: NumberField({ ...BaseFieldArgs, default: 0 }),
-        },
-        {}
-      )
-
-      const rawData = { firstNumber: null }
-      const expectedOutput = { firstNumber: 0 }
-      await TestSchema.checkRowResult({ rawData, expectedOutput })
+      message: 'too big',
     })
   })
 
-  describe('compute()', () => {
-    test('correctly change value', async () => {
-      const rawData = { firstNumber: 100 }
-      const expectedOutput = { firstNumber: 102 }
-      const TestSchema = new WorkbookTester(
-        {
-          firstNumber: NumberField({
-            ...BaseFieldArgs,
-            compute: (v) => v + 2,
-          }),
+  test('cast() + compute() + validate() + recordCompute() + batchRecordsCompute() expected output is correct', async () => {
+    const wait = (milliseconds: number) => {
+      return new Promise((resolve) => setTimeout(resolve, milliseconds))
+    }
+    const rawData = { firstNumber: '99' }
+    const expectedOutput = { firstNumber: 202 }
+    const TestSchema = new WorkbookTester(
+      {
+        firstNumber: NumberField({
+          ...BaseFieldArgs,
+          cast: (v) => {
+            if (isNaN(Number(v))) {
+              return 0
+            }
+
+            return Number(v)
+          },
+          compute: (v) => v + 2,
+          validate: (v) => {
+            if (v > 100) {
+              throw 'too big'
+            }
+          },
+        }),
+      },
+      {
+        recordCompute: (record: any) => {
+          const firstNumber = record.get('firstNumber')
+          record.set('firstNumber', firstNumber / 2)
         },
-        {}
-      )
-      await TestSchema.checkRowResult({ rawData, expectedOutput })
-    })
-  })
-
-  describe('validate()', () => {
-    test('correctly throw error message and apply to field', async () => {
-      const rawData = { firstNumber: 101 }
-      const message = 'too big'
-      const TestSchema = new WorkbookTester(
-        {
-          firstNumber: NumberField({
-            ...BaseFieldArgs,
-            validate: (v) => {
-              if (v > 100) {
-                throw message
-              }
-            },
-          }),
-        },
-        {}
-      )
-
-      await TestSchema.checkRowMessage({ rawData, message })
-    })
-  })
-})
-
-const wait = (milliseconds: number) => {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds))
-}
-
-describe('Record Hook ->', () => {
-  describe('recordCompute()', () => {
-    test('recordCompute expected output is correct', async () => {
-      const rawData = { firstNumber: 50 }
-      const expectedOutput = { firstNumber: 100 }
-      const TestSchema = new WorkbookTester(
-        {
-          firstNumber: NumberField({
-            ...BaseFieldArgs,
-          }),
-        },
-        {
-          recordCompute: (record) => {
+        batchRecordsCompute: async (records: FlatfileRecords<any>) => {
+          await wait(30)
+          records.records.map((record: FlatfileRecord) => {
             const firstNumber = record.get('firstNumber') as number
-            record.set('firstNumber', firstNumber * 2)
-          },
-        }
-      )
-
-      await TestSchema.checkRowResult({ rawData, expectedOutput })
-    })
-    test('asyncRecordsCompute expected output is correct', async () => {
-      const rawData = { firstNumber: 50 }
-      const expectedOutput = { firstNumber: 100 }
-      const TestSchema = new WorkbookTester(
-        {
-          firstNumber: NumberField({
-            ...BaseFieldArgs,
-          }),
+            record.set('firstNumber', firstNumber * 4)
+          })
         },
-        {
-          asyncRecordsCompute: async (records: FlatfileRecords<any>) => {
-            await wait(30)
-            records.records.map((record: FlatfileRecord) => {
-              const firstNumber = record.get('firstNumber') as number
-              record.set('firstNumber', firstNumber * 2)
-            })
-          },
-        }
-      )
+      }
+    )
 
-      await TestSchema.checkRowResult({ rawData, expectedOutput })
+    await TestSchema.checkRowResult({
+      rawData,
+      expectedOutput,
+      message: 'too big',
     })
+  })
 
-    test('cast() + compute() + validate() + recordCompute() expected output is correct', async () => {
-      const rawData = { firstNumber: '99' }
-      const expectedOutput = { firstNumber: 202 }
-      const TestSchema = new WorkbookTester(
-        {
-          firstNumber: NumberField({
-            ...BaseFieldArgs,
-            cast: (v) => {
-              if (isNaN(Number(v))) {
-                return 0
-              }
-
-              return Number(v)
+  test(' batchRecordsCompute() expected output is correct', async () => {
+    const rawData = { firstNumber: '99' }
+    const expectedOutput = { firstNumber: 202 }
+    const TestSchema = new WorkbookTester(
+      {
+        from_http: TextField({}),
+      },
+      {
+        batchRecordsCompute: async (records: any) => {
+          const response = await fetch('https://api.us.flatfile.io/health', {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
             },
-            compute: (v) => v + 2,
-            validate: (v) => {
-              if (v > 100) {
-                throw 'too big'
-              }
-            },
-          }),
+          })
+          const result = await response.json()
+          records.records.map(async (record: FlatfileRecord) => {
+            await record.set('from_http', result.info.postgres.status)
+          })
         },
-        {
-          recordCompute: (record: any) => {
-            const firstNumber = record.get('firstNumber')
-            record.set('firstNumber', firstNumber * 2)
-          },
-        }
-      )
+      }
+    )
 
-      await TestSchema.checkRowResult({
-        rawData,
-        expectedOutput,
-        message: 'too big',
-      })
-    })
-
-    test('cast() + compute() + validate() + recordCompute() + asyncRecordsCompute() expected output is correct', async () => {
-      const rawData = { firstNumber: '99' }
-      const expectedOutput = { firstNumber: 202 }
-      const TestSchema = new WorkbookTester(
-        {
-          firstNumber: NumberField({
-            ...BaseFieldArgs,
-            cast: (v) => {
-              if (isNaN(Number(v))) {
-                return 0
-              }
-
-              return Number(v)
-            },
-            compute: (v) => v + 2,
-            validate: (v) => {
-              if (v > 100) {
-                throw 'too big'
-              }
-            },
-          }),
-        },
-        {
-          recordCompute: (record: any) => {
-            const firstNumber = record.get('firstNumber')
-            record.set('firstNumber', firstNumber / 2)
-          },
-          asyncRecordsCompute: async (records: FlatfileRecords<any>) => {
-            await wait(30)
-            records.records.map((record: FlatfileRecord) => {
-              const firstNumber = record.get('firstNumber') as number
-              record.set('firstNumber', firstNumber * 4)
-            })
-          },
-        }
-      )
-
-      await TestSchema.checkRowResult({
-        rawData,
-        expectedOutput,
-        message: 'too big',
-      })
+    await TestSchema.checkRowResult({
+      rawData: { from_http: 'foo' },
+      expectedOutput: { from_http: 'up' },
     })
   })
 })

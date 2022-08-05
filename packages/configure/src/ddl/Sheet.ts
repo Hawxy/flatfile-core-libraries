@@ -37,15 +37,33 @@ export class UniqueAndRequiredPlugin {
         }
       })
 
+      /*
+The PostgreSQL doesn't fail a unique constraint for multiple NULLs in the same column. we should do the same. Other DBs have different behavior.
+This thread gives some insight into the background
+https://dba.stackexchange.com/questions/80514/why-does-a-unique-constraint-allow-only-one-null
+
+https://stackoverflow.com/questions/20154033/allow-null-in-unique-column
+https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS
+
+	*/
       // add to unique fields if not already in there
       for (let uniqueFieldKey in uniques) {
-        const value = String(record.get(uniqueFieldKey))
-        if (!!uniques[uniqueFieldKey][value]) {
-          uniques[uniqueFieldKey][value].push(index)
+        const origValue = record.get(uniqueFieldKey)
+        //can't index object by a boolean
+        const value =
+          typeof origValue === 'boolean' ? String(origValue) : origValue
+        // can't index an object by null
+        if (value === null) {
+          continue
+        }
+        const uniqueObj = uniques[uniqueFieldKey]
+
+        if (isFullyPresent(uniqueObj[value])) {
+          uniqueObj[value].push(index)
         } else {
           // only add to uniques array if value is not null || undefined
           if (isFullyPresent(value)) {
-            uniques[uniqueFieldKey][value] = [index]
+            uniqueObj[value] = [index]
           }
         }
       }
@@ -69,15 +87,11 @@ export type RecordsComputeType = (
   records: FlatfileRecords<any>
 ) => Promise<void>
 
-export const DEFAULT_RECORDS_COMPUTE: RecordsComputeType = async (
-  records: FlatfileRecords<any>
-) => {}
-
 export interface SheetOptions<FC> {
   allowCustomFields: boolean
   readOnly: boolean
   recordCompute(record: FlatfileRecord<any>, logger?: any): void
-  asyncRecordsCompute: RecordsComputeType
+  batchRecordsCompute: RecordsComputeType
 }
 
 export class Sheet<FC extends FieldConfig> {
@@ -88,7 +102,8 @@ export class Sheet<FC extends FieldConfig> {
     allowCustomFields: true,
     readOnly: false,
     recordCompute(): void {},
-    asyncRecordsCompute: DEFAULT_RECORDS_COMPUTE,
+    // the default implementation of batchRecordsCompute is a no-op
+    batchRecordsCompute: async (records: FlatfileRecords<any>) => {},
   }
 
   constructor(
@@ -126,9 +141,7 @@ export class Sheet<FC extends FieldConfig> {
     })
 
     // Run recordCompute record hook
-    if (this.options.asyncRecordsCompute !== DEFAULT_RECORDS_COMPUTE) {
-      await this.options.asyncRecordsCompute(records)
-    }
+    await this.options.batchRecordsCompute(records)
 
     records.records.map(async (record: FlatfileRecord) => {
       toPairs(this.fields).map(async ([key, field]) => {
