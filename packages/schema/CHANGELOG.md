@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.1.2
+
+### Patch Changes
+
+- 29e16c8: Add description to Field when exporting to JSONSchema
+
 ## 0.1.1
 
 ### Patch Changes
