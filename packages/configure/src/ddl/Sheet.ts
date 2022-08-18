@@ -88,16 +88,15 @@ export type RecordsComputeType = (
 ) => Promise<void>
 
 export interface SheetOptions<FC> {
+
   allowCustomFields: boolean
   readOnly: boolean
   recordCompute(record: FlatfileRecord<any>, logger?: any): void
   batchRecordsCompute: RecordsComputeType
+  previewFieldKey?: string
 }
 
 export class Sheet<FC extends FieldConfig> {
-  public plugins: {
-    [name: string]: (fields: FC, records: FlatfileRecord<any>[]) => any
-  } = {}
   public options: SheetOptions<FC> = {
     allowCustomFields: true,
     readOnly: false,
@@ -105,6 +104,7 @@ export class Sheet<FC extends FieldConfig> {
     // the default implementation of batchRecordsCompute is a no-op
     batchRecordsCompute: async (records: FlatfileRecords<any>) => {},
   }
+  public idFromAPI: string | undefined
 
   constructor(
     public name: string,

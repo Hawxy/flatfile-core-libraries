@@ -10,6 +10,7 @@ export const MUTATION_UPSERT_SCHEMA = gql`
     $previewFieldKey: String
     $deploymentId: String
     $environment: String
+    $code: String
   ) {
     upsertSchema(
       slug: $slug
@@ -20,6 +21,7 @@ export const MUTATION_UPSERT_SCHEMA = gql`
       previewFieldKey: $previewFieldKey
       deploymentId: $deploymentId
       environment: $environment
+      code: $code
     ) {
       id
       slug

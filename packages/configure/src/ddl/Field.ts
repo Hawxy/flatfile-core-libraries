@@ -9,6 +9,7 @@ import {
   NumberCast,
   StringCast,
 } from '../stdlib/CastFunctions'
+import { Sheet, FieldConfig } from './Sheet'
 
 export type TRecordStageLevel =
   | 'cast'
@@ -145,14 +146,15 @@ export class Field<T, O extends Record<string, any>> {
   public toSchemaILField(fieldName: string): SchemaILField {
     return {
       field: fieldName,
-      type: this.options.type || 'string',
       label: this.options.label || fieldName,
       ...pick(this.options, [
+        'type',
         'description',
         'required',
         'primary',
         'unique',
         'labelEnum',
+        'sheetName',
       ]),
     }
   }
@@ -262,3 +264,13 @@ export const OptionField = makeField<
 
   return () => field.setProp({ type: 'enum', labelEnum })
 })
+
+// LinkedField
+export const LinkedField = makeField<string, { sheet: Sheet<FieldConfig> }>(
+  (field) => {
+    const { sheet } = field.options
+    const sheetName = sheet.name
+
+    return () => field.setProp({ type: 'schema_ref', sheetName })
+  }
+)

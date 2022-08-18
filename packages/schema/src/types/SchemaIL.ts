@@ -16,7 +16,12 @@ export interface SchemaILEnumField extends BaseField {
   labelEnum: Record<string, string>
 }
 
-export type SchemaILField = BaseSchemaILField | SchemaILEnumField
+export interface LinkedSheetField extends BaseField {
+  type: 'schema_ref'
+  sheetName: string
+}
+
+export type SchemaILField = BaseSchemaILField | SchemaILEnumField | LinkedSheetField
 export interface SchemaILModel<
   Fields extends Record<string, SchemaILField> = Record<string, SchemaILField>
 > {

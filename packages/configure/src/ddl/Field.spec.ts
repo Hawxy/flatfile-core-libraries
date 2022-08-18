@@ -1,4 +1,11 @@
-import { OptionField, NumberField, Message } from './Field'
+import {
+  OptionField,
+  NumberField,
+  Message,
+  LinkedField,
+  TextField,
+} from './Field'
+import { Sheet } from './Sheet'
 
 describe('NumberField tests ->', () => {
   test('toSchemaIL works', () => {
@@ -57,6 +64,41 @@ describe('OptionField tests ->', () => {
       required: false,
       labelEnum: { foo: 'Foo', bar: 'Display label for bar' },
       type: 'enum',
+      unique: false,
+    })
+  })
+})
+
+describe('LinkedField tests ->', () => {
+  test('toSchemaIL works', () => {
+    const BaseTemplate = new Sheet(
+      'BaseTemplate',
+      {
+        firstName: TextField({
+          unique: true,
+          primary: true,
+        }),
+        middleName: TextField('Middle'),
+        lastName: TextField(),
+      },
+      {
+        previewFieldKey: 'middleName',
+      }
+    )
+
+    expect(
+      LinkedField({
+        label: 'Custom Label',
+        sheet: BaseTemplate,
+      }).toSchemaILField('linked_field')
+    ).toMatchObject({
+      description: '',
+      field: 'linked_field',
+      label: 'Custom Label',
+      primary: false,
+      required: false,
+      type: 'schema_ref',
+      sheetName: 'BaseTemplate',
       unique: false,
     })
   })

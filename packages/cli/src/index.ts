@@ -75,7 +75,8 @@ program
       })
 
       console.log(`🎉 Deploy successful! 🎉`)
-      summary({ teamId, apiURL: apiUrl, schemaId: schemaIds[0], env })
+      
+      summary({ teamId, apiURL: apiUrl, schemaIds, env })
     } catch (e) {
       console.log('Deploy failed')
       console.log(chalk.red(e))

@@ -1,8 +1,11 @@
-import { buildPayloadForLambda } from './build-hook'
+// import { buildPayloadForLambda } from './build-hook'
 import { GraphQLClient } from 'graphql-request'
 import { MUTATION_UPSERT_SCHEMA } from './MUTATION_UPSERT_SCHEMA'
 import * as CLIPackage from '../package.json'
 import { MUTATION_CREATE_DEPLOYMENT } from './MUTATION_CREATE_DEPLOYMENT'
+import fs from 'fs'
+import chalk from 'chalk'
+import ora from 'ora'
 
 const { npm_package_json } = process.env
 let localPackageJSON: {}
@@ -40,6 +43,8 @@ export const sendSchemasToServer = async (
     schemaSlugs.map(async (slug) => {
       const model = sheets[slug]
       const name = model.name
+      const sourceCode = fs.readFileSync(buildFile, 'utf8')
+      const { previewFieldKey } = model.options
       const schema = await client.request(MUTATION_UPSERT_SCHEMA, {
         slug: `${namespace}/${slug}`,
         teamId: team,
@@ -47,25 +52,30 @@ export const sendSchemasToServer = async (
         jsonSchema: {
           schema: model.toJSONSchema(namespace, slug),
         },
+        previewFieldKey,
         deploymentId,
         environment: env,
+        code: sourceCode,
       })
 
       const {
         upsertSchema: { id, slug: newSlug },
       } = schema
 
+      ora(`Schema created with id ${chalk.white.bold(id)}`).succeed()
       return { id, newSlug }
     })
   )
-  return Promise.all(
-    newSchemaVersions.map(async (schema) => {
-      return await buildPayloadForLambda(
-        client,
-        schema.id,
-        buildFile,
-        deploymentId
-      )
-    })
-  )
+
+  return newSchemaVersions.map((schema) => schema.id)
+  // return Promise.all(
+  //   newSchemaVersions.map(async (schema) => {
+  //     return await buildPayloadForLambda(
+  //       client,
+  //       schema.id,
+  //       buildFile,
+  //       deploymentId
+  //     )
+  //   })
+  // )
 }

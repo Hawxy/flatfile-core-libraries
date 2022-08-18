@@ -2,14 +2,42 @@ import {
   Sheet,
   Workbook,
   TextField,
+  LinkedField,
   BooleanField,
+  DateField,
+  Message,
   NumberField,
   OptionField,
-  Message,
 } from '@flatfile/configure'
 
-const NewTemplateFromSDK = new Sheet(
-  'NewSimpleDDLTemplate',
+const BaseSheet = new Sheet(
+  'BaseSheet',
+  {
+    firstName: TextField({
+      unique: true,
+      primary: true,
+    }),
+    middleName: TextField('Middle'),
+    lastName: TextField(),
+  },
+  {
+    previewFieldKey: 'middleName'
+  }
+)
+
+const SheetWithLink = new Sheet(
+  'SheetWithLink',
+  {
+    nickname: TextField(),
+    firstName: LinkedField({
+      label: 'First Names',
+      sheet: BaseSheet,
+    }),
+  }
+)
+
+const NewSheetFromSDK = new Sheet(
+  'NewSheetFromSDK',
   {
     firstName: TextField({
       required: true,
@@ -63,13 +91,11 @@ const NewTemplateFromSDK = new Sheet(
 )
 
 export default new Workbook({
-  name: 'Category And Boolean Onboarding',
-  namespace: 'onboarding',
+  name: 'Template with a link',
+  namespace: 'relational-test',
   sheets: {
-    NewTemplateFromSDK,
+    BaseSheet,
+    SheetWithLink,
+    NewSheetFromSDK
   },
 })
-function DateField(arg0: string): any {
-  throw new Error('Function not implemented.')
-}
-

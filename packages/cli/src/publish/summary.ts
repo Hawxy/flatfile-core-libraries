@@ -1,31 +1,47 @@
 import { schemaURL } from './schemaURL'
 import boxen from 'boxen'
 import chalk from 'chalk'
-import { PublishSchema } from './types'
+import { PublishSchemas } from './types'
 
 export const summary = ({
   teamId,
-  schemaId,
+  schemaIds,
   apiURL,
   env = 'test',
-}: PublishSchema) => {
-  const url = schemaURL({
-    teamId,
-    schemaId,
-    apiURL,
-    env,
-  })
+}: PublishSchemas) => {
   const teamSummary = `${chalk.whiteBright('TEAM:')}        ${chalk.dim(
     teamId
   )}\n`
-  const schemaSummary = `${chalk.whiteBright('SCHEMA:')}      ${chalk.dim(
-    schemaId
-  )}\n`
-  const envSummary = `${chalk.whiteBright('ENVIRONMENT:')} ${chalk.dim(env)}\n`
-  const link = `\nView your schema at ${chalk.blue(url)}`
+
+  const schemaSummary =
+    schemaIds.length > 1
+      ? `${chalk.whiteBright('SCHEMAS:')}     ${schemaIds
+          .map((schemaId) => chalk.dim(schemaId))
+          .join(', ')}\n`
+      : `${chalk.whiteBright('SCHEMA:')}      ${chalk.dim(schemaIds[0])}\n`
+
+  const envSummary = `${chalk.whiteBright('ENVIRONMENT:')} ${chalk.dim(
+    env
+  )}\n\n`
+  const URLspaceer = ' '.repeat(21)
+  const urls =
+    schemaIds.length > 1
+      ? schemaIds
+          .map(
+            (schemaId, index) =>
+              `${index > 0 ? URLspaceer : ''}${chalk.blue(
+                schemaURL({ teamId, schemaId, apiURL, env })
+              )}`
+          )
+          .join('\n')
+      : `${chalk.blue(
+          schemaURL({ teamId, schemaId: schemaIds[0], apiURL, env })
+        )}`
+
+  const links = `View your schema${schemaIds.length > 1 ? 's' : ''} at ${urls}`
 
   console.log(
-    boxen(`${teamSummary}${schemaSummary}${envSummary}${link}`, {
+    boxen(`${teamSummary}${schemaSummary}${envSummary}${links}`, {
       title: 'Summary',
       titleAlignment: 'left',
       padding: 1,

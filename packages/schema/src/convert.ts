@@ -1,4 +1,8 @@
-import { SchemaILModel, SchemaILField } from './types/SchemaIL'
+import {
+  SchemaILModel,
+  SchemaILField,
+  LinkedSheetField,
+} from './types/SchemaIL'
 import { IJsonSchema, IJsonSchemaProperty } from './types/JsonSchema'
 import {
   filter,
@@ -29,7 +33,6 @@ export const compileEnum = (inputField: SchemaILField): IJsonSchemaProperty => {
 }
 
 export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
-  // probably refactor
   const fields = pipe(
     ddl.fields,
     mapValues(
@@ -63,17 +66,17 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
   const properties = pipe(
     fields,
     map((f) =>
-      tuple(
-        f.field,
-        pick(f as IJsonSchemaProperty, [
+      tuple(f.field, {
+        ...pick(f as IJsonSchemaProperty, [
           'type',
           'label',
           'field',
           'enum',
           'enumLabel',
           'description',
-        ])
-      )
+        ]),
+        ...(f.type === 'schema_ref' ? { $schemaId: f.sheetName } : {}),
+      })
     ),
     (v) => fromPairs(v)
   )
