@@ -148,10 +148,7 @@ describe('Unique tests ->', () => {
     })
   })
 
-  test('cast() + compute() + validate() + recordCompute() + batchRecordsCompute() expected output is correct', async () => {
-    const wait = (milliseconds: number) => {
-      return new Promise((resolve) => setTimeout(resolve, milliseconds))
-    }
+  test('cast() + compute() + validate() + recordCompute() expected output is correct', async () => {
     const rawData = { firstNumber: '99' }
     const expectedOutput = { firstNumber: 202 }
     const TestSchema = new WorkbookTester(
@@ -176,14 +173,7 @@ describe('Unique tests ->', () => {
       {
         recordCompute: (record: any) => {
           const firstNumber = record.get('firstNumber')
-          record.set('firstNumber', firstNumber / 2)
-        },
-        batchRecordsCompute: async (records: FlatfileRecords<any>) => {
-          await wait(30)
-          records.records.map((record: FlatfileRecord) => {
-            const firstNumber = record.get('firstNumber') as number
-            record.set('firstNumber', firstNumber * 4)
-          })
+          record.set('firstNumber', firstNumber * 2)
         },
       }
     )
@@ -192,6 +182,28 @@ describe('Unique tests ->', () => {
       rawData,
       expectedOutput,
       message: 'too big',
+    })
+  })
+
+  test('cast() + validate() isnt called with a null', async () => {
+    const rawData = { firstNumber: '99' }
+    const expectedOutput = { firstNumber: 202 }
+    const TestSchema = new WorkbookTester(
+      {
+        a: TextField({
+          validate: (v) => {
+            throw 'should never see'
+          },
+        }),
+      },
+      {}
+    )
+
+    await TestSchema.checkRowResult({
+      rawData: { a: null },
+      expectedOutput: { a: null },
+      // how do I assert nothing is thrown
+      message: false,
     })
   })
 

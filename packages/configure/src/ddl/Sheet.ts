@@ -146,11 +146,14 @@ export class Sheet<FC extends FieldConfig> {
     records.records.map(async (record: FlatfileRecord) => {
       toPairs(this.fields).map(async ([key, field]) => {
         const origVal = record.get(key)
-        const messages = field.validate(origVal)
-        if (messages) {
-          messages.map((m) => {
-            record.addError(key, m.message)
-          })
+        if (isFullyPresent(origVal)) {
+          // TODO throw an error on null???
+          const messages = field.validate(origVal)
+          if (messages) {
+            messages.map((m) => {
+              record.addError(key, m.message)
+            })
+          }
         }
       })
     })

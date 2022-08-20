@@ -1,5 +1,4 @@
-import { pick } from 'remeda'
-import { mapValues } from 'remeda'
+import { pick, mapValues, keys } from 'remeda'
 
 import { BaseFieldTypes, SchemaILField } from '@flatfile/schema'
 import { isFullyPresent } from '../utils/isFullyPresent'
@@ -257,6 +256,17 @@ export const OptionField = makeField<
   string,
   { options: Record<string, LabelOptions> }
 >((field) => {
+  const def_ = field.options.default
+  if (def_ !== null) {
+    //type guard to make typescript happy
+    if (isFullyPresent(def_) && field.options.options[def_] === undefined) {
+      throw new Error(
+        `Invalid default of ${def_}, value doesn't appear as one of the keys in ${keys(
+          field.options.options
+        )}`
+      )
+    }
+  }
   const labelEnum = mapValues(field.options.options, (value) => {
     const label = typeof value === 'string' ? value : value.label
     return label

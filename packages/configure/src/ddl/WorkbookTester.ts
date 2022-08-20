@@ -134,7 +134,13 @@ export class WorkbookTester {
 
     expectedOutput &&
       expect(result[0].row.rawData).toMatchObject(expectedOutput)
-    message && expect(result[0].info[0].message).toBe(message)
+
+    // explicitly check for no messages
+    if (message === false) {
+      expect(result[0].info[0]).toBe(undefined)
+    } else {
+      message && expect(result[0].info[0].message).toBe(message)
+    }
   }
 
   public async checkRowMessage({
