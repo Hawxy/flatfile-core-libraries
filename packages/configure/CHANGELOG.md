@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.3.5
+
+### Patch Changes
+
+- 672a52e: Bugfixes around validate and defaults on OptionField
+
 ## 0.3.4
 
 ### Patch Changes
