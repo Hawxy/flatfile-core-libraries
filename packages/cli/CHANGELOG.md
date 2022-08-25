@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.0.0
+
+### Major Changes
+
+- 56a292f: Updated from old package
+
 ## 0.2.0
 
 ### Minor Changes
