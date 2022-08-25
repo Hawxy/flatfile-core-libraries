@@ -8,8 +8,6 @@ import {
   Message,
   NumberField,
   OptionField,
-  DateField,
-  Message,
 } from '@flatfile/configure'
 
 const BaseSheet = new Sheet(
@@ -23,20 +21,17 @@ const BaseSheet = new Sheet(
     lastName: TextField(),
   },
   {
-    previewFieldKey: 'middleName'
+    previewFieldKey: 'middleName',
   }
 )
 
-const SheetWithLink = new Sheet(
-  'SheetWithLink',
-  {
-    nickname: TextField(),
-    firstName: LinkedField({
-      label: 'First Names',
-      sheet: BaseSheet,
-    }),
-  }
-)
+const SheetWithLink = new Sheet('SheetWithLink', {
+  nickname: TextField(),
+  firstName: LinkedField({
+    label: 'First Name',
+    sheet: BaseSheet,
+  }),
+})
 
 const NewSheetFromSDK = new Sheet(
   'NewSheetFromSDK',
@@ -98,6 +93,6 @@ export default new Workbook({
   sheets: {
     BaseSheet,
     SheetWithLink,
-    NewSheetFromSDK
+    NewSheetFromSDK,
   },
 })

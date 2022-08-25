@@ -1,6 +1,6 @@
 {
-  "name": "@flatfile/cli",
-  "version": "0.2.0",
+  "name": "flatfile",
+  "version": "3.0.0",
   "description": "",
   "main": "./dist/index.js",
   "bin": {
