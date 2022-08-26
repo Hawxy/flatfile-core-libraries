@@ -62,7 +62,7 @@ export const sendSchemasToServer = async (
         upsertSchema: { id, slug: newSlug },
       } = schema
 
-      ora(`Schema created with id ${chalk.white.bold(id)}`).succeed()
+      ora(`Workbook created with id ${chalk.white.bold(id)}`).succeed()
       return { id, newSlug }
     })
   )

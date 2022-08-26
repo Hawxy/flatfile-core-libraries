@@ -19,7 +19,7 @@ program
 
 program
   .command('publish <file>')
-  .description('publish a schema')
+  .description('publish a Workbook')
   .option('-t, --team <team-id>', 'the Team ID to publish to')
   .option('--api-url <url>', 'the API url to use')
   .action(async (file, options) => {
@@ -44,7 +44,7 @@ program
     const outDir = path.join(process.cwd(), '.flatfile')
 
     try {
-      info('Build schema')
+      info('Build Workbook')
 
       await build({
         config: false,
@@ -63,7 +63,7 @@ program
     info('Generate token')
     const token = await generateAccessToken({ apiUrl })
 
-    info('Deploy schema to Flatfile')
+    info('Deploy Workbook to Flatfile')
 
     try {
       const buildFile = path.join(outDir, 'build.js')
@@ -75,7 +75,7 @@ program
       })
 
       console.log(`🎉 Deploy successful! 🎉`)
-      
+
       summary({ teamId, apiURL: apiUrl, schemaIds, env })
     } catch (e) {
       console.log('Deploy failed')
