@@ -108,3 +108,14 @@ export const DateCast = (
   }
   return null
 }
+
+export const StringCastCompose = (otherFunc: (raw: string) => any) => {
+  const innerCast = (raw: string | undefined | null): string | null => {
+    const stringVal = StringCast(raw)
+    if (stringVal === null) {
+      return null
+    }
+    return otherFunc(stringVal)
+  }
+  return innerCast
+}
