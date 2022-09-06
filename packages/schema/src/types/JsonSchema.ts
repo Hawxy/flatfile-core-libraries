@@ -33,8 +33,14 @@ export interface IJsonSchemaProperty {
   $schemaId?: string
   default?: string
   custom?: boolean
+  visibility?: FieldVisibilityTypes
 }
 
+export type FieldVisibilityTypes = {
+  mapping?: boolean
+  review?: boolean
+  export?: boolean
+}
 export interface IJsonSchema {
   properties: Record<string, IJsonSchemaProperty>
   type: string

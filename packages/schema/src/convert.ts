@@ -19,6 +19,7 @@ import {
 //the larger schema outside of just this field
 export const compileEnum = (inputField: SchemaILField): IJsonSchemaProperty => {
   // return the field if it is not an enum type
+
   if (inputField.type !== 'enum') {
     return inputField
   }
@@ -75,6 +76,7 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
           'enumLabel',
           'description',
         ]),
+        visibility: f.stageVisibility,
         ...(f.type === 'schema_ref' ? { $schemaId: f.sheetName } : {}),
       })
     ),

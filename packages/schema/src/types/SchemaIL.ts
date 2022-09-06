@@ -1,4 +1,6 @@
+import { FieldVisibilityTypes } from "./JsonSchema"
 export type BaseFieldTypes = 'string' | 'number' | 'boolean' | 'composite'
+
 interface BaseField {
   label: string
   field: string
@@ -6,6 +8,7 @@ interface BaseField {
   required?: boolean
   primary?: boolean
   unique?: boolean
+  stageVisibility?: FieldVisibilityTypes
 }
 
 export interface BaseSchemaILField extends BaseField {
@@ -21,7 +24,11 @@ export interface LinkedSheetField extends BaseField {
   sheetName: string
 }
 
-export type SchemaILField = BaseSchemaILField | SchemaILEnumField | LinkedSheetField
+export type SchemaILField =
+  | BaseSchemaILField
+  | SchemaILEnumField
+  | LinkedSheetField
+  
 export interface SchemaILModel<
   Fields extends Record<string, SchemaILField> = Record<string, SchemaILField>
 > {

@@ -66,6 +66,11 @@ export interface GenericFieldOptions {
   primary: boolean
   required: boolean
   unique: boolean
+  stageVisibility?: {
+    mapping?: boolean
+    review?: boolean
+    export?: boolean
+  }
 }
 
 const GenericDefaults: GenericFieldOptions = {
@@ -75,6 +80,11 @@ const GenericDefaults: GenericFieldOptions = {
   primary: false,
   required: false,
   unique: false,
+  stageVisibility: {
+    mapping: true,
+    review: true,
+    export: true,
+  },
 }
 
 export type BaseFieldOptions<T> = Partial<SchemaILField> &
@@ -154,6 +164,7 @@ export class Field<T, O extends Record<string, any>> {
         'unique',
         'labelEnum',
         'sheetName',
+        'stageVisibility',
       ]),
     }
   }
@@ -195,10 +206,19 @@ function makeField<T extends any, O extends Record<string, any> = {}>(
     const passedOptions =
       (typeof options !== 'string' ? options : options) ?? {}
 
+    const passedStageVisibility = (passedOptions as SchemaILField)
+      ?.stageVisibility
+
+    const stageVisibility = {
+      ...GenericDefaults.stageVisibility,
+      ...passedStageVisibility,
+    }
+
     const fullOpts = {
       ...GenericDefaults,
       ...FieldHookDefaults<T>(),
       ...(label ? { label } : { ...passedOptions }),
+      stageVisibility,
     }
 
     const field = new Field<T, O>(fullOpts as FullBaseFieldOptions<T, O>)
@@ -208,7 +228,6 @@ function makeField<T extends any, O extends Record<string, any> = {}>(
     )
 
     field.addCustomOptionsToField(fieldOptions)
-
     return field
   }
 

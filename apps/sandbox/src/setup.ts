@@ -39,8 +39,10 @@ const NewSheetFromSDK = new Sheet(
   {
     firstName: TextField({
       required: true,
-      description: 'foo',
       unique: true,
+      stageVisibility: {
+        review: false,
+      },
     }),
     lastName: TextField({
       default: 'bar',
@@ -98,8 +100,8 @@ const CountryCastDemo = new Sheet(
   {})
 
 export default new Workbook({
-  name: 'Template with a link',
-  namespace: 'relational-test',
+  name: 'Sheet with visibility test',
+  namespace: 'visibility-test',
   sheets: {
     BaseSheet,
     SheetWithLink,
