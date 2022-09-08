@@ -87,11 +87,18 @@ export type RecordsComputeType = (
   records: FlatfileRecords<any>
 ) => Promise<void>
 
+export type RecordCompute = {
+  dependsOn?: string[] // fields that must be fully present
+  uses?: string[] // fields that will be read, but could be null
+  modifies?: string[] // the full set of fields which could be written to
+  (record: FlatfileRecord<any>, logger?: any): void
+}
+
 export interface SheetOptions<FC> {
 
   allowCustomFields: boolean
   readOnly: boolean
-  recordCompute(record: FlatfileRecord<any>, logger?: any): void
+  recordCompute: RecordCompute
   batchRecordsCompute: RecordsComputeType
   previewFieldKey?: string
 }
@@ -104,16 +111,38 @@ export class Sheet<FC extends FieldConfig> {
     // the default implementation of batchRecordsCompute is a no-op
     batchRecordsCompute: async (records: FlatfileRecords<any>) => {},
   }
+
+  private contributedRecordFuncs: Record<string, RecordCompute> = {}
   public idFromAPI: string | undefined
 
   constructor(
     public name: string,
-    public fields: FC,
+    //TODO FIXME Maybe, I couldn't get this to work with malleableFields and FC, so loosened the type to FieldConfig
+    public fields: FieldConfig,
     public passedOptions?: Partial<SheetOptions<FC>>
   ) {
     if (passedOptions) {
       Object.assign(this.options, passedOptions)
     }
+
+    const malleableFields: Record<string, Field<any, any>> = fields
+    toPairs(fields).map(([key, field]) => {
+      //do dag checking here on dependsOn, uses, and modifies
+      if (field.options.contributeToRecordCompute) {
+        this.contributedRecordFuncs[key] =
+          field.options.contributeToRecordCompute
+      }
+      toPairs(field.extraFieldsToAdd).map(([extraKey, extraField]) => {
+        if (fields[extraKey] === undefined) {
+          malleableFields[extraKey] = extraField
+        } else {
+          throw Error(
+            `extraFieldsToAdd error, ${extraKey} already exists in fields, ${key} was trying to add it`
+          )
+        }
+      })
+    })
+    this.fields = malleableFields
   }
 
   public async runProcess(records: FlatfileRecords<any>, logger: any) {
@@ -137,6 +166,14 @@ export class Sheet<FC extends FieldConfig> {
     })
 
     records.records.map(async (record: FlatfileRecord) => {
+      toPairs(this.contributedRecordFuncs).map(([fieldName, recordCompute]) => {
+        try {
+          // narrow record and what can be modified on it
+          recordCompute(record, logger)
+        } catch (e: any) {
+          console.log(`error with contributedRecordCompute for ${fieldName}`, e)
+        }
+      })
       this.options.recordCompute(record, logger) //, session, logger)
     })
 

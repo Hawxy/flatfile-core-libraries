@@ -1,7 +1,7 @@
 import { pick, mapValues, keys } from 'remeda'
-
 import { BaseFieldTypes, SchemaILField } from '@flatfile/schema'
 import { isFullyPresent } from '../utils/isFullyPresent'
+
 import {
   DateCast,
   BooleanCast,
@@ -14,6 +14,7 @@ export type TRecordStageLevel =
   | 'cast'
   | 'required'
   | 'compute'
+  //  | 'computedField'  // not sure about this
   | 'validate'
   | 'apply'
   | 'other'
@@ -105,6 +106,12 @@ export class Field<T, O extends Record<string, any>> {
   ) {
     cb(this.options)
   }
+
+  // leaving this as a public field and not adding it to the default
+  // constructor because this is a very advanced field feature to use,
+  // it can be set on an instantiated field
+
+  public extraFieldsToAdd: Record<string, Field<any, any>> = {}
 
   public computeToValue(rawValue: any): [Nullable<T>, Nullable<Message>] {
     try {
