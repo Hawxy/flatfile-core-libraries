@@ -8,7 +8,8 @@ import {
   Message,
   NumberField,
   OptionField,
-  CountryCast
+  CountryCast,
+  Portal,
 } from '@flatfile/configure'
 
 const BaseSheet = new Sheet(
@@ -44,6 +45,7 @@ const NewSheetFromSDK = new Sheet(
         review: false,
       },
     }),
+    middleName: TextField(),
     lastName: TextField({
       default: 'bar',
       compute: (val: string): string => {
@@ -58,7 +60,6 @@ const NewSheetFromSDK = new Sheet(
         }
       },
     }),
-    middleName: TextField(),
     boolean: BooleanField(),
     phoneNumber: TextField({
       default: '555-555-5557',
@@ -94,10 +95,17 @@ const CountryCastDemo = new Sheet(
   'CountryCastDemo',
   {
     raw: TextField({}),
-    full: TextField({cast:CountryCast("full")}),
-    two_letter: TextField({cast:CountryCast("iso-2")}),
-    three_letter: TextField({cast:CountryCast("iso-3")})},
-  {})
+    full: TextField({ cast: CountryCast('full') }),
+    two_letter: TextField({ cast: CountryCast('iso-2') }),
+    three_letter: TextField({ cast: CountryCast('iso-3') }),
+  },
+  {}
+)
+
+const NewSheetFromSDKPortal = new Portal({
+  name: 'SDK-Portal',
+  sheet: 'NewSheetFromSDK',
+})
 
 export default new Workbook({
   name: 'Sheet with visibility test',
@@ -106,6 +114,7 @@ export default new Workbook({
     BaseSheet,
     SheetWithLink,
     NewSheetFromSDK,
-    CountryCastDemo
+    CountryCastDemo,
   },
+  portals: [NewSheetFromSDKPortal],
 })

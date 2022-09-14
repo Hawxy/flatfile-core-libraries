@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import { build } from 'tsup'
-import { program } from 'commander'
-import * as path from 'path'
 import { deploy } from './deploy'
-import packageJSON from '../package.json'
-import dotenv from 'dotenv'
 import { generateAccessToken } from './auth/acessToken'
-import chalk from 'chalk'
 import { info } from './ui/info'
+import { program } from 'commander'
 import { summary } from './publish/summary'
+import * as path from 'path'
+import chalk from 'chalk'
+import dotenv from 'dotenv'
+import packageJSON from '../package.json'
 
 dotenv.config()
 
@@ -67,7 +67,7 @@ program
 
     try {
       const buildFile = path.join(outDir, 'build.js')
-      const schemaIds = await deploy(buildFile, {
+      const { schemaIds, portals } = await deploy(buildFile, {
         apiUrl,
         apiKey: token,
         team: teamId,
@@ -76,7 +76,7 @@ program
 
       console.log(`🎉 Deploy successful! 🎉`)
 
-      summary({ teamId, apiURL: apiUrl, schemaIds, env })
+      summary({ teamId, apiURL: apiUrl, schemaIds, env, portals })
     } catch (e) {
       console.log('Deploy failed')
       console.log(chalk.red(e))

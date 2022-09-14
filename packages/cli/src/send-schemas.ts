@@ -1,10 +1,11 @@
-// import { buildPayloadForLambda } from './build-hook'
 import { GraphQLClient } from 'graphql-request'
-import { MUTATION_UPSERT_SCHEMA } from './MUTATION_UPSERT_SCHEMA'
-import * as CLIPackage from '../package.json'
 import { MUTATION_CREATE_DEPLOYMENT } from './MUTATION_CREATE_DEPLOYMENT'
-import fs from 'fs'
+import { MUTATION_UPSERT_EMBED } from './MUTATION_UPSERT_EMBED'
+import { MUTATION_UPSERT_SCHEMA } from './MUTATION_UPSERT_SCHEMA'
+import { Portal } from '@flatfile/configure'
+import * as CLIPackage from '../package.json'
 import chalk from 'chalk'
+import fs from 'fs'
 import ora from 'ora'
 
 const { npm_package_json } = process.env
@@ -17,9 +18,9 @@ export const sendSchemasToServer = async (
   client: GraphQLClient,
   buildFile: string,
   options: { team: string; env: string }
-): Promise<number[]> => {
+): Promise<{ schemaIds: number[]; portals: Portal[] }> => {
   const config = require(buildFile).default
-  const { sheets, namespace } = config.options
+  const { sheets, namespace, portals } = config.options
   const { team, env } = options
   const stringifiedWorkbook = JSON.stringify(config, function (key, val) {
     if (typeof val === 'function') {
@@ -59,23 +60,32 @@ export const sendSchemasToServer = async (
       })
 
       const {
-        upsertSchema: { id, slug: newSlug },
+        upsertSchema: { id, slug: newSlug, environmentId },
       } = schema
+
+      if (portals) {
+        const portal = portals.find((p: Portal) => p.options.sheet === slug)
+        if (portal) {
+          const { archived, helpContent } = portal.options
+          const {
+            upsertEmbed: { privateKeyString, embed },
+          } = await client.request(MUTATION_UPSERT_EMBED, {
+            teamId: team,
+            schemaIds: [id],
+            name: portal.options.name,
+            environmentId,
+            archived,
+            helpContent,
+          })
+          portal.setId(embed.id)
+          portal.setPrivateKeyString(privateKeyString)
+        }
+      }
 
       ora(`Workbook created with id ${chalk.white.bold(id)}`).succeed()
       return { id, newSlug }
     })
   )
-
-  return newSchemaVersions.map((schema) => schema.id)
-  // return Promise.all(
-  //   newSchemaVersions.map(async (schema) => {
-  //     return await buildPayloadForLambda(
-  //       client,
-  //       schema.id,
-  //       buildFile,
-  //       deploymentId
-  //     )
-  //   })
-  // )
+  const schemaIds = newSchemaVersions.map((schema) => schema.id)
+  return { schemaIds, portals }
 }

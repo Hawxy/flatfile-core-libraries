@@ -1,3 +1,4 @@
+import { Portal } from '@flatfile/configure'
 import { GraphQLClient } from 'graphql-request'
 import { sendSchemasToServer } from './send-schemas'
 
@@ -10,7 +11,7 @@ import { sendSchemasToServer } from './send-schemas'
 export const deploy = async (
   buildFile: string,
   options: IDeployOptions
-): Promise<number[]> => {
+): Promise<{ schemaIds: number[]; portals: Portal[] }> => {
   const client = new GraphQLClient(`${options.apiUrl}/graphql`, {
     headers: {
       Authorization: `Bearer ${options.apiKey}`,

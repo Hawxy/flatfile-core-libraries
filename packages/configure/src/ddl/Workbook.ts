@@ -1,7 +1,6 @@
 import { FlatfileRecords, FlatfileSession } from '@flatfile/hooks'
 import { Sheet } from './Sheet'
-import { mapValues, pipe, values } from 'remeda'
-import { IJsonSchema } from '@flatfile/schema'
+import { Portal } from './Portal'
 
 export class Workbook {
   constructor(public readonly options: IWorkbookOptions) {}
@@ -60,7 +59,6 @@ export interface IHookPayload {
   env?: Record<string, string | boolean | number>
   envSignature?: string
 }
-// target
 
 interface IWorkbookOptions {
   namespace: string
@@ -70,4 +68,5 @@ interface IWorkbookOptions {
   options?: {
     // tbd
   }
+  portals?: Portal[]
 }

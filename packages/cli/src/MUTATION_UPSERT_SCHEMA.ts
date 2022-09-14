@@ -25,6 +25,7 @@ export const MUTATION_UPSERT_SCHEMA = gql`
     ) {
       id
       slug
+      environmentId
     }
   }
 `
