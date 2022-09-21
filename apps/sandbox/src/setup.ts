@@ -11,6 +11,12 @@ import {
   CountryCast,
   Portal,
 } from '@flatfile/configure'
+import {
+  FlatfileSession,
+  FlatfileRecord,
+  TRecordData,
+  TPrimitive,
+} from '@flatfile/hooks'
 
 const BaseSheet = new Sheet(
   'BaseSheet',
@@ -82,8 +88,13 @@ const NewSheetFromSDK = new Sheet(
   {
     allowCustomFields: true,
     readOnly: true,
-    recordCompute(record: any, logger: any) {
+    recordCompute(
+      record: FlatfileRecord<any>,
+      session: FlatfileSession,
+      logger: any
+    ) {
       const fName = record.get('firstName')
+      console.log({ env: session.env })
       logger.info(`lastName was ${record.get('lastName')}`)
       record.set('lastName', fName)
       return record
@@ -101,6 +112,7 @@ const CountryCastDemo = new Sheet(
   },
   {}
 )
+
 
 const NewSheetFromSDKPortal = new Portal({
   name: 'SDK-Portal',

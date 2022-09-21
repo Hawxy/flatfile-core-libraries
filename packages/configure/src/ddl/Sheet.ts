@@ -1,4 +1,8 @@
-import { FlatfileRecord, FlatfileRecords } from '@flatfile/hooks'
+import {
+  FlatfileRecord,
+  FlatfileRecords,
+  FlatfileSession,
+} from '@flatfile/hooks'
 import {
   IJsonSchema,
   SchemaILModel,
@@ -84,14 +88,16 @@ https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNI
 }
 
 export type RecordsComputeType = (
-  records: FlatfileRecords<any>
+  records: FlatfileRecords<any>,
+  session?: FlatfileSession,
+  logger?: any
 ) => Promise<void>
 
 export type RecordCompute = {
   dependsOn?: string[] // fields that must be fully present
   uses?: string[] // fields that will be read, but could be null
   modifies?: string[] // the full set of fields which could be written to
-  (record: FlatfileRecord<any>, logger?: any): void
+  (record: FlatfileRecord<any>, session: FlatfileSession, logger?: any): void
 }
 
 export interface SheetOptions<FC> {
@@ -144,7 +150,11 @@ export class Sheet<FC extends FieldConfig> {
     this.fields = malleableFields
   }
 
-  public async runProcess(records: FlatfileRecords<any>, logger: any) {
+  public async runProcess(
+    records: FlatfileRecords<any>,
+    session: FlatfileSession,
+    logger: any
+  ) {
     records.records.map((record: FlatfileRecord) => {
       toPairs(this.fields).map(([key, field]) => {
         const origVal = record.get(key)
@@ -168,16 +178,16 @@ export class Sheet<FC extends FieldConfig> {
       toPairs(this.contributedRecordFuncs).map(([fieldName, recordCompute]) => {
         try {
           // narrow record and what can be modified on it
-          recordCompute(record, logger)
+          recordCompute(record, session, logger)
         } catch (e: any) {
           console.log(`error with contributedRecordCompute for ${fieldName}`, e)
         }
       })
-      this.options.recordCompute(record, logger) //, session, logger)
+      this.options.recordCompute(record, session, logger)
     })
 
     // Run recordCompute record hook
-    await this.options.batchRecordsCompute(records)
+    await this.options.batchRecordsCompute(records, session, logger)
 
     records.records.map(async (record: FlatfileRecord) => {
       toPairs(this.fields).map(async ([key, field]) => {

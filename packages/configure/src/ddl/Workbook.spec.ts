@@ -1,7 +1,7 @@
 import { TextField, BooleanField } from './Field'
 import { Sheet } from './Sheet'
 import { Workbook, IHookPayload } from './Workbook'
-import { FlatfileRecords } from '@flatfile/hooks'
+import { FlatfileRecords, FlatfileSession, IPayload } from '@flatfile/hooks'
 
 const CategoryAndBoolean = new Sheet(
   'CategoryAndBoolean',
@@ -26,13 +26,30 @@ const TestWorkbook = new Workbook({
   sheets: { CategoryAndBoolean },
 })
 
+const testSession: IPayload = {
+  schemaSlug: 'slug',
+  workspaceId: '123abc',
+  workbookId: '345def',
+  schemaId: 1010,
+  uploads: ['upload1', 'upload2'],
+  endUser: 'alex',
+  env: { secret: 'test' },
+  envSignature: 'signature',
+  rows: [],
+}
+
 describe('Workbook tests ->', () => {
   const row1 = { firstName: 'foo', age: '10', testBoolean: 'true' }
   const iRaw = [{ rawData: row1, rowId: 1 }]
   const recordBatch = new FlatfileRecords(iRaw)
 
   test('processRecords works', async () => {
-    TestWorkbook.processRecords('test/CategoryAndBoolean', recordBatch)
+    const session = new FlatfileSession({
+      ...testSession,
+      schemaSlug: 'test/CategoryAndBoolean',
+    })
+
+    TestWorkbook.processRecords(recordBatch, session)
     expect(recordBatch.records[0].value).toMatchObject({
       age: '10',
       firstName: 'FOO',

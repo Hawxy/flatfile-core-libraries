@@ -6,18 +6,23 @@ export class Workbook {
   constructor(public readonly options: IWorkbookOptions) {}
 
   public async processRecords(
-    sheetTarget: string,
     records: FlatfileRecords<any>,
+    payload: IHookPayload,
     logger?: any
   ) {
     // find models identified by target
     const { namespace } = this.options
+    const sheetTarget = payload.schemaSlug
     const targets = Object.keys(this.options.sheets)
     const foundTarget = targets.find((t) =>
       sheetTarget.includes(namespace + '/' + t)
     )
     if (foundTarget) {
-      await this.options.sheets[foundTarget].runProcess(records, logger)
+      await this.options.sheets[foundTarget].runProcess(
+        records,
+        payload as FlatfileSession,
+        logger
+      )
     } else {
       throw new Error('no target found')
     }
@@ -27,7 +32,7 @@ export class Workbook {
     const recordBatch = new FlatfileRecords(
       payload.rows.map((r: { row: any }) => r.row)
     )
-    await this.processRecords(payload.schemaSlug, recordBatch)
+    await this.processRecords(recordBatch, payload)
 
     return recordBatch.toJSON()
   }
@@ -43,7 +48,7 @@ export class Workbook {
     logger: any
     eventType?: string
   }) => {
-    await this.processRecords(session.schemaSlug, recordBatch, logger)
+    await this.processRecords(recordBatch, session, logger)
     return recordBatch.toJSON()
   }
 }
