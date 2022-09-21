@@ -1,5 +1,15 @@
 # @flatfile/configure
 
+## 0.3.6
+
+### Patch Changes
+
+- 5daab1b: Adjust Validate Hook messages to set Info level messages instead of Error
+- f77b422: Adds Logger and Session to recordCompute() functions
+- 0bb3cbc: Add Portal Deploys via SDK
+- Updated dependencies [0d047e6]
+  - @flatfile/schema@0.1.4
+
 ## 0.3.5
 
 ### Patch Changes

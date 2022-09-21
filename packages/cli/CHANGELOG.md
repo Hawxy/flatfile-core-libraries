@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.0.1
+
+### Patch Changes
+
+- 0bb3cbc: Add Portal Deploys via SDK
+
 ## 3.0.0
 
 ### Major Changes

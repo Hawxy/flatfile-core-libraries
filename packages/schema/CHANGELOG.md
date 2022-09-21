@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.1.4
+
+### Patch Changes
+
+- 0d047e6: Updated Schema to include schema_ref fields in convert
+
 ## 0.1.3
 
 ### Patch Changes

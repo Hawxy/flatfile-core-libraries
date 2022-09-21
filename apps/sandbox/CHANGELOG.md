@@ -1,5 +1,11 @@
 # @private/sandbox
 
+## 1.0.4
+
+### Patch Changes
+
+- 0bb3cbc: Add Portal Deploys via SDK
+
 ## 1.0.3
 
 ### Patch Changes
