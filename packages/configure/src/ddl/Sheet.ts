@@ -95,7 +95,6 @@ export type RecordCompute = {
 }
 
 export interface SheetOptions<FC> {
-
   allowCustomFields: boolean
   readOnly: boolean
   recordCompute: RecordCompute
@@ -188,7 +187,7 @@ export class Sheet<FC extends FieldConfig> {
           const messages = field.validate(origVal)
           if (messages) {
             messages.map((m) => {
-              record.addError(key, m.message)
+              record.pushInfoMessage(key, m.message, m.level, m.stage)
             })
           }
         }
