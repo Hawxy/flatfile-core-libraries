@@ -24,7 +24,7 @@ program
   .option('--api-url <url>', 'the API url to use')
   .action(async (file, options) => {
     const teamId = options.team || process.env.FLATFILE_TEAM_ID
-    const env = options.env || process.env.FLATFILE_ENV
+    const env = options.env || process.env.FLATFILE_ENV || "test"
     const apiUrl: string =
       options.apiUrl ||
       process.env.FLATFILE_API_URL ||
