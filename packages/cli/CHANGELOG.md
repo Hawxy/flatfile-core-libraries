@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.0.2
+
+### Patch Changes
+
+- d979841: Made the 'test' env the default option for deploy
+
 ## 3.0.1
 
 ### Patch Changes
