@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/expression-lang",
-  "version": null,
+  "version": "0.0.1",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
