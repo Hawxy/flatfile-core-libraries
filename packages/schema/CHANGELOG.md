@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.0
+
+### Minor Changes
+
+- 66c193c: Adds Annotations
+
 ## 0.1.4
 
 ### Patch Changes

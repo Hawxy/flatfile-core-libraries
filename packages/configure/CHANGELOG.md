@@ -1,5 +1,16 @@
 # @flatfile/configure
 
+## 0.4.0
+
+### Minor Changes
+
+- 66c193c: Adds Annotations
+
+### Patch Changes
+
+- Updated dependencies [66c193c]
+  - @flatfile/schema@0.2.0
+
 ## 0.3.6
 
 ### Patch Changes
