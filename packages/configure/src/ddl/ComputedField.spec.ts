@@ -3,7 +3,6 @@ import { ComputedField } from './ComputedField'
 import { WorkbookTester } from './WorkbookTester'
 import { TPrimitive } from '@flatfile/hooks'
 
-
 // First sets of Workbook Tests
 describe('computedFiled ->', () => {
   test('ComputedField can be instantiated ', async () => {

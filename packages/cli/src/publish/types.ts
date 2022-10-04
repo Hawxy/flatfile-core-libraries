@@ -1,10 +1,10 @@
-import { Portal } from "@flatfile/configure"
+import { Portal } from '@flatfile/configure'
 
 export interface PublishSchemas {
   teamId: number
   schemaIds: number[]
   apiURL: string
-  env?: 'prod' | 'test',
+  env?: 'prod' | 'test'
   portals?: Portal[]
 }
 export interface PublishSchema {

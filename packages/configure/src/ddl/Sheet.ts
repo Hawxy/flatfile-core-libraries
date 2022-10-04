@@ -158,18 +158,15 @@ export class Sheet<FC extends FieldConfig> {
     records.records.map((record: FlatfileRecord) => {
       toPairs(this.fields).map(([key, field]) => {
         const origVal = record.get(key)
-        const [newVal, message] = field.computeToValue(origVal)
+        const [newVal, messages] = field.computeToValue(origVal)
         if (newVal !== undefined) {
           record.set(key, newVal)
         }
-        if (message) {
-          record.pushInfoMessage(
-            key,
-            message.message,
-            message.level,
-            message.stage
-          )
-        }
+
+        messages.map((m) =>
+          record.pushInfoMessage(key, m.message, m.level, m.stage)
+        )
+
         return record
       })
     })

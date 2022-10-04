@@ -15,7 +15,6 @@ import {
   TRecordData,
 } from '@flatfile/hooks'
 import { SheetOptions } from './Sheet'
-//import { UniqueAndRequiredPlugin } from './plugins/UniqueAndRequiredPlugin'
 
 export class WorkbookTester {
   public workbook
@@ -120,10 +119,12 @@ export class WorkbookTester {
     rawData,
     expectedOutput,
     message,
+    messages,
   }: {
     rawData: any
     expectedOutput?: any
-    message?: any
+    message?: string | boolean
+    messages?: IRecordInfo<TRecordData<TPrimitive>, string | number>[]
   }): Promise<void> {
     const targets = Object.keys(this.workbook.options.sheets)
     const formattedpayload = {
@@ -140,6 +141,14 @@ export class WorkbookTester {
       expect(result[0].info[0]).toBe(undefined)
     } else {
       message && expect(result[0].info[0].message).toBe(message)
+    }
+
+    if (messages && messages.length > 0) {
+      messages.forEach((message) => {
+        expect(result[0].info).toEqual(
+          expect.arrayContaining([expect.objectContaining(message)])
+        )
+      })
     }
   }
 

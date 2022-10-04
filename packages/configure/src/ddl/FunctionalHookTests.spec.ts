@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import { Message, TextField, NumberField } from '@flatfile/configure'
 import { WorkbookTester } from './WorkbookTester'
-import { FlatfileRecord, FlatfileRecords } from '@flatfile/hooks'
+import { FlatfileRecord, IRecordInfo } from '@flatfile/hooks'
 
 /*
   This test file is supposed to look like a traditional jest test, it is used for developers of the SchemaIL, FlatfileDDL, and Hook runtimes.
@@ -16,7 +16,7 @@ const BaseFieldArgs = {
 }
 
 // First sets of Workbook Tests
-describe('Unique tests ->', () => {
+describe('Functional Hook Tests ->', () => {
   test('Sending rows with duplicates in multiple columns returns duplicates location', async () => {
     const TestSchema = new WorkbookTester(
       {
@@ -224,7 +224,7 @@ describe('Unique tests ->', () => {
           })
           const result = await response.json()
           records.records.map(async (record: FlatfileRecord) => {
-            await record.set('from_http', result.info.postgres.status)
+            record.set('from_http', result.info.postgres.status)
           })
         },
       }
@@ -233,6 +233,37 @@ describe('Unique tests ->', () => {
     await TestSchema.checkRowResult({
       rawData: { from_http: 'foo' },
       expectedOutput: { from_http: 'up' },
+    })
+  })
+
+  test('annotations work ', async () => {
+    const TestSchema = new WorkbookTester(
+      {
+        a: TextField({
+          default: 'asdf',
+          annotations: { default: true, compute: true },
+          compute: (v: string) => v.toLowerCase(),
+        }),
+        b: NumberField({
+          default: 0,
+          annotations: { default: true, compute: true },
+          compute: (v) => v + 2,
+        }),
+      },
+      {}
+    )
+
+    await TestSchema.checkRowResult({
+      rawData: { a: null, b: null },
+      expectedOutput: { a: 'asdf', b: 2 },
+      message: "This field was automatically given a default value of 'asdf'",
+    })
+
+    await TestSchema.checkRowResult({
+      rawData: { a: 'ASDF', b: '2' },
+      expectedOutput: { a: 'asdf' },
+      message:
+        "This value was automatically reformatted - original data: 'ASDF'",
     })
   })
 })

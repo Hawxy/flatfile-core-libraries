@@ -1,6 +1,7 @@
 import { pick, mapValues, keys } from 'remeda'
 import { BaseFieldTypes, SchemaILField } from '@flatfile/schema'
 import { isFullyPresent } from '../utils/isFullyPresent'
+import * as _ from 'lodash'
 
 import {
   DateCast,
@@ -45,7 +46,7 @@ export interface IFieldHooks<T> {
   cast: (value: Dirty<T>) => Nullable<T>
   default: Nullable<T>
   compute: (value: T) => T
-  validate: (value: T) => void | Message[]
+  validate: (value: T) => void | Message[] // eventually add single message
 }
 
 export const FieldHookDefaults = <T>(): IFieldHooks<T> => ({
@@ -67,6 +68,14 @@ export interface GenericFieldOptions {
   primary: boolean
   required: boolean
   unique: boolean
+  annotations?: {
+    //cast?: boolean
+    default?: boolean
+    defaultMessage?: string
+    compute?: boolean
+    computeMessage: string
+  }
+
   stageVisibility?: {
     mapping?: boolean
     review?: boolean
@@ -85,6 +94,12 @@ const GenericDefaults: GenericFieldOptions = {
     mapping: true,
     review: true,
     export: true,
+  },
+  annotations: {
+    default: false,
+    defaultMessage: 'This field was automatically given a default value of',
+    compute: false,
+    computeMessage: 'This value was automatically reformatted - original data:',
   },
 }
 
@@ -113,41 +128,92 @@ export class Field<T, O extends Record<string, any>> {
 
   public extraFieldsToAdd: Record<string, Field<any, any>> = {}
 
-  public computeToValue(rawValue: any): [Nullable<T>, Nullable<Message>] {
-    try {
-      const possiblyCast = this.options.cast(rawValue)
-      if (typeof possiblyCast === 'undefined') {
-        throw new Error(
-          `casting ${rawValue} returned undefined.  This is an error, fix 'cast' function`
+  public toCastDefault(rawValue: any): [Nullable<T>, Message[]] {
+    // run field execution until a value or null is provided, run with proper error and type handling
+    const extraMessages: Message[] = []
+    const possiblyCast = this.options.cast(rawValue)
+    if (typeof possiblyCast === 'undefined') {
+      throw new Error(
+        `casting ${rawValue} returned undefined.  This is an error, fix 'cast' function`
+      )
+    }
+    let actuallyCast: Nullable<T>
+    if (!isFullyPresent(possiblyCast) && isFullyPresent(this.options.default)) {
+      if (this.options.annotations.default) {
+        extraMessages.push(
+          new Message(
+            `${this.options.annotations.defaultMessage} '${this.options.default}'`,
+            'info',
+            'other'
+          )
         )
       }
+      actuallyCast = this.options.default
+    } else {
+      actuallyCast = possiblyCast
+    }
+    return [actuallyCast, extraMessages]
+  }
 
-      const actuallyCast =
-        !isFullyPresent(possiblyCast) && isFullyPresent(this.options.default)
-          ? this.options.default
-          : possiblyCast
+  public computeFromValue(
+    reallyActuallyCast: T,
+    rawValue: any
+  ): [Nullable<T>, Message[]] {
+    // start with an actual value of correct type, call compute with proper error handling, pull off computed value and messages
+    const compMessages: Message[] = []
+    const computed: T = this.options.compute(reallyActuallyCast)
+    if (typeof computed === 'undefined') {
+      throw new Error(
+        `Calling compute of ${rawValue} with typed value of ${reallyActuallyCast} returned undefined.  This is an error, fix 'compute' function`
+      )
+    }
+    if (reallyActuallyCast !== computed && this.options.annotations.compute) {
+      compMessages.push(
+        new Message(
+          `${this.options.annotations.computeMessage} '${reallyActuallyCast}'`,
+          'info',
+          'other'
+        )
+      )
+    }
+    return [computed, compMessages]
+  }
 
+  public computeToValue(rawValue: any): [Nullable<T>, Message[]] {
+    //execute the `toCastDefault` and `computeFromValue` functions with proper execption handling
+    try {
+      const [actuallyCast, extraMessages] = this.toCastDefault(rawValue)
       if (isFullyPresent(actuallyCast)) {
         try {
           const reallyActuallyCast: T = actuallyCast as T
-          const computed = this.options.compute(actuallyCast as T)
-          if (typeof computed === 'undefined') {
-            throw new Error(
-              `calling compute of ${rawValue} with typed value of ${reallyActuallyCast} returned undefined.  This is an error, fix 'compute' function`
-            )
-          }
-          return [computed, null]
+          const [computed, compMessages] = this.computeFromValue(
+            reallyActuallyCast,
+            rawValue
+          )
+          return [computed, _.concat(extraMessages, compMessages)]
         } catch (e: any) {
-          return [rawValue, new Message(e.toString(), 'error', 'compute')]
+          return [
+            rawValue,
+            _.concat(
+              extraMessages,
+              new Message(e.toString(), 'error', 'compute')
+            ),
+          ]
         }
       } else {
         if (this.options.required) {
-          return [null, new Message('missing value', 'error', 'required')]
+          return [
+            null,
+            _.concat(
+              extraMessages,
+              new Message('missing value', 'error', 'required')
+            ),
+          ]
         }
-        return [null, null]
+        return [null, []]
       }
     } catch (e: any) {
-      return [rawValue, new Message(e.toString(), 'error', 'cast')]
+      return [rawValue, [new Message(e.toString(), 'error', 'cast')]]
     }
   }
 
@@ -172,6 +238,7 @@ export class Field<T, O extends Record<string, any>> {
         'labelEnum',
         'sheetName',
         'stageVisibility',
+        'annotations', // this shouldn't be here
       ]),
     }
   }
@@ -191,7 +258,7 @@ export class Field<T, O extends Record<string, any>> {
 }
 
 type PartialBaseFieldsAndOptions<T, O> = Partial<FullBaseFieldOptions<T, O>>
-type FieldOverload<T, O> = {
+type FieldOverload<T, O extends Record<string, any>> = {
   (): Field<T, O>
   (label?: string): Field<T, O>
   (options?: PartialBaseFieldsAndOptions<T, O>): Field<T, O>
@@ -221,11 +288,19 @@ function makeField<T extends any, O extends Record<string, any> = {}>(
       ...passedStageVisibility,
     }
 
+    const passedAnnotations = (passedOptions as SchemaILField)?.annotations
+
+    const annotations = {
+      ...GenericDefaults.annotations,
+      ...passedAnnotations,
+    }
+
     const fullOpts = {
       ...GenericDefaults,
       ...FieldHookDefaults<T>(),
       ...(label ? { label } : { ...passedOptions }),
       stageVisibility,
+      annotations,
     }
 
     const field = new Field<T, O>(fullOpts as FullBaseFieldOptions<T, O>)

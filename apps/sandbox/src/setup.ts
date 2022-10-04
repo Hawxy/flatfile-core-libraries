@@ -113,7 +113,6 @@ const CountryCastDemo = new Sheet(
   {}
 )
 
-
 const NewSheetFromSDKPortal = new Portal({
   name: 'SDK-Portal',
   sheet: 'NewSheetFromSDK',

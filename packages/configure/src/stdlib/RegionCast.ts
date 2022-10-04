@@ -1,4 +1,8 @@
-import { COUNTRY_CODES, US_STATES, US_STATES_AND_TERRITORIES } from './constants'
+import {
+  COUNTRY_CODES,
+  US_STATES,
+  US_STATES_AND_TERRITORIES,
+} from './constants'
 import { StringSubstitutionCast } from './SubstitutionCast'
 
 type Format = 'full' | 'iso-2' | 'iso-3'

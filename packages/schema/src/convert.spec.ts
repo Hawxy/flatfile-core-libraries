@@ -11,6 +11,7 @@ const jsonSchema: IJsonSchema = {
       type: 'string',
       label: 'Color',
       field: 'color',
+
       enum: ['red', 'blue', 'green'],
       enumLabel: ['Red', 'Blue', 'Green'],
     },
@@ -27,6 +28,7 @@ const ddlSchema: SchemaILModel = {
       type: 'string',
       label: 'First Name',
       required: true,
+      annotations: {},
       field: 'first_name',
     },
     id: {
@@ -35,18 +37,21 @@ const ddlSchema: SchemaILModel = {
       required: true,
       primary: true,
       unique: true,
+      annotations: {},
       field: 'id',
     },
     is_admin: {
       type: 'boolean',
       label: 'Is Admin',
       required: false,
+      annotations: {},
       field: 'is_admin',
     },
     color: {
       field: 'color',
       label: 'Color',
       type: 'enum',
+      annotations: {},
       labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
       required: false,
     },
@@ -63,6 +68,7 @@ describe('compiler tests', () => {
         type: 'enum',
         label: 'Color',
         field: 'color',
+        annotations: {},
         labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
       })
     ).toMatchObject({

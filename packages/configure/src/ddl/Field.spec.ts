@@ -36,16 +36,16 @@ describe('NumberField tests ->', () => {
         return parseInt(val)
       },
     })
-    expect(nf.computeToValue('10')).toStrictEqual([10, null])
+    expect(nf.computeToValue('10')).toStrictEqual([10, []])
 
-    expect(nf.computeToValue(undefined)).toStrictEqual([NaN, null])
+    expect(nf.computeToValue(undefined)).toStrictEqual([NaN, []])
     const nf2 = NumberField({
       cast: (val: any) => {
         throw new Error('err')
       },
     })
     const m = new Message('Error: err', 'error', 'cast')
-    expect(nf2.computeToValue(undefined)).toStrictEqual([undefined, m])
+    expect(nf2.computeToValue(undefined)).toStrictEqual([undefined, [m]])
   })
 })
 

@@ -59,16 +59,13 @@ const recordComputeForComputedField = (
     try {
       const inputVal = computeArgs.compute(recordObj)
       try {
-        const [newVal, message] = destinationField.computeToValue(inputVal)
+        const [newVal, messages] = destinationField.computeToValue(inputVal)
         if (newVal !== undefined) {
           record.set(destinationKey, newVal)
         }
-        if (message) {
-          record.pushInfoMessage(
-            destinationKey,
-            message.message,
-            message.level,
-            message.stage
+        if (messages !== null) {
+          messages.map((m) =>
+            record.pushInfoMessage(destinationKey, m.message, m.level, m.stage)
           )
         }
       } catch (e: any) {
