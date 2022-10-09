@@ -1,6 +1,6 @@
 import { Portal } from '@flatfile/configure'
 import { GraphQLClient } from 'graphql-request'
-import { sendSchemasToServer } from './send-schemas'
+import { sendSchemasToServer } from './legacy/utilities/send.schemas.to.server'
 
 /**
  * Deploy a compiled file to Flatfile
