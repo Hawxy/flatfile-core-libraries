@@ -3,7 +3,7 @@ import path from 'path'
 import { info } from '../ui/info'
 import { build } from 'tsup'
 import { generateAccessToken } from '../utilities/access.token'
-import { deploy } from '../../deploy'
+import { deploy } from '../utilities/deploy'
 import { summary } from '../ui/summary'
 
 export const publishAction = async (
