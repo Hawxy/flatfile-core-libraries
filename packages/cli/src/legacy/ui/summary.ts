@@ -1,8 +1,8 @@
-import { schemaURL } from './schemaURL'
+import { schemaURL } from '../utilities/schemaURL'
 import boxen from 'boxen'
 import chalk from 'chalk'
-import { PublishSchemas } from './types'
-import { embedURL } from './embedURL'
+import { PublishSchemas } from '../utilities/types'
+import { embedURL } from '../utilities/embedURL'
 
 export const summary = ({
   teamId,

@@ -1,1 +1,1 @@
-# Flatifle CLI
+# Flatfile CLI
