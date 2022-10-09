@@ -12,13 +12,6 @@ program
   .version(`${packageJSON.version}`)
 
 program
-  .command('login')
-  .description('publish a Workbook')
-  .option('-t, --team <team-id>', 'the Team ID to publish to')
-  .option('--api-url <url>', 'the API url to use')
-  .action(publishAction)
-
-program
   .command('publish <file>')
   .description('publish a Workbook')
   .option('-t, --team <team-id>', 'the Team ID to publish to')
