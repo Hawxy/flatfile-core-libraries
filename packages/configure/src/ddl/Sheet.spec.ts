@@ -43,6 +43,7 @@ describe('Sheet test', () => {
       },
     })
   })
+
   test('verify runProcess', () => {
     const row1 = {
       firstName: 'foo',
@@ -72,5 +73,28 @@ describe('Sheet test', () => {
       testBoolean: true,
       envField: 'test',
     })
+  })
+
+  test('verify allowCustomFields works', () => {
+    const noCustom = new Sheet(
+      'noCustom',
+      { asdf: TextField() },
+      { allowCustomFields: false }
+    )
+
+    const noCustomSIL = noCustom.toJSONSchema('foo', 'bar')
+    expect(noCustomSIL).toMatchObject({ allowCustomFields: false })
+
+    const noCustomMissing = new Sheet('noCustom', { asdf: TextField() }, {})
+    const noCustomMissingSIL = noCustomMissing.toJSONSchema('foo', 'bar')
+    expect(noCustomMissingSIL).toMatchObject({ allowCustomFields: false })
+
+    const withCustom = new Sheet(
+      'withCustom',
+      { asdf: TextField() },
+      { allowCustomFields: true }
+    )
+    const wCustomSIL = withCustom.toSchemaIL('foo', 'bar')
+    expect(wCustomSIL).toMatchObject({ allowCustomFields: true })
   })
 })

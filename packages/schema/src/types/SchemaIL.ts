@@ -45,4 +45,5 @@ export interface SchemaILModel<
   required?: Array<keyof Fields | Array<keyof Fields>>
   unique?: Array<keyof Fields | Array<keyof Fields>>
   primary?: keyof Fields
+  allowCustomFields: boolean
 }

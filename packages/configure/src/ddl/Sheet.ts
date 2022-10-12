@@ -110,7 +110,7 @@ export interface SheetOptions<FC> {
 
 export class Sheet<FC extends FieldConfig> {
   public options: SheetOptions<FC> = {
-    allowCustomFields: true,
+    allowCustomFields: false,
     readOnly: false,
     recordCompute(): void {},
     // the default implementation of batchRecordsCompute is a no-op
@@ -129,7 +129,6 @@ export class Sheet<FC extends FieldConfig> {
     if (passedOptions) {
       Object.assign(this.options, passedOptions)
     }
-
     const malleableFields: Record<string, Field<any, any>> = fields
     toPairs(fields).map(([key, field]) => {
       //do dag checking here on dependsOn, uses, and modifies
@@ -214,6 +213,7 @@ export class Sheet<FC extends FieldConfig> {
       slug,
       namespace,
       fields: {},
+      allowCustomFields: this.options.allowCustomFields,
     }
 
     for (const key in this.fields) {

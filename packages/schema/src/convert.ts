@@ -89,6 +89,7 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
     required: required,
     unique: unique,
     primary: pks[0],
+    allowCustomFields: ddl.allowCustomFields,
   }
 }
 
