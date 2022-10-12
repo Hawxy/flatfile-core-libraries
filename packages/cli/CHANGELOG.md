@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.0.3
+
+### Patch Changes
+
+- f47369c: Fixes allowCustomFields feature from the platform-sdk
+
 ## 3.0.2
 
 ### Patch Changes

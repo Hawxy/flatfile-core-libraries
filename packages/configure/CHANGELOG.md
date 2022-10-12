@@ -1,5 +1,13 @@
 # @flatfile/configure
 
+## 0.4.1
+
+### Patch Changes
+
+- f47369c: Fixes allowCustomFields feature from the platform-sdk
+- Updated dependencies [f47369c]
+  - @flatfile/schema@0.2.1
+
 ## 0.4.0
 
 ### Minor Changes

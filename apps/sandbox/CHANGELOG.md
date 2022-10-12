@@ -1,5 +1,11 @@
 # @private/sandbox
 
+## 1.0.5
+
+### Patch Changes
+
+- f47369c: Fixes allowCustomFields feature from the platform-sdk
+
 ## 1.0.4
 
 ### Patch Changes
