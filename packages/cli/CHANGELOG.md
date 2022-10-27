@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.0
+
+### Minor Changes
+
+- 1792c54: Adds init command and improvments to stack traces during publish
+
 ## 3.0.3
 
 ### Patch Changes
