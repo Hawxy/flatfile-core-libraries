@@ -7,7 +7,7 @@ import { deploy } from '../utilities/deploy'
 import { summary } from '../ui/summary'
 
 export const publishAction = async (
-  file: string,
+  file: string = './src/index.ts',
   options: Partial<{ team: string; env: string; apiUrl: string }>
 ) => {
   const teamId = options.team || process.env.FLATFILE_TEAM_ID
