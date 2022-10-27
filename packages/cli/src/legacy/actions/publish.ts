@@ -52,28 +52,21 @@ export const publishAction = async (
 
   info('Deploy Workbook to Flatfile')
 
-  try {
-    const buildFile = path.join(outDir, 'build.js')
-    const { schemaIds, portals } = await deploy(buildFile, {
-      apiUrl,
-      apiKey: token,
-      team: teamId,
-      env,
-    })
+  const buildFile = path.join(outDir, 'build.js')
+  const { schemaIds, portals } = await deploy(buildFile, {
+    apiUrl,
+    apiKey: token,
+    team: teamId,
+    env,
+  })
 
-    console.log(`🎉 Deploy successful! 🎉`)
+  console.log(`🎉 Deploy successful! 🎉`)
 
-    summary({
-      teamId: parseInt(teamId, 10),
-      apiURL: apiUrl,
-      schemaIds,
-      env: env as any,
-      portals,
-    })
-  } catch (e) {
-    console.log('Deploy failed')
-    console.log(chalk.red(e))
-
-    process.exit(1)
-  }
+  summary({
+    teamId: parseInt(teamId, 10),
+    apiURL: apiUrl,
+    schemaIds,
+    env: env as any,
+    portals,
+  })
 }
