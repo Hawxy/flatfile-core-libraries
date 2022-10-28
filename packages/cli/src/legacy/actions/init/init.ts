@@ -98,7 +98,7 @@ export const init = async (options: Options) => {
         `Success! Created ${chalk.cyan(`${name}`)} at ${projectDir}\n`
       )
 
-      console.log(`Start updating your workbook at ${projectDir}/index.ts`)
+      console.log(`Start updating your workbook at ${projectDir}/src/index.ts`)
       console.log('Inside that directory, you can run several commands:\n')
 
       console.log(`  ${chalk.cyan(`npm run dev`)}`)
