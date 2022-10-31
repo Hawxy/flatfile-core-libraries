@@ -1,6 +1,7 @@
 import {
   SchemaILModel,
   SchemaILField,
+  SchemaILEnumField,
   LinkedSheetField,
 } from './types/SchemaIL'
 import { IJsonSchema, IJsonSchemaProperty } from './types/JsonSchema'
@@ -17,20 +18,49 @@ import {
 
 //note the second any is for properties that should be contributed to
 //the larger schema outside of just this field
-export const compileEnum = (inputField: SchemaILField): IJsonSchemaProperty => {
+export const compileEnum = (
+  inputField: SchemaILEnumField
+): IJsonSchemaProperty => {
   // return the field if it is not an enum type
-
-  if (inputField.type !== 'enum') {
-    return inputField
-  }
-
-  return {
+  const retVal: IJsonSchemaProperty = {
     type: 'string',
     label: inputField.label,
     ...(inputField.required ? { required: inputField.required } : {}),
     enum: map(Object.keys(inputField.labelEnum), (key) => key),
     enumLabel: map(Object.values(inputField.labelEnum), (key) => key),
   }
+  if (inputField.matchStrategy === 'exact') {
+    retVal.enumMatch = 'exact'
+  }
+  return retVal
+}
+
+export const compileLinkedField = (
+  inputField: LinkedSheetField
+): IJsonSchemaProperty => {
+  const retVal: IJsonSchemaProperty = {
+    type: 'schema_ref',
+    label: inputField.label,
+    upsert: undefined,
+    $schemaId: inputField.sheetName,
+    ...(inputField.required ? { required: inputField.required } : {}),
+  }
+
+  if (inputField.upsert === false) {
+    retVal.upsert = false
+  }
+  return retVal
+}
+
+export const compileSpecific = (
+  inputField: SchemaILField
+): IJsonSchemaProperty => {
+  if (inputField.type === 'schema_ref') {
+    return compileLinkedField(inputField)
+  } else if (inputField.type === 'enum') {
+    return compileEnum(inputField)
+  }
+  return inputField
 }
 
 export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
@@ -40,7 +70,7 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
       (value, field): SchemaILField =>
         ({
           field,
-          ...compileEnum(value),
+          ...compileSpecific(value),
         } as SchemaILField)
     ),
     values
@@ -74,10 +104,13 @@ export const SchemaILToJsonSchema = (ddl: SchemaILModel): IJsonSchema => {
           'field',
           'enum',
           'enumLabel',
+          'enumMatch',
           'description',
+          '$schemaId',
+          'upsert',
         ]),
         visibility: f.stageVisibility,
-        ...(f.type === 'schema_ref' ? { $schemaId: f.sheetName } : {}),
+        //...(f.type === 'schema_ref' ? { $schemaId: f.sheetName } : {}),
       })
     ),
     (v) => fromPairs(v)

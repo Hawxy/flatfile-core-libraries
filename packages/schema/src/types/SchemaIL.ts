@@ -22,12 +22,14 @@ export interface BaseSchemaILField extends BaseField {
 }
 export interface SchemaILEnumField extends BaseField {
   type: 'enum'
+  matchStrategy: 'fuzzy' | 'exact'
   labelEnum: Record<string, string>
 }
 
 export interface LinkedSheetField extends BaseField {
   type: 'schema_ref'
   sheetName: string
+  upsert: boolean
 }
 
 export type SchemaILField =

@@ -4,7 +4,6 @@ validate:Warn(Unless(Between(1,120), 'too old'))d
 first pass of expression language will only have unless ,between, lessThan, greaterThan (edited) 
 */
 
-
 export const Add = (...args: any) => ['+', ...args]
 export const Subtract = (...args: any) => ['-', ...args]
 export const Mult = (...args: any) => ['*', ...args]
@@ -26,7 +25,11 @@ export const LTE = LessThanEqual
 
 export const Equal = (a: any, b: any) => ['equal', a, b]
 
-export const Between = (a:any, test:any,  b:any) => ['and', ['<', a, test], ['<', test, b]]
+export const Between = (a: any, test: any, b: any) => [
+  'and',
+  ['<', a, test],
+  ['<', test, b],
+]
 
 //Math
 export const Abs = (a: any) => ['abs', a]
@@ -41,6 +44,9 @@ export const Or = (...args: any) => ['or', ...args] // returns the first true el
 
 export const Count = (...args: any) => ['count', ...args]
 export const NotEqual = (a: any, b: any) => ['neq', a, b]
-export const When = (predicate: any, expr:any) => ['when', predicate, expr]
-export const Unless = (predicate: any, expr:any) => ['when', ['not', predicate], expr]
-
+export const When = (predicate: any, expr: any) => ['when', predicate, expr]
+export const Unless = (predicate: any, expr: any) => [
+  'when',
+  ['not', predicate],
+  expr,
+]

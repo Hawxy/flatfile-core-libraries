@@ -235,6 +235,8 @@ export class Field<T, O extends Record<string, any>> {
         'required',
         'primary',
         'unique',
+        'matchStrategy',
+        'upsert',
         'labelEnum',
         'sheetName',
         'stageVisibility',
@@ -355,9 +357,13 @@ type LabelOptions = string | { label: string }
 
 export const OptionField = makeField<
   string,
-  { options: Record<string, LabelOptions> }
+  {
+    matchStrategy?: 'fuzzy' | 'exact'
+    options: Record<string, LabelOptions>
+  }
 >((field) => {
   const def_ = field.options.default
+
   if (def_ !== null) {
     //type guard to make typescript happy
     if (isFullyPresent(def_) && field.options.options[def_] === undefined) {
@@ -373,15 +379,34 @@ export const OptionField = makeField<
     return label
   })
 
-  return () => field.setProp({ type: 'enum', labelEnum })
+  return () => {
+    field.setProp({ type: 'enum', labelEnum })
+    field.setProp({
+      matchStrategy: field.options.matchStrategy || 'fuzzy',
+    })
+    return field
+  }
 })
 
 // LinkedField
-export const LinkedField = makeField<string, { sheet: Sheet<FieldConfig> }>(
-  (field) => {
-    const { sheet } = field.options
-    const sheetName = sheet.name
-
-    return () => field.setProp({ type: 'schema_ref', sheetName })
+export const LinkedField = makeField<
+  string,
+  { sheet: Sheet<FieldConfig>; upsert?: boolean }
+>((field) => {
+  const { sheet } = field.options
+  const sheetName = sheet.name
+  let upsert = true
+  if (field.options.upsert === false) {
+    upsert = false
+  } else if (field.options.upsert === true) {
+    upsert = true
+  } else if (field.options.upsert === undefined) {
+    upsert = true
   }
-)
+
+  return () => {
+    field.setProp({ type: 'schema_ref', sheetName, upsert })
+    //field.setProp({ upsert })
+    return field
+  }
+})

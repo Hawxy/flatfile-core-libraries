@@ -1,7 +1,7 @@
 import { interpret } from './interpret'
 
 describe('Interpreter tests ->', () => {
-  const intrTest = (expr: any, result: number | boolean| any[]) => {
+  const intrTest = (expr: any, result: number | boolean | any[]) => {
     expect(interpret(expr)).toStrictEqual(result)
   }
   test('Basic arithmetic', () => {

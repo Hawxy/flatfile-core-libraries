@@ -5,7 +5,8 @@ type Env = Record<string, NestedIns>
 type fnType = (...args: any) => NestedIns
 
 export const identitySingle = (arg: any) => arg
-const sum = (...args: number[]) => args.reduce((partialSum, a) => partialSum + a, 0)
+const sum = (...args: number[]) =>
+  args.reduce((partialSum, a) => partialSum + a, 0)
 
 export type FnSet = Record<string, fnType>
 const baseFns: FnSet = {
@@ -18,7 +19,8 @@ const baseFns: FnSet = {
   // arithmetic
   '+': sum,
   '-': (a: number, ...rest: number[]) => a - sum(...rest),
-  '*': (...args: number[]) => args.reduce((partialProduct, a) => partialProduct * a, 1),
+  '*': (...args: number[]) =>
+    args.reduce((partialProduct, a) => partialProduct * a, 1),
   '/': (first: number, ...args: number[]) =>
     args.reduce((partialProduct, a) => partialProduct / a, first),
   mod: (a: number, b: number) => a % b,
@@ -50,7 +52,10 @@ export function makeInterpreter(extraFns: Record<string, fnType>) {
     }
 
     const parseInstruction = (ins: NestedIns, variables: Env): NestedIns => {
-      if (['object', 'string', 'number', 'boolean'].includes(typeof ins) && !Array.isArray(ins)) {
+      if (
+        ['object', 'string', 'number', 'boolean'].includes(typeof ins) &&
+        !Array.isArray(ins)
+      ) {
         return ins
       } else if (Array.isArray(ins)) {
         const [fName, ...args] = ins
@@ -72,21 +77,27 @@ export function makeInterpreter(extraFns: Record<string, fnType>) {
         }
         if (fName === 'when') {
           const [predicate, expr] = args
-	  if(parseInstruction(predicate, variables)) {
-	    // only evaluate expr if predicate evaluates to true
-	    return parseInstruction(expr, variables)
-	  }
-	  return []
+          if (parseInstruction(predicate, variables)) {
+            // only evaluate expr if predicate evaluates to true
+            return parseInstruction(expr, variables)
+          }
+          return []
         }
 
         if (typeof fName === 'string') {
           // find the function either in the fns namespace or in the variables namespace, store in `fn`
           const fn = fns[fName] || variables[fName]
           if (fn === undefined) {
-            throw new Error(`Error, couldn't find function or variable ${fName} from ${JSON.stringify(ins)}`)
+            throw new Error(
+              `Error, couldn't find function or variable ${fName} from ${JSON.stringify(
+                ins
+              )}`
+            )
           }
           // recursively call parse instructions (which also evaluates the args
-          const evaluatedArgs: NestedIns = args.map((arg) => parseInstruction(arg, variables))
+          const evaluatedArgs: NestedIns = args.map((arg) =>
+            parseInstruction(arg, variables)
+          )
           // pass all of the evaluated args to the `fn` we found
           try {
             if (Array.isArray(evaluatedArgs)) {

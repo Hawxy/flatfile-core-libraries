@@ -1,6 +1,10 @@
 import { IJsonSchema } from './types/JsonSchema'
 import { SchemaILModel } from './types/SchemaIL'
-import { compileEnum, compileToJsonSchema } from './convert'
+import {
+  compileEnum,
+  SchemaILToJsonSchema,
+  compileToJsonSchema,
+} from './convert'
 
 const jsonSchema: IJsonSchema = {
   properties: {
@@ -51,6 +55,7 @@ const ddlSchema: SchemaILModel = {
     color: {
       field: 'color',
       label: 'Color',
+      matchStrategy: 'fuzzy',
       type: 'enum',
       annotations: {},
       labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
@@ -68,6 +73,7 @@ describe('compiler tests', () => {
     expect(
       compileEnum({
         type: 'enum',
+        matchStrategy: 'fuzzy',
         label: 'Color',
         field: 'color',
         annotations: {},
@@ -79,11 +85,142 @@ describe('compiler tests', () => {
       enum: ['red', 'blue', 'green'],
       enumLabel: ['Red', 'Blue', 'Green'],
     })
+    expect(
+      compileEnum({
+        type: 'enum',
+        matchStrategy: 'exact',
+        label: 'Color',
+        field: 'color',
+        annotations: {},
+        labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
+      })
+    ).toMatchObject({
+      type: 'string',
+      label: 'Color',
+      enumMatch: 'exact',
+      enum: ['red', 'blue', 'green'],
+      enumLabel: ['Red', 'Blue', 'Green'],
+    })
   })
 
   it('tests a records validity on import', () => {
     expect(compileToJsonSchema(ddlSchema)).toMatchObject(jsonSchema)
   })
+
+  it('tests full compile of enum ', () => {
+    const ddlSchema: SchemaILModel = {
+      fields: {
+        color: {
+          field: 'color',
+          label: 'Color',
+          matchStrategy: 'exact',
+          type: 'enum',
+          annotations: {},
+          labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
+          required: false,
+        },
+      },
+      name: 'testSchema',
+      slug: 'test',
+      namespace: 'testspace',
+      allowCustomFields: false,
+    }
+
+    const jsonSchema: IJsonSchema = {
+      properties: {
+        color: {
+          type: 'string',
+          label: 'Color',
+          field: 'color',
+          enumMatch: 'exact',
+          enum: ['red', 'blue', 'green'],
+          enumLabel: ['Red', 'Blue', 'Green'],
+        },
+      },
+      type: 'object',
+      required: [],
+      unique: [],
+      //primary: 'id',
+      allowCustomFields: false,
+    }
+
+    expect(compileToJsonSchema(ddlSchema)).toMatchObject(jsonSchema)
+  })
+
+  it('tests a linkedField properly compiles', () => {
+    const linkedFieldSchema: SchemaILModel = {
+      fields: {
+        linkedFieldKey: {
+          type: 'schema_ref',
+          sheetName: 'foo',
+          label: 'linked_field_label',
+          field: 'linked_field__field_name',
+          upsert: true,
+          annotations: {},
+        },
+      },
+      name: 'linkedFieldSheet',
+      slug: 'lfs',
+      namespace: 'testspace',
+      allowCustomFields: false,
+    }
+
+    expect(SchemaILToJsonSchema(linkedFieldSchema)).toMatchObject({
+      allowCustomFields: false,
+      primary: undefined,
+      properties: {
+        linkedFieldKey: {
+          $schemaId: 'foo',
+          field: 'linkedFieldKey',
+          label: 'linked_field_label',
+          type: 'schema_ref',
+          upsert: undefined,
+          visibility: undefined,
+        },
+      },
+      required: [],
+      type: 'object',
+      unique: [],
+    })
+  })
+
+  it('tests a linkedField upsert:False properly compiles', () => {
+    const linkedFieldSchema: SchemaILModel = {
+      fields: {
+        linkedFieldKey: {
+          type: 'schema_ref',
+          sheetName: 'foo',
+          label: 'linked_field_label',
+          field: 'linked_field__field_name',
+          upsert: false,
+          annotations: {},
+        },
+      },
+      name: 'linkedFieldSheet',
+      slug: 'lfs',
+      namespace: 'testspace',
+      allowCustomFields: false,
+    }
+
+    expect(SchemaILToJsonSchema(linkedFieldSchema)).toMatchObject({
+      allowCustomFields: false,
+      primary: undefined,
+      properties: {
+        linkedFieldKey: {
+          $schemaId: 'foo',
+          field: 'linkedFieldKey',
+          label: 'linked_field_label',
+          type: 'schema_ref',
+          upsert: false,
+          visibility: undefined,
+        },
+      },
+      required: [],
+      type: 'object',
+      unique: [],
+    })
+  })
+
   it('tests no allowCustomFields', () => {
     const noCustom: SchemaILModel = {
       fields: {

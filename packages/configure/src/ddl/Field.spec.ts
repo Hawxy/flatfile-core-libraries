@@ -60,11 +60,74 @@ describe('OptionField tests ->', () => {
       description: '',
       field: 'option_field',
       label: 'Custom Label',
+      matchStrategy: 'fuzzy',
       primary: false,
       required: false,
       labelEnum: { foo: 'Foo', bar: 'Display label for bar' },
       type: 'enum',
       unique: false,
+    })
+  })
+
+  test('enumMatchStrategy exact works', () => {
+    expect(
+      OptionField({
+        label: 'Custom Label',
+        matchStrategy: 'exact',
+        options: { foo: 'Foo', bar: 'Display label for bar' },
+      }).toSchemaILField('option_field')
+    ).toMatchObject({
+      description: '',
+      field: 'option_field',
+      label: 'Custom Label',
+      matchStrategy: 'exact',
+      primary: false,
+      required: false,
+      labelEnum: { foo: 'Foo', bar: 'Display label for bar' },
+      type: 'enum',
+      unique: false,
+    })
+  })
+  test('matchStrategy exact emits proper JSONSchema', () => {
+    const OptionsEnumMatchStrat = new Sheet(
+      'OptionsEnumMatchStrat',
+      {
+        selectOptions: OptionField({
+          label: 'Lots of options',
+          description: 'Select from a list of options',
+          matchStrategy: 'exact',
+          options: {
+            red: 'Red Thing',
+            blue: { label: 'Blue Label' },
+            orange: { label: 'Orange peel' },
+            green: { label: 'Green is the best' },
+          },
+        }),
+      },
+      {}
+    )
+    expect(OptionsEnumMatchStrat.toJSONSchema('foo', 'bar')).toMatchObject({
+      allowCustomFields: false,
+      primary: undefined,
+      properties: {
+        selectOptions: {
+          enumMatch: 'exact',
+          enum: ['red', 'blue', 'orange', 'green'],
+          enumLabel: [
+            'Red Thing',
+            'Blue Label',
+            'Orange peel',
+            'Green is the best',
+          ],
+          field: 'selectOptions',
+          label: 'Lots of options',
+          type: 'string',
+          visibility: undefined,
+        },
+      },
+      required: [],
+      type: 'object',
+      unique: [],
     })
   })
 })
@@ -99,6 +162,42 @@ describe('LinkedField tests ->', () => {
       required: false,
       type: 'schema_ref',
       sheetName: 'BaseTemplate',
+      upsert: true,
+      unique: false,
+    })
+  })
+
+  test('toSchemaIL upsert:False works', () => {
+    const BaseTemplate = new Sheet(
+      'BaseTemplate',
+      {
+        firstName: TextField({
+          unique: true,
+          primary: true,
+        }),
+        middleName: TextField('Middle'),
+        lastName: TextField(),
+      },
+      {
+        previewFieldKey: 'middleName',
+      }
+    )
+
+    expect(
+      LinkedField({
+        label: 'Custom Label',
+        sheet: BaseTemplate,
+        upsert: false,
+      }).toSchemaILField('linked_field')
+    ).toMatchObject({
+      description: '',
+      field: 'linked_field',
+      label: 'Custom Label',
+      primary: false,
+      required: false,
+      type: 'schema_ref',
+      sheetName: 'BaseTemplate',
+      upsert: false,
       unique: false,
     })
   })

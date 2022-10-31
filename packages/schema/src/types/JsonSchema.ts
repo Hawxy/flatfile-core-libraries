@@ -8,6 +8,7 @@ export interface IJsonSchemaProperty {
   field?: string
   format?: string
   isMultiple?: boolean
+  enumMatch?: 'exact' | undefined
   items?: {
     type: string | string[]
     enum?: { label: string; value: string }[]
@@ -31,6 +32,7 @@ export interface IJsonSchemaProperty {
   pattern?: string
   primary?: boolean
   $schemaId?: string
+  upsert?: boolean
   default?: string
   custom?: boolean
   visibility?: FieldVisibilityTypes
