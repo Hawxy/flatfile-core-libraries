@@ -8,12 +8,6 @@ import chalk from 'chalk'
 import fs from 'fs'
 import ora from 'ora'
 
-const { npm_package_json } = process.env
-let localPackageJSON: {}
-if (npm_package_json) {
-  localPackageJSON = require(npm_package_json)
-}
-
 export const sendSchemasToServer = async (
   client: GraphQLClient,
   buildFile: string,
@@ -28,6 +22,14 @@ export const sendSchemasToServer = async (
     }
     return val
   })
+  const { npm_package_json = '' } = process.env
+  let localPackageJSON: {} = {}
+
+  try {
+    localPackageJSON = JSON.parse(fs.readFileSync(npm_package_json, 'utf8'))
+  } catch (e) {
+    console.error('No package.json found in the project root')
+  }
 
   const {
     createDeployment: { id: deploymentId },
@@ -35,7 +37,7 @@ export const sendSchemasToServer = async (
     teamId: options.team,
     version: CLIPackage.version,
     workbook: stringifiedWorkbook,
-    ...(localPackageJSON ? { localPackageJSON } : {}),
+    localPackageJSON,
     environment: env,
   })
 
