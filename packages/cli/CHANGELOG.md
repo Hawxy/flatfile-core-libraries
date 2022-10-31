@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.1
+
+### Patch Changes
+
+- af94de4: fix bug where the CLI failed if a package.json file was not present in the root dir
+
 ## 3.1.0
 
 ### Minor Changes

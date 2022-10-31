@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.2
+
+### Patch Changes
+
+- 1d0e3d9: Adding matchStrategy to enum to allow exact only matches. and upsert:false to LinkedField to better control upsert behavior
+
 ## 0.2.1
 
 ### Patch Changes
