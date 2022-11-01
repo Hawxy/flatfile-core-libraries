@@ -1,7 +1,6 @@
 import inquirer from 'inquirer'
 import fs from 'fs'
 import chalk from 'chalk'
-import boxen from 'boxen'
 import ora from 'ora'
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
@@ -11,52 +10,55 @@ interface Options {
   key?: string
   secret?: string
   team?: string
-  env?: string
+  environment?: string
 }
 
 export const init = async (options: Options) => {
+  console.log({ options })
   const questions = [
     {
       type: 'input',
       name: 'name',
       message: 'Please name your project',
       default: 'flatfile-platform-example',
+      when: !options.name,
     },
     {
       type: 'input',
       name: 'key',
       message: 'Your API key',
+      when: !options.key,
     },
     {
       type: 'input',
       name: 'secret',
       message: 'Your API secret',
+      when: !options.secret,
     },
     {
       type: 'input',
       name: 'team',
       message: 'Your Team ID',
+      when: !options.team,
     },
     {
       type: 'input',
       name: 'environment',
       message: 'Environment name',
       default: 'test',
+      when: !options.environment,
     },
   ]
-
-  // If options are passed in, skip the prompts
-  const filteredQuestions = questions.filter(
-    (question) => !Object.keys(options).includes(question.name)
-  )
 
   console.log(`Please signup or login to Flatfile Dashboard with Github.`)
   console.log(`${chalk.dim('https://api.flatfile.io/auth/github')}\n`)
 
   return inquirer
-    .prompt(filteredQuestions)
+    .prompt(questions)
     .then(async (answers) => {
-      const { name, key, secret, team, environment } = answers
+      // Combine answers from user input with options passed in via CLI
+      const answersWithDefaults: Options = { ...options, ...answers }
+      const { name, key, secret, team, environment } = answersWithDefaults
       const projectDir = `${process.cwd()}/${name}`
 
       // Empty log for spacing only
