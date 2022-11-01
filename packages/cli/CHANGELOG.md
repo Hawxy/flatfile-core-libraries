@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.2
+
+### Patch Changes
+
+- 635291a: fix bug where values passed in as options to the init command are undefined
+
 ## 3.1.1
 
 ### Patch Changes
