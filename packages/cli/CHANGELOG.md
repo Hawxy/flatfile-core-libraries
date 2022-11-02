@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.3
+
+### Patch Changes
+
+- fb24161: chore: update readme
+
 ## 3.1.2
 
 ### Patch Changes
