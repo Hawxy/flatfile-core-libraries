@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.4.3
+
+### Patch Changes
+
+- fad3d6e: feat: add CompositeField feature which enables ddl handling of multiple fields in one reusable component
+
 ## 0.4.2
 
 ### Patch Changes
