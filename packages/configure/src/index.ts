@@ -1,4 +1,5 @@
 export * from './ddl/Field'
+export * from './ddl/ComputedField'
 export * from './ddl/Portal'
 export * from './ddl/Sheet'
 export * from './ddl/Workbook'
