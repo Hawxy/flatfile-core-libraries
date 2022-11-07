@@ -394,6 +394,10 @@ export const LinkedField = makeField<
   { sheet: Sheet<FieldConfig>; upsert?: boolean }
 >((field) => {
   const { sheet } = field.options
+  if (sheet === undefined) {
+    throw new Error('sheet is a required option of LinkedField')
+  }
+
   const sheetName = sheet.name
   let upsert = true
   if (field.options.upsert === false) {

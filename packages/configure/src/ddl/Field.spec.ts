@@ -201,4 +201,12 @@ describe('LinkedField tests ->', () => {
       unique: false,
     })
   })
+  test('linkedField without a sheet throws an error', () => {
+    const badFunc = () =>
+      LinkedField({
+        label: 'Custom Label',
+        upsert: false,
+      })
+    expect(badFunc).toThrow('sheet is a required option of LinkedField')
+  })
 })

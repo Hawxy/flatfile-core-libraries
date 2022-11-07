@@ -1,7 +1,9 @@
 # Flatfile CLI
+
 Interact with Flatfile systems via CLI
 
 ## Usage
+
 ```
 Usage: flatfile [options] [command]
 
@@ -20,6 +22,7 @@ Commands:
 ## Commands
 
 ### Init
+
 ```
 Usage: flatfile init [options]
 
@@ -35,6 +38,7 @@ Options:
 ```
 
 ### Publish
+
 ```
 Usage: flatfile publish [options] [file]
 
@@ -52,10 +56,13 @@ Options:
 ## Development
 
 ### Configure
+
 Configure variables in `.env`
 
 ### Build
-Running `npm run build -- --filter flatfile` will generate a production bundle 
+
+Running `npm run build -- --filter flatfile` will generate a production bundle
 
 ### Deploy
+
 `./packages/cli/dist/index.js publish ../../apps/sandbox/src/setup.ts` will use the current build to run the publish command and attempt to publish the sandbox workbook
