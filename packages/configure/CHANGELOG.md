@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.4.4
+
+### Patch Changes
+
+- 6776dde: chore: throw a clear error message when a LinkedField is used without a sheet specified
+
 ## 0.4.3
 
 ### Patch Changes
