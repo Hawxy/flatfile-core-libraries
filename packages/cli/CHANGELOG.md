@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.4
+
+### Patch Changes
+
+- ca74bc6: fix: remove errant console log in init command
+
 ## 3.1.3
 
 ### Patch Changes
