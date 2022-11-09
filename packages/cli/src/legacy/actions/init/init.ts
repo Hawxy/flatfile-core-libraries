@@ -14,7 +14,6 @@ interface Options {
 }
 
 export const init = async (options: Options) => {
-  console.log({ options })
   const questions = [
     {
       type: 'input',
