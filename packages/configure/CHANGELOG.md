@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.4.5
+
+### Patch Changes
+
+- f10d51a: feat: adds egressFormat hook to control final to text conversion of a field in an explicit step
+
 ## 0.4.4
 
 ### Patch Changes
