@@ -47,7 +47,10 @@ export interface IFieldHooks<T> {
   default: Nullable<T>
   compute: (value: T) => T
   validate: (value: T) => void | Message[] // eventually add single message
+  egressFormat: ((value: T) => string) | false
 }
+
+export type AnyField = Field<any, any>
 
 export const FieldHookDefaults = <T>(): IFieldHooks<T> => ({
   cast: (value: Dirty<T>) => {
@@ -59,6 +62,7 @@ export const FieldHookDefaults = <T>(): IFieldHooks<T> => ({
   default: null,
   compute: (value: T) => value,
   validate: () => [],
+  egressFormat: false,
 })
 
 export interface GenericFieldOptions {
@@ -108,6 +112,18 @@ export type BaseFieldOptions<T> = Partial<SchemaILField> &
 
 export type FullBaseFieldOptions<T, O> = SchemaILField & IFieldHooks<T> & O
 
+export const verifyEgressCycle = <T>(
+  field: Field<T, any>,
+  castVal: T
+): boolean => {
+  //cast / egressFormat cycle must converge to the same value,
+  //otherwise throw an error because the user will lose dta
+  const egressResult = field.options.egressFormat(castVal)
+  const recastResult = field.toCastDefault(egressResult)
+  const recast = recastResult[0]
+  return castVal === recast
+}
+
 export class Field<T, O extends Record<string, any>> {
   public constructor(
     public options: FullBaseFieldOptions<T, O> = {} as FullBaseFieldOptions<
@@ -126,7 +142,7 @@ export class Field<T, O extends Record<string, any>> {
   // constructor because this is a very advanced field feature to use,
   // it can be set on an instantiated field
 
-  public extraFieldsToAdd: Record<string, Field<any, any>> = {}
+  public extraFieldsToAdd: Record<string, AnyField> = {}
 
   public toCastDefault(rawValue: any): [Nullable<T>, Message[]] {
     // run field execution until a value or null is provided, run with proper error and type handling
@@ -160,6 +176,17 @@ export class Field<T, O extends Record<string, any>> {
     rawValue: any
   ): [Nullable<T>, Message[]] {
     // start with an actual value of correct type, call compute with proper error handling, pull off computed value and messages
+    if (
+      this.options.egressFormat &&
+      !verifyEgressCycle(this, reallyActuallyCast)
+    ) {
+      throw new Error(
+        `couldn't reify the value after egress typed:${reallyActuallyCast} to ${typeof reallyActuallyCast} egress:${
+          this.options.verifyEgressCycle
+        }`
+      )
+    }
+
     const compMessages: Message[] = []
     const computed: T = this.options.compute(reallyActuallyCast)
     if (typeof computed === 'undefined') {

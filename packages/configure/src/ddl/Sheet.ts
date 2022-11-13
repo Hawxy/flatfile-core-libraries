@@ -9,7 +9,7 @@ import {
   SchemaILToJsonSchema,
 } from '@flatfile/schema'
 
-import { Field } from './Field'
+import { Message, verifyEgressCycle, AnyField } from './Field'
 import { toPairs } from 'remeda'
 import { isFullyPresent } from '../utils/isFullyPresent'
 
@@ -129,7 +129,7 @@ export class Sheet<FC extends FieldConfig> {
     if (passedOptions) {
       Object.assign(this.options, passedOptions)
     }
-    const malleableFields: Record<string, Field<any, any>> = fields
+    const malleableFields: Record<string, AnyField> = fields
     toPairs(fields).map(([key, field]) => {
       //do dag checking here on dependsOn, uses, and modifies
       if (field.options.contributeToRecordCompute) {
@@ -162,7 +162,7 @@ export class Sheet<FC extends FieldConfig> {
           record.set(key, newVal)
         }
 
-        messages.map((m) =>
+        ;(messages as Message[]).map((m) =>
           record.pushInfoMessage(key, m.message, m.level, m.stage)
         )
 
@@ -185,16 +185,26 @@ export class Sheet<FC extends FieldConfig> {
     // Run recordCompute record hook
     await this.options.batchRecordsCompute(records, session, logger)
 
-    records.records.map(async (record: FlatfileRecord) => {
-      toPairs(this.fields).map(async ([key, field]) => {
+    records.records.map((record: FlatfileRecord) => {
+      toPairs(this.fields).map(([key, field]) => {
         const origVal = record.get(key)
         if (isFullyPresent(origVal)) {
           // TODO throw an error on null???
           const messages = field.validate(origVal)
           if (messages) {
-            messages.map((m) => {
+            ;(messages as Message[]).map((m) => {
               record.pushInfoMessage(key, m.message, m.level, m.stage)
             })
+          }
+
+          if (field.options.egressFormat) {
+            const egressVal = field.options.egressFormat(origVal)
+            if (!verifyEgressCycle(field, origVal)) {
+              throw new Error(
+                `couldn't reify the value after egress typed:${origVal} to ${typeof origVal} egress:${egressVal}`
+              )
+            }
+            record.set(key, egressVal)
           }
         }
       })
@@ -205,6 +215,7 @@ export class Sheet<FC extends FieldConfig> {
       const testPlugin = new UniqueAndRequiredPlugin()
       testPlugin.run(this.fields, records.records)
     }
+    return records
   }
 
   public toSchemaIL(namespace: string, slug: string): SchemaILModel {
@@ -227,4 +238,4 @@ export class Sheet<FC extends FieldConfig> {
   }
 }
 
-export type FieldConfig = Record<string, Field<any, any>>
+export type FieldConfig = Record<string, AnyField>

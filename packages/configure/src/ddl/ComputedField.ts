@@ -1,6 +1,6 @@
 import { FlatfileRecord, TPrimitive } from '@flatfile/hooks'
 import { isFullyPresent } from '../utils/isFullyPresent'
-import { Field } from './Field'
+import { Message, AnyField } from './Field'
 export type computeType = (limitedObj: Record<string, TPrimitive>) => unknown
 
 interface ComputedFieldArgs {
@@ -13,7 +13,7 @@ interface ComputedFieldArgs {
 }
 
 const recordComputeForComputedField = (
-  destinationField: Field<any, any>,
+  destinationField: AnyField,
   computeArgs: ComputedFieldArgs
 ) => {
   const retFunc = (record: FlatfileRecord) => {
@@ -64,7 +64,7 @@ const recordComputeForComputedField = (
           record.set(destinationKey, newVal)
         }
         if (messages !== null) {
-          messages.map((m) =>
+          ;(messages as Message[]).map((m) =>
             record.pushInfoMessage(destinationKey, m.message, m.level, m.stage)
           )
         }
@@ -87,7 +87,7 @@ const recordComputeForComputedField = (
 }
 
 export const ComputedField = (
-  destinationField: Field<any, any>,
+  destinationField: AnyField,
   computeArgs: ComputedFieldArgs
 ) => {
   //todo: write toSchemaIL for ComputedField

@@ -1,6 +1,7 @@
 import {
   OptionField,
   NumberField,
+  FieldHookDefaults,
   Message,
   LinkedField,
   TextField,
@@ -30,15 +31,30 @@ describe('NumberField tests ->', () => {
       unique: false,
     })
   })
-  test('computeToValue works', () => {
-    const nf = NumberField({
-      cast: (val: any) => {
-        return parseInt(val)
-      },
-    })
-    expect(nf.computeToValue('10')).toStrictEqual([10, []])
 
-    expect(nf.computeToValue(undefined)).toStrictEqual([NaN, []])
+  // test('egressFormat works', () => {
+  //   const nf = NumberField({})
+  //   expect(nf.options.egressFormat(10)).toStrictEqual('10')
+  //   const nf2 = NumberField({
+  //     cast: (val: any) => {
+  //       console.log(`incoming val ${val}`)
+  //       return parseInt(val)
+  //     },
+  //   })
+  //   expect(nf2.options.egressFormat(10)).toStrictEqual('10')
+  // })
+
+  // test('egressFormat works for weird', () => {
+  //   const ef = FieldHookDefaults().egressFormat
+  //   expect(ef(10)).toStrictEqual('10')
+  //   expect(ef(NaN)).toStrictEqual('NaN')
+  //   //expect(ef(undefined)).toStrictEqual('NaN')
+  // })
+
+  test('computeToValue works', () => {
+    const nf = NumberField({})
+
+    expect(nf.computeToValue(undefined)).toStrictEqual([null, []])
     const nf2 = NumberField({
       cast: (val: any) => {
         throw new Error('err')

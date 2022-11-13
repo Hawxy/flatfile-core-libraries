@@ -18,7 +18,7 @@ export class Workbook {
       sheetTarget.includes(namespace + '/' + t)
     )
     if (foundTarget) {
-      await this.options.sheets[foundTarget].runProcess(
+      return await this.options.sheets[foundTarget].runProcess(
         records,
         payload as FlatfileSession,
         logger

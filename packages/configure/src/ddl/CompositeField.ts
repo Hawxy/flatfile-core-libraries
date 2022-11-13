@@ -1,10 +1,10 @@
 import { FlatfileRecord, TPrimitive } from '@flatfile/hooks'
-import { Field, TextField, NumberField } from './Field'
+import { AnyField, TextField, NumberField } from './Field'
 import { ComputedField } from './ComputedField'
 import { toPairs } from 'remeda'
 
 export class ComplexType {
-  static fields: Record<string, Field<any, any>> = {}
+  static fields: Record<string, AnyField> = {}
   static fromRecord(obj: any): any {
     return null
   }
@@ -32,9 +32,9 @@ export function makeCompositeField(someClass: any): any {
   ) => {
     //todo: write toSchemaIL for CompositeField
     const options = { ...DefaultCompositeFieldOptions, ...passedOptions }
-    const extraFieldsToAdd: Record<string, Field<any, any>> = {}
+    const extraFieldsToAdd: Record<string, AnyField> = {}
     const unMapRecord: Record<string, string> = {}
-    const classFields = someClass.fields as Record<string, Field<any, any>>
+    const classFields = someClass.fields as Record<string, AnyField>
 
     const dependsOn: string[] = []
     const possiblyDependsOn: string[] = []

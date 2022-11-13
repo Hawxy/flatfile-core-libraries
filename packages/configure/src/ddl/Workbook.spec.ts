@@ -56,6 +56,55 @@ describe('Workbook tests ->', () => {
       testBoolean: true,
     })
   })
+
+  test('processRecords with useEgressHook works', async () => {
+    const row1 = { firstName1: 'foo', testBoolean1: 'true' }
+    const iRaw = [{ rawData: row1, rowId: 1 }]
+    const recordBatch = new FlatfileRecords(iRaw)
+
+    const CategoryAndBoolean = new Sheet(
+      'CategoryAndBoolean',
+      {
+        firstName1: TextField({
+          required: true,
+          description: 'foo',
+          compute: (v) => v.toUpperCase(),
+        }),
+
+        testBoolean1: BooleanField({
+          egressFormat: (val: boolean) => {
+            if (val) {
+              return 'TRUE'
+            } else {
+              return 'false'
+            }
+          },
+        }),
+      },
+      {
+        allowCustomFields: true,
+        readOnly: true,
+      }
+    )
+
+    const TestWorkbook = new Workbook({
+      name: `Test Workbook`,
+      namespace: 'test',
+      sheets: { CategoryAndBoolean },
+    })
+
+    const session = new FlatfileSession({
+      ...testSession,
+      schemaSlug: 'test/CategoryAndBoolean',
+    })
+
+    //console.log("processRecords", TestWorkbook.processRecords(recordBatch, session))
+    await TestWorkbook.processRecords(recordBatch, session)
+    expect(recordBatch.records[0].value).toMatchObject({
+      firstName1: 'FOO',
+      testBoolean1: 'TRUE',
+    })
+  })
   test('handleLegacyDataHook', async () => {
     const hookRows = [{ row: { rawData: row1, rowId: 1, info: [] } }]
     const formattedpayload = {
