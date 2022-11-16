@@ -99,8 +99,8 @@ test('when the typed value (cast + default) is Null, and required true an error 
   await ft.checkFieldResult('b', null)
   await ft.matchFieldMessage('b', {
     level: 'error',
-    message: 'missing value',
-    stage: 'required',
+    message: 'Required Value',
+    stage: 'other'
   })
 })
 

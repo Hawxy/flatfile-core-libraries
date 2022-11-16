@@ -229,13 +229,7 @@ export class Field<T, O extends Record<string, any>> {
         }
       } else {
         if (this.options.required) {
-          return [
-            null,
-            _.concat(
-              extraMessages,
-              new Message('missing value', 'error', 'required')
-            ),
-          ]
+          return [null, extraMessages]
         }
         return [null, []]
       }
