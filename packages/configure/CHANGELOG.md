@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.4.6
+
+### Patch Changes
+
+- 692d4c7: Resolving an issue where required fields ended up with multiple errors
+
 ## 0.4.5
 
 ### Patch Changes
