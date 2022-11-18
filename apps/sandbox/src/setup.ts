@@ -11,12 +11,7 @@ import {
   CountryCast,
   Portal,
 } from '@flatfile/configure'
-import {
-  FlatfileSession,
-  FlatfileRecord,
-  TRecordData,
-  TPrimitive,
-} from '@flatfile/hooks'
+import { FlatfileSession, FlatfileRecord } from '@flatfile/hooks'
 
 const BaseSheet = new Sheet(
   'BaseSheet',

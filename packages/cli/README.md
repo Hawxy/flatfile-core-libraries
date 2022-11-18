@@ -65,4 +65,4 @@ Running `npm run build -- --filter flatfile` will generate a production bundle
 
 ### Deploy
 
-`./packages/cli/dist/index.js publish ../../apps/sandbox/src/setup.ts` will use the current build to run the publish command and attempt to publish the sandbox workbook
+`cd ./packages/cli/; ./dist/index.js publish ../../apps/sandbox/src/setup.ts` will use the current build to run the publish command and attempt to publish the sandbox workbook

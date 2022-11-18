@@ -48,13 +48,14 @@ export const sendSchemasToServer = async (
       const name = model.name
       const sourceCode = fs.readFileSync(buildFile, 'utf8')
       const { previewFieldKey } = model.options
+      const jsonSchema = { schema: model.toJSONSchema(namespace, slug) }
+
       const schema = await client.request(MUTATION_UPSERT_SCHEMA, {
         slug: `${namespace}/${slug}`,
         teamId: team,
         name,
-        jsonSchema: {
-          schema: model.toJSONSchema(namespace, slug),
-        },
+        jsonSchema,
+        sheetCompute: model.getSheetCompute(),
         previewFieldKey,
         deploymentId,
         environment: env,

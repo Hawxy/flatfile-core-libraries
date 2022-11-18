@@ -15,6 +15,7 @@ interface BaseField {
     compute?: boolean
     computeMessage?: string
   }
+  getSheetCompute?: any
 }
 
 export interface BaseSchemaILField extends BaseField {

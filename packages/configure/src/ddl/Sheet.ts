@@ -11,6 +11,7 @@ import {
 
 import { Message, verifyEgressCycle, AnyField } from './Field'
 import { toPairs } from 'remeda'
+import * as _ from 'lodash'
 import { isFullyPresent } from '../utils/isFullyPresent'
 
 type Unique = {
@@ -100,6 +101,16 @@ export type RecordCompute = {
   (record: FlatfileRecord<any>, session: FlatfileSession, logger?: any): void
 }
 
+type SheetComputeType = (
+  | string
+  | string[]
+  | {
+      groupBy: string[]
+      expression: (string | string[])[]
+      destination: string
+    }
+)[]
+
 export interface SheetOptions<FC> {
   allowCustomFields: boolean
   readOnly: boolean
@@ -118,6 +129,7 @@ export class Sheet<FC extends FieldConfig> {
   }
 
   private contributedRecordFuncs: Record<string, RecordCompute> = {}
+  private sheetCompute: any = false
   public idFromAPI: string | undefined
 
   constructor(
@@ -147,6 +159,23 @@ export class Sheet<FC extends FieldConfig> {
       })
     })
     this.fields = malleableFields
+
+    const contributedSheetComputes: Record<string, any> = {}
+    toPairs(fields).map(([key, field]) => {
+      //do dag checking here on dependsOn, uses, and modifies
+      if (field.options.getSheetCompute) {
+        contributedSheetComputes[key] = field.options.getSheetCompute(key)
+      }
+    })
+    if (_.values(contributedSheetComputes).length > 1) {
+      throw new Error(
+        `Only one sheetCompute possible currently found sheetComputes for ${_.keys(
+          contributedSheetComputes
+        )}`
+      )
+    } else if (_.values(contributedSheetComputes).length == 1) {
+      this.sheetCompute = _.values(contributedSheetComputes)[0]
+    }
   }
 
   public async runProcess(
@@ -235,6 +264,11 @@ export class Sheet<FC extends FieldConfig> {
 
   public toJSONSchema(namespace: string, slug: string): IJsonSchema {
     return SchemaILToJsonSchema(this.toSchemaIL(namespace, slug))
+  }
+  public getSheetCompute(): object | undefined {
+    if (this.sheetCompute) {
+      return { sheetCompute: this.sheetCompute }
+    }
   }
 }
 

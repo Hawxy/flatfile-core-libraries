@@ -85,6 +85,7 @@ export interface GenericFieldOptions {
     review?: boolean
     export?: boolean
   }
+  getSheetCompute: any
 }
 
 const GenericDefaults: GenericFieldOptions = {
@@ -105,6 +106,7 @@ const GenericDefaults: GenericFieldOptions = {
     compute: false,
     computeMessage: 'This value was automatically reformatted - original data:',
   },
+  getSheetCompute: false,
 }
 
 export type BaseFieldOptions<T> = Partial<SchemaILField> &

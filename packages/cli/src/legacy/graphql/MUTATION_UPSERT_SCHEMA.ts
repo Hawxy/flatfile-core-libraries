@@ -6,6 +6,7 @@ export const MUTATION_UPSERT_SCHEMA = gql`
     $teamId: ID!
     $archived: Boolean
     $jsonSchema: JsonSchemaDto
+    $sheetCompute: JSONObject
     $name: String
     $previewFieldKey: String
     $deploymentId: String
@@ -17,6 +18,7 @@ export const MUTATION_UPSERT_SCHEMA = gql`
       teamId: $teamId
       archived: $archived
       jsonSchema: $jsonSchema
+      sheetCompute: $sheetCompute
       name: $name
       previewFieldKey: $previewFieldKey
       deploymentId: $deploymentId
