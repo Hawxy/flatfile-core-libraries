@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.5
+
+### Patch Changes
+
+- ad818ee: feat: initial implementation of GroupByField, and sheetCompute infrastructure on top of sheet
+
 ## 3.1.4
 
 ### Patch Changes

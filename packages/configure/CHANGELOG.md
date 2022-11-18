@@ -1,5 +1,13 @@
 # @flatfile/configure
 
+## 0.4.7
+
+### Patch Changes
+
+- ad818ee: feat: initial implementation of GroupByField, and sheetCompute infrastructure on top of sheet
+- Updated dependencies [ad818ee]
+  - @flatfile/schema@0.2.3
+
 ## 0.4.6
 
 ### Patch Changes

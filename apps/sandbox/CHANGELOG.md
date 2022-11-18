@@ -1,5 +1,11 @@
 # @private/sandbox
 
+## 1.0.6
+
+### Patch Changes
+
+- ad818ee: feat: initial implementation of GroupByField, and sheetCompute infrastructure on top of sheet
+
 ## 1.0.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.3
+
+### Patch Changes
+
+- ad818ee: feat: initial implementation of GroupByField, and sheetCompute infrastructure on top of sheet
+
 ## 0.2.2
 
 ### Patch Changes
