@@ -118,7 +118,7 @@ export const init = async (options: Options) => {
       console.log('    Deploy your workbook\n')
 
       console.log(
-        `Optionally, preview an example at ${projectDir}/examples/FullExample.ts`
+        `Optionally, preview an example at ${projectDir}/examples/workbooks/FullExample.ts`
       )
 
       console.log(
@@ -127,7 +127,7 @@ export const init = async (options: Options) => {
 
       console.log(
         `  ${chalk.cyan(
-          `npx flatfile publish ./${name}/examples/FullExample.ts`
+          `npx flatfile publish ./${name}/examples/workbooks/FullExample.ts`
         )}`
       )
       console.log('    Publish example workbook\n')
