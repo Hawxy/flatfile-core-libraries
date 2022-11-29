@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.4.8
+
+### Patch Changes
+
+- dc57b64: feat: improvements to egressFormat, specifically that allow true date comparisons in verify egressCycle
+
 ## 0.4.7
 
 ### Patch Changes
