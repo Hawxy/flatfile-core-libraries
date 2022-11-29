@@ -123,6 +123,19 @@ export const verifyEgressCycle = <T>(
   const egressResult = field.options.egressFormat(castVal)
   const recastResult = field.toCastDefault(egressResult)
   const recast = recastResult[0]
+
+  // We want to be very explicit about date comparison since it is so important
+  if (_.isDate(castVal) && _.isDate(recast)) {
+    const [castDate, recastDate] = [castVal as Date, recast as Date]
+    if (_.isEqual(castDate, recastDate)) {
+      //explicitly returning true so we get to the console.log with better debugging info
+      return true
+    }
+  }
+  if (_.isEqual(castVal, recast)) {
+    return true
+  }
+
   return castVal === recast
 }
 
@@ -178,17 +191,22 @@ export class Field<T, O extends Record<string, any>> {
     rawValue: any
   ): [Nullable<T>, Message[]] {
     // start with an actual value of correct type, call compute with proper error handling, pull off computed value and messages
-    if (
-      this.options.egressFormat &&
-      !verifyEgressCycle(this, reallyActuallyCast)
-    ) {
+    let egressFail: boolean = false
+    try {
+      egressFail =
+        this.options.egressFormat &&
+        !verifyEgressCycle(this, reallyActuallyCast)
+    } catch (e: any) {
       throw new Error(
-        `couldn't reify the value after egress typed:${reallyActuallyCast} to ${typeof reallyActuallyCast} egress:${
-          this.options.verifyEgressCycle
-        }`
+        `field threw an error at egressFormat with a value of ${reallyActuallyCast} of type ${typeof reallyActuallyCast}`
       )
     }
-
+    if (this.options.egressFormat && egressFail) {
+      const egressVal = this.options.egressFormat(reallyActuallyCast)
+      throw new Error(
+        `field couldn't reify to same value after egressFormat. Value ${reallyActuallyCast} of type ${typeof reallyActuallyCast} was egressFormatted to to string of '${egressVal}' which couldn't be cast back to ${reallyActuallyCast}. Persisting this would result in data loss. The original value ${rawValue} was not changed.`
+      )
+    }
     const compMessages: Message[] = []
     const computed: T = this.options.compute(reallyActuallyCast)
     if (typeof computed === 'undefined') {

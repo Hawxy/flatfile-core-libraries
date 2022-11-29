@@ -227,13 +227,27 @@ export class Sheet<FC extends FieldConfig> {
           }
 
           if (field.options.egressFormat) {
-            const egressVal = field.options.egressFormat(origVal)
-            if (!verifyEgressCycle(field, origVal)) {
-              throw new Error(
-                `couldn't reify the value after egress typed:${origVal} to ${typeof origVal} egress:${egressVal}`
+            try {
+              const egressVal = field.options.egressFormat(origVal)
+              if (verifyEgressCycle(field, origVal)) {
+                record.set(key, egressVal)
+                return
+              } else {
+                record.pushInfoMessage(
+                  key,
+                  `Error: sheet tried to egressFormat value ${origVal} of type ${typeof origVal} to string of '${egressVal}' which couldn't be cast back to ${origVal}. Persisting this would result in data loss. The original value ${origVal} was not changed.`,
+                  'error',
+                  'other'
+                )
+              }
+            } catch (e: any) {
+              record.pushInfoMessage(
+                key,
+                `Error: sheet threw an error when trying to egressFormat a value of ${origVal} of type ${typeof origVal}`,
+                'error',
+                'other'
               )
             }
-            record.set(key, egressVal)
           }
         }
       })

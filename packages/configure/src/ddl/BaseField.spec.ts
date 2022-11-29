@@ -32,25 +32,6 @@ describe('NumberField tests ->', () => {
     })
   })
 
-  // test('egressFormat works', () => {
-  //   const nf = NumberField({})
-  //   expect(nf.options.egressFormat(10)).toStrictEqual('10')
-  //   const nf2 = NumberField({
-  //     cast: (val: any) => {
-  //       console.log(`incoming val ${val}`)
-  //       return parseInt(val)
-  //     },
-  //   })
-  //   expect(nf2.options.egressFormat(10)).toStrictEqual('10')
-  // })
-
-  // test('egressFormat works for weird', () => {
-  //   const ef = FieldHookDefaults().egressFormat
-  //   expect(ef(10)).toStrictEqual('10')
-  //   expect(ef(NaN)).toStrictEqual('NaN')
-  //   //expect(ef(undefined)).toStrictEqual('NaN')
-  // })
-
   test('computeToValue works', () => {
     const nf = NumberField({})
 

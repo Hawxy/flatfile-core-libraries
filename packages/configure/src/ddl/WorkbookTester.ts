@@ -1,12 +1,8 @@
 import _ from 'lodash'
 
-import {
-  Sheet,
-  NumberField,
-  Workbook,
-  IHookPayload,
-  Message,
-} from '@flatfile/configure'
+import { IHookPayload } from '@flatfile/configure'
+import { Workbook } from './Workbook'
+import { NumberField, Message } from './Field'
 
 import {
   IRawRecordWithInfo,
@@ -14,7 +10,7 @@ import {
   TPrimitive,
   TRecordData,
 } from '@flatfile/hooks'
-import { SheetOptions } from './Sheet'
+import { SheetOptions, Sheet } from './Sheet'
 
 export class WorkbookTester {
   public workbook
