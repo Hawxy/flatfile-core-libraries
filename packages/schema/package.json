@@ -27,6 +27,7 @@
   "devDependencies": {
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/ts-config-platform-sdk": "*",
+    "@flatfile/blueprint": "^0.0.3",
     "@types/jest": "^28.1.4",
     "@types/lodash": "^4.14.182",
     "eslint": "^8.19.0",

@@ -19,6 +19,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.23.0",
     "@flatfile/eslint-config-platform-sdk": "*",
+    "@flatfile/blueprint": "^0.0.3",
     "@types/jest": "^28.1.4",
     "eslint": "^8.18.0",
     "jest": "^28.1.2",

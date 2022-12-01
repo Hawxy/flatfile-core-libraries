@@ -7,12 +7,14 @@ import {
   IJsonSchema,
   SchemaILModel,
   SchemaILToJsonSchema,
+  SchemaILModelToSheetConfig,
 } from '@flatfile/schema'
 
 import { Message, verifyEgressCycle, AnyField } from './Field'
 import { toPairs } from 'remeda'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { isFullyPresent } from '../utils/isFullyPresent'
+import { SheetConfig } from '@flatfile/blueprint'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
@@ -279,6 +281,11 @@ export class Sheet<FC extends FieldConfig> {
   public toJSONSchema(namespace: string, slug: string): IJsonSchema {
     return SchemaILToJsonSchema(this.toSchemaIL(namespace, slug))
   }
+
+  public toBlueprint(namespace: string, slug: string): SheetConfig {
+    return SchemaILModelToSheetConfig(this.toSchemaIL(namespace, slug))
+  }
+
   public getSheetCompute(): object | undefined {
     if (this.sheetCompute) {
       return { sheetCompute: this.sheetCompute }
