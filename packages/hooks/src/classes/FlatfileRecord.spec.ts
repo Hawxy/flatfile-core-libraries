@@ -1,18 +1,17 @@
 import { mock, restore, Stub } from 'simple-mock'
 
-import { FlatfileRecord } from './FlatfileRecord'
-
-const rawRecord = {
-  rawData: { name: 'Jared', age: 12 },
-  rowId: 1,
-  info: [],
-}
+import { FlatfileRecord, IRawRecord } from './FlatfileRecord'
 
 describe('FlatfileRecord', () => {
   let person: FlatfileRecord
   let log: Stub<boolean>
+  let rawRecord: IRawRecord
 
   beforeEach(() => {
+    rawRecord = {
+      rawData: { name: 'Jared', age: 12, favePet: null },
+      rowId: 1,
+    }
     person = new FlatfileRecord(rawRecord)
     log = mock(console, 'error', () => true)
   })
@@ -35,7 +34,7 @@ describe('FlatfileRecord', () => {
   })
 
   it('returns an updated record if a records value is changed but retain its original value', () => {
-    const growUp = rawRecord.rawData.age + 1
+    const growUp = (rawRecord.rawData.age as number) + 1
 
     person.set('age', growUp)
 
@@ -107,6 +106,15 @@ describe('FlatfileRecord', () => {
   it('setter logs an error when no property', () => {
     person.set('job', 'engineer')
     expect(log.callCount).toBe(1)
+  })
+
+  it('should get and set linked values', () => {
+    const record = new FlatfileRecord(rawRecord)
+
+    expect(
+      record.setLinkedValue('favePet', 'name', 'rover').value
+    ).toHaveProperty('favePet::name')
+    expect(record.getLinkedValue('favePet', 'name')).toBe('rover')
   })
 
   afterEach(() => {

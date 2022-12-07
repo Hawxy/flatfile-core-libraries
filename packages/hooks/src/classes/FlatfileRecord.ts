@@ -87,9 +87,29 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
     return this
   }
 
+  public setLinkedValue(
+    linkedFieldKey: string,
+    childKey: string,
+    value: TPrimitive
+  ) {
+    if (!this.verifyField(linkedFieldKey)) {
+      return this
+    }
+    Object.assign(this.mutated, { [`${linkedFieldKey}::${childKey}`]: value })
+    return this
+  }
+
   public get(field: string): null | TPrimitive {
     if (this.verifyField(field)) {
       return this.mutated[field]
+    }
+
+    return null
+  }
+
+  public getLinkedValue(linkedFieldKey: string, childKey: string) {
+    if (this.verifyField(linkedFieldKey)) {
+      return this.mutated[`${linkedFieldKey}::${childKey}`] ?? null
     }
 
     return null
