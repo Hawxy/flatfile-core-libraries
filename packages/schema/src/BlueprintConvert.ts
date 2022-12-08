@@ -21,7 +21,7 @@ import {
 const getConstraints = (field: SchemaILField): Constraint[] =>
   _.filter([
     field.required ? { type: 'required' } : null,
-    field.unique ? { type: 'unqiue' } : null,
+    field.unique ? { type: 'unique' } : null,
   ]) as Constraint[]
 
 const convertBase = (
