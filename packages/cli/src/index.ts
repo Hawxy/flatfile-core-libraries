@@ -1,9 +1,15 @@
 #!/usr/bin/env node
+import './config'
 import { program } from 'commander'
 import dotenv from 'dotenv'
 import packageJSON from '../package.json'
-import { publishAction } from './legacy/actions/publish'
+
 import { init } from './legacy/actions/init/init'
+
+import { publishAction as legacyPublishAction } from './legacy/actions/publish'
+import { publishAction as publishAction } from './x/actions/publish.action'
+import { quickstartAction } from './x/actions/quickstart.action'
+import { switchVersion } from './switch.version'
 
 dotenv.config()
 
@@ -13,15 +19,11 @@ program
   .version(`${packageJSON.version}`)
 
 program
-  .command('publish')
-  .argument(
-    '[file]',
-    'Path to Workbook file to publish (default: "./src/index.ts")'
-  )
-  .description('Publish a Workbook')
+  .command('publish <file>')
+  .description('publish a Workbook')
   .option('-t, --team <team-id>', 'the Team ID to publish to')
   .option('--api-url <url>', 'the API url to use')
-  .action(publishAction)
+  .action(switchVersion(legacyPublishAction, publishAction))
 
 program
   .command('init')
@@ -32,5 +34,12 @@ program
   .option('-s, --secret <secret>', 'the API Secret to use')
   .option('-t, --team <team>', 'the Team ID to publish to')
   .action(init)
+
+program
+  .command('quickstart')
+  .description('initialize a quickstart Workbook')
+  .option('-t, --team <team-id>', 'the Team ID to publish to')
+  .option('--api-url <url>', 'the API url to use')
+  .action(quickstartAction)
 
 program.parse()

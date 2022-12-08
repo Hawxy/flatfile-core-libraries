@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 import {
   SchemaILModel,
   BaseSchemaILField,
@@ -120,7 +120,7 @@ export const SchemaILModelToSheetConfig = (
   const fields = _.values(model.fields).map(SchemaILFieldtoProperty)
   return {
     fields,
-    name: model.name,
     slug: model.slug,
+    name: model.name,
   }
 }

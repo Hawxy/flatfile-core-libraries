@@ -177,9 +177,9 @@ export class WorkbookTester {
         if (duplicatesFound) {
           for (let duplicate of duplicatesFound) {
             if (fieldLocation[duplicate.field]) {
-              fieldLocation[duplicate.field].push(record.row.rowId)
+              fieldLocation[duplicate.field].push(Number(record.row.rowId))
             } else {
-              fieldLocation[duplicate.field] = [record.row.rowId]
+              fieldLocation[duplicate.field] = [Number(record.row.rowId)]
             }
           }
         }

@@ -1,15 +1,15 @@
 import { PublishEmbed } from './types'
 
-export const embedURL = ({ teamId, embedId, apiURL, env }: PublishEmbed) => {
+export const embedURL = ({ team, embedId, apiURL, env }: PublishEmbed) => {
   const { hostname } = new URL(apiURL)
 
   if (hostname === 'localhost') {
-    return `http://localhost:8080/a/${teamId}/env/${env}/setup/embeds/${embedId}`
+    return `http://localhost:8080/a/${team}/env/${env}/setup/embeds/${embedId}`
   }
 
   // onprem follows a different url pattern than all others
   if (hostname === 'onprem.flatfile.com') {
-    return `https://onprem.flatfile.com/a/${teamId}/env/${env}/setup/embeds/${embedId}`
+    return `https://onprem.flatfile.com/a/${team}/env/${env}/setup/embeds/${embedId}`
   }
 
   const region = hostname.split('.')[1]
@@ -23,5 +23,5 @@ export const embedURL = ({ teamId, embedId, apiURL, env }: PublishEmbed) => {
 
   const baseURL = url[region]
 
-  return `${baseURL}/a/${teamId}/env/${env}/setup/embeds/${embedId}`
+  return `${baseURL}/a/${team}/env/${env}/setup/embeds/${embedId}`
 }

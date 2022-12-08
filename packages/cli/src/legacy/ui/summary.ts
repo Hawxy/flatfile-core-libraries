@@ -5,14 +5,14 @@ import { PublishSchemas } from '../utilities/types'
 import { embedURL } from '../utilities/embed.url'
 
 export const summary = ({
-  teamId,
+  team,
   schemaIds,
   apiURL,
   env = 'test',
   portals,
 }: PublishSchemas) => {
   const teamSummary = `${chalk.whiteBright('TEAM:')}        ${chalk.dim(
-    teamId
+    team
   )}\n`
 
   const schemaSummary =
@@ -33,12 +33,12 @@ export const summary = ({
           .map(
             (schemaId, index) =>
               `${index > 0 ? URLspaceer : ''}${chalk.blue(
-                schemaURL({ teamId, schemaId, apiURL, env })
+                schemaURL({ team, schemaId, apiURL, env })
               )}`
           )
           .join('\n')
       : `${chalk.blue(
-          schemaURL({ teamId, schemaId: schemaIds[0], apiURL, env })
+          schemaURL({ team, schemaId: schemaIds[0], apiURL, env })
         )}`
 
   const links = `View your schema${schemaIds.length > 1 ? 's' : ''} at ${urls}`
@@ -55,7 +55,7 @@ export const summary = ({
     const embedSummary =
       portal.id &&
       `\n${chalk.whiteBright('           url:')}      ${chalk.blue(
-        embedURL({ teamId, embedId: portal.id, apiURL, env })
+        embedURL({ team, embedId: portal.id, apiURL, env })
       )}`
 
     const privateKeyMessage = `\n${chalk.dim(

@@ -3,6 +3,9 @@ import {
   FlatfileRecords,
   FlatfileSession,
 } from '@flatfile/hooks'
+
+import { AnyField, Message, verifyEgressCycle } from './Field'
+
 import {
   IJsonSchema,
   SchemaILModel,
@@ -10,11 +13,17 @@ import {
   SchemaILModelToSheetConfig,
 } from '@flatfile/schema'
 
-import { Message, verifyEgressCycle, AnyField } from './Field'
 import { toPairs } from 'remeda'
 import _ from 'lodash'
 import { isFullyPresent } from '../utils/isFullyPresent'
+
+import { Mountable } from '../utils/mountable'
+import { Agent } from './Agent'
+import { SpaceConfig } from './SpaceConfig'
+import { Workbook } from './Workbook'
+import { EventTopic } from '@flatfile/api'
 import { SheetConfig } from '@flatfile/blueprint'
+import { EventHandler, FlatfileEvent } from '../utils/event.handler'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
@@ -121,7 +130,10 @@ export interface SheetOptions<FC> {
   previewFieldKey?: string
 }
 
-export class Sheet<FC extends FieldConfig> {
+export class Sheet<FC extends FieldConfig>
+  extends EventHandler
+  implements Mountable
+{
   public options: SheetOptions<FC> = {
     allowCustomFields: false,
     readOnly: false,
@@ -140,6 +152,7 @@ export class Sheet<FC extends FieldConfig> {
     public fields: FieldConfig,
     public passedOptions?: Partial<SheetOptions<FC>>
   ) {
+    super()
     if (passedOptions) {
       Object.assign(this.options, passedOptions)
     }
@@ -161,6 +174,15 @@ export class Sheet<FC extends FieldConfig> {
       })
     })
     this.fields = malleableFields
+    // This only executes in X and takes the place of the legacy lambda router
+    this.on(
+      [
+        EventTopic.Recordscreated,
+        EventTopic.Recordsupdated,
+        EventTopic.Uploadcompleted,
+      ],
+      this.recordsChangedEventShim
+    )
 
     const contributedSheetComputes: Record<string, any> = {}
     toPairs(fields).map(([key, field]) => {
@@ -266,7 +288,7 @@ export class Sheet<FC extends FieldConfig> {
   public toSchemaIL(namespace: string, slug: string): SchemaILModel {
     let base: SchemaILModel = {
       name: this.name,
-      slug,
+      slug: `${namespace}/${slug}`,
       namespace,
       fields: {},
       allowCustomFields: this.options.allowCustomFields,
@@ -280,6 +302,43 @@ export class Sheet<FC extends FieldConfig> {
 
   public toJSONSchema(namespace: string, slug: string): IJsonSchema {
     return SchemaILToJsonSchema(this.toSchemaIL(namespace, slug))
+  }
+
+  mount(): Agent {
+    return new Agent({
+      spaceConfigs: {
+        default: new SpaceConfig({
+          name: 'Default',
+          workbookConfigs: {
+            default: new Workbook({
+              sheets: {
+                [this.constructor.name]: this,
+              },
+            }),
+          },
+        }),
+      },
+    })
+  }
+
+  getEventTargetName(slug: string): string {
+    return `sheet(${slug})`
+  }
+
+  /**
+   * Shim the current hook evaluation system into the new X event routing engine
+   *
+   * @param e
+   */
+  async recordsChangedEventShim(e: FlatfileEvent) {
+    // fetch chunk of records (not actually working yet)
+    const chunk = await e.data
+
+    // convert to legacy FlatfileRecords wrapper for now
+    const batch = new FlatfileRecords(chunk)
+
+    // run data hooks
+    await this.runProcess(batch, e.context, console)
   }
 
   public toBlueprint(namespace: string, slug: string): SheetConfig {

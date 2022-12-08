@@ -1,15 +1,51 @@
 import { FlatfileRecords, FlatfileSession } from '@flatfile/hooks'
 import { Sheet } from './Sheet'
 import { Portal } from './Portal'
+import { EventHandler } from '../utils/event.handler'
+import { Mountable } from '../utils/mountable'
+import { Agent } from './Agent'
+import { SpaceConfig } from './SpaceConfig'
 
-export class Workbook {
-  constructor(public readonly options: IWorkbookOptions) {}
+export class Workbook extends EventHandler implements Mountable {
+  public readonly options: IWorkbookOptions
+  constructor(options: Partial<IWorkbookOptions>) {
+    super()
 
-  public async processRecords(
+    // apply defaults
+    this.options = {
+      namespace: 'default',
+      name: 'Default',
+      sheets: {},
+      ...options,
+    }
+  }
+
+  /**
+   * Return a default FlatfileConfig if this mounted directly
+   */
+  mount() {
+    return new Agent({
+      spaceConfigs: {
+        // TODO: this should be a unique slug
+        default: new SpaceConfig({
+          name: 'Default',
+          workbookConfigs: {
+            default: this,
+          },
+        }),
+      },
+    })
+  }
+
+  getEventTargetName(): string {
+    return `workbook(${this.options.namespace})`
+  }
+
+  processRecords = async (
     records: FlatfileRecords<any>,
     payload: IHookPayload,
     logger?: any
-  ) {
+  ) => {
     // find models identified by target
     const { namespace } = this.options
     const sheetTarget = payload.schemaSlug

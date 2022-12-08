@@ -1,15 +1,15 @@
 import { PublishSchema } from './types'
 
-export const schemaURL = ({ teamId, schemaId, apiURL, env }: PublishSchema) => {
+export const schemaURL = ({ team, schemaId, apiURL, env }: PublishSchema) => {
   const { hostname } = new URL(apiURL)
 
   if (hostname === 'localhost') {
-    return `http://localhost:8080/a/${teamId}/env/${env}/templates/${schemaId}`
+    return `http://localhost:8080/a/${team}/env/${env}/templates/${schemaId}`
   }
 
   // onprem follows a different url pattern than all others
   if (hostname === 'onprem.flatfile.com') {
-    return `https://onprem.flatfile.com/a/${teamId}/env/${env}/templates/${schemaId}`
+    return `https://onprem.flatfile.com/a/${team}/env/${env}/templates/${schemaId}`
   }
 
   const region = hostname.split('.')[1]
@@ -23,5 +23,5 @@ export const schemaURL = ({ teamId, schemaId, apiURL, env }: PublishSchema) => {
 
   const baseURL = url[region]
 
-  return `${baseURL}/a/${teamId}/env/${env}/templates/${schemaId}`
+  return `${baseURL}/a/${team}/env/${env}/templates/${schemaId}`
 }

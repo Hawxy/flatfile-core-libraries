@@ -5,14 +5,16 @@ import { build } from 'tsup'
 import { generateAccessToken } from '../utilities/access.token'
 import { deploy } from '../utilities/deploy'
 import { summary } from '../ui/summary'
+import { config } from '../../config'
 
 export const publishAction = async (
   file: string = './src/index.ts',
   options: Partial<{ team: string; env: string; apiUrl: string }>
 ) => {
-  const teamId = options.team || process.env.FLATFILE_TEAM_ID
+  const teamId = options.team || process.env.FLATFILE_TEAM_ID || ''
+  const team = parseInt(teamId, 10)
   const env = options.env || process.env.FLATFILE_ENV || 'test'
-  const apiUrl: string =
+  const apiURL: string =
     options.apiUrl ||
     process.env.FLATFILE_API_URL ||
     'https://api.us.flatfile.io'
@@ -39,6 +41,7 @@ export const publishAction = async (
       outDir,
       format: 'cjs',
       noExternal: [/.*/],
+      silent: true,
     })
   } catch (e) {
     console.log('Build failed')
@@ -48,25 +51,25 @@ export const publishAction = async (
   }
 
   info('Generate token')
-  const token = await generateAccessToken({ apiUrl })
+  const token = await generateAccessToken({ apiURL })
 
   info('Deploy Workbook to Flatfile')
 
   const buildFile = path.join(outDir, 'build.js')
   const { schemaIds, portals } = await deploy(buildFile, {
-    apiUrl,
+    apiURL,
     apiKey: token,
-    team: teamId,
+    team,
     env,
   })
 
   console.log(`🎉 Deploy successful! 🎉`)
 
   summary({
-    teamId: parseInt(teamId, 10),
-    apiURL: apiUrl,
+    team,
+    apiURL,
     schemaIds,
-    env: env as any,
+    env,
     portals,
   })
 }

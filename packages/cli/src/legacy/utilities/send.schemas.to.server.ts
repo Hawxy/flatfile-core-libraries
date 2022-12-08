@@ -11,7 +11,7 @@ import ora from 'ora'
 export const sendSchemasToServer = async (
   client: GraphQLClient,
   buildFile: string,
-  options: { team: string; env: string }
+  options: { team: number; env: string }
 ): Promise<{ schemaIds: number[]; portals: Portal[] }> => {
   const config = require(buildFile).default
   const { sheets, namespace, portals } = config.options

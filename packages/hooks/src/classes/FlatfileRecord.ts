@@ -6,7 +6,7 @@ export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = {
 
 export interface IRawRecord {
   rawData: TRecordData
-  rowId: number
+  rowId: number | string
 }
 
 export type TRecordInfoLevel = 'error' | 'warn' | 'info'
@@ -45,7 +45,7 @@ export interface IPayload {
 export class FlatfileRecord<M extends TRecordData = TRecordData> {
   private readonly data: M
   private readonly mutated: M
-  private readonly _rowId: number
+  private readonly _rowId: number | string
   private _info: IRecordInfo<M>[] = []
 
   constructor(raw: IRawRecord) {

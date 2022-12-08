@@ -222,7 +222,7 @@ describe('Functional Hook Tests ->', () => {
               Accept: 'application/json',
             },
           })
-          const result = await response.json()
+          const result = (await response.json()) as any
           records.records.map(async (record: FlatfileRecord) => {
             record.set('from_http', result.info.postgres.status)
           })

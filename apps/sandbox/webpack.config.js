@@ -1,16 +1,19 @@
 const nodeExternals = require('webpack-node-externals')
+const path = require('path')
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
 
 module.exports = {
-  mode: 'development',
-  entry: './src/setup.ts',
+  mode: 'production',
+  entry: './src/xdk-simple-deploy.ts',
   externalsPresets: { node: true },
   output: {
-    filename: 'hook.js',
+    filename: 'build.js',
     library: {
       export: 'default',
-      name: 'hook',
-      type: 'umd',
+      name: 'sdk',
+      type: 'umd', // Important
     },
+    path: path.resolve(__dirname, '.flatfile'),
   },
   target: 'node',
   module: {
@@ -27,9 +30,13 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
   },
-  externals: [
-    nodeExternals({
-      allowlist: ['case-anything'],
-    }),
-  ],
+  optimization: {
+    // ...
+    minimizer: [
+      new ESBuildMinifyPlugin({
+        keepNames: true,
+      }),
+      // ...
+    ],
+  },
 }

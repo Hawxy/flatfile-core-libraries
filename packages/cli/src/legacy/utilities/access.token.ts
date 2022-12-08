@@ -6,7 +6,7 @@ interface AccessToken {
   /**
    * Access key exchange base URL
    */
-  apiUrl: string
+  apiURL: string
   /**
    * Expiration in seconds. Must be between 60s (1min) and 86400 (24 hrs). Defaults to 5 mins
    */
@@ -28,7 +28,7 @@ interface Response {
 }
 
 const generateAccessToken = async ({
-  apiUrl,
+  apiURL,
   expiresIn = 300,
 }: AccessToken): Promise<string> => {
   if (!process.env.FLATFILE_ACCESS_KEY_ID) {
@@ -62,7 +62,7 @@ const generateAccessToken = async ({
   }).start()
   const accessKey = process.env.FLATFILE_ACCESS_KEY_ID
   const secret = process.env.FLATFILE_SECRET
-  const url = `${apiUrl}/auth/access-key/exchange`
+  const url = `${apiURL}/auth/access-key/exchange`
   const headers = {
     'Content-Type': 'application/json',
     accept: 'application/json',

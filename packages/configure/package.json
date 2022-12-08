@@ -28,23 +28,26 @@
   },
   "devDependencies": {
     "@flatfile/eslint-config-platform-sdk": "*",
-    "@flatfile/hooks": "*",
-    "@flatfile/schema": "*",
-    "@flatfile/ts-config-platform-sdk": "*",
     "@flatfile/jest-preset-platform-sdk": "*",
+    "@flatfile/ts-config-platform-sdk": "*",
+    "@types/async": "^3.2.15",
     "@types/jest": "^28.1.4",
+    "async": "^3.2.4",
+    "axios": "^0.27.2",
     "eslint": "^8.19.0",
     "jest": "^28.1.2",
-    "ts-jest": "^28.0.5",
-    "tsup": "^6.1.3"
+    "node-fetch": "2.6.7",
+    "ts-jest": "^28.0.8",
+    "tslib": "^2.4.1",
+    "tsup": "^6.1.3",
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "@flatfile/orm": "*",
     "@flatfile/schema": "*",
+    "@flatfile/hooks": "*",
     "case-anything": "^2.1.10",
-    "date-fns": "^2.29.1",
-    "lodash": "^4.17.21",
-    "remeda": "^0.0.35"
+    "date-fns": "^2.29.1"
   },
   "publishConfig": {
     "access": "public"

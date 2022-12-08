@@ -30,7 +30,7 @@ describe('Sheet test', () => {
       CategoryAndBoolean.toSchemaIL('fake namespace', 'fake slug')
     ).toMatchObject({
       name: 'CategoryAndBoolean',
-      slug: 'fake slug',
+      slug: 'fake namespace/fake slug',
       namespace: 'fake namespace',
       fields: {
         firstName: {

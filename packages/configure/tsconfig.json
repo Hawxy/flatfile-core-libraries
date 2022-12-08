@@ -1,4 +1,3 @@
-
 {
     "extends": "@flatfile/ts-config-platform-sdk/base.json",
     "include": ["./src"],

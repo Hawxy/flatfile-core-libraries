@@ -1,22 +1,23 @@
 import { Portal } from '@flatfile/configure'
 
+type Environment = 'prod' | 'test' | string
 export interface PublishSchemas {
-  teamId: number
+  team: number
   schemaIds: number[]
   apiURL: string
-  env?: 'prod' | 'test'
+  env: Environment
   portals?: Portal[]
 }
 export interface PublishSchema {
-  teamId: number
+  team: number
   schemaId: number
   apiURL: string
-  env?: 'prod' | 'test'
+  env: Environment
 }
 
 export interface PublishEmbed {
-  teamId: number
+  team: number
   embedId: string
   apiURL: string
-  env?: 'prod' | 'test'
+  env: Environment
 }

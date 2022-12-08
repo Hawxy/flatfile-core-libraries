@@ -4,7 +4,7 @@ import {
   SchemaILField,
   SchemaILEnumField,
 } from './types/SchemaIL'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import {
   Constraint,
   StringProperty,
@@ -98,7 +98,6 @@ describe('compiler tests', () => {
 describe('compiler tests', () => {
   const simpleSheetConfig: SheetConfig = {
     name: 'foo',
-    slug: 'test',
     fields: [
       {
         type: 'number',
@@ -133,7 +132,6 @@ describe('compiler tests', () => {
 
   const complexSheetConfig: SheetConfig = {
     name: 'foo',
-    slug: 'test',
     fields: [
       {
         type: 'number',

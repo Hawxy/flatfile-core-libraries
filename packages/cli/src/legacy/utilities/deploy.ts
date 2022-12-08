@@ -12,7 +12,7 @@ export const deploy = async (
   buildFile: string,
   options: IDeployOptions
 ): Promise<{ schemaIds: number[]; portals: Portal[] }> => {
-  const client = new GraphQLClient(`${options.apiUrl}/graphql`, {
+  const client = new GraphQLClient(`${options.apiURL}/graphql`, {
     headers: {
       Authorization: `Bearer ${options.apiKey}`,
     },
@@ -22,8 +22,8 @@ export const deploy = async (
 }
 
 interface IDeployOptions {
-  apiUrl: string
+  apiURL: string
   apiKey: string
-  team: string
+  team: number
   env: string
 }

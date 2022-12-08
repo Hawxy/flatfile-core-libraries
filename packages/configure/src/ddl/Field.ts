@@ -1,7 +1,7 @@
 import { pick, mapValues, keys } from 'remeda'
 import { BaseFieldTypes, SchemaILField } from '@flatfile/schema'
 import { isFullyPresent } from '../utils/isFullyPresent'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 import {
   DateCast,
