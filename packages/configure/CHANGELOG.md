@@ -1,5 +1,16 @@
 # @flatfile/configure
 
+## 0.4.9
+
+### Patch Changes
+
+- e258f27: Adds ability to export SchemaIL Model to Blueprint SheetConfig
+- 745a73e: XDK publishing
+- Updated dependencies [e258f27]
+- Updated dependencies [745a73e]
+  - @flatfile/schema@0.2.4
+  - @flatfile/hooks@1.2.1
+
 ## 0.4.8
 
 ### Patch Changes

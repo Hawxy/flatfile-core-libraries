@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.7
+
+### Patch Changes
+
+- 745a73e: XDK publishing
+
 ## 3.1.5
 
 ### Patch Changes
