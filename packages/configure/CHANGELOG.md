@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.4.10
+
+### Patch Changes
+
+- 48a118c: Cleanup
+
 ## 0.4.9
 
 ### Patch Changes
