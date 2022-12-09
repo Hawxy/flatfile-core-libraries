@@ -162,7 +162,6 @@ export async function publishAction(
         '🛑 You must export a mountable class (Agent, Space, Workbook, or Sheet) as a default export from the entry file.'
       )
     }
-    const { namespace } = config.options
 
     const {
       options: { spaceConfigs },
@@ -178,16 +177,16 @@ export async function publishAction(
           spacePatternConfig: {
             name: spaceConfig.options.name,
             // TODO Do we need a unique slug for this in the Platform SDK or X? Should we generate them in X?
-            slug: `${namespace}/${slug}`,
+            slug,
             blueprints: mapObj(
               spaceConfig.options.workbookConfigs,
               (wb, wbSlug, i) => {
                 return {
                   name: wb.options.name,
-                  slug: `${namespace}/${wbSlug}`,
+                  slug: `${slug}/${wbSlug}`,
                   primary: i === 0,
                   sheets: mapObj(wb.options.sheets, (model, modelSlug) => {
-                    return model.toBlueprint(namespace, modelSlug)
+                    return model.toBlueprint(wbSlug, modelSlug)
                   }),
                 } as Blueprint
               }
@@ -198,6 +197,7 @@ export async function publishAction(
           `Space Created ${chalk.dim(spaceConfigRes?.data?.id)}`
         )
       } catch (e) {
+        console.log(e)
         spaceConfigSpinner.fail(`Space Config to be created ${chalk.dim(e)}`)
       }
     }

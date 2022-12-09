@@ -1,28 +1,14 @@
 import wildMatch from 'wildcard-match'
 import { mapSeries } from 'async'
-import { authAction } from './auth.action'
 import { Event } from '@flatfile/api'
-import axios from 'axios'
-import { FlatfileRecord, FlatfileRecords } from '@flatfile/hooks'
-import { IHookPayload } from '../ddl/Workbook'
-import { RecordTranslater, XRecord } from './record.translater'
+import { AuthenticatedClient } from './authenticated.client'
 
-const adapter = require('axios/lib/adapters/http')
-
-const AGENT_INTERNAL_URL =
-  process.env.AGENT_INTERNAL_URL || 'http://localhost:3000'
-export class EventHandler {
+export class EventHandler extends AuthenticatedClient {
   /**
    * Event target name, defaults to all events
    */
   public readonly targetName: string = '*'
-  public processRecords = async (
-    _records: FlatfileRecords<any>,
-    _payload: IHookPayload,
-    _logger?: undefined
-  ): Promise<FlatfileRecords<any>> => {
-    return _records
-  }
+
   /**
    * Cache of registered listeners on this instance
    * @private
@@ -135,6 +121,7 @@ export class EventHandler {
    * Traverse through entire target tree and find the target node to emit from
    *
    * @param target
+   * @param slug
    */
   public findTargetNode(
     target: string,
@@ -152,123 +139,13 @@ export class EventHandler {
   }
 
   public async routeEvent(event: Event) {
-    const headers = {
-      Authorization: process.env.FLATFILE_BEARER_TOKEN ?? `Bearer foo`,
-    }
+    const internalEvent = new FlatfileEvent(event)
 
-    const client = axios.create({
-      baseURL: AGENT_INTERNAL_URL,
-      adapter,
-      timeout: 2500,
-      headers,
-    })
-
-    async function route(event: Event) {
-      const { domain, topic, context } = event
-
-      if (domain === 'file' && topic === 'upload:completed') {
-        return fileUploadHook(context.fileId)
-      } else if (
-        domain === 'workbook' &&
-        (topic === 'records:created' || topic === 'records:updated')
-      ) {
-        if (!context.workbookId) {
-          throw new Error(
-            'Missing required context.workbookId for records created hook'
-          )
-        }
-        if (!context.sheetId) {
-          throw new Error(
-            'Missing required context.sheetId for records created hook'
-          )
-        }
-        if (!context.sheetSlug) {
-          throw new Error(
-            'Missing required context.sheetSlug for records created hook'
-          )
-        }
-        if (!event.dataUrl) {
-          throw new Error(
-            'Missing required event.dataUrl for records created hook'
-          )
-        }
-        return recordsCreatedHook(
-          context.workbookId,
-          context.sheetId,
-          context.sheetSlug,
-          event.dataUrl
-        )
-      }
-    }
-
-    async function fileUploadHook(fileId: string | undefined) {
-      const file = await client.get(`v1/files/${fileId}`, { headers })
-
-      const { ext } = file.data.data
-      if (ext === 'csv') {
-        const extraction = await client.post(`/v1/files/${fileId}/jobs`, {
-          driver: 'csv',
-        })
-        const { id } = extraction.data.data
-        await client.post(`/v1/files/${fileId}/jobs/${id}/execute`)
-      }
-    }
-
-    // TODO: This could be much cleaner but mimics the example agent.js code nearly 1:1
-    const recordsCreatedHook = async (
-      workbookId: string,
-      sheetId: string,
-      sheetslug: string,
-      dataUrl: string
-    ) => {
-      const records = await fetchRecords(dataUrl)
-      if (!records) {
-        return
-      }
-      const clearedMessages: XRecord[] = records.map(
-        (record: { values: { [x: string]: { messages: never[] } } }) => {
-          // clear existing cell validation messages
-          Object.keys(record.values).forEach((k) => {
-            record.values[k].messages = []
-          })
-          return record
-        }
-      )
-      const fromX = new RecordTranslater<XRecord>(clearedMessages)
-      const recordBatch = fromX.toFlatFileRecords()
-      await this.processRecords(recordBatch, {
-        schemaSlug: sheetslug,
-      } as IHookPayload)
-
-      const fromSDK = new RecordTranslater<FlatfileRecord>(recordBatch.records)
-      const convertedRecords = fromSDK.toXRecords()
-      return updateRecords(workbookId, sheetId, convertedRecords)
-    }
-
-    async function fetchRecords(url: string) {
-      const response = (await client.get(`/${url}`)).data.data
-      if (response.success) {
-        return response.records
-      }
-      return false
-    }
-
-    async function updateRecords(
-      workbookId: any,
-      sheetId: any,
-      records: any[]
-    ) {
-      return client.put(
-        `/v1/workbooks/${workbookId}/sheets/${sheetId}/records`,
-        records
-      )
-    }
-
-    await route(event)
+    await this.emit(internalEvent)
   }
 }
 
-export class FlatfileEvent {
+export class FlatfileEvent extends AuthenticatedClient {
   /**
    * Event ID from the API
    *
@@ -285,7 +162,11 @@ export class FlatfileEvent {
    * @readonly
    */
   public readonly topic?: string
-  public api: any
+
+  public readonly name: string
+  public readonly target: string
+  public readonly context: any
+  public readonly body: any
 
   /**
    * Target entity id
@@ -297,14 +178,12 @@ export class FlatfileEvent {
   // public readonly context: any // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
   // public readonly body: any
 
-  constructor(
-    // private readonly data: any, // us0_ev_82hgidh9skd
-    public readonly name: string, // workbook:created
-    public readonly target: string, // workbook(PrimaryCRMWorkbook)
-    public readonly context: any, // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
-    public readonly body: any
-  ) {
-    this.authAPI()
+  constructor(private readonly src: Event) {
+    super()
+    this.name = src.topic // workbook:created
+    this.target = `sheet(${src.context.sheetSlug?.split('/').pop()})` // workbook(PrimaryCRMWorkbook)
+    this.context = src.context // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
+    this.body = src.payload
   }
 
   /**
@@ -313,8 +192,10 @@ export class FlatfileEvent {
    */
   get data(): Promise<any> {
     // fetch from url
-    if (this.body.dataUrl) {
-      return this.api.rawRequest(this.body.dataUrl) //
+    if (this.src.dataUrl) {
+      return this.http.get(`/${this.src.dataUrl}`).then((res) => {
+        return res.data.data
+      })
     } else {
       return this.body
     }
@@ -334,32 +215,6 @@ export class FlatfileEvent {
   ack(_progress: number = 100) {
     // call ack API with error
     // only on ackable events
-  }
-  async authAPI() {
-    // TODO: get the accesstoken from the environment that the event was triggered from
-
-    const apiUrl = process.env.FLATFILE_API_URL
-    if (!apiUrl) {
-      console.log(`You must provide a API Endpoint URL.`)
-      process.exit(1)
-    }
-
-    const clientId = process.env.FLATFILE_CLIENT_ID
-    if (!clientId) {
-      console.log(
-        `You must provide a secret. Set 'clientId' in your .flatfilerc`
-      )
-      process.exit(1)
-    }
-
-    const secret = process.env.FLATFILE_CLIENT_SECRET
-
-    if (!secret) {
-      console.log(`You must provide a secret. Set 'secret' in your .flatfilerc`)
-      process.exit(1)
-    }
-    // this.target = target
-    this.api = await authAction({ apiUrl, clientId, secret })
   }
 }
 

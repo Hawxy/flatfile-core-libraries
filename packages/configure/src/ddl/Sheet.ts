@@ -20,10 +20,11 @@ import { isFullyPresent } from '../utils/isFullyPresent'
 import { Mountable } from '../utils/mountable'
 import { Agent } from './Agent'
 import { SpaceConfig } from './SpaceConfig'
-import { Workbook } from './Workbook'
+import { IHookPayload, Workbook } from './Workbook'
 import { EventTopic } from '@flatfile/api'
 import { SheetConfig } from '@flatfile/blueprint'
 import { EventHandler, FlatfileEvent } from '../utils/event.handler'
+import { RecordTranslater, XRecord } from '../utils/record.translater'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
@@ -134,6 +135,7 @@ export class Sheet<FC extends FieldConfig>
   extends EventHandler
   implements Mountable
 {
+  public targetName = 'sheet'
   public options: SheetOptions<FC> = {
     allowCustomFields: false,
     readOnly: false,
@@ -175,13 +177,8 @@ export class Sheet<FC extends FieldConfig>
     })
     this.fields = malleableFields
     // This only executes in X and takes the place of the legacy lambda router
-    this.on(
-      [
-        EventTopic.Recordscreated,
-        EventTopic.Recordsupdated,
-        EventTopic.Uploadcompleted,
-      ],
-      this.recordsChangedEventShim
+    this.on([EventTopic.Recordscreated, EventTopic.Recordsupdated], (e) =>
+      this.recordsChangedEventShim(e)
     )
 
     const contributedSheetComputes: Record<string, any> = {}
@@ -321,10 +318,6 @@ export class Sheet<FC extends FieldConfig>
     })
   }
 
-  getEventTargetName(slug: string): string {
-    return `sheet(${slug})`
-  }
-
   /**
    * Shim the current hook evaluation system into the new X event routing engine
    *
@@ -332,13 +325,39 @@ export class Sheet<FC extends FieldConfig>
    */
   async recordsChangedEventShim(e: FlatfileEvent) {
     // fetch chunk of records (not actually working yet)
-    const chunk = await e.data
+    const chunk = (await e.data).records
+    console.log(chunk)
 
-    // convert to legacy FlatfileRecords wrapper for now
-    const batch = new FlatfileRecords(chunk)
+    const batch = await this.prepareXRecords(chunk)
+    // this is where your convert logic should go
 
     // run data hooks
     await this.runProcess(batch, e.context, console)
+
+    const recordsUpdates = new RecordTranslater<FlatfileRecord>(
+      batch.records
+    ).toXRecords()
+
+    return this.api.updateRecords({
+      workbookId: e.context.workbookId,
+      sheetId: e.context.sheetId,
+      recordsUpdates,
+    })
+  }
+
+  // TODO: This could be much cleaner but mimics the example agent.js code nearly 1:1
+  async prepareXRecords(records: any): Promise<FlatfileRecords<any>> {
+    const clearedMessages: XRecord[] = records.map(
+      (record: { values: { [x: string]: { messages: never[] } } }) => {
+        // clear existing cell validation messages
+        Object.keys(record.values).forEach((k) => {
+          record.values[k].messages = []
+        })
+        return record
+      }
+    )
+    const fromX = new RecordTranslater<XRecord>(clearedMessages)
+    return fromX.toFlatFileRecords()
   }
 
   public toBlueprint(namespace: string, slug: string): SheetConfig {
