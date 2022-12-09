@@ -326,7 +326,6 @@ export class Sheet<FC extends FieldConfig>
   async recordsChangedEventShim(e: FlatfileEvent) {
     // fetch chunk of records (not actually working yet)
     const chunk = (await e.data).records
-    console.log(chunk)
 
     const batch = await this.prepareXRecords(chunk)
     // this is where your convert logic should go

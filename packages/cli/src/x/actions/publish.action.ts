@@ -197,7 +197,6 @@ export async function publishAction(
           `Space Created ${chalk.dim(spaceConfigRes?.data?.id)}`
         )
       } catch (e) {
-        console.log(e)
         spaceConfigSpinner.fail(`Space Config to be created ${chalk.dim(e)}`)
       }
     }

@@ -15,7 +15,6 @@ export class AuthenticatedClient {
       return this._api
     }
 
-    console.log(`Bearer ${process.env.FLATFILE_BEARER_TOKEN}`)
     const ClientConfig = new Configuration({
       basePath: `${AGENT_INTERNAL_URL}/v1`,
       fetchApi: fetch,
