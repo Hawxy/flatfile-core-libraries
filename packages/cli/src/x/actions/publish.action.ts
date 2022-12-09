@@ -82,10 +82,7 @@ export async function publishAction(
       treeshake: true,
 
       plugins: [
-        json({
-          preferConst: true,
-          include: 'node_modules/**',
-        }),
+        json(),
         typescript({
           tsconfig: 'tsconfig.json',
           // overriding the default tsconfig.json settings
@@ -100,13 +97,12 @@ export async function publishAction(
 
       // Silences warning about using this being undefined
       onwarn: function (warning) {
-        if (warning.code === 'THIS_IS_UNDEFINED') {
-          return
-        }
-        if (warning.code === 'CIRCULAR_DEPENDENCY') {
-          return
-        }
-        if (warning.code === 'UNRESOLVED_IMPORT') {
+        if (
+          warning.code === 'THIS_IS_UNDEFINED' ||
+          warning.code === 'CIRCULAR_DEPENDENCY' ||
+          warning.code === 'UNRESOLVED_IMPORT' ||
+          warning.code === 'PLUGIN_WARNING'
+        ) {
           return
         }
 
@@ -181,13 +177,14 @@ export async function publishAction(
         const spaceConfigRes = await apiClient.addSpaceConfig({
           spacePatternConfig: {
             name: spaceConfig.options.name,
-            slug: `${slug}+${Date.now()}`,
+            // TODO Do we need a unique slug for this in the Platform SDK or X? Should we generate them in X?
+            slug: `${namespace}/${slug}`,
             blueprints: mapObj(
               spaceConfig.options.workbookConfigs,
               (wb, wbSlug, i) => {
                 return {
                   name: wb.options.name,
-                  slug: `${slug}/${wbSlug}`,
+                  slug: `${namespace}/${wbSlug}`,
                   primary: i === 0,
                   sheets: mapObj(wb.options.sheets, (model, modelSlug) => {
                     return model.toBlueprint(namespace, modelSlug)

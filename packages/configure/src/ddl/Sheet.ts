@@ -223,7 +223,7 @@ export class Sheet<FC extends FieldConfig>
       })
     })
 
-    records.records.map(async (record: FlatfileRecord) => {
+    records.records.map((record: FlatfileRecord) => {
       toPairs(this.contributedRecordFuncs).map(([fieldName, recordCompute]) => {
         try {
           // narrow record and what can be modified on it

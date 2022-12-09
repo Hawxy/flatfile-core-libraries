@@ -4,6 +4,7 @@ import fs from 'fs'
 import { EventTopic } from '@flatfile/api'
 import boxen from 'boxen'
 import ora from 'ora'
+import uuid from 'uuid'
 
 import { config } from '../../config'
 import { authAction } from './auth.action'
@@ -71,7 +72,7 @@ export async function quickstartAction(
       spacePatternConfig: {
         name: 'Space configuration test',
         // TODO: Add do something better here to ensure unique space slug
-        slug: `sc-test-${Date.now()}`,
+        slug: `sc-test-${uuid}`,
         blueprints: [],
       },
     })

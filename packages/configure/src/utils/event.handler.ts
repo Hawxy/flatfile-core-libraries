@@ -172,7 +172,6 @@ export class EventHandler {
         domain === 'workbook' &&
         (topic === 'records:created' || topic === 'records:updated')
       ) {
-        // TODO: Provide better fallbcks for these values not being present
         if (!context.workbookId) {
           throw new Error(
             'Missing required context.workbookId for records created hook'
