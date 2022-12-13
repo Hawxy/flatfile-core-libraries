@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.5
+
+### Patch Changes
+
+- cc98f18: fixes missing description for optionField
+
 ## 0.2.4
 
 ### Patch Changes
