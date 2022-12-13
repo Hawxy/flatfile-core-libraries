@@ -101,6 +101,25 @@ describe('compiler tests', () => {
       enum: ['red', 'blue', 'green'],
       enumLabel: ['Red', 'Blue', 'Green'],
     })
+    expect(
+      compileEnum({
+        type: 'enum',
+        matchStrategy: 'exact',
+	description: "a couple of words",
+        label: 'Color',
+        field: 'color',
+        annotations: {},
+        labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
+      })
+    ).toMatchObject({
+      type: 'string',
+      label: 'Color',
+      enumMatch: 'exact',
+      description: "a couple of words",
+      enum: ['red', 'blue', 'green'],
+      enumLabel: ['Red', 'Blue', 'Green'],
+    })
+
   })
 
   it('tests a records validity on import', () => {
@@ -281,4 +300,35 @@ describe('compiler tests', () => {
     }
     expect(compileToJsonSchema(withCustom)).toMatchObject(withCustomJSS)
   })
+  it('tests descriptions', () => {
+    const withCustom: SchemaILModel = {
+      fields: {
+        first_name: {
+          type: 'string',
+          label: 'First Name',
+	  description: "foo",
+          required: true,
+          annotations: {},
+          field: 'first_name',
+        },
+      },
+      name: 'testSchema',
+      slug: 'test',
+      namespace: 'testspace',
+      allowCustomFields: true,
+    }
+    const withCustomJSS: IJsonSchema = {
+      properties: {
+        first_name: {
+          type: 'string',
+	  description: "foo",
+          label: 'First Name',
+          field: 'first_name',
+        },
+      },
+      type: 'object',
+      allowCustomFields: true,
+    }
+    expect(compileToJsonSchema(withCustom)).toMatchObject(withCustomJSS)
+  })	
 })
