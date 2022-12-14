@@ -105,7 +105,7 @@ describe('compiler tests', () => {
       compileEnum({
         type: 'enum',
         matchStrategy: 'exact',
-	description: "a couple of words",
+        description: 'a couple of words',
         label: 'Color',
         field: 'color',
         annotations: {},
@@ -115,11 +115,10 @@ describe('compiler tests', () => {
       type: 'string',
       label: 'Color',
       enumMatch: 'exact',
-      description: "a couple of words",
+      description: 'a couple of words',
       enum: ['red', 'blue', 'green'],
       enumLabel: ['Red', 'Blue', 'Green'],
     })
-
   })
 
   it('tests a records validity on import', () => {
@@ -306,7 +305,7 @@ describe('compiler tests', () => {
         first_name: {
           type: 'string',
           label: 'First Name',
-	  description: "foo",
+          description: 'foo',
           required: true,
           annotations: {},
           field: 'first_name',
@@ -321,7 +320,7 @@ describe('compiler tests', () => {
       properties: {
         first_name: {
           type: 'string',
-	  description: "foo",
+          description: 'foo',
           label: 'First Name',
           field: 'first_name',
         },
@@ -330,5 +329,5 @@ describe('compiler tests', () => {
       allowCustomFields: true,
     }
     expect(compileToJsonSchema(withCustom)).toMatchObject(withCustomJSS)
-  })	
+  })
 })
