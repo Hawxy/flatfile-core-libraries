@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.9
+
+### Patch Changes
+
+- 8ba53bf: Adds a final update deployment mutation
+
 ## 3.1.8
 
 ### Patch Changes
