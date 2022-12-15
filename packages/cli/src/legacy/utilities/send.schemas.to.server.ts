@@ -7,6 +7,7 @@ import * as CLIPackage from '../../../package.json'
 import chalk from 'chalk'
 import fs from 'fs'
 import ora from 'ora'
+import { MUTATION_UPDATE_DEPLOYMENT } from '../graphql/MUTATION_UPDATE_DEPLOYMENT'
 
 export const sendSchemasToServer = async (
   client: GraphQLClient,
@@ -14,7 +15,7 @@ export const sendSchemasToServer = async (
   options: { team: number; env: string }
 ): Promise<{ schemaIds: number[]; portals: Portal[] }> => {
   const config = require(buildFile).default
-  const { sheets, namespace, portals } = config.options
+  const { name, sheets, namespace, portals } = config.options
   const { team, env } = options
   const stringifiedWorkbook = JSON.stringify(config, function (key, val) {
     if (typeof val === 'function') {
@@ -31,12 +32,20 @@ export const sendSchemasToServer = async (
     console.error('No package.json found in the project root')
   }
 
+  const workbookSheets: { [x: string]: any } = {}
+  Object.values(sheets).forEach((sheet: any) => {
+    workbookSheets[sheet.name] = null
+  })
+
   const {
     createDeployment: { id: deploymentId },
   } = await client.request(MUTATION_CREATE_DEPLOYMENT, {
     teamId: options.team,
     version: CLIPackage.version,
     workbook: stringifiedWorkbook,
+    name,
+    namespace,
+    workbookSheets,
     localPackageJSON,
     environment: env,
   })
@@ -45,7 +54,7 @@ export const sendSchemasToServer = async (
   const newSchemaVersions = await Promise.all(
     schemaSlugs.map(async (slug) => {
       const model = sheets[slug]
-      const name = model.name
+      const sheetName = model.name
       const sourceCode = fs.readFileSync(buildFile, 'utf8')
       const { previewFieldKey } = model.options
       const jsonSchema = { schema: model.toJSONSchema(namespace, slug) }
@@ -53,7 +62,7 @@ export const sendSchemasToServer = async (
       const schema = await client.request(MUTATION_UPSERT_SCHEMA, {
         slug: `${namespace}/${slug}`,
         teamId: team,
-        name,
+        name: sheetName,
         jsonSchema,
         sheetCompute: model.getSheetCompute(),
         previewFieldKey,
@@ -85,10 +94,21 @@ export const sendSchemasToServer = async (
         }
       }
 
+      workbookSheets[sheetName] = id
+
       ora(`Workbook created with id ${chalk.white.bold(id)}`).succeed()
       return { id, newSlug }
     })
   )
+
+  const {
+    updateDeployment: { id: updatedDeployment },
+  } = await client.request(MUTATION_UPDATE_DEPLOYMENT, {
+    teamId: options.team,
+    deploymentId,
+    workbookSheets,
+  })
+
   const schemaIds = newSchemaVersions.map((schema) => schema.id)
   return { schemaIds, portals }
 }

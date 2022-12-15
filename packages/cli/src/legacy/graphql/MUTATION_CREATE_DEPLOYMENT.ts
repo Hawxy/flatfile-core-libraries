@@ -5,6 +5,9 @@ export const MUTATION_CREATE_DEPLOYMENT = gql`
     $teamId: ID!
     $version: String
     $workbook: String
+    $name: String
+    $namespace: String
+    $workbookSheets: JSONObject
     $localPackageJSON: JSONObject
     $environment: String
   ) {
@@ -12,6 +15,9 @@ export const MUTATION_CREATE_DEPLOYMENT = gql`
       teamId: $teamId
       version: $version
       workbook: $workbook
+      name: $name
+      namespace: $namespace
+      workbookSheets: $workbookSheets
       localPackageJSON: $localPackageJSON
       environment: $environment
     ) {
