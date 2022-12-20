@@ -203,11 +203,12 @@ describe('BaseField', () => {
     })
     test('linkedField without a sheet throws an error', () => {
       const badFunc = () =>
+        // missing a sheet, should be a typing error
+        //@ts-expect-error
         LinkedField({
           label: 'Custom Label',
           upsert: false,
         })
-      expect(badFunc).toThrow('sheet is a required option of LinkedField')
     })
   })
 })

@@ -1,4 +1,14 @@
-import { NumberCast, BooleanCast, StringCast, DateCast } from './CastFunctions'
+import _ from 'lodash'
+import { Dirty } from '../ddl/Field'
+import {
+  NumberCast,
+  BooleanCast,
+  StringCast,
+  DateCast,
+  StringCastCompose,
+  FallbackCast,
+  ChainCast,
+} from './CastFunctions'
 
 describe('Cast Function tests ->', () => {
   const makeCastAssert = (castFn: any) => {
@@ -115,6 +125,54 @@ describe('Cast Function tests ->', () => {
       '2022-07-35',
       "'2022-07-35' parsed to 'Invalid Date' which is invalid"
     )
+  })
+
+  const Null = _.constant(null)
+  const Five = _.constant(5)
+  const Four = _.constant(4)
+
+  test('ChainCast tests', () => {
+    expect(Null()).toBe(null)
+    expect(Five()).toBe(5)
+    expect(Four()).toBe(4)
+
+    expect(ChainCast(Null, Five)('asdf')).toBe(null)
+    expect(ChainCast(Five, Four)('asdf')).toBe(4)
+    expect(ChainCast(Five, Null)('asdf')).toBe(null)
+  })
+
+  test('FallbackCast function', () => {
+    //no matter what is pased in, always5 returns 5
+    const always5 = (raw: Dirty<number>) => 5
+    const composed = FallbackCast(NumberCast, always5)
+
+    //asdf will cast to a string, and be returned
+    expect(composed('asdf')).toBe(5)
+    expect(composed(null)).toBe(5)
+  })
+
+  test('StringCastCompose function', () => {
+    //show that some work is done based the function being called
+    const pickAString = (raw: string) => {
+      if (raw === 'paddy') {
+        return 'engineer'
+      } else if (typeof raw === 'undefined') {
+        return 'undefined'
+      } else if (raw === null) {
+        return 'null'
+      }
+
+      return raw
+    }
+    const composed = StringCastCompose(pickAString)
+
+    //asdf will cast to a string, and be returned
+    expect(composed('asdf')).toBe('asdf')
+    // not the string "null" because pickAString will never be called
+    expect(composed(null)).toBe(null)
+    //not the string "undefined", because it will never be called like that
+    //expect(composed(undefined)).toBe(null)
+    expect(composed('paddy')).toBe('engineer')
   })
 
   // How do you plan to handle ambiguous dates where it's not clear from the numbers the position of Day and Month values e.g. 2022-04-06? I get this question from prospects and don't have a clear answer since we rely on date-fns and I'm not sure the exact behavior.

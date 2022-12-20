@@ -1,5 +1,11 @@
 import { pick, mapValues, keys } from 'remeda'
-import { BaseFieldTypes, SchemaILField } from '@flatfile/schema'
+import {
+  SchemaILField,
+  BaseSchemaILField,
+  LinkedSheetField,
+  SchemaILEnumField,
+  SchemaILFieldArgs,
+} from '@flatfile/schema'
 import { isFullyPresent } from '../utils/isFullyPresent'
 import _ from 'lodash'
 
@@ -10,6 +16,7 @@ import {
   StringCast,
 } from '../stdlib/CastFunctions'
 import { Sheet, FieldConfig } from './Sheet'
+import { mergeFieldOptions, makeField, makeFieldLegacy } from './MakeField'
 
 export type TRecordStageLevel =
   | 'cast'
@@ -29,11 +36,6 @@ class Value<T> {
   ) {}
 }
 
-export type Dirty<T> = string | null | T
-export type Nullable<T> = null | T
-export type Waitable<T> = T
-export type Writable<T> = Waitable<T | Value<T>>
-
 export class Message {
   constructor(
     public readonly message: string,
@@ -41,6 +43,10 @@ export class Message {
     public readonly stage: TRecordStageLevel
   ) {}
 }
+export type Dirty<T> = string | null | T
+export type Nullable<T> = null | T
+export type Waitable<T> = T
+export type Writable<T> = Waitable<T | Value<T>>
 
 export interface IFieldHooks<T> {
   cast: (value: Dirty<T>) => Nullable<T>
@@ -50,7 +56,7 @@ export interface IFieldHooks<T> {
   egressFormat: ((value: T) => string) | false
 }
 
-export type AnyField = Field<any, any>
+export type AnyField = Field<any>
 
 export const FieldHookDefaults = <T>(): IFieldHooks<T> => ({
   cast: (value: Dirty<T>) => {
@@ -65,62 +71,30 @@ export const FieldHookDefaults = <T>(): IFieldHooks<T> => ({
   egressFormat: false,
 })
 
-export interface GenericFieldOptions {
-  description: string
-  type: BaseFieldTypes
-  label: string
-  primary: boolean
-  required: boolean
-  unique: boolean
-  annotations?: {
-    //cast?: boolean
-    default?: boolean
-    defaultMessage?: string
-    compute?: boolean
-    computeMessage: string
+export const wrapValidate = <T>(
+  valFunc: (value: T) => void | Message[]
+): ((value: T) => Message[]) => {
+  const wrappedValidateFunc = (value: T): Message[] => {
+    try {
+      const val1Result = valFunc(value)
+      if (val1Result === undefined) {
+        return []
+      } else return val1Result
+    } catch (e: any) {
+      return [new Message(e.toString(), 'error', 'validate')]
+    }
   }
-
-  stageVisibility?: {
-    mapping?: boolean
-    review?: boolean
-    export?: boolean
-  }
-  getSheetCompute: any
+  return wrappedValidateFunc
 }
 
-const GenericDefaults: GenericFieldOptions = {
-  description: '',
-  label: '',
-  type: 'string',
-  primary: false,
-  required: false,
-  unique: false,
-  stageVisibility: {
-    mapping: true,
-    review: true,
-    export: true,
-  },
-  annotations: {
-    default: false,
-    defaultMessage: 'This field was automatically given a default value of',
-    compute: false,
-    computeMessage: 'This value was automatically reformatted - original data:',
-  },
-  getSheetCompute: false,
-}
-
-export type BaseFieldOptions<T> = Partial<SchemaILField> &
-  Partial<IFieldHooks<T>>
-
-export type FullBaseFieldOptions<T, O> = SchemaILField & IFieldHooks<T> & O
-
-export const verifyEgressCycle = <T>(
-  field: Field<T, any>,
-  castVal: T
-): boolean => {
+export const verifyEgressCycle = <T>(field: Field<T>, castVal: T): boolean => {
   //cast / egressFormat cycle must converge to the same value,
   //otherwise throw an error because the user will lose dta
-  const egressResult = field.options.egressFormat(castVal)
+  const ef = field.options.egressFormat
+  if (ef === false) {
+    return true
+  }
+  const egressResult = ef(castVal)
   const recastResult = field.toCastDefault(egressResult)
   const recast = recastResult[0]
 
@@ -139,19 +113,10 @@ export const verifyEgressCycle = <T>(
   return castVal === recast
 }
 
-export class Field<T, O extends Record<string, any>> {
-  public constructor(
-    public options: FullBaseFieldOptions<T, O> = {} as FullBaseFieldOptions<
-      T,
-      O
-    >
-  ) {}
+export type FieldOnlyOptions<T> = SchemaILFieldArgs & IFieldHooks<T>
 
-  public addCustomOptionsToField(
-    cb: (options: FullBaseFieldOptions<T, O>) => void
-  ) {
-    cb(this.options)
-  }
+export class Field<T, Unused extends Record<string, any> = {}> {
+  public constructor(public options: FieldOnlyOptions<T>) {}
 
   // leaving this as a public field and not adding it to the default
   // constructor because this is a very advanced field feature to use,
@@ -266,23 +231,65 @@ export class Field<T, O extends Record<string, any>> {
     }
   }
 
+  public getValue(rawValue: Dirty<T>) {
+    return this.computeToValue(rawValue)[0]
+  }
+
+  public getMessages(rawValue: Nullable<T>) {
+    const [computedVal, messages] = this.computeToValue(rawValue)
+    if (computedVal === null) {
+      return messages
+    }
+    const validateMessages = wrapValidate((val) => this.validate(computedVal))(
+      computedVal
+    )
+    return _.flatten([messages, validateMessages])
+  }
+
   public toSchemaILField(fieldName: string): SchemaILField {
-    return {
+    const t = this.options.type
+    const base = {
       field: fieldName,
       label: this.options.label || fieldName,
+      annotations: {},
       ...pick(this.options, [
-        'type',
         'description',
         'required',
         'primary',
         'unique',
-        'matchStrategy',
-        'upsert',
-        'labelEnum',
-        'sheetName',
         'stageVisibility',
-        'annotations', // this shouldn't be here
       ]),
+    }
+
+    if (
+      t === 'string' ||
+      t === 'number' ||
+      t === 'composite' ||
+      t === 'boolean'
+    ) {
+      const baseField: BaseSchemaILField = {
+        ...base,
+        type: t,
+      }
+      return baseField
+    } else if (t === 'schema_ref') {
+      const linkedOptions = this.options //as LinkedSheetField
+      const LinkedField: LinkedSheetField = {
+        ...base,
+        type: t,
+        upsert: linkedOptions.upsert,
+        sheetName: linkedOptions.sheetName,
+      }
+      return LinkedField
+    } else if (t === 'enum') {
+      const EnumField: SchemaILEnumField = {
+        type: t,
+        ...base,
+        ...pick(this.options, ['labelEnum', 'matchStrategy']),
+      }
+      return EnumField
+    } else {
+      throw new Error(`Unexpected type of ${t} which isn't in schemaIL types`)
     }
   }
 
@@ -290,111 +297,31 @@ export class Field<T, O extends Record<string, any>> {
     //add whatever pieces this field needs to add to the base sheet
     //definition, possible additonal processing at the Sheet level
   }
-
-  public setProp(prop: Partial<FullBaseFieldOptions<T, O>>) {
-    this.options = {
-      ...this.options,
-      ...prop,
-    }
-    return this
-  }
 }
 
-type PartialBaseFieldsAndOptions<T, O> = Partial<FullBaseFieldOptions<T, O>>
-type FieldOverload<T, O extends Record<string, any>> = {
-  (): Field<T, O>
-  (label?: string): Field<T, O>
-  (options?: PartialBaseFieldsAndOptions<T, O>): Field<T, O>
-}
-
-function makeField<T extends any, O extends Record<string, any> = {}>(
-  fieldFactory: (
-    field: Field<T, O>,
-    options: FullBaseFieldOptions<T, O>
-  ) => (options: FullBaseFieldOptions<T, O>) => Field<T, O>
-) {
-  const fieldMaker: FieldOverload<T, O> = (
-    options?: string | PartialBaseFieldsAndOptions<T, O>
-    // options?: PartialBaseFieldsAndOptions<T, O>
-  ): Field<T, O> => {
-    // if labelOptions is a string, then it is the label
-    const label = typeof options === 'string' ? options : undefined
-    // if options is an object, then it is the options
-    const passedOptions =
-      (typeof options !== 'string' ? options : options) ?? {}
-
-    const passedStageVisibility = (passedOptions as SchemaILField)
-      ?.stageVisibility
-
-    const stageVisibility = {
-      ...GenericDefaults.stageVisibility,
-      ...passedStageVisibility,
-    }
-
-    const passedAnnotations = (passedOptions as SchemaILField)?.annotations
-
-    const annotations = {
-      ...GenericDefaults.annotations,
-      ...passedAnnotations,
-    }
-
-    const fullOpts = {
-      ...GenericDefaults,
-      ...FieldHookDefaults<T>(),
-      ...(label ? { label } : { ...passedOptions }),
-      stageVisibility,
-      annotations,
-    }
-
-    const field = new Field<T, O>(fullOpts as FullBaseFieldOptions<T, O>)
-    const fieldOptions = fieldFactory(
-      field,
-      passedOptions as FullBaseFieldOptions<T, O>
-    )
-
-    field.addCustomOptionsToField(fieldOptions)
-    return field
-  }
-
-  return fieldMaker
-}
-
-// TextField
-export const TextField = makeField<string>((field, passedOptions) => {
-  return () => {
-    const cast = passedOptions.cast ?? StringCast
-    return field.setProp({ type: 'string', cast })
-  }
+export const TextField = makeFieldLegacy<string, {}>(null, {
+  type: 'string',
+  cast: StringCast,
 })
 
-// BooleanField
-export const BooleanField = makeField<boolean, { superBoolean?: boolean }>(
-  (field, passedOptions) => {
-    return () => {
-      const cast = passedOptions.cast ?? BooleanCast
-      return field.setProp({ type: 'boolean', cast })
-    }
-  }
-)
-
-// NumberField
-export const NumberField = makeField<number>((field, passedOptions) => {
-  return () => {
-    const cast = passedOptions.cast ?? NumberCast
-    return field.setProp({ type: 'number', cast })
-  }
+export const BooleanField = makeFieldLegacy<boolean, {}>(null, {
+  type: 'boolean',
+  cast: BooleanCast,
 })
 
-// NumberField
-export const DateField = makeField<Date>((field, passedOptions) => {
-  return () => {
-    const cast = passedOptions.cast ?? DateCast
-    return field.setProp({ type: 'string', cast })
-  }
+export const NumberField = makeFieldLegacy<number, {}>(null, {
+  type: 'number',
+  cast: NumberCast,
 })
 
+export const DateField = makeFieldLegacy<Date, {}>(null, {
+  type: 'string',
+  cast: DateCast,
+})
+
+type LabelObject = { label: string }
 // OptionField
-type LabelOptions = string | { label: string }
+type LabelOptions = string | LabelObject
 
 export const OptionField = makeField<
   string,
@@ -402,56 +329,53 @@ export const OptionField = makeField<
     matchStrategy?: 'fuzzy' | 'exact'
     options: Record<string, LabelOptions>
   }
->((field) => {
-  const def_ = field.options.default
+>(TextField(), { type: 'enum' }, (mergedOptions, _newOptions) => {
+  const def_ = mergedOptions.default
 
   if (def_ !== null) {
     //type guard to make typescript happy
-    if (isFullyPresent(def_) && field.options.options[def_] === undefined) {
+    if (isFullyPresent(def_) && mergedOptions.options[def_] === undefined) {
       throw new Error(
         `Invalid default of ${def_}, value doesn't appear as one of the keys in ${keys(
-          field.options.options
+          mergedOptions.options
         )}`
       )
     }
   }
-  const labelEnum = mapValues(field.options.options, (value) => {
-    const label = typeof value === 'string' ? value : value.label
-    return label
+  const labelEnum = mapValues(mergedOptions.options, (value: LabelOptions) => {
+    if (typeof value === 'string') {
+      return value
+    } else {
+      return value.label
+    }
   })
 
-  return () => {
-    field.setProp({ type: 'enum', labelEnum })
-    field.setProp({
-      matchStrategy: field.options.matchStrategy || 'fuzzy',
-    })
-    return field
-  }
+  const consolidatedOptions = mergeFieldOptions(mergedOptions, {
+    //type: 'enum',
+    labelEnum,
+    matchStrategy: mergedOptions.matchStrategy || 'fuzzy',
+  })
+  return new Field(consolidatedOptions)
 })
-
 // LinkedField
 export const LinkedField = makeField<
   string,
   { sheet: Sheet<FieldConfig>; upsert?: boolean }
->((field) => {
-  const { sheet } = field.options
-  if (sheet === undefined) {
-    throw new Error('sheet is a required option of LinkedField')
-  }
-
+>(TextField(), {}, (mergedOptions, _newOptions) => {
+  const { sheet } = mergedOptions
   const sheetName = sheet.name
   let upsert = true
-  if (field.options.upsert === false) {
+  if (mergedOptions.upsert === false) {
     upsert = false
-  } else if (field.options.upsert === true) {
+  } else if (mergedOptions.upsert === true) {
     upsert = true
-  } else if (field.options.upsert === undefined) {
+  } else if (mergedOptions.upsert === undefined) {
     upsert = true
   }
-
-  return () => {
-    field.setProp({ type: 'schema_ref', sheetName, upsert })
-    //field.setProp({ upsert })
-    return field
-  }
+  const consolidatedOptions = mergeFieldOptions(mergedOptions, {
+    type: 'schema_ref',
+    sheetName,
+    upsert,
+  })
+  return new Field(consolidatedOptions)
 })

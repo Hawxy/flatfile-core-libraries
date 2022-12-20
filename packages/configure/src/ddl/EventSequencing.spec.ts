@@ -28,22 +28,26 @@ const U = Undefined
 const BaseField = { label: 'a', required: true }
 describe('Field Hook ->', () => {
   test('correctly calls cast cast', async () => {
-    const ft = new FieldTester({ ...BaseField, cast: C(1) })
+    const ft = new FieldTester(NumberField({ ...BaseField, cast: C(1) }))
     // verify that no matter what is passed in, `1` is the result of cast
     await ft.checkFieldResult('a', 1)
     await ft.checkFieldResult('50', 1)
 
-    const ft2 = new FieldTester({ ...BaseField, cast: C('a string') })
+    const ft2 = new FieldTester(
+      NumberField({ ...BaseField, cast: C('a string') })
+    )
     // verify that no matter what is passed in, `a string` is the result of cast
     await ft2.checkFieldResult('a', 'a string')
     await ft2.checkFieldResult('50', 'a string')
   })
 
   test('when cast returns throws an error, the original data is uneditted ', async () => {
-    const ft = new FieldTester({
-      ...BaseField,
-      cast: Throw('castError'),
-    })
+    const ft = new FieldTester(
+      NumberField({
+        ...BaseField,
+        cast: Throw('castError'),
+      })
+    )
     await ft.checkFieldResult('b', 'b')
     await ft.matchFieldMessage('b', {
       level: 'error',
@@ -52,10 +56,12 @@ describe('Field Hook ->', () => {
     })
   })
   test('when cast returns Null, that is stored to the record', async () => {
-    const ft = new FieldTester({
-      ...BaseField,
-      cast: Null,
-    })
+    const ft = new FieldTester(
+      NumberField({
+        ...BaseField,
+        cast: Null,
+      })
+    )
     await ft.checkFieldResult('b', null)
   })
 
@@ -63,10 +69,12 @@ describe('Field Hook ->', () => {
     // note, this will generally only occur from untyped JS,
     // typescript should prevent functions that return undefined from
     // passing type checking
-    const ft = new FieldTester({
-      ...BaseField,
-      cast: Undefined,
-    })
+    const ft = new FieldTester(
+      NumberField({
+        ...BaseField,
+        cast: Undefined,
+      })
+    )
     await ft.checkFieldResult('b', 'b')
     await ft.matchFieldMessage('b', {
       level: 'error',
@@ -77,12 +85,14 @@ describe('Field Hook ->', () => {
   })
 
   test('when cast returns Null, processing stops', async () => {
-    const ft = new FieldTester({
-      ...BaseField,
-      required: false, // important so required error isn't thrown
-      cast: Null,
-      validation: Throw('validation error'),
-    })
+    const ft = new FieldTester(
+      NumberField({
+        ...BaseField,
+        required: false, // important so required error isn't thrown
+        cast: Null,
+        validate: Throw('validation error'),
+      })
+    )
     // note that validation isn't called because the system errored after empty and processing stopped
     await ft.checkFieldResult('b', null)
     // verify there aren't any messages for this cell
@@ -91,10 +101,12 @@ describe('Field Hook ->', () => {
 })
 
 test('when the typed value (cast + default) is Null, and required true an error is thrown', async () => {
-  const ft = new FieldTester({
-    ...BaseField,
-    cast: Null,
-  })
+  const ft = new FieldTester(
+    NumberField({
+      ...BaseField,
+      cast: Null,
+    })
+  )
   // note that validation isn't called because the system errored after empty and processing stopped
   await ft.checkFieldResult('b', null)
   await ft.matchFieldMessage('b', {
@@ -105,20 +117,24 @@ test('when the typed value (cast + default) is Null, and required true an error 
 })
 
 test('default is substituted when cast returns Null', async () => {
-  const ft = new FieldTester({
-    ...BaseField,
-    cast: Null,
-    default: 5,
-  })
+  const ft = new FieldTester(
+    NumberField({
+      ...BaseField,
+      cast: Null,
+      default: 5,
+    })
+  )
   await ft.checkFieldResult('b', 5)
 })
 
 test('default is not substituted when cast returns a non-null value', async () => {
-  const ft = new FieldTester({
-    ...BaseField,
-    cast: IdentitySingle(),
-    default: 6,
-  })
+  const ft = new FieldTester(
+    NumberField({
+      ...BaseField,
+      cast: IdentitySingle(),
+      default: 6,
+    })
+  )
   await ft.checkFieldResult('foo', 'foo')
   //in most implemetations an empty string is cast to Null, however
   //this implementation returns the empty string which is a value
@@ -129,11 +145,13 @@ test('default is not substituted when cast returns a non-null value', async () =
 })
 
 test('processing stops after cast error even when default present and the result of the cell is the rawValue, with an error message ', async () => {
-  const ft = new FieldTester({
-    ...BaseField,
-    cast: Throw('castError'),
-    default: 2,
-  })
+  const ft = new FieldTester(
+    NumberField({
+      ...BaseField,
+      cast: Throw('castError'),
+      default: 2,
+    })
+  )
   // empty should never be called becaust cast through an error
   await ft.matchFieldMessage('z', {
     level: 'error',
@@ -147,37 +165,45 @@ test('processing stops after cast error even when default present and the result
 })
 
 test('test that validation errors show up ', async () => {
-  const ft = new FieldTester({
-    ...BaseField,
-    cast: C(1),
-    validate: Throw('called'),
-  })
+  const ft = new FieldTester(
+    NumberField({
+      ...BaseField,
+      cast: C(1),
+      validate: Throw('called'),
+    })
+  )
   await ft.checkFieldMessage('10', 'called')
 })
 
 test("show that compute isn't called after a null cast  ", async () => {
-  const ft = new FieldTester({ ...BaseField, cast: Null, compute: C(32) })
+  const ft = new FieldTester(
+    NumberField({ ...BaseField, cast: Null, compute: C(32) })
+  )
   // compute will never be called in this scenario
   await ft.checkFieldResult('e', null)
   await ft.checkFieldResult('60', null)
 })
 test("show that compute isn't called after an error on cast  ", async () => {
-  const ft = new FieldTester({
-    ...BaseField,
-    cast: Throw('CastError'),
-    compute: C(35),
-  })
+  const ft = new FieldTester(
+    NumberField({
+      ...BaseField,
+      cast: Throw('CastError'),
+      compute: C(35),
+    })
+  )
   // compute will never be called in this scenario, and we need to return the rawValue because cast threw an error
   await ft.checkFieldResult('e', 'e')
   await ft.checkFieldResult('60', '60')
 })
 
 test('show that compute error saves the original value', async () => {
-  const ft = new FieldTester({
-    ...BaseField,
-    cast: C(37),
-    compute: Throw('ComputeError'),
-  })
+  const ft = new FieldTester(
+    NumberField({
+      ...BaseField,
+      cast: C(37),
+      compute: Throw('ComputeError'),
+    })
+  )
   // compute will never be called in this scenario, and we need to return the rawValue because cast threw an error
   await ft.checkFieldResult('e', 'e')
   await ft.checkFieldResult('60', '60')
@@ -199,10 +225,12 @@ test('show that compute error saves the original value', async () => {
 // })
 
 test('default NumberCast errors on string,  saves the original value', async () => {
-  const ft = new FieldTester({
-    ...BaseField,
-    compute: Undefined,
-  })
+  const ft = new FieldTester(
+    NumberField({
+      ...BaseField,
+      compute: Undefined,
+    })
+  )
   await ft.checkFieldResult('b', 'b')
   await ft.matchFieldMessage('b', {
     level: 'error',

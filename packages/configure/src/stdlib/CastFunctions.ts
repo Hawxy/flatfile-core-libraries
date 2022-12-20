@@ -1,23 +1,115 @@
 import { isValid, toDate } from 'date-fns'
-let num: number
+import { Dirty, Nullable } from '../ddl/Field'
 
-export const NumberCast = (
-  raw: string | undefined | null | number
-): number | null => {
-  if (typeof raw === 'undefined') {
+//it is good practice for cast functions to be exaustive over raw, and throw an error
+//if the incoming value is not of the expected type
+export const StringCast = (raw: Dirty<string>): string | null => {
+  if (raw === undefined || raw === null) {
     return null
-  } else if (raw === null) {
-    return null
-  } else {
+  } else if (typeof raw === 'string') {
+    if (raw === '') {
+      return null
+    }
+    return raw
+  }
+  throw new Error(
+    `Unexpected type in StringCast for val of ${raw}, typeof val ${typeof raw}`
+  )
+}
+
+export const ChainCast = <InitialType, FinalType>(
+  firstCast: (raw: Dirty<InitialType>) => Nullable<InitialType>,
+  secondCast: (raw: InitialType | FinalType) => Nullable<FinalType>
+): ((raw: Dirty<InitialType> | FinalType) => Nullable<FinalType>) => {
+  const innerCast = (
+    raw: Dirty<InitialType> | FinalType
+  ): Nullable<FinalType> => {
+    if (raw === undefined || raw === null) {
+      return null
+    } else if (typeof raw === 'string') {
+      const val = firstCast(raw)
+      if (val === null) {
+        return null
+      }
+      return secondCast(val)
+    } else {
+      //maybe raw was FirstOperand, just have to guess at this point
+      // at this point we know that raw is FirstOperand or T
+      try {
+        const val = firstCast(raw as InitialType)
+        if (val === null) {
+          return null
+        }
+        return secondCast(val)
+      } catch (e: any) {
+        //we expect this to fail if raw was actually FinalType if we got here
+      }
+    }
+    // assume raw is FinalType
+    return secondCast(raw)
+  }
+  return innerCast
+}
+
+export const StringChainCast = <FinalType>(
+  secondCast: (raw: string | FinalType) => Nullable<FinalType>
+) => {
+  return ChainCast(StringCast, secondCast)
+}
+
+export const StringCastCompose = <T>(
+  recipientCast: (raw: string) => Nullable<T>
+): ((raw: Dirty<string> | T) => Nullable<T>) => {
+  const innerCast = (raw: string | undefined | null | T): Nullable<T> => {
+    if (raw === undefined || raw === null) {
+      return null
+    } else if (typeof raw === 'string') {
+      const val = StringCast(raw)
+      if (val === null) {
+        return null
+      }
+      return recipientCast(val)
+    } else {
+      // typeof raw === typeof T... but you can't say typeof T with typescript
+      return raw
+    }
+  }
+  return innerCast
+}
+
+//FallbackCast
+export const FallbackCast = <T>(
+  firstCast: (raw: Dirty<T>) => Nullable<T>,
+  fallbackCast: (raw: Dirty<T>) => Nullable<T>
+) => {
+  const retFunc = (raw: string | null | T) => {
+    try {
+      const firstResult = firstCast(raw)
+      if (firstResult === null) {
+        return fallbackCast(raw)
+      } else {
+        return firstResult
+      }
+    } catch (e) {
+      return fallbackCast(raw)
+    }
+  }
+  return retFunc
+}
+
+export const NumberCast = StringChainCast(
+  (raw: string | number): number | null => {
+    let num: number = 0
     if (typeof raw === 'number') {
       num = raw
     } else if (typeof raw === 'string') {
-      if (raw === '') {
-        return null
-      }
       // I think I just want the error to propagate here, so no wrapping
       const strippedStr = raw.replace(',', '')
       num = Number(strippedStr)
+    } else {
+      throw new Error(
+        `Unexpected type in NumberCast for val of ${raw}, typeof val ${typeof raw}`
+      )
     }
     if (isFinite(num)) {
       return num
@@ -25,7 +117,7 @@ export const NumberCast = (
       throw new Error(`'${raw}' parsed to '${num}' which is non-finite`)
     }
   }
-}
+)
 
 // Some other truthy/falsy values I found lurking around in Mono:
 // Mono/core/portal/src/utils/truthy.regex.ts
@@ -37,14 +129,8 @@ export const NumberCast = (
 const TRUTHY_VALUES = ['1', 'yes', 'true', 'on', 't', 'y']
 const FALSY_VALUES = ['-1', '0', 'no', 'false', 'off', 'f', 'n']
 
-export const BooleanCast = (
-  raw: string | undefined | null | boolean
-): boolean | null => {
-  if (typeof raw === 'undefined') {
-    return null
-  } else if (raw === null) {
-    return null
-  } else {
+export const BooleanCast = StringChainCast(
+  (raw: string | undefined | null | boolean): boolean | null => {
     if (typeof raw === 'boolean') {
       return raw
     } else if (typeof raw === 'string') {
@@ -59,34 +145,18 @@ export const BooleanCast = (
         return false
       }
       throw new Error(`'${raw}' can't be converted to boolean`)
+    } else {
+      throw new Error(
+        `Unexpected type in BooleanCast for val of ${raw}, typeof val ${typeof raw}`
+      )
     }
-    return null
   }
-}
-
-export const StringCast = (raw: string | undefined | null): string | null => {
-  if (typeof raw === 'undefined') {
-    return null
-  } else if (raw === null) {
-    return null
-  } else {
-    if (typeof raw === 'string') {
-      if (raw === '') {
-        return null
-      }
-    }
-    return raw
-  }
-}
+)
 
 export const DateCast = (
   raw: string | undefined | null | number | Date
 ): Date | null => {
-  if (typeof raw === 'undefined') {
-    return null
-  } else if (raw === null) {
-    return null
-  } else if (raw instanceof Date) {
+  if (raw instanceof Date) {
     return raw
   } else if (typeof raw === 'number') {
     const numParsed = toDate(raw)
@@ -107,15 +177,4 @@ export const DateCast = (
     }
   }
   return null
-}
-
-export const StringCastCompose = (otherFunc: (raw: string) => any) => {
-  const innerCast = (raw: string | undefined | null): string | null => {
-    const stringVal = StringCast(raw)
-    if (stringVal === null) {
-      return null
-    }
-    return otherFunc(stringVal)
-  }
-  return innerCast
 }

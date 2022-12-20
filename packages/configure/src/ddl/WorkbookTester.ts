@@ -193,7 +193,7 @@ export class WorkbookTester {
 export class FieldTester {
   public workbook
   constructor(public readonly field: any) {
-    const TestSheet = new Sheet('test', { a: NumberField(field) }, {})
+    const TestSheet = new Sheet('test', { a: field }, {})
 
     const TestWorkbook = new Workbook({
       name: `Test Workbook`,
@@ -253,9 +253,13 @@ export class FieldTester {
       rows: [{ row: { rawData, rowId: 1 }, info: [] }],
     } as IHookPayload
     const result = await this.workbook.handleLegacyDataHook(formattedpayload)
-
-    expect(expectedMessage).toBeTruthy()
-    expectedMessage && expect(result[0].info[0].message).toBe(expectedMessage)
+    if (expectedMessage === false) {
+      //special case for explicitly looking for no message
+      expect(result[0].info).toStrictEqual([])
+    } else {
+      expect(expectedMessage).toBeTruthy()
+      expectedMessage && expect(result[0].info[0].message).toBe(expectedMessage)
+    }
   }
 
   public async matchFieldMessage(

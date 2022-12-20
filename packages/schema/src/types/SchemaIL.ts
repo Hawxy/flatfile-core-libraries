@@ -2,8 +2,8 @@ import { FieldVisibilityTypes } from './JsonSchema'
 export type BaseFieldTypes = 'string' | 'number' | 'boolean' | 'composite'
 
 interface BaseField {
-  label: string
   field: string
+  label: string
   description?: string
   required?: boolean
   primary?: boolean
@@ -15,12 +15,18 @@ interface BaseField {
     compute?: boolean
     computeMessage?: string
   }
+  contributeToRecordCompute?: any
   getSheetCompute?: any
 }
 
 export interface BaseSchemaILField extends BaseField {
   type: BaseFieldTypes
 }
+
+// Omit "field" because you never know field name when insantiating a Field
+export interface BaseSchemaILFieldArgs
+  extends Omit<BaseSchemaILField, 'field'> {}
+
 export interface SchemaILEnumField extends BaseField {
   type: 'enum'
   matchStrategy: 'fuzzy' | 'exact'
@@ -32,6 +38,11 @@ export interface LinkedSheetField extends BaseField {
   sheetName: string
   upsert: boolean
 }
+
+export type SchemaILFieldArgs =
+  | Omit<BaseSchemaILField, 'field'>
+  | Omit<SchemaILEnumField, 'field'>
+  | Omit<LinkedSheetField, 'field'>
 
 export type SchemaILField =
   | BaseSchemaILField

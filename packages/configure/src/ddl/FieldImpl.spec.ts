@@ -1,4 +1,4 @@
-import { OptionField } from '@flatfile/configure'
+import { OptionField } from './Field'
 import { WorkbookTester } from './WorkbookTester'
 
 // First sets of Workbook Tests

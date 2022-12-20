@@ -6,5 +6,11 @@ export * from './ddl/Workbook'
 export * from './ddl/Agent'
 export * from './ddl/SpaceConfig'
 export * from './stdlib/RegionCast'
-export * from './stdlib/SubstitutionCast'
+export * from './stdlib/SynonymCast'
 export * from './fields/GroupByField'
+import * as stdlibCast from './stdlib/CastFunctions'
+export { makeField, GenericDefaults, mergeFieldOptions } from './ddl/MakeField'
+
+export const stdlib = {
+  cast: stdlibCast,
+}

@@ -1,4 +1,5 @@
-import { SubstitutionCast, StringSubstitutionCast } from './SubstitutionCast'
+import _ from 'lodash'
+import { SynonymCast } from './SynonymCast'
 
 describe('Cast Function tests ->', () => {
   const makeCastAssert = (castFn: any) => {
@@ -16,16 +17,13 @@ describe('Cast Function tests ->', () => {
     return assertFn
   }
 
-  test('SubstitutionCast works ', () => {
-    const numberSet = [
-      ['1', 'one', 'un'],
-      ['2', 'two', 'dos'],
-    ]
-
-    const SpanishNum = SubstitutionCast(
-      numberSet,
-      2,
-      (val) => `Couldn't convert '${val}' to a spanish number`
+  test('SynonymCast works ', () => {
+    const SpanishNum = SynonymCast(
+      [
+        ['un', ['1', 'one']],
+        ['dos', ['2', 'two', 'dos']],
+      ],
+      (val: string) => `Couldn't convert '${val}' to a spanish number`
     )
 
     const assertNC = makeCastAssert(SpanishNum)
