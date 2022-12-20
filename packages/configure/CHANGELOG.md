@@ -1,5 +1,16 @@
 # @flatfile/configure
 
+## 0.5.0
+
+### Minor Changes
+
+- 8d642d4: adds makeField to enable well typed extended fields
+
+### Patch Changes
+
+- Updated dependencies [8d642d4]
+  - @flatfile/schema@0.2.6
+
 ## 0.4.10
 
 ### Patch Changes

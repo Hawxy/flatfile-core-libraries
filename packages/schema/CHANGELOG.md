@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.6
+
+### Patch Changes
+
+- 8d642d4: adds makeField to enable well typed extended fields
+
 ## 0.2.5
 
 ### Patch Changes
