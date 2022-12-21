@@ -39,9 +39,9 @@ export class Workbook extends EventHandler implements Mountable {
       spaceConfigs: {
         // TODO: this should be a unique slug
         default: new SpaceConfig({
-          name: 'Default',
+          name: this.options.name,
           workbookConfigs: {
-            default: this,
+            [this.options.name]: this,
           },
         }),
       },

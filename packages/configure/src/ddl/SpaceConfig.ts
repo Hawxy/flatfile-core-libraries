@@ -25,7 +25,7 @@ export class SpaceConfig extends EventHandler implements Mountable {
   mount() {
     return new Agent({
       spaceConfigs: {
-        default: this,
+        [this.options.slug ?? 'default']: this,
       },
     })
   }
@@ -36,6 +36,7 @@ export type List<T> = Record<string, T>
 interface ConfigurationOptions {
   name: string
   workbookConfigs: List<Workbook> // this should probably be like "templates"
+  slug?: string
   description?: string
   theme?: any
   roles?: List<Role>

@@ -10,6 +10,7 @@ import { publishAction as legacyPublishAction } from './legacy/actions/publish'
 import { publishAction as publishAction } from './x/actions/publish.action'
 import { quickstartAction } from './x/actions/quickstart.action'
 import { switchVersion } from './switch.version'
+import { createEnvironmentAction } from './x/actions/create.environment.action'
 
 dotenv.config()
 
@@ -41,5 +42,13 @@ program
   .option('-t, --team <team-id>', 'the Team ID to publish to')
   .option('--api-url <url>', 'the API url to use')
   .action(quickstartAction)
+
+program
+  .command('create:env')
+  .description('Create an Environment')
+  .option('-n, --name <name>', 'the name of the environment to create')
+  .option('-k, --key <key>', 'the API Key to use')
+  .option('-s, --secret <secret>', 'the API Secret to use')
+  .action(createEnvironmentAction)
 
 program.parse()

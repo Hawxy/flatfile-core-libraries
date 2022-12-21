@@ -1,4 +1,10 @@
-import { Sheet, Workbook, TextField, Message } from '@flatfile/configure'
+import {
+  Sheet,
+  Workbook,
+  TextField,
+  Message,
+  SpaceConfig,
+} from '@flatfile/configure'
 
 const TestSheet = new Sheet(
   'TestSheet',
@@ -41,10 +47,18 @@ const TestSheet = new Sheet(
   }
 )
 
-export default new Workbook({
+const WBTest = new Workbook({
   name: 'Sheet from SDK',
   namespace: 'xdk-test',
   sheets: {
     TestSheet,
   },
 })
+
+const SC1 = new SpaceConfig({
+  name: 'SC1',
+  slug: 'sc1',
+  workbookConfigs: { WBTest },
+})
+
+export default SC1

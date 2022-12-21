@@ -168,8 +168,11 @@ export async function publishAction(
     } = config.mount() as Agent
 
     for (const slug in spaceConfigs) {
+      console.log(
+        `attempting to create a Space config with slug ${chalk.dim(slug)}`
+      )
       const spaceConfigSpinner = ora({
-        text: `Create Space Config`,
+        text: `Create Space Config with slug: ${chalk.dim(slug)}`,
       }).start()
       const spaceConfig = spaceConfigs[slug]
       try {
@@ -194,7 +197,7 @@ export async function publishAction(
           },
         })
         spaceConfigSpinner.succeed(
-          `Space Created ${chalk.dim(spaceConfigRes?.data?.id)}`
+          `Space Config Created ${chalk.dim(spaceConfigRes?.data?.id)}`
         )
       } catch (e) {
         spaceConfigSpinner.fail(`Space Config to be created ${chalk.dim(e)}`)
