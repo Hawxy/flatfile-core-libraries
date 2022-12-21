@@ -28,7 +28,6 @@ export function config(
   overrides?: Partial<{
     env?: string
     version?: string | number
-    team?: string | number
     region?: string
     endpoint?: string
     account?: string
@@ -84,7 +83,6 @@ dotenv.config()
 const rawConfig = rc('flatfile', {
   env: 'test',
   version: 3,
-  team: null,
   account: null,
   region: 'us0',
   clientId: null,
@@ -100,7 +98,6 @@ const ConfigValidation = z.object({
   region: z.string().min(1),
   clientId: z.string().min(1).nullable(),
   secret: z.string().min(1),
-  team: z.number().gte(1) || z.string().min(1),
   version: z.number().gte(1),
   x: z.boolean(),
 })
