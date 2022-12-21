@@ -1,5 +1,12 @@
 # @flatfile/cli
 
+## 3.1.10
+
+### Patch Changes
+
+- 228063d: Adds a tool to create environments in X
+- 49dc29e: Gives X deployment objects the practical overrides for names and slugs
+
 ## 3.1.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.1
+
+### Patch Changes
+
+- 49dc29e: Gives X deployment objects the practical overrides for names and slugs
+
 ## 0.5.0
 
 ### Minor Changes
