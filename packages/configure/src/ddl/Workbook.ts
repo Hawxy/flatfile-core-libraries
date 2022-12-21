@@ -38,10 +38,10 @@ export class Workbook extends EventHandler implements Mountable {
     return new Agent({
       spaceConfigs: {
         // TODO: this should be a unique slug
-        default: new SpaceConfig({
-          name: this.options.name,
+        [this.options.slug ?? 'default']: new SpaceConfig({
+          name: this.options.name ?? 'Default',
           workbookConfigs: {
-            [this.options.name]: this,
+            [this.options.slug ?? 'default']: this,
           },
         }),
       },
@@ -115,6 +115,7 @@ export interface IHookPayload {
 interface IWorkbookOptions {
   namespace: string
   name: string
+  slug?: string
   sheets: Record<string, Sheet<any>>
   ref?: string
   options?: {

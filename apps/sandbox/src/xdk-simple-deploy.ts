@@ -47,18 +47,21 @@ const TestSheet = new Sheet(
   }
 )
 
-const WBTest = new Workbook({
-  name: 'Sheet from SDK',
+const Workbook1 = new Workbook({
+  name: 'Workbook 1',
+  slug: 'xdk-test',
   namespace: 'xdk-test',
   sheets: {
     TestSheet,
   },
 })
 
-const SC1 = new SpaceConfig({
-  name: 'SC1',
-  slug: 'sc1',
-  workbookConfigs: { WBTest },
+const SpaceConfig1 = new SpaceConfig({
+  name: 'Space Config 1',
+  slug: 'space-config-1',
+  workbookConfigs: {
+    Workbook1,
+  },
 })
 
-export default SC1
+export default SpaceConfig1

@@ -150,6 +150,7 @@ export async function publishAction(
       )
     } catch (e) {
       envSpinner.fail(`Environment was not found: ${chalk.dim(env)}`)
+      process.exit(1)
     }
 
     const buildFile = path.join(outDir, 'build.js')
@@ -201,6 +202,7 @@ export async function publishAction(
         )
       } catch (e) {
         spaceConfigSpinner.fail(`Space Config to be created ${chalk.dim(e)}`)
+        process.exit(1)
       }
     }
 

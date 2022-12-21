@@ -25,6 +25,7 @@ import { EventTopic } from '@flatfile/api'
 import { SheetConfig } from '@flatfile/blueprint'
 import { EventHandler, FlatfileEvent } from '../utils/event.handler'
 import { RecordTranslater, XRecord } from '../utils/record.translater'
+import { slugify } from '../utils/slugify'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
@@ -301,15 +302,17 @@ export class Sheet<FC extends FieldConfig>
     return SchemaILToJsonSchema(this.toSchemaIL(namespace, slug))
   }
 
+  // TODO: need to handle deploys from just sheets as Agents with default slugs for configs properly
   mount(): Agent {
+    const slug = slugify(this.name)
     return new Agent({
       spaceConfigs: {
-        default: new SpaceConfig({
-          name: 'Default',
+        [slug]: new SpaceConfig({
+          name: this.name,
           workbookConfigs: {
-            default: new Workbook({
+            [slug]: new Workbook({
               sheets: {
-                [this.constructor.name]: this,
+                [slug]: this,
               },
             }),
           },
