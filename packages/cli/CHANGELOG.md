@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.11
+
+### Patch Changes
+
+- 4a12d2e: Cleanup some cruft
+
 ## 3.1.10
 
 ### Patch Changes

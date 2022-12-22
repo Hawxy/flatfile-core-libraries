@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.2
+
+### Patch Changes
+
+- a89ffe4: Removes verifyEgressCycle from record-compute functions
+
 ## 0.5.1
 
 ### Patch Changes
