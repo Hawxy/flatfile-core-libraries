@@ -251,17 +251,8 @@ export class Sheet<FC extends FieldConfig>
           if (field.options.egressFormat) {
             try {
               const egressVal = field.options.egressFormat(origVal)
-              if (verifyEgressCycle(field, origVal)) {
-                record.set(key, egressVal)
-                return
-              } else {
-                record.pushInfoMessage(
-                  key,
-                  `Error: sheet tried to egressFormat value ${origVal} of type ${typeof origVal} to string of '${egressVal}' which couldn't be cast back to ${origVal}. Persisting this would result in data loss. The original value ${origVal} was not changed.`,
-                  'error',
-                  'other'
-                )
-              }
+              record.set(key, egressVal)
+              return
             } catch (e: any) {
               record.pushInfoMessage(
                 key,

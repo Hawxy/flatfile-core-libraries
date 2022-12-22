@@ -39,32 +39,6 @@ describe('EgressFormatTests ->', () => {
     })
   })
 
-  test('improper egressFormat at recordCompute prevents change to record egress works ', async () => {
-    const TestSchema = new WorkbookTester(
-      { b: NumberField({ egressFormat: ef20Improper }) },
-      {
-        recordCompute: (rec: FlatfileRecord<any>) => {
-          rec.set('b', (rec.get('b') as number) + 1)
-        },
-      }
-    )
-
-    await TestSchema.checkRowResult({
-      rawData: { b: '19' }, // egress format will try to return 30, but this will fail verifyEgressCycle, test that '20' is still saved
-      // ideally we would roll back the failed to egress recordCompute
-      // or batchRecordsCompute modifications, but we have no
-      // mechanism for that
-      expectedOutput: { b: 20 },
-      message:
-        "Error: sheet tried to egressFormat value 20 of type number to string of '30' which couldn't be cast back to 20. Persisting this would result in data loss. The original value 20 was not changed.",
-    })
-
-    await TestSchema.checkRowResult({
-      rawData: { b: '21' },
-      expectedOutput: { b: '22' },
-    })
-  })
-
   const ef20Error = (val: number) => {
     if (val === 20) {
       throw new Error('egress failure')
@@ -88,35 +62,6 @@ describe('EgressFormatTests ->', () => {
     await TestSchema.checkRowResult({
       rawData: { b: '21' },
       expectedOutput: { b: '21' },
-    })
-  })
-  test('improper egressFormat at recordCompute prevents change to record egress works ', async () => {
-    const TestSchema = new WorkbookTester(
-      {
-        b: NumberField({
-          egressFormat: ef20Error,
-        }),
-      },
-      {
-        recordCompute: (rec: FlatfileRecord<any>) => {
-          rec.set('b', (rec.get('b') as number) + 1)
-        },
-      }
-    )
-
-    await TestSchema.checkRowResult({
-      rawData: { b: '19' }, //egress format will try to return 30, but this will fail verifyEgressCycle, test that '20' is stills aved
-      // ideally we would roll back the failed to egress recordCompute
-      // or batchRecordsCompute modifications, but we have no
-      // mechanism for that
-      expectedOutput: { b: 20 },
-      message:
-        'Error: sheet threw an error when trying to egressFormat a value of 20 of type number',
-    })
-
-    await TestSchema.checkRowResult({
-      rawData: { b: '21' },
-      expectedOutput: { b: '22' },
     })
   })
 
