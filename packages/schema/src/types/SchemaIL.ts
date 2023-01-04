@@ -39,15 +39,24 @@ export interface LinkedSheetField extends BaseField {
   upsert: boolean
 }
 
+export interface ReferenceField extends BaseField {
+  type: 'reference'
+  sheetKey: string
+  foreignKey: string
+  relationship?: 'has-one' | 'has-many'
+}
+
 export type SchemaILFieldArgs =
   | Omit<BaseSchemaILField, 'field'>
   | Omit<SchemaILEnumField, 'field'>
   | Omit<LinkedSheetField, 'field'>
+  | Omit<ReferenceField, 'field'>
 
 export type SchemaILField =
   | BaseSchemaILField
   | SchemaILEnumField
   | LinkedSheetField
+  | ReferenceField
 
 export interface SchemaILModel<
   Fields extends Record<string, SchemaILField> = Record<string, SchemaILField>

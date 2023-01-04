@@ -1,5 +1,4 @@
-import { FlatfileRecord } from '@flatfile/hooks'
-import { DateField, NumberField } from './Field'
+import { NumberField, DateField} from '../fields'
 import { WorkbookTester } from './WorkbookTester'
 
 describe('EgressFormatTests ->', () => {

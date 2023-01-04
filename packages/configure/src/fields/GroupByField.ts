@@ -1,4 +1,4 @@
-import { TextField } from '../ddl/Field'
+import { TextField } from './TextField'
 
 export const GroupByField = (groupByField: string[], expression: any) => {
   const retField = TextField()

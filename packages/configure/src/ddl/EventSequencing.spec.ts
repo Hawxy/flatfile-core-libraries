@@ -1,5 +1,5 @@
 import { FieldTester, WorkbookTester } from './WorkbookTester'
-import { NumberField, TextField } from './Field'
+import { NumberField, TextField } from '../fields'
 
 const IdentitySingle = () => {
   return (arg: any) => {

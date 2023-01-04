@@ -174,25 +174,27 @@ export async function publishAction(
       }).start()
       const spaceConfig = spaceConfigs[slug]
       try {
+        const spacePatternConfig = {
+          name: spaceConfig.options.name,
+          // TODO Do we need a unique slug for this in the Platform SDK or X? Should we generate them in X?
+          slug,
+          blueprints: mapObj(
+            spaceConfig.options.workbookConfigs,
+            (wb, wbSlug, i) => {
+              return {
+                name: wb.options.name,
+                slug: `${slug}/${wbSlug}`,
+                primary: i === 0,
+                sheets: mapObj(wb.options.sheets, (model, modelSlug) =>
+                  model.toBlueprint(wbSlug, modelSlug)
+                ),
+              } as Blueprint
+            }
+          ),
+        }
+
         const spaceConfigRes = await apiClient.addSpaceConfig({
-          spacePatternConfig: {
-            name: spaceConfig.options.name,
-            // TODO Do we need a unique slug for this in the Platform SDK or X? Should we generate them in X?
-            slug,
-            blueprints: mapObj(
-              spaceConfig.options.workbookConfigs,
-              (wb, wbSlug, i) => {
-                return {
-                  name: wb.options.name,
-                  slug: `${slug}/${wbSlug}`,
-                  primary: i === 0,
-                  sheets: mapObj(wb.options.sheets, (model, modelSlug) => {
-                    return model.toBlueprint(wbSlug, modelSlug)
-                  }),
-                } as Blueprint
-              }
-            ),
-          },
+          spacePatternConfig,
         })
         spaceConfigSpinner.succeed(
           `Space Config Created ${chalk.dim(spaceConfigRes?.data?.id)}`

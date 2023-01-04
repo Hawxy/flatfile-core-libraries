@@ -1,4 +1,4 @@
-import { TextField, BooleanField } from './Field'
+import { TextField, BooleanField } from '../fields'
 import { Sheet } from './Sheet'
 import { Workbook, IHookPayload } from './Workbook'
 import { FlatfileRecords, FlatfileSession, IPayload } from '@flatfile/hooks'
@@ -9,7 +9,7 @@ const CategoryAndBoolean = new Sheet(
     firstName: TextField({
       required: true,
       description: 'foo',
-      compute: (v) => v.toUpperCase(),
+      compute: (v: string) => v.toUpperCase(),
     }),
 
     testBoolean: BooleanField({}),
@@ -68,7 +68,7 @@ describe('Workbook tests ->', () => {
         firstName1: TextField({
           required: true,
           description: 'foo',
-          compute: (v) => v.toUpperCase(),
+          compute: (v: string) => v.toUpperCase(),
         }),
 
         testBoolean1: BooleanField({

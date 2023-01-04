@@ -15,6 +15,7 @@ export async function authAction({
   const authSpinner = ora({
     text: `Creating access token`,
   }).start()
+
   try {
     const DEFAULT_API_URL = apiUrl ?? 'https://api.x.flatfile.com/v1'
     const ClientConfig = (accessToken: string) => {
@@ -34,20 +35,25 @@ export async function authAction({
         basePath: DEFAULT_API_URL,
       })
     )
-
-    const authResponse = await authClient.getAccessToken({
-      getAccessTokenRequest: {
-        clientId,
-        secret,
-      },
-    })
+    let authResponse
+    try {
+      authResponse = await authClient.getAccessToken({
+        getAccessTokenRequest: {
+          clientId,
+          secret,
+        },
+      })
+    } catch (e) {
+      authSpinner.fail(`Failed to create access token`)
+      console.log(e)
+      process.exit(1)
+    }
 
     if (!authResponse?.data?.accessToken) {
-      authSpinner.fail(`${chalk.red(authResponse)}`)
+      authSpinner.fail(`Response did not contain access token`)
       process.exit(1)
     }
     const { accessToken } = authResponse.data
-
     const apiClient = new DefaultApi(ClientConfig(String(accessToken)))
     authSpinner.succeed(`Access token created`)
     return apiClient

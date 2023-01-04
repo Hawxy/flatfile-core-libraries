@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import { SynonymCast } from '../stdlib/SynonymCast'
 import { BooleanCast, FallbackCast, NumberCast } from '../stdlib/CastFunctions'
-import { TextField, NumberField, Field, Message, BooleanField } from './Field'
+import { Field, Message } from './Field'
+import { NumberField, TextField, BooleanField } from '../fields'
 import {
   makeField,
   GenericDefaults,
@@ -118,7 +119,7 @@ describe('makeField tests', () => {
   test('MakeFieldDefaultCustomizer works ', () => {
     //note, no template type necessary because that is picked up from NumberField
     const NumberField2 = makeField(NumberField(), {
-      validate: (v) => {
+      validate: (v: number) => {
         if (v < 5) {
           throw new Error('less than 5')
         }
@@ -129,7 +130,7 @@ describe('makeField tests', () => {
   test('makeField examples 1', async () => {
     // test custom validate function
     const EmailField = makeField(TextField(), {
-      validate: (val) => {
+      validate: (val: string) => {
         const emailRegex = /[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+/
         if (!emailRegex.test(val)) {
           return [

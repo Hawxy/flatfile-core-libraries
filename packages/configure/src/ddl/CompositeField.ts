@@ -1,5 +1,6 @@
-import { FlatfileRecord, TPrimitive } from '@flatfile/hooks'
-import { AnyField, TextField, NumberField } from './Field'
+import { TPrimitive } from '@flatfile/hooks'
+import { AnyField } from './Field'
+import { TextField, NumberField } from '../fields'
 import { ComputedField } from './ComputedField'
 import { toPairs } from 'remeda'
 

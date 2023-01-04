@@ -1,4 +1,4 @@
-import { NumberField } from './Field'
+import { NumberField } from '../fields'
 /*
   This is an odd type of test.  It contains code which is expected to compile, and code that when uncommented should throw a compile time error.  Since we can't easily call TSC as a library to verify behavior this is the best we can easily do
 */

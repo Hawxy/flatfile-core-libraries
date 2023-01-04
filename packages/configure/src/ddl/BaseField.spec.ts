@@ -1,11 +1,5 @@
-import {
-  OptionField,
-  NumberField,
-  FieldHookDefaults,
-  Message,
-  LinkedField,
-  TextField,
-} from './Field'
+import { NumberField, OptionField, TextField, LinkedField } from '../fields'
+import { Message } from './Field'
 import { Sheet } from './Sheet'
 describe('BaseField', () => {
   beforeAll(() => {

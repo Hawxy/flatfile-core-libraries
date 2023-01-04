@@ -1,5 +1,5 @@
 import { FlatfileRecords, FlatfileSession, IPayload } from '@flatfile/hooks'
-import { TextField, BooleanField } from './Field'
+import { TextField, BooleanField } from '../fields'
 import { Sheet } from './Sheet'
 
 const CategoryAndBoolean = new Sheet(
@@ -8,7 +8,7 @@ const CategoryAndBoolean = new Sheet(
     firstName: TextField({
       required: true,
       description: 'foo',
-      compute: (v) => v.toUpperCase(),
+      compute: (v: string) => v.toUpperCase(),
     }),
     envField: TextField(),
     testBoolean: BooleanField({}),

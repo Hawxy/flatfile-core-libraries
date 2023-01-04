@@ -60,6 +60,10 @@ export const compileSpecific = (
     return compileLinkedField(inputField)
   } else if (inputField.type === 'enum') {
     return compileEnum(inputField)
+  } else if (inputField.type === 'reference') {
+    throw new Error(
+      `ReferenceField() of ${inputField.field} is unsupported in Flatfile Mono`
+    )
   }
   return inputField
 }

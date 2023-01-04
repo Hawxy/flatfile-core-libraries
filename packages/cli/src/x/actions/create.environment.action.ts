@@ -60,16 +60,20 @@ export async function createEnvironmentAction(
     const envSpinner = ora({
       text: `Create Environment`,
     }).start()
-
-    const newEnvironmentCreated = await apiClient.createEnvironment({
-      environmentConfig: {
-        name,
-        isProd: options.isProd ?? false,
-      },
-    })
-    const environmentId = newEnvironmentCreated?.data?.id ?? ''
-    envSpinner.succeed(`Environment created:  ${chalk.dim(environmentId)}`)
+    try {
+      const newEnvironmentCreated = await apiClient.createEnvironment({
+        environmentConfig: {
+          name,
+          isProd: options.isProd ?? false,
+        },
+      })
+      const environmentId = newEnvironmentCreated?.data?.id ?? ''
+      envSpinner.succeed(`Environment created:  ${chalk.dim(environmentId)}`)
+    } catch (e) {
+      envSpinner.fail(`Failed to create environment: ${chalk.dim(name)}`)
+      console.log({ e })
+    }
   } catch (e) {
-    console.log(e)
+    console.log({ e })
   }
 }

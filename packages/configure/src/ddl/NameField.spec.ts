@@ -1,6 +1,6 @@
 import { WorkbookTester } from './WorkbookTester'
 import { isFullyPresent } from '../utils/isFullyPresent'
-import { TextField } from '@flatfile/configure'
+import { TextField } from '../fields'
 import { makeCompositeField, ComplexType } from './CompositeField'
 
 export class Name extends ComplexType {

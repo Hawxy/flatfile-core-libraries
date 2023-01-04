@@ -7,7 +7,7 @@ export * from './ddl/Agent'
 export * from './ddl/SpaceConfig'
 export * from './stdlib/RegionCast'
 export * from './stdlib/SynonymCast'
-export * from './fields/GroupByField'
+export * from './fields'
 import * as stdlibCast from './stdlib/CastFunctions'
 export { makeField, GenericDefaults, mergeFieldOptions } from './ddl/MakeField'
 

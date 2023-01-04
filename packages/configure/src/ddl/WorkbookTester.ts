@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 import { IHookPayload } from '@flatfile/configure'
 import { Workbook } from './Workbook'
-import { NumberField, Message } from './Field'
+import { Message } from './Field'
 
 import {
   IRawRecordWithInfo,

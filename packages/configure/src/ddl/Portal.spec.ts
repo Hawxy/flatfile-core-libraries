@@ -1,4 +1,4 @@
-import { TextField, BooleanField } from './Field'
+import { TextField, BooleanField } from '../fields'
 import { Portal } from './Portal'
 import { Sheet } from './Sheet'
 import { Workbook } from './Workbook'
@@ -18,7 +18,7 @@ const CategoryAndBoolean = new Sheet(
     firstName: TextField({
       required: true,
       description: 'foo',
-      compute: (v) => v.toUpperCase(),
+      compute: (v: string) => v.toUpperCase(),
     }),
     testBoolean: BooleanField({}),
   },

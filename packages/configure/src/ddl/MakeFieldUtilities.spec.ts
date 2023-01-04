@@ -6,7 +6,9 @@ import {
   StringCastCompose,
   ChainCast,
 } from '../stdlib/CastFunctions'
-import { TextField, Field, Message } from './Field'
+import { Field, Message } from './Field'
+import { TextField } from '../fields/'
+
 import { makeField, mergeFieldOptions } from './MakeField'
 
 // test all of this

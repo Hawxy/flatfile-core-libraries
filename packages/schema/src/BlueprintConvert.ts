@@ -4,7 +4,7 @@ import {
   BaseSchemaILField,
   SchemaILField,
   SchemaILEnumField,
-  LinkedSheetField,
+  ReferenceField,
 } from './types/SchemaIL'
 
 import {
@@ -16,6 +16,7 @@ import {
   EnumPropertyOption,
   NumberProperty,
   SheetConfig,
+  ReferenceProperty,
 } from '@flatfile/blueprint'
 
 const getConstraints = (field: SchemaILField): Constraint[] =>
@@ -80,12 +81,16 @@ export const convertEnum = (field: SchemaILEnumField): EnumProperty => {
   }
 }
 
-const convertLinkedField = (silField: LinkedSheetField): StringProperty => {
-  console.warn("LinkedFields aren't supported by X")
+const convertLinkedField = (silField: ReferenceField): ReferenceProperty => {
   return {
     key: silField.field,
-    type: 'string',
     label: silField.label,
+    type: 'reference',
+    config: {
+      ref: silField.sheetKey,
+      key: silField.foreignKey,
+      relationship: silField.relationship || 'has-one',
+    },
   }
 }
 
@@ -101,10 +106,12 @@ export const SchemaILFieldtoProperty = (field: SchemaILField): Property => {
   } else if (ft === 'enum') {
     return convertEnum(field)
   } else if (ft === 'schema_ref') {
+    throw new Error(`LinkedField() of ${field.field} is unsupported in X`)
+  } else if (ft === 'reference') {
     return convertLinkedField(field)
   } else {
     throw new Error(
-      `unsupported type passed to schemaILFieldtoProperty of ${field}`
+      `Unsupported type: ${field.type} passed to schemaILFieldtoProperty of ${field.field}`
     )
   }
 }

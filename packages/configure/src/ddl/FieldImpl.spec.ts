@@ -1,4 +1,4 @@
-import { OptionField } from './Field'
+import { OptionField } from '../fields'
 import { WorkbookTester } from './WorkbookTester'
 
 // First sets of Workbook Tests

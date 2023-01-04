@@ -3,20 +3,12 @@ import {
   SchemaILField,
   BaseSchemaILField,
   LinkedSheetField,
+  ReferenceField,
   SchemaILEnumField,
   SchemaILFieldArgs,
 } from '@flatfile/schema'
 import { isFullyPresent } from '../utils/isFullyPresent'
 import _ from 'lodash'
-
-import {
-  DateCast,
-  BooleanCast,
-  NumberCast,
-  StringCast,
-} from '../stdlib/CastFunctions'
-import { Sheet, FieldConfig } from './Sheet'
-import { mergeFieldOptions, makeField, makeFieldLegacy } from './MakeField'
 
 export type TRecordStageLevel =
   | 'cast'
@@ -246,7 +238,7 @@ export class Field<T, Unused extends Record<string, any> = {}> {
     return _.flatten([messages, validateMessages])
   }
 
-  public toSchemaILField(fieldName: string): SchemaILField {
+  public toSchemaILField(fieldName: string, namespace?: string): SchemaILField {
     const t = this.options.type
     const base = {
       field: fieldName,
@@ -281,6 +273,18 @@ export class Field<T, Unused extends Record<string, any> = {}> {
         sheetName: linkedOptions.sheetName,
       }
       return LinkedField
+    } else if (t === 'reference') {
+      const linkedOptions = this.options //as LinkedSheetField
+      const RefField: ReferenceField = {
+        ...base,
+        type: t,
+        sheetKey: namespace
+          ? `${namespace}/${linkedOptions.sheetKey}`
+          : linkedOptions.sheetKey,
+        foreignKey: linkedOptions.foreignKey,
+        relationship: linkedOptions.relationship,
+      }
+      return RefField
     } else if (t === 'enum') {
       const EnumField: SchemaILEnumField = {
         type: t,
@@ -298,84 +302,3 @@ export class Field<T, Unused extends Record<string, any> = {}> {
     //definition, possible additonal processing at the Sheet level
   }
 }
-
-export const TextField = makeFieldLegacy<string, {}>(null, {
-  type: 'string',
-  cast: StringCast,
-})
-
-export const BooleanField = makeFieldLegacy<boolean, {}>(null, {
-  type: 'boolean',
-  cast: BooleanCast,
-})
-
-export const NumberField = makeFieldLegacy<number, {}>(null, {
-  type: 'number',
-  cast: NumberCast,
-})
-
-export const DateField = makeFieldLegacy<Date, {}>(null, {
-  type: 'string',
-  cast: DateCast,
-})
-
-type LabelObject = { label: string }
-// OptionField
-type LabelOptions = string | LabelObject
-
-export const OptionField = makeField<
-  string,
-  {
-    matchStrategy?: 'fuzzy' | 'exact'
-    options: Record<string, LabelOptions>
-  }
->(TextField(), { type: 'enum' }, (mergedOptions, _newOptions) => {
-  const def_ = mergedOptions.default
-
-  if (def_ !== null) {
-    //type guard to make typescript happy
-    if (isFullyPresent(def_) && mergedOptions.options[def_] === undefined) {
-      throw new Error(
-        `Invalid default of ${def_}, value doesn't appear as one of the keys in ${keys(
-          mergedOptions.options
-        )}`
-      )
-    }
-  }
-  const labelEnum = mapValues(mergedOptions.options, (value: LabelOptions) => {
-    if (typeof value === 'string') {
-      return value
-    } else {
-      return value.label
-    }
-  })
-
-  const consolidatedOptions = mergeFieldOptions(mergedOptions, {
-    //type: 'enum',
-    labelEnum,
-    matchStrategy: mergedOptions.matchStrategy || 'fuzzy',
-  })
-  return new Field(consolidatedOptions)
-})
-// LinkedField
-export const LinkedField = makeField<
-  string,
-  { sheet: Sheet<FieldConfig>; upsert?: boolean }
->(TextField(), {}, (mergedOptions, _newOptions) => {
-  const { sheet } = mergedOptions
-  const sheetName = sheet.name
-  let upsert = true
-  if (mergedOptions.upsert === false) {
-    upsert = false
-  } else if (mergedOptions.upsert === true) {
-    upsert = true
-  } else if (mergedOptions.upsert === undefined) {
-    upsert = true
-  }
-  const consolidatedOptions = mergeFieldOptions(mergedOptions, {
-    type: 'schema_ref',
-    sheetName,
-    upsert,
-  })
-  return new Field(consolidatedOptions)
-})

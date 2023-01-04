@@ -4,7 +4,7 @@ import {
   FlatfileSession,
 } from '@flatfile/hooks'
 
-import { AnyField, Message, verifyEgressCycle } from './Field'
+import { AnyField, Message } from './Field'
 
 import {
   IJsonSchema,
@@ -284,7 +284,7 @@ export class Sheet<FC extends FieldConfig>
     }
 
     for (const key in this.fields) {
-      base.fields[key] = this.fields[key].toSchemaILField(key)
+      base.fields[key] = this.fields[key].toSchemaILField(key, namespace)
     }
     return base
   }

@@ -4,6 +4,7 @@ import {
   TextField,
   Message,
   SpaceConfig,
+  ReferenceField,
 } from '@flatfile/configure'
 
 const TestSheet = new Sheet(
@@ -47,12 +48,23 @@ const TestSheet = new Sheet(
   }
 )
 
+const SheetWithLink = new Sheet('SheetWithLink', {
+  nickname: TextField(),
+  lastName: ReferenceField({
+    label: 'Last Name',
+    sheetKey: 'TestSheet',
+    foreignKey: 'lastName',
+    relationship: 'has-many',
+  }),
+})
+
 const Workbook1 = new Workbook({
   name: 'Workbook 1',
   slug: 'xdk-test',
   namespace: 'xdk-test',
   sheets: {
     TestSheet,
+    SheetWithLink,
   },
 })
 

@@ -1,7 +1,8 @@
 import fetch from 'node-fetch'
-import { Message, TextField, NumberField } from '@flatfile/configure'
+import { TextField, NumberField } from '../fields'
+import { Message } from './Field'
 import { WorkbookTester } from './WorkbookTester'
-import { FlatfileRecord, IRecordInfo } from '@flatfile/hooks'
+import { FlatfileRecord } from '@flatfile/hooks'
 
 /*
   This test file is supposed to look like a traditional jest test, it is used for developers of the SchemaIL, FlatfileDDL, and Hook runtimes.
@@ -25,7 +26,7 @@ describe('Functional Hook Tests ->', () => {
         c: NumberField({
           ...BaseFieldArgs,
           unique: true,
-          validate: (v) => {
+          validate: (v: number) => {
             if (v > 100) {
               throw 'too big'
             }
@@ -58,7 +59,7 @@ describe('Functional Hook Tests ->', () => {
         b: NumberField({ ...BaseFieldArgs, required: true }),
         c: NumberField({
           ...BaseFieldArgs,
-          validate: (v) => {
+          validate: (v: number) => {
             if (v > 100) {
               throw 'too big'
             }
@@ -118,15 +119,15 @@ describe('Functional Hook Tests ->', () => {
       {
         firstNumber: NumberField({
           ...BaseFieldArgs,
-          cast: (v) => {
+          cast: (v: any) => {
             if (isNaN(Number(v))) {
               return 0
             }
 
             return Number(v)
           },
-          compute: (v) => v + 2,
-          validate: (v) => {
+          compute: (v: number) => v + 2,
+          validate: (v: number) => {
             if (v > 100) {
               throw 'too big'
             }
@@ -155,15 +156,15 @@ describe('Functional Hook Tests ->', () => {
       {
         firstNumber: NumberField({
           ...BaseFieldArgs,
-          cast: (v) => {
+          cast: (v: any) => {
             if (isNaN(Number(v))) {
               return 0
             }
 
             return Number(v)
           },
-          compute: (v) => v + 2,
-          validate: (v) => {
+          compute: (v: number) => v + 2,
+          validate: (v: number) => {
             if (v > 100) {
               throw 'too big'
             }
@@ -191,7 +192,7 @@ describe('Functional Hook Tests ->', () => {
     const TestSchema = new WorkbookTester(
       {
         a: TextField({
-          validate: (v) => {
+          validate: (v: any) => {
             throw 'should never see'
           },
         }),
@@ -247,7 +248,7 @@ describe('Functional Hook Tests ->', () => {
         b: NumberField({
           default: 0,
           annotations: { default: true, compute: true },
-          compute: (v) => v + 2,
+          compute: (v: number) => v + 2,
         }),
       },
       {}
