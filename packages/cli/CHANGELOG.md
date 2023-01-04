@@ -1,5 +1,13 @@
 # @flatfile/cli
 
+## 3.1.12
+
+### Patch Changes
+
+- d91ad36: Adds ReferenceField to create reference field types in X
+- a57c57c: Adds -x flag to CLI Init script to generate a repo ready to deploy to X
+- d91ad36: Adds LinkedField support for XDK Deployments
+
 ## 3.1.11
 
 ### Patch Changes

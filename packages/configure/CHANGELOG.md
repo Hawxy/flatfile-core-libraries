@@ -1,5 +1,15 @@
 # @flatfile/configure
 
+## 0.5.3
+
+### Patch Changes
+
+- d91ad36: Adds ReferenceField to create reference field types in X
+- d91ad36: Adds LinkedField support for XDK Deployments
+- Updated dependencies [d91ad36]
+- Updated dependencies [d91ad36]
+  - @flatfile/schema@0.2.7
+
 ## 0.5.2
 
 ### Patch Changes
