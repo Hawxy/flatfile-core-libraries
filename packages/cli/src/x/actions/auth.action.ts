@@ -16,7 +16,7 @@ export async function authAction({
     text: `Creating access token`,
   }).start()
   try {
-    const DEFAULT_API_URL = apiUrl ?? 'https://api.flatfile.space/v1'
+    const DEFAULT_API_URL = apiUrl ?? 'https://api.x.flatfile.com/v1'
     const ClientConfig = (accessToken: string) => {
       return new Configuration({
         basePath: DEFAULT_API_URL,

@@ -4,13 +4,12 @@ import { program } from 'commander'
 import dotenv from 'dotenv'
 import packageJSON from '../package.json'
 
-import { init } from './legacy/actions/init/init'
-
 import { publishAction as legacyPublishAction } from './legacy/actions/publish'
 import { publishAction as publishAction } from './x/actions/publish.action'
 import { quickstartAction } from './x/actions/quickstart.action'
 import { switchVersion } from './switch.version'
 import { createEnvironmentAction } from './x/actions/create.environment.action'
+import { switchInit } from './switch.init'
 
 dotenv.config()
 
@@ -34,7 +33,8 @@ program
   .option('-n, --name <name>', 'the name of the your project')
   .option('-s, --secret <secret>', 'the API Secret to use')
   .option('-t, --team <team>', 'the Team ID to publish to')
-  .action(init)
+  .option('-x', 'initialize the project to deploy to X')
+  .action(switchInit)
 
 program
   .command('quickstart')

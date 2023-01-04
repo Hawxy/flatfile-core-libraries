@@ -2,18 +2,20 @@ import inquirer from 'inquirer'
 import fs from 'fs'
 import chalk from 'chalk'
 import ora from 'ora'
+import { authAction } from './auth.action'
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 
-interface Options {
+export interface XInitOptions {
   name?: string
-  key?: string
+  clientId?: string
   secret?: string
-  team?: string
   environment?: string
+  isProd?: boolean
+  x?: boolean
 }
 
-export const init = async (options: Options) => {
+export const init = async (options: XInitOptions) => {
   const questions = [
     {
       type: 'input',
@@ -24,9 +26,9 @@ export const init = async (options: Options) => {
     },
     {
       type: 'input',
-      name: 'key',
-      message: 'Your API key',
-      when: !options.key,
+      name: 'clientId',
+      message: 'Your API Client ID',
+      when: !options.clientId,
     },
     {
       type: 'input',
@@ -36,28 +38,30 @@ export const init = async (options: Options) => {
     },
     {
       type: 'input',
-      name: 'team',
-      message: 'Your Team ID',
-      when: !options.team,
-    },
-    {
-      type: 'input',
       name: 'environment',
       message: 'Environment name',
-      default: 'test',
+      default: 'dev',
       when: !options.environment,
+    },
+    {
+      type: 'confirm',
+      name: 'isProd',
+      message: 'Is this a Production environment?',
+      default: 'false',
+      when: !options.isProd,
     },
   ]
 
   console.log(`Please signup or login to Flatfile Dashboard with Github.`)
   console.log(`${chalk.dim('https://api.flatfile.io/auth/github')}\n`)
-
+  const apiUrl = 'https://api.x.flatfile.com/v1'
   return inquirer
     .prompt(questions)
     .then(async (answers) => {
       // Combine answers from user input with options passed in via CLI
-      const answersWithDefaults: Options = { ...options, ...answers }
-      const { name, key, secret, team, environment } = answersWithDefaults
+      const answersWithDefaults: XInitOptions = { ...options, ...answers }
+      const { name, clientId, secret, environment, isProd } =
+        answersWithDefaults
       const projectDir = `${process.cwd()}/${name}`
 
       // Empty log for spacing only
@@ -80,11 +84,48 @@ export const init = async (options: Options) => {
 
       // Change to project directory
       process.chdir(projectDir)
+      if (!clientId || !secret) {
+        console.log('Must provide a clientId and secret')
+        process.exit(1)
+      }
+      try {
+        // Create and authenticated API client
+        const apiClient = await authAction({ apiUrl, clientId, secret })
 
-      // Create the .env file
-      if (!fs.existsSync('.env')) {
-        const template = `FLATFILE_ACCESS_KEY_ID=${key}\nFLATFILE_SECRET=${secret}\nFLATFILE_TEAM_ID=${team}\nFLATFILE_ENV=${environment}`
-        fs.writeFileSync('.env', template)
+        if (!apiClient) {
+          console.log('Failed to create API Client')
+          process.exit(1)
+        }
+
+        // Find or Create Environment
+        const envSpinner = ora({
+          text: `Create Environment`,
+        }).start()
+
+        const newEnvironmentCreated = await apiClient.createEnvironment({
+          environmentConfig: {
+            name: environment || 'dev',
+            isProd: isProd ?? false,
+          },
+        })
+        const environmentId = newEnvironmentCreated?.data?.id ?? ''
+        envSpinner.succeed(`Environment created:  ${chalk.dim(environmentId)}`)
+      } catch (e) {
+        console.log(e)
+      }
+
+      // Create the .flatfilerc file
+      if (!fs.existsSync('.flatfilerc')) {
+        const flatfilerc = `
+        {
+            "endpoint": "https://api.x.flatfile.com/v1",
+            "env": "${environment}",
+            "version": "10",
+            "clientId": "${clientId}",
+            "secret": "${secret}"
+        }`
+
+        fs.writeFileSync('.flatfilerc', flatfilerc)
       }
 
       // Install dependencies
