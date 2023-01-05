@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.4
+
+### Patch Changes
+
+- 55eb325: fix an issue where an event listener would not properly close after processing all events
+
 ## 0.5.3
 
 ### Patch Changes
