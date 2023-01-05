@@ -1,5 +1,4 @@
 import wildMatch from 'wildcard-match'
-import { mapSeries } from 'async'
 import { Event } from '@flatfile/api'
 import { AuthenticatedClient } from './authenticated.client'
 
@@ -82,10 +81,9 @@ export class EventHandler extends AuthenticatedClient {
    * @param event
    */
   async trigger(event: FlatfileEvent): Promise<void> {
-    const listeners = this.getListeners(event)
-    await mapSeries(listeners, (cb: EventCallback) => {
-      return cb(event)
-    })
+    for (const cb of this.getListeners(event)) {
+      await cb(event)
+    }
   }
 
   /**
