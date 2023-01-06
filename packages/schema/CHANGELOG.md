@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.8
+
+### Patch Changes
+
+- 4bc8186: Adds description to fields deployed to X
+
 ## 0.2.7
 
 ### Patch Changes
