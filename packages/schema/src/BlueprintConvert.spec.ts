@@ -25,6 +25,7 @@ describe('compiler tests', () => {
     const stringField: SchemaILField = {
       type: 'string',
       label: 'First Name',
+      description: 'A Description of a nice First Name',
       required: true,
       annotations: {},
       field: 'first_name',
@@ -33,6 +34,7 @@ describe('compiler tests', () => {
     const blueprintOutput: StringProperty = {
       type: 'string',
       label: 'First Name',
+      description: 'A Description of a nice First Name',
       key: 'first_name',
       constraints: [{ type: 'required' }],
     }
@@ -57,6 +59,7 @@ describe('compiler tests', () => {
       type: 'enum',
       key: 'department',
       label: 'Department',
+      description: undefined,
       constraints: [{ type: 'required' }],
       config: {
         options: [
@@ -88,6 +91,7 @@ describe('compiler tests', () => {
       type: 'number',
       key: 'salary',
       label: 'Salary',
+      description: undefined,
       constraints: [{ type: 'required' }],
     }
 

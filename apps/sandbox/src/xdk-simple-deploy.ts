@@ -10,7 +10,10 @@ import {
 const TestSheet = new Sheet(
   'TestSheet',
   {
-    firstName: TextField('First Name'),
+    firstName: TextField({
+      label: 'First Name',
+      description: "This is a human's first name"
+    }),
     middleName: TextField('Middle'),
     lastName: TextField({
       label: 'Last Name',

@@ -51,6 +51,7 @@ const convertBase = (
     type: field.type,
     label: field.label,
     key: field.field,
+    description: field.description,
   }
 }
 
@@ -75,21 +76,23 @@ export const convertEnum = (field: SchemaILEnumField): EnumProperty => {
     type: 'enum',
     label: field.label,
     key: field.field,
+    description: field.description,
     config: {
       options: getEnumOptions(field),
     },
   }
 }
 
-const convertLinkedField = (silField: ReferenceField): ReferenceProperty => {
+const convertLinkedField = (field: ReferenceField): ReferenceProperty => {
   return {
-    key: silField.field,
-    label: silField.label,
+    key: field.field,
+    label: field.label,
     type: 'reference',
+    description: field.description,
     config: {
-      ref: silField.sheetKey,
-      key: silField.foreignKey,
-      relationship: silField.relationship || 'has-one',
+      ref: field.sheetKey,
+      key: field.foreignKey,
+      relationship: field.relationship || 'has-one',
     },
   }
 }
