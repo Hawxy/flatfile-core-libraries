@@ -55,6 +55,33 @@ Options:
 
 ## Development
 
+We use the [commander](https://www.npmjs.com/package/commander) library for our CLI
+
+Before developing the CLI, run the following npm commands to ensure node_modules have the latest versions of all imported packages.
+
+```
+# Removes all `node_modules`, `dist` folders, and `.turbo` caches (runs each package's clean script)
+npm run clean
+npm i
+# Runs all packages locally
+npm run dev
+```
+
+Commands are defined in `index.ts` and command logic lives under the corresponding file inside `actions`.
+
+### Testing a command
+
+```
+# Ensure package builds before running commands locally
+npm run build
+```
+
+```
+# Run new command from entrypoint
+./packages/cli/dist/index.js <new-command>
+```
+
+
 ### Configure
 
 Configure variables in `.env`
