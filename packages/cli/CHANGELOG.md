@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.13
+
+### Patch Changes
+
+- 4724aed: Adds a shortcut for local X deployment with the XDK
+
 ## 3.1.12
 
 ### Patch Changes

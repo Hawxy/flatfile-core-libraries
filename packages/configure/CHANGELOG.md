@@ -1,5 +1,13 @@
 # @flatfile/configure
 
+## 0.5.5
+
+### Patch Changes
+
+- fa1694c: Adds getLinks() to Flatfile Record to include linked record values in Hook code
+- Updated dependencies [fa1694c]
+  - @flatfile/hooks@1.2.2
+
 ## 0.5.4
 
 ### Patch Changes
