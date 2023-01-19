@@ -33,6 +33,7 @@ export function config(
     account?: string
     clientId?: string
     secret?: string
+    auth?: string
   }>
 ): Config {
   const fullConfig = {
@@ -43,8 +44,9 @@ export function config(
   const config = interpolation.expand(fullConfig)
 
   const x = config.version >= 10
+  const auth = config.auth === 'false' ? false : true
   return x
-    ? ConfigValidation.parse(castNumbers({ ...config, x }))
+    ? ConfigValidation.parse(castNumbers({ ...config, x, auth }))
     : { ...config, x }
 }
 
@@ -89,6 +91,7 @@ const rawConfig = rc('flatfile', {
   secret: null,
   x: false,
   endpoint: 'https://api.${region}.flatfile.com',
+  auth: true,
 })
 
 const ConfigValidation = z.object({
@@ -100,6 +103,7 @@ const ConfigValidation = z.object({
   secret: z.string().min(1),
   version: z.number().gte(1),
   x: z.boolean(),
+  auth: z.boolean(),
 })
 
 export type Config = z.infer<typeof ConfigValidation>
