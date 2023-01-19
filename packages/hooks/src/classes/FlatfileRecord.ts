@@ -1,13 +1,22 @@
 export type TPrimitive = string | boolean | number | null
 
+export type TRecordDataWithLinks<
+  T extends TPrimitive | undefined = TPrimitive
+> = {
+  [key: string]: T | { value: T; links: TRecordData<TPrimitive>[] }
+}
+
 export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = {
   [key: string]: T
 }
 
 export interface IRawRecord {
-  rawData: TRecordData
+  rawData: TRecordDataWithLinks
   rowId: number | string
 }
+
+const propExists = (obj: object, prop: string) =>
+  Object.prototype.hasOwnProperty.call(obj, prop)
 
 export type TRecordInfoLevel = 'error' | 'warn' | 'info'
 export type TRecordStageLevel =
@@ -18,14 +27,19 @@ export type TRecordStageLevel =
   | 'validate'
   | 'apply'
   | 'other'
-export interface IRecordInfo<M extends TRecordData = TRecordData, K = keyof M> {
+export interface IRecordInfo<
+  M extends TRecordDataWithLinks = TRecordDataWithLinks,
+  K = keyof M
+> {
   level: TRecordInfoLevel
   field: K
   message: string
   stage: TRecordStageLevel
 }
 
-export interface IRawRecordWithInfo<M extends TRecordData = TRecordData> {
+export interface IRawRecordWithInfo<
+  M extends TRecordDataWithLinks = TRecordDataWithLinks
+> {
   row: IRawRecord
   info: IRecordInfo<M>[]
 }
@@ -42,7 +56,9 @@ export interface IPayload {
   rows: IRawRecord[]
 }
 
-export class FlatfileRecord<M extends TRecordData = TRecordData> {
+export class FlatfileRecord<
+  M extends TRecordDataWithLinks = TRecordDataWithLinks
+> {
   private readonly data: M
   private readonly mutated: M
   private readonly _rowId: number | string
@@ -52,6 +68,7 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
     this.mutated = Object.assign({}, raw.rawData) as M
     this.data = Object.assign({}, raw.rawData) as M
     this._rowId = raw.rowId
+    // this.links = new FlatfileRecords(raw.links)
   }
 
   get rowId() {
@@ -66,8 +83,8 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
     return this.mutated
   }
 
-  private verifyField(field: string): boolean {
-    if (!Object.prototype.hasOwnProperty.call(this.data, field)) {
+  private verifyField(field: string, data?: object): boolean {
+    if (!propExists(data || this.data, field)) {
       // TODO: make sure user's aware of this message
       console.error(`Record does not have field "${field}".`)
       return false
@@ -75,14 +92,45 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
     return true
   }
 
+  private isLinkedField(field: string) {
+    const fieldValue = this.mutated[field]
+    return (
+      !!fieldValue &&
+      typeof fieldValue === 'object' &&
+      propExists(fieldValue, 'value') &&
+      propExists(fieldValue, 'links')
+    )
+  }
+
   public set(field: string, value: TPrimitive) {
     if (!this.verifyField(field)) {
       return this
     }
-
-    Object.defineProperty(this.mutated, field, {
-      value,
-    })
+    const isLinked = this.isLinkedField(field)
+    // check if X Reference field otherwise just set value
+    if (isLinked) {
+      const fieldValue = this.mutated[field]
+      if (
+        !!fieldValue &&
+        typeof fieldValue === 'object' &&
+        propExists(fieldValue, 'value') &&
+        fieldValue.value === value
+      ) {
+        // if the value of the reference field is the same as the value we're trying to set, keep links and don't set value
+        return
+      } else {
+        // if the value of the reference field is different than the value we're trying to set, remove links and set value
+        Object.defineProperty(this.mutated, field, {
+          value: {
+            value: value,
+          },
+        })
+      }
+    } else {
+      Object.defineProperty(this.mutated, field, {
+        value,
+      })
+    }
 
     return this
   }
@@ -101,7 +149,33 @@ export class FlatfileRecord<M extends TRecordData = TRecordData> {
 
   public get(field: string): null | TPrimitive {
     if (this.verifyField(field)) {
-      return this.mutated[field]
+      const value = this.mutated[field]
+
+      if (!!value && typeof value === 'object' && propExists(value, 'value')) {
+        return value.value
+      }
+      return value as TPrimitive
+    }
+
+    return null
+  }
+
+  public getLinks(field: string): any {
+    if (this.verifyField(field)) {
+      const fieldValue = this.mutated[field]
+      if (!fieldValue) return null
+
+      if (typeof fieldValue === 'object') {
+        const { links } = fieldValue
+        if (!links) {
+          console.error('Field is has no links.')
+          return null
+        }
+        return links
+      } else if (typeof fieldValue === 'string') {
+        console.error('Field is not a ReferenceField.')
+        return fieldValue
+      }
     }
 
     return null

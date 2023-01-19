@@ -20,16 +20,41 @@ import { isFullyPresent } from '../utils/isFullyPresent'
 import { Mountable } from '../utils/mountable'
 import { Agent } from './Agent'
 import { SpaceConfig } from './SpaceConfig'
-import { IHookPayload, Workbook } from './Workbook'
-import { EventTopic } from '@flatfile/api'
+import { Workbook } from './Workbook'
+import { EventTopic, RecordWithLinks } from '@flatfile/api'
 import { SheetConfig } from '@flatfile/blueprint'
 import { EventHandler, FlatfileEvent } from '../utils/event.handler'
-import { RecordTranslater, XRecord } from '../utils/record.translater'
+import { RecordTranslater } from '../utils/record.translater'
 import { slugify } from '../utils/slugify'
+
+export type RecordsComputeType = (
+  records: FlatfileRecords<any>,
+  session?: FlatfileSession,
+  logger?: any
+) => Promise<void>
+
+export type RecordCompute = {
+  dependsOn?: string[] // fields that must be fully present
+  uses?: string[] // fields that will be read, but could be null
+  modifies?: string[] // the full set of fields which could be written to
+  (record: FlatfileRecord<any>, session: FlatfileSession, logger?: any): void
+}
+
+type SheetComputeType = (
+  | string
+  | string[]
+  | {
+      groupBy: string[]
+      expression: (string | string[])[]
+      destination: string
+    }
+)[]
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
 }
+
+// This should be in a separate file
 export class UniqueAndRequiredPlugin {
   public run(fields: FieldConfig, records: FlatfileRecord<any>[]): void {
     const uniques: Unique = {} as Unique
@@ -59,10 +84,8 @@ export class UniqueAndRequiredPlugin {
 The PostgreSQL doesn't fail a unique constraint for multiple NULLs in the same column. we should do the same. Other DBs have different behavior.
 This thread gives some insight into the background
 https://dba.stackexchange.com/questions/80514/why-does-a-unique-constraint-allow-only-one-null
-
 https://stackoverflow.com/questions/20154033/allow-null-in-unique-column
 https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS
-
 	*/
       // add to unique fields if not already in there
       for (let uniqueFieldKey in uniques) {
@@ -101,29 +124,6 @@ https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNI
   }
 }
 
-export type RecordsComputeType = (
-  records: FlatfileRecords<any>,
-  session?: FlatfileSession,
-  logger?: any
-) => Promise<void>
-
-export type RecordCompute = {
-  dependsOn?: string[] // fields that must be fully present
-  uses?: string[] // fields that will be read, but could be null
-  modifies?: string[] // the full set of fields which could be written to
-  (record: FlatfileRecord<any>, session: FlatfileSession, logger?: any): void
-}
-
-type SheetComputeType = (
-  | string
-  | string[]
-  | {
-      groupBy: string[]
-      expression: (string | string[])[]
-      destination: string
-    }
-)[]
-
 export interface SheetOptions<FC> {
   allowCustomFields: boolean
   readOnly: boolean
@@ -146,6 +146,7 @@ export class Sheet<FC extends FieldConfig>
   }
 
   private contributedRecordFuncs: Record<string, RecordCompute> = {}
+  // TODO: this should be typed as a SheetComputeType
   private sheetCompute: any = false
   public idFromAPI: string | undefined
 
@@ -213,7 +214,7 @@ export class Sheet<FC extends FieldConfig>
           record.set(key, newVal)
         }
 
-        ;(messages as Message[]).map((m) =>
+        messages.map((m) =>
           record.pushInfoMessage(key, m.message, m.level, m.stage)
         )
 
@@ -243,7 +244,7 @@ export class Sheet<FC extends FieldConfig>
           // TODO throw an error on null???
           const messages = field.validate(origVal)
           if (messages) {
-            ;(messages as Message[]).map((m) => {
+            messages.map((m) => {
               record.pushInfoMessage(key, m.message, m.level, m.stage)
             })
           }
@@ -331,16 +332,20 @@ export class Sheet<FC extends FieldConfig>
       batch.records
     ).toXRecords()
 
-    return this.api.updateRecords({
-      workbookId: e.context.workbookId,
-      sheetId: e.context.sheetId,
-      recordsUpdates,
-    })
+    try {
+      await this.api.updateRecords({
+        workbookId: e.context.workbookId,
+        sheetId: e.context.sheetId,
+        recordsUpdates,
+      })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   // TODO: This could be much cleaner but mimics the example agent.js code nearly 1:1
   async prepareXRecords(records: any): Promise<FlatfileRecords<any>> {
-    const clearedMessages: XRecord[] = records.map(
+    const clearedMessages: RecordWithLinks[] = records.map(
       (record: { values: { [x: string]: { messages: never[] } } }) => {
         // clear existing cell validation messages
         Object.keys(record.values).forEach((k) => {
@@ -349,7 +354,7 @@ export class Sheet<FC extends FieldConfig>
         return record
       }
     )
-    const fromX = new RecordTranslater<XRecord>(clearedMessages)
+    const fromX = new RecordTranslater<RecordWithLinks>(clearedMessages)
     return fromX.toFlatFileRecords()
   }
 

@@ -1,6 +1,6 @@
-import { IRawRecord, TRecordData, FlatfileRecord } from './FlatfileRecord'
+import { IRawRecord, TRecordDataWithLinks, FlatfileRecord } from './FlatfileRecord'
 
-export class FlatfileRecords<M extends TRecordData> {
+export class FlatfileRecords<M extends TRecordDataWithLinks> {
   private readonly _records: FlatfileRecord<M>[]
 
   constructor(rawRecords: IRawRecord[]) {

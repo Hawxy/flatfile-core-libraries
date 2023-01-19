@@ -1,17 +1,10 @@
-import {
-  FlatfileRecord,
-  FlatfileRecords,
-  FlatfileSession,
-} from '@flatfile/hooks'
+import { FlatfileRecords, FlatfileSession } from '@flatfile/hooks'
 import { Sheet } from './Sheet'
 import { Portal } from './Portal'
 import { EventHandler } from '../utils/event.handler'
 import { Mountable } from '../utils/mountable'
 import { Agent } from './Agent'
 import { SpaceConfig } from './SpaceConfig'
-import { Event } from '@flatfile/api'
-import axios from 'axios'
-import { RecordTranslater, XRecord } from '../utils/record.translater'
 import _ from 'lodash'
 
 export class Workbook extends EventHandler implements Mountable {

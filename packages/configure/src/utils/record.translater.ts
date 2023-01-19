@@ -1,55 +1,63 @@
 import {
   FlatfileRecord,
   TPrimitive,
-  TRecordData,
   FlatfileRecords,
   IRawRecord,
+  TRecordDataWithLinks,
 } from '@flatfile/hooks/'
 
-export interface XRecord {
-  id: string
-  values: {
-    [x: string]: {
-      value: TPrimitive
-      messages: never[]
-      valid: boolean
-    }
-  }
-}
+import { RecordWithLinks, Record } from '@flatfile/api'
+import { TRecordData } from '../../../hooks/src/classes/FlatfileRecord'
 
-export class RecordTranslater<T extends FlatfileRecord | XRecord> {
+export class RecordTranslater<T extends FlatfileRecord | RecordWithLinks> {
   constructor(private readonly records: T[]) {
     this.records = records
   }
-
-  to = (type: XRecord | FlatfileRecord) => {}
 
   toFlatFileRecords = () => {
     if (this.records instanceof FlatfileRecords) {
       return this.records as FlatfileRecords<any>
     } else {
-      const xrecords = this.records as XRecord[]
+      const XRecords = this.records as RecordWithLinks[]
+
       const FFRecords = new FlatfileRecords(
-        xrecords.map((record: XRecord) => {
-          let rawData: TRecordData = {}
+        XRecords.map((record: RecordWithLinks) => {
+          let rawData: TRecordDataWithLinks = {}
           for (let [k, v] of Object.entries(record.values)) {
-            rawData[k] = v.value
+            if (!!v.links?.length && v.value) {
+              const links = v.links.map((link) => {
+                let linkedRawData: TRecordData = {}
+                for (let [lk, lv] of Object.entries(link.values)) {
+                  linkedRawData[lk] = lv.value as TPrimitive
+                }
+                return linkedRawData
+              })
+              rawData[k] = {
+                value: v.value as TPrimitive,
+                links,
+              }
+            } else {
+              rawData[k] = v.value as TPrimitive
+            }
           }
-          return {
+
+          const rawRecord = {
             rowId: record.id,
             rawData,
           } as IRawRecord
+
+          return rawRecord
         })
       )
       return FFRecords as FlatfileRecords<any>
     }
   }
+
   toXRecords = () => {
     if (this.records[0] instanceof FlatfileRecord) {
       const FFRecords = this.records as FlatfileRecord[]
       return FFRecords.map((record: FlatfileRecord) => {
         const recordWithInfo = record.toJSON()
-        console.dir({ recordWithInfo }, { depth: null })
         let values: any = {}
         for (let [k, v] of Object.entries(recordWithInfo.row.rawData)) {
           const messages = recordWithInfo.info
@@ -57,7 +65,7 @@ export class RecordTranslater<T extends FlatfileRecord | XRecord> {
             .map((info) => ({ message: info.message, type: info.level }))
 
           values[k] = {
-            value: v,
+            value: v !== null && typeof v === 'object' ? v.value : v,
             messages: messages,
             valid: true,
           }
@@ -68,7 +76,7 @@ export class RecordTranslater<T extends FlatfileRecord | XRecord> {
         }
       })
     } else {
-      return this.records as XRecord[]
+      return this.records as Record[]
     }
   }
 }

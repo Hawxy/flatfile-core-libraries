@@ -12,7 +12,7 @@ const TestSheet = new Sheet(
   {
     firstName: TextField({
       label: 'First Name',
-      description: "This is a human's first name"
+      description: "This is a human's first name",
     }),
     middleName: TextField('Middle'),
     lastName: TextField({
@@ -51,15 +51,28 @@ const TestSheet = new Sheet(
   }
 )
 
-const SheetWithLink = new Sheet('SheetWithLink', {
-  nickname: TextField(),
-  lastName: ReferenceField({
-    label: 'Last Name',
-    sheetKey: 'TestSheet',
-    foreignKey: 'lastName',
-    relationship: 'has-many',
-  }),
-})
+const SheetWithLink = new Sheet(
+  'SheetWithLink',
+  {
+    nickname: TextField(),
+    lastName: ReferenceField({
+      label: 'Last Name',
+      sheetKey: 'TestSheet',
+      foreignKey: 'lastName',
+      relationship: 'has-many',
+    }),
+  },
+  {
+    recordCompute: (record) => {
+      const links = record.getLinks('lastName')
+      const middleName = links[0].middleName
+      if (!!middleName) {
+        record.set('nickname', middleName)
+      }
+      record.set('lastName', 'Joey')
+    },
+  }
+)
 
 const Workbook1 = new Workbook({
   name: 'Workbook 1',
