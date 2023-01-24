@@ -1,5 +1,12 @@
 # @flatfile/schema
 
+## 0.2.9
+
+### Patch Changes
+
+- 8a2463f: Adds support for stageVisibility:{ mapping:false } to XDK
+- 69dd081: Adds Actions to Sheet
+
 ## 0.2.8
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @flatfile/cli
 
+## 3.1.14
+
+### Patch Changes
+
+- 8a2463f: Adds support for stageVisibility:{ mapping:false } to XDK
+- 69dd081: Adds Actions to Sheet
+
 ## 3.1.13
 
 ### Patch Changes

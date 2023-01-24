@@ -1,5 +1,11 @@
 # @flatfile/hooks
 
+## 1.2.3
+
+### Patch Changes
+
+- 8a2463f: Adds support for stageVisibility:{ mapping:false } to XDK
+
 ## 1.2.2
 
 ### Patch Changes

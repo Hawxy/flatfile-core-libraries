@@ -1,5 +1,17 @@
 # @flatfile/configure
 
+## 0.5.6
+
+### Patch Changes
+
+- 8a2463f: Adds support for stageVisibility:{ mapping:false } to XDK
+- 69dd081: Adds Actions to Sheet
+- Updated dependencies [8a2463f]
+- Updated dependencies [8a2463f]
+- Updated dependencies [69dd081]
+  - @flatfile/schema@0.2.9
+  - @flatfile/hooks@1.2.3
+
 ## 0.5.5
 
 ### Patch Changes
