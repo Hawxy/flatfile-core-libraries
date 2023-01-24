@@ -97,6 +97,26 @@ describe('compiler tests', () => {
 
     expect(SchemaILFieldtoProperty(numberField)).toStrictEqual(blueprintOutput)
   })
+
+  it('checks stageVisibility compiles for X number', () => {
+    const numberField: SchemaILField = {
+      type: 'number',
+      label: 'Salary',
+      annotations: {},
+      field: 'salary',
+      stageVisibility: { mapping: false },
+    }
+
+    const blueprintOutput: NumberProperty = {
+      type: 'number',
+      key: 'salary',
+      label: 'Salary',
+      description: undefined,
+      constraints: [{ type: 'computed' }],
+    }
+
+    expect(SchemaILFieldtoProperty(numberField)).toStrictEqual(blueprintOutput)
+  })
 })
 
 describe('compiler tests', () => {

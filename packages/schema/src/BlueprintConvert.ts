@@ -23,14 +23,12 @@ const getConstraints = (field: SchemaILField): Constraint[] =>
   _.filter([
     field.required ? { type: 'required' } : null,
     field.unique ? { type: 'unique' } : null,
+    field?.stageVisibility?.mapping === false ? { type: 'computed' } : null,
   ]) as Constraint[]
 
 const convertBase = (
   field: BaseSchemaILField
 ): NumberProperty | StringProperty | BooleanProperty => {
-  if (field?.stageVisibility?.mapping === false) {
-    console.warn('stageVisibility is not yet supported by X')
-  }
   if (field?.stageVisibility?.review === false) {
     console.warn('stageVisibility is not yet supported by X')
   }

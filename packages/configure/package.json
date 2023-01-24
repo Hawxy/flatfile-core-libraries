@@ -43,9 +43,11 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@flatfile/api": "^0.0.9",
+    "@flatfile/blueprint": "^0.0.5",
+    "@flatfile/hooks": "*",
     "@flatfile/orm": "*",
     "@flatfile/schema": "*",
-    "@flatfile/hooks": "*",
     "case-anything": "^2.1.10",
     "date-fns": "^2.29.1"
   },
