@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.23.0",
-    "@flatfile/api": "^0.0.8",
-    "@flatfile/blueprint": "^0.0.4",
+    "@flatfile/api": "^0.0.9",
+    "@flatfile/blueprint": "^0.0.5",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@types/jest": "^28.1.4",
     "@types/lodash": "^4.14.191",

@@ -19,7 +19,7 @@ import { isFullyPresent } from '../utils/isFullyPresent'
 
 import { Mountable } from '../utils/mountable'
 import { Agent } from './Agent'
-import { SpaceConfig } from './SpaceConfig'
+import { List, SpaceConfig } from './SpaceConfig'
 import { Workbook } from './Workbook'
 import { EventTopic, RecordWithLinks } from '@flatfile/api'
 import { SheetConfig } from '@flatfile/blueprint'
@@ -40,6 +40,7 @@ export type RecordCompute = {
   (record: FlatfileRecord<any>, session: FlatfileSession, logger?: any): void
 }
 
+// TODO: Use this for SheetCompute
 type SheetComputeType = (
   | string
   | string[]
@@ -49,6 +50,8 @@ type SheetComputeType = (
       destination: string
     }
 )[]
+
+import { Action } from './Action'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
@@ -130,6 +133,7 @@ export interface SheetOptions<FC> {
   recordCompute: RecordCompute
   batchRecordsCompute: RecordsComputeType
   previewFieldKey?: string
+  actions?: List<Action>
 }
 
 export class Sheet<FC extends FieldConfig>
@@ -137,6 +141,7 @@ export class Sheet<FC extends FieldConfig>
   implements Mountable
 {
   public targetName = 'sheet'
+  public slug: string
   public options: SheetOptions<FC> = {
     allowCustomFields: false,
     readOnly: false,
@@ -160,6 +165,7 @@ export class Sheet<FC extends FieldConfig>
     if (passedOptions) {
       Object.assign(this.options, passedOptions)
     }
+    this.slug = slugify(name)
     const malleableFields: Record<string, AnyField> = fields
     toPairs(fields).map(([key, field]) => {
       //do dag checking here on dependsOn, uses, and modifies
@@ -198,6 +204,15 @@ export class Sheet<FC extends FieldConfig>
       )
     } else if (_.values(contributedSheetComputes).length == 1) {
       this.sheetCompute = _.values(contributedSheetComputes)[0]
+    }
+
+    const actions = this.options.actions
+    if (actions) {
+      _.map(actions, (action, _key) => {
+        this.on(`${this.slug}:${action.slug}`, (event) => {
+          return action.handler(event, action.options)
+        })
+      })
     }
   }
 
@@ -244,7 +259,7 @@ export class Sheet<FC extends FieldConfig>
           // TODO throw an error on null???
           const messages = field.validate(origVal)
           if (messages) {
-            messages.map((m) => {
+            messages.map((m: Message) => {
               record.pushInfoMessage(key, m.message, m.level, m.stage)
             })
           }
@@ -282,6 +297,9 @@ export class Sheet<FC extends FieldConfig>
       namespace,
       fields: {},
       allowCustomFields: this.options.allowCustomFields,
+      actions: this.options.actions
+        ? mapObj(this.options.actions, (action) => action.options)
+        : undefined,
     }
 
     for (const key in this.fields) {
@@ -296,7 +314,7 @@ export class Sheet<FC extends FieldConfig>
 
   // TODO: need to handle deploys from just sheets as Agents with default slugs for configs properly
   mount(): Agent {
-    const slug = slugify(this.name)
+    const slug = this.slug
     return new Agent({
       spaceConfigs: {
         [slug]: new SpaceConfig({
@@ -370,3 +388,15 @@ export class Sheet<FC extends FieldConfig>
 }
 
 export type FieldConfig = Record<string, AnyField>
+
+function mapObj<T, K>(
+  obj: Record<string, K>,
+  cb: (value: K, key: string, i: number) => T
+): T[] {
+  const slugs = Object.keys(obj)
+  let i = 0
+  return slugs.map((slug) => {
+    const model = obj[slug]
+    return cb(model, slug, i++)
+  })
+}

@@ -9,6 +9,7 @@ import _ from 'lodash'
 
 export class Workbook extends EventHandler implements Mountable {
   public readonly options: IWorkbookOptions
+  public targetName = `workbook`
   constructor(options: Partial<IWorkbookOptions>) {
     super()
 

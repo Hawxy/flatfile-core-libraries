@@ -1,4 +1,6 @@
+import { Action } from '@flatfile/blueprint'
 import { FieldVisibilityTypes } from './JsonSchema'
+
 export type BaseFieldTypes = 'string' | 'number' | 'boolean' | 'composite'
 
 interface BaseField {
@@ -69,4 +71,5 @@ export interface SchemaILModel<
   unique?: Array<keyof Fields | Array<keyof Fields>>
   primary?: keyof Fields
   allowCustomFields: boolean
+  actions?: Array<Action>
 }

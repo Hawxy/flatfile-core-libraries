@@ -5,7 +5,40 @@ import {
   Message,
   SpaceConfig,
   ReferenceField,
+  Action,
 } from '@flatfile/configure'
+
+const axios = require('axios')
+const FormData = require('form-data')
+
+async function generateJSON(event: any, sheetName: string, data: any) {
+  const formData = new FormData()
+  formData.append('spaceId', event.context.spaceId)
+
+  formData.append('environmentId', event.context.environmentId)
+  formData.append('file', JSON.stringify(data), {
+    filename: `Sheet ${sheetName}.json`,
+  })
+
+  try {
+    await axios.post(`v1/files`, formData, {
+      headers: formData.getHeaders(),
+      transformRequest: () => formData,
+    })
+  } catch (error) {
+    console.log(`upload error: ${JSON.stringify(error, null, 2)}`)
+  }
+}
+
+const GenerateJSONAction = new Action('generateJSON', async (e) => {
+  const sheetName = e.context.actionName.split(':')[0]
+  try {
+    const data = (await e.data).records
+    await generateJSON(e, sheetName, data)
+  } catch (error) {
+    console.log(`Download Action[error]: ${JSON.stringify(error, null, 2)}`)
+  }
+})
 
 const TestSheet = new Sheet(
   'TestSheet',
@@ -31,7 +64,6 @@ const TestSheet = new Sheet(
     }),
   },
   {
-    previewFieldKey: 'middleName',
     recordCompute: (record) => {
       const firstName = String(record.get('firstName'))
       if (firstName) {
@@ -47,6 +79,9 @@ const TestSheet = new Sheet(
           }
         }
       }
+    },
+    actions: {
+      GenerateJSONAction,
     },
   }
 )
@@ -85,8 +120,8 @@ const Workbook1 = new Workbook({
 })
 
 const SpaceConfig1 = new SpaceConfig({
-  name: 'Space Config 1',
-  slug: 'space-config-1',
+  name: 'Action Space Config',
+  slug: 'action-config-1',
   workbookConfigs: {
     Workbook1,
   },

@@ -1,5 +1,5 @@
 import wildMatch from 'wildcard-match'
-import { Event } from '@flatfile/api'
+import { Event, EventTopic } from '@flatfile/api'
 import { AuthenticatedClient } from './authenticated.client'
 
 export class EventHandler extends AuthenticatedClient {
@@ -65,6 +65,7 @@ export class EventHandler extends AuthenticatedClient {
    */
   async emit(event: FlatfileEvent): Promise<void> {
     const target = this.findTargetNode(event.target)
+
     if (!target) {
       return
     } else {
@@ -94,6 +95,10 @@ export class EventHandler extends AuthenticatedClient {
   public getListeners(event: FlatfileEvent): EventCallback[] {
     return this.eventListeners
       .filter(([query]) => {
+        if (event.name === EventTopic.Actiontriggered && event.action) {
+          const isActionMatch = wildMatch(query, ':')
+          return isActionMatch(event.action)
+        }
         const isMatch = wildMatch(query, ':')
         return isMatch(event.name)
       })
@@ -138,7 +143,7 @@ export class EventHandler extends AuthenticatedClient {
 
   public async routeEvent(event: Event) {
     const internalEvent = new FlatfileEvent(event)
-
+    
     await this.emit(internalEvent)
   }
 }
@@ -166,6 +171,7 @@ export class FlatfileEvent extends AuthenticatedClient {
   public readonly context: any
   public readonly body: any
 
+  public readonly action?: string
   /**
    * Target entity id
    *
@@ -178,10 +184,17 @@ export class FlatfileEvent extends AuthenticatedClient {
 
   constructor(private readonly src: Event) {
     super()
+    const actionName = src.context.actionName
+    const sheetSlug = src.context.sheetSlug
+    const domain = sheetSlug && src.domain === 'workbook' ? 'sheet' : src.domain
+    const actionTarget = `${domain}(${actionName?.split(':')[0]})`
     this.name = src.topic // workbook:created
-    this.target = `sheet(${src.context.sheetSlug?.split('/').pop()})` // workbook(PrimaryCRMWorkbook)
+    this.target = actionName
+      ? actionTarget
+      : `sheet(${sheetSlug?.split('/').pop()})` // workbook(PrimaryCRMWorkbook)
     this.context = src.context // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
     this.body = src.payload
+    this.action = actionName
   }
 
   /**

@@ -13,7 +13,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import terser from '@rollup/plugin-terser'
-import { Agent } from '@flatfile/configure'
+import { Action, Agent, List } from '@flatfile/configure'
 
 export async function publishAction(
   file: string,
@@ -24,19 +24,6 @@ export async function publishAction(
   }>
 ) {
   const outDir = path.join(process.cwd(), '.flatfile')
-
-  // TODO: require accountID? Where do we need to use this?
-  // const accountId = options.account || config().account
-  // if (!accountId) {
-  //   console.log(
-  //     `You must provide a Account ID. Either set the ${chalk.bold(
-  //       'FLATFILE_ACCOUNT_ID'
-  //     )} environment variable, 'account' in your .flatfilerc or pass the ID in as an option to this command with ${chalk.bold(
-  //       '--account'
-  //     )}`
-  //   )
-  //   process.exit(1)
-  // }
 
   const env = options.env || config().env
   if (!env) {
@@ -117,6 +104,7 @@ export async function publishAction(
       exports: 'auto',
       plugins: [
         // Minifies the bundle
+        // TODO: Be able to turn this off for debugging
         terser(),
       ],
     })
@@ -163,7 +151,6 @@ export async function publishAction(
         '🛑 You must export a mountable class (Agent, Space, Workbook, or Sheet) as a default export from the entry file.'
       )
     }
-
     const {
       options: { spaceConfigs },
     } = config.mount() as Agent
@@ -173,6 +160,8 @@ export async function publishAction(
         text: `Create Space Config with slug: ${chalk.dim(slug)}`,
       }).start()
       const spaceConfig = spaceConfigs[slug]
+
+      let actionsSummary: string = ''
       try {
         const spacePatternConfig = {
           name: spaceConfig.options.name,
@@ -185,20 +174,40 @@ export async function publishAction(
                 name: wb.options.name,
                 slug: `${slug}/${wbSlug}`,
                 primary: i === 0,
-                sheets: mapObj(wb.options.sheets, (model, modelSlug) =>
-                  model.toBlueprint(wbSlug, modelSlug)
-                ),
+                sheets: mapObj(wb.options.sheets, (model, modelSlug) => {
+                  if (model.options.actions) {
+                    const actionSlugs = mapObj(
+                      model.options.actions,
+                      (action) => {
+                        return `${model.slug}:${action.options.slug}`
+                      }
+                    )
+                    actionsSummary =
+                      actionsSummary +
+                      chalk.dim(
+                        `\n      ${model.slug} action slugs: ${actionSlugs.join(
+                          ', '
+                        )}`
+                      )
+                  }
+                  return model.toBlueprint(wbSlug, modelSlug)
+                }),
               } as Blueprint
             }
           ),
         }
-
         const spaceConfigRes = await apiClient.addSpaceConfig({
           spacePatternConfig,
         })
         spaceConfigSpinner.succeed(
           `Space Config Created ${chalk.dim(spaceConfigRes?.data?.id)}`
         )
+        if (actionsSummary) {
+          const actionsSummarTitle = chalk.green(
+            '  This Space Config has actions 🎉:'
+          )
+          console.log(actionsSummarTitle, actionsSummary)
+        }
       } catch (e) {
         spaceConfigSpinner.fail(`Space Config to be created ${chalk.dim(e)}`)
         process.exit(1)
@@ -217,6 +226,7 @@ export async function publishAction(
             EventTopic.Recordscreated,
             EventTopic.Recordsupdated,
             EventTopic.Uploadcompleted,
+            EventTopic.Actiontriggered,
           ],
           compiler: 'js',
           source,

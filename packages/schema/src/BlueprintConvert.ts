@@ -132,5 +132,6 @@ export const SchemaILModelToSheetConfig = (
     fields,
     slug: model.slug,
     name: model.name,
+    actions: model.actions,
   }
 }
