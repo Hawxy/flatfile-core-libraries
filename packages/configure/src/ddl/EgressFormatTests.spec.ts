@@ -1,4 +1,4 @@
-import { NumberField, DateField} from '../fields'
+import { NumberField, DateField } from '../fields'
 import { WorkbookTester } from './WorkbookTester'
 
 describe('EgressFormatTests ->', () => {

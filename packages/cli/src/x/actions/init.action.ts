@@ -2,9 +2,13 @@ import inquirer from 'inquirer'
 import fs from 'fs'
 import chalk from 'chalk'
 import ora from 'ora'
+import { requireInput } from '../../shared/utils/requireInput'
+import { brandHex, developerLink, loginLink } from '../../shared/constants'
+
 import { authAction } from './auth.action'
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
+
 
 export interface XInitOptions {
   name?: string
@@ -29,12 +33,14 @@ export const init = async (options: XInitOptions) => {
       name: 'clientId',
       message: 'Your API Client ID',
       when: !options.clientId,
+      validate: (option: string) => requireInput(option, developerLink),
     },
     {
       type: 'input',
       name: 'secret',
-      message: 'Your API secret',
+      message: 'Your API Secret',
       when: !options.secret,
+      validate: (option: string) => requireInput(option, developerLink),
     },
     {
       type: 'input',
@@ -52,8 +58,37 @@ export const init = async (options: XInitOptions) => {
     },
   ]
 
-  console.log(`Please signup or login to Flatfile Dashboard with Github.`)
-  console.log(`${chalk.dim('https://api.flatfile.io/auth/github')}\n`)
+  console.log(
+    `\n${chalk.hex(brandHex)(
+      `🎉 Welcome to Flatfile! We're so glad you're here.`
+    )}\n`
+  )
+
+    const nodeSpinner = ora({
+    text: `${chalk.dim(`Verifying node installed\n`)}`,
+  }).start()
+
+  try {
+    await exec('node --version')
+    nodeSpinner.succeed(`${chalk.dim('Verified node installed')}\n`)
+    console.log(`${chalk.dim('Platform SDK supports node versions 16+, earlier versions may cause errors.\n')}`)
+    const output = await exec('node --version')
+
+    console.log(`You are running version ${chalk.cyan(output.stdout)}`)
+  } catch (err) {
+    nodeSpinner.fail(
+      `${chalk.red('Please install node version > 16 to proceed')}`
+    )
+    console.log(`\n${chalk.red(err)}\n`)
+    process.exit(1)
+  }
+
+  // Prompt to login for easier flow
+  if (!options.clientId || !options.secret) {
+    console.log(`Please signup or login to Flatfile Dashboard with Github.`)
+    console.log(`${chalk.dim(loginLink)}\n`)
+  }
+
   const apiUrl = 'https://api.x.flatfile.com/v1'
   return inquirer
     .prompt(questions)
@@ -88,6 +123,7 @@ export const init = async (options: XInitOptions) => {
         console.log('Must provide a clientId and secret')
         process.exit(1)
       }
+
       try {
         // Create and authenticated API client
         const apiClient = await authAction({ apiUrl, clientId, secret })
@@ -112,6 +148,7 @@ export const init = async (options: XInitOptions) => {
         envSpinner.succeed(`Environment created:  ${chalk.dim(environmentId)}`)
       } catch (e) {
         console.log(e)
+        process.exit(1)
       }
 
       // Create the .flatfilerc file

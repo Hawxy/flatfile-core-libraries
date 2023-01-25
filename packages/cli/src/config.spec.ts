@@ -2,7 +2,7 @@ import { config } from './config'
 
 describe('config', () => {
   test('uses preconfigured defaults when no configuration is provided', () => {
-    expect(config({ team: '99' })).toMatchObject({
+    expect(config({ team: 99 })).toMatchObject({
       team: 99,
       env: 'test',
       version: 3,

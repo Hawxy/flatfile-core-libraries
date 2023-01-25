@@ -34,6 +34,7 @@ export function config(
     clientId?: string
     secret?: string
     auth?: string
+    team?: number
   }>
 ): Config {
   const fullConfig = {
@@ -96,11 +97,11 @@ const rawConfig = rc('flatfile', {
 
 const ConfigValidation = z.object({
   account: z.string().nullable().optional(),
-  endpoint: z.string().min(1),
-  env: z.string().min(1),
-  region: z.string().min(1),
+  endpoint: z.string().min(1).optional(),
+  env: z.string().min(1).optional(),
+  region: z.string().min(1).optional(),
   clientId: z.string().min(1).nullable(),
-  secret: z.string().min(1),
+  secret: z.string().min(1).nullable(),
   version: z.number().gte(1),
   x: z.boolean(),
   auth: z.boolean(),

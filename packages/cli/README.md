@@ -81,7 +81,6 @@ npm run build
 ./packages/cli/dist/index.js <new-command>
 ```
 
-
 ### Configure
 
 Configure variables in `.env`

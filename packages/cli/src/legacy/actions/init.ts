@@ -2,6 +2,9 @@ import inquirer from 'inquirer'
 import fs from 'fs'
 import chalk from 'chalk'
 import ora from 'ora'
+import { requireInput } from '../../shared/utils/requireInput'
+import { brandHex, accessKeyLink } from '../../shared/constants'
+
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 
@@ -27,18 +30,25 @@ export const init = async (options: LegacyInitOptions) => {
       name: 'key',
       message: 'Your API key',
       when: !options.key,
+      validate: (option: string) => requireInput(option, accessKeyLink),
     },
     {
       type: 'input',
       name: 'secret',
       message: 'Your API secret',
       when: !options.secret,
+      validate: (option: string) => requireInput(option, accessKeyLink),
     },
     {
       type: 'input',
       name: 'team',
       message: 'Your Team ID',
       when: !options.team,
+      validate: (option: string) =>
+        requireInput(
+          option,
+          `https://app.flatfile.com/a/ and locate the value after the 'a'`
+        ),
     },
     {
       type: 'input',
@@ -49,8 +59,49 @@ export const init = async (options: LegacyInitOptions) => {
     },
   ]
 
-  console.log(`Please signup or login to Flatfile Dashboard with Github.`)
-  console.log(`${chalk.dim('https://api.flatfile.io/auth/github')}\n`)
+  console.log(
+    `\n${chalk.hex(brandHex)(
+      `🎉 Welcome to Flatfile! We're so glad you're here.`
+    )}\n`
+  )
+
+  const gitSpinner = ora({
+    text: `verifying git`,
+  }).start()
+
+  try {
+    await exec('git --version')
+    gitSpinner.succeed(`${chalk.dim('Verified git installed')}`)
+  } catch (err) {
+    gitSpinner.fail(`${chalk.red('Please install git to proceed')}`)
+    console.log(`\n${chalk.red(err)}\n`)
+    process.exit(1)
+  }
+
+  const nodeSpinner = ora({
+    text: `${chalk.dim(`Verifying node installed\n`)}`,
+  }).start()
+
+  try {
+    await exec('node --version')
+    nodeSpinner.succeed(`${chalk.dim('Verified node installed')}\n`)
+    console.log(`${chalk.dim('Platform SDK supports node versions 16+, earlier versions may cause errors.\n')}`)
+    const output = await exec('node --version')
+
+    console.log(`You are running version ${chalk.cyan(output.stdout)}`)
+  } catch (err) {
+    nodeSpinner.fail(
+      `${chalk.red('Please install node version > 16 to proceed')}`
+    )
+    console.log(`\n${chalk.red(err)}\n`)
+    process.exit(1)
+  }
+
+  // Prompt to login for easier flow
+  if (!options.key || !options.secret || !options.team) {
+    console.log(`Please signup or login to Flatfile Dashboard with Github.`)
+    console.log(`${chalk.dim('https://api.flatfile.io/auth/github')}\n`)
+  }
 
   return inquirer
     .prompt(questions)
@@ -73,7 +124,11 @@ export const init = async (options: LegacyInitOptions) => {
           `npx --yes degit FlatFilers/platform-sdk-starter#main ${name}`
         )
       } catch (error) {
-        spinner.fail(`Unable to clone starter repository`)
+        spinner.fail(
+          `Unable to clone starter repository, please verify your ${chalk.cyan(
+            'key / secret'
+          )} combo is still active\n`
+        )
         console.log(chalk.red(error))
         process.exit(1)
       }
@@ -89,7 +144,7 @@ export const init = async (options: LegacyInitOptions) => {
 
       // Install dependencies
       try {
-        await exec(`npm install`)
+        exec(`npm install`)
       } catch (error) {
         spinner.fail(`Unable to install dependencies`)
         console.log(chalk.red(error))

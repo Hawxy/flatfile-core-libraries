@@ -30,6 +30,8 @@ program
   .description('Initialize a project')
   .option('-e, --environment <env>', 'the Environment to publish to')
   .option('-k, --key <key>', 'the API Key to use')
+  // TODO: clean up clientId vs. key across v3 vs x implementations
+  .option('-c, --clientId <clientId>', 'the clientId to use')
   .option('-n, --name <name>', 'the name of the your project')
   .option('-s, --secret <secret>', 'the API Secret to use')
   .option('-t, --team <team>', 'the Team ID to publish to')
