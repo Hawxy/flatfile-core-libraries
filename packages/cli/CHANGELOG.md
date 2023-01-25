@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.15
+
+### Patch Changes
+
+- 70df9ce: Add check for git and node
+
 ## 3.1.14
 
 ### Patch Changes
