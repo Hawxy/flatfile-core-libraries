@@ -83,6 +83,7 @@ export const convertEnum = (field: SchemaILEnumField): EnumProperty => {
 
 const convertLinkedField = (field: ReferenceField): ReferenceProperty => {
   return {
+    constraints: getConstraints(field),
     key: field.field,
     label: field.label,
     type: 'reference',
