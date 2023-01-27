@@ -23,7 +23,7 @@ import { List, SpaceConfig } from './SpaceConfig'
 import { Workbook } from './Workbook'
 import { EventTopic, RecordWithLinks } from '@flatfile/api'
 import { SheetConfig } from '@flatfile/blueprint'
-import { EventHandler, FlatfileEvent } from '../utils/event.handler'
+import { EventHandler } from '../utils/event.handler'
 import { RecordTranslater } from '../utils/record.translater'
 import { slugify } from '../utils/slugify'
 
@@ -52,6 +52,7 @@ type SheetComputeType = (
 )[]
 
 import { Action } from './Action'
+import { FlatfileEvent } from '../utils/flatfile.event'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }

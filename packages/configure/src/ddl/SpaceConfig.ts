@@ -4,6 +4,9 @@ import { EventHandler } from '../utils/event.handler'
 import { Agent } from './Agent'
 import { Mountable } from '../utils/mountable'
 import _ from 'lodash'
+import { EventTopic } from '@flatfile/api'
+import { FlatfileEvent } from '../utils/flatfile.event'
+import fileUploadCompletedHook from '../utils/file.upload.hook'
 
 /**
  * Generate a new space configuration for Flatfile. Space configurations
@@ -18,10 +21,11 @@ export class SpaceConfig extends EventHandler implements Mountable {
     _.map(options.workbookConfigs, (value, key) => {
       this.addNode(value, key)
     })
+    this.on([EventTopic.Uploadcompleted], this.fileUploadCompletedEvent)
   }
 
   getEventTargetName(): string {
-    return `space(${this.options.slug})`
+    return `space(*)`
   }
 
   /**
@@ -33,6 +37,16 @@ export class SpaceConfig extends EventHandler implements Mountable {
         [this.options.slug ?? 'default']: this,
       },
     })
+  }
+  async fileUploadCompletedEvent(event: FlatfileEvent) {
+    const { domain, name, context } = event
+    console.log(`fileUploadCompletedEvent: ${domain} ${name}, ${context}`)
+    if (domain === 'file' && name === EventTopic.Uploadcompleted) {
+      console.log(
+        `fileUploadCompletedEvent[context]: ${JSON.stringify(context, null, 2)}`
+      )
+      await fileUploadCompletedHook(event)
+    }
   }
 }
 

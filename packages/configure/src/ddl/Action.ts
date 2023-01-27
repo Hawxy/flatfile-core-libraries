@@ -1,5 +1,5 @@
-import { FlatfileEvent } from '../utils/event.handler'
 import { Action as ActionOptions } from '@flatfile/blueprint'
+import { FlatfileEvent } from '../utils/flatfile.event'
 
 export class Action {
   public readonly slug: string
