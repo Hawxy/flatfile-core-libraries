@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.16
+
+### Patch Changes
+
+- 2e82812: Move XLSX file Processing to Agent code
+
 ## 3.1.15
 
 ### Patch Changes

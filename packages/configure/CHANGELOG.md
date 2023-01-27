@@ -1,5 +1,13 @@
 # @flatfile/configure
 
+## 0.5.7
+
+### Patch Changes
+
+- 2e82812: Move XLSX file Processing to Agent code
+- Updated dependencies [e0cf5dc]
+  - @flatfile/schema@0.2.10
+
 ## 0.5.6
 
 ### Patch Changes

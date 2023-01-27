@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.10
+
+### Patch Changes
+
+- e0cf5dc: Passes along constraints to ReferenceField
+
 ## 0.2.9
 
 ### Patch Changes
