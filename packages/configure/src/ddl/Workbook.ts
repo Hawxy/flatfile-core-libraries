@@ -65,7 +65,9 @@ export class Workbook extends EventHandler implements Mountable {
         logger
       )
     } else {
-      throw new Error('no target found')
+      throw new Error(
+        ` no target found - namespace: ${namespace}, sheetTarget: ${sheetTarget}, possible targets: ${targets}`
+      )
     }
   }
 
