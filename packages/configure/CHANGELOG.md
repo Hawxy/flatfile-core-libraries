@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.9
+
+### Patch Changes
+
+- 9b43838: Hotfix to not try to include xlsx package in Mono deploys
+
 ## 0.5.8
 
 ### Patch Changes
