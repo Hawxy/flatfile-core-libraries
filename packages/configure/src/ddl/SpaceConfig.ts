@@ -6,7 +6,6 @@ import { Mountable } from '../utils/mountable'
 import _ from 'lodash'
 import { EventTopic } from '@flatfile/api'
 import { FlatfileEvent } from '../utils/flatfile.event'
-import fileUploadCompletedHook from '../utils/file.upload.hook'
 
 /**
  * Generate a new space configuration for Flatfile. Space configurations
@@ -41,6 +40,7 @@ export class SpaceConfig extends EventHandler implements Mountable {
   async fileUploadCompletedEvent(event: FlatfileEvent) {
     const { domain, name, context } = event
     if (domain === 'file' && name === EventTopic.Uploadcompleted) {
+      const fileUploadCompletedHook = require('../utils/file.upload.hook')
       await fileUploadCompletedHook(event)
     }
   }

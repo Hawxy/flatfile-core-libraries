@@ -6,7 +6,7 @@ const FormData = require('form-data')
 // TODO: Replace Axios calls with calls from the @flatfile/api package
 async function fileUploadCompletedHook(event: FlatfileEvent) {
   const api = event.api
-
+  
   const { data } = await api.getFile({ fileId: event.context.fileId })
   if (data.ext === 'xlsx') {
     // Customize your Excel extraction here
@@ -67,4 +67,4 @@ async function uploadCSV(event: FlatfileEvent, sheetName: string, data: any) {
   await api.executeJob({ jobId: id })
 }
 
-export default fileUploadCompletedHook
+module.exports = fileUploadCompletedHook
