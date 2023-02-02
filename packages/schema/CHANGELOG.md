@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.11
+
+### Patch Changes
+
+- 93ff348: Adds value param to OptionField for overriding type directly
+
 ## 0.2.10
 
 ### Patch Changes

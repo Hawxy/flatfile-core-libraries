@@ -1,5 +1,14 @@
 # @flatfile/configure
 
+## 0.5.8
+
+### Patch Changes
+
+- e9830a4: Fixes bug in event.data() function
+- 93ff348: Adds value param to OptionField for overriding type directly
+- Updated dependencies [93ff348]
+  - @flatfile/schema@0.2.11
+
 ## 0.5.7
 
 ### Patch Changes
