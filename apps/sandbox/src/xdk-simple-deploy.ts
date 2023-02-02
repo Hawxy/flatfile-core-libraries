@@ -30,15 +30,24 @@ async function generateJSON(event: any, sheetName: string, data: any) {
   }
 }
 
-const GenerateJSONAction = new Action('generateJSON', async (e) => {
-  const sheetName = e.context.actionName.split(':')[0]
-  try {
-    const data = (await e.data).records
-    await generateJSON(e, sheetName, data)
-  } catch (error) {
-    console.log(`Download Action[error]: ${JSON.stringify(error, null, 2)}`)
+const GenerateJSONAction = new Action(
+  {
+    slug: 'generateJSON',
+    label: 'Generate JSON',
+    description: 'Generate a JSON file based off of the Data in this Sheet',
+  },
+  async (e) => {
+    const sheetName = e.context.actionName.split(':')[0]
+    try {
+      const data = (await e.data).records
+      await generateJSON(e, sheetName, data)
+    } catch (error) {
+      console.log(
+        `GenerateJSONAction[error]: ${JSON.stringify(error, null, 2)}`
+      )
+    }
   }
-})
+)
 
 const TestSheet = new Sheet(
   'TestSheet',
@@ -120,8 +129,8 @@ const Workbook1 = new Workbook({
 })
 
 const SpaceConfig1 = new SpaceConfig({
-  name: 'Action Space Config',
-  slug: 'action-config-1',
+  name: 'xlsx Config',
+  slug: 'xlsx-test-1',
   workbookConfigs: {
     Workbook1,
   },

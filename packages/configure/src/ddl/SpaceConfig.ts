@@ -40,11 +40,7 @@ export class SpaceConfig extends EventHandler implements Mountable {
   }
   async fileUploadCompletedEvent(event: FlatfileEvent) {
     const { domain, name, context } = event
-    console.log(`fileUploadCompletedEvent: ${domain} ${name}, ${context}`)
     if (domain === 'file' && name === EventTopic.Uploadcompleted) {
-      console.log(
-        `fileUploadCompletedEvent[context]: ${JSON.stringify(context, null, 2)}`
-      )
       await fileUploadCompletedHook(event)
     }
   }

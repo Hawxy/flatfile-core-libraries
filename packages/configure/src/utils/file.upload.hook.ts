@@ -9,7 +9,6 @@ async function fileUploadCompletedHook(event: FlatfileEvent) {
 
   const { data } = await api.getFile({ fileId: event.context.fileId })
   if (data.ext === 'xlsx') {
-    console.log('data.ext === xlsx')
     // Customize your Excel extraction here
     const file = await api.downloadFile({ fileId: event.context.fileId })
     const arrayBuffer = await file.arrayBuffer()
@@ -20,9 +19,6 @@ async function fileUploadCompletedHook(event: FlatfileEvent) {
     })
 
     for (const sheetName of Object.keys(workbook.Sheets)) {
-      console.log(
-        `fileUploadCompletedHook[sheetName] ${JSON.stringify(sheetName)}`
-      )
       await uploadCSV(
         event,
         sheetName,
