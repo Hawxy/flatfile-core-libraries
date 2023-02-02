@@ -49,10 +49,10 @@ describe('compiler tests', () => {
       required: true,
       annotations: {},
       field: 'department',
-      labelEnum: {
-        engineering: 'Engineering',
-        ops: 'Human Resources',
-      },
+      labelEnum: [
+        { value: 'engineering', label: 'Engineering' },
+        { value: 'ops', label: 'Human Resources' },
+      ],
     }
 
     const blueprintOutput: EnumProperty = {
@@ -70,6 +70,43 @@ describe('compiler tests', () => {
           {
             value: 'ops',
             label: 'Human Resources',
+          },
+        ],
+      },
+    }
+
+    expect(SchemaILFieldtoProperty(enumField)).toStrictEqual(blueprintOutput)
+  })
+
+  it('checks compiling an enum with booleans', () => {
+    const enumField: SchemaILField = {
+      type: 'enum',
+      matchStrategy: 'fuzzy',
+      label: 'spanishTrue',
+      required: true,
+      annotations: {},
+      field: 'spanishTrue',
+      labelEnum: [
+        { value: true, label: 'si' },
+        { value: false, label: 'ney' },
+      ],
+    }
+
+    const blueprintOutput: EnumProperty = {
+      type: 'enum',
+      key: 'spanishTrue',
+      label: 'spanishTrue',
+      description: undefined,
+      constraints: [{ type: 'required' }],
+      config: {
+        options: [
+          {
+            value: true,
+            label: 'si',
+          },
+          {
+            value: false,
+            label: 'ney',
           },
         ],
       },
@@ -200,10 +237,10 @@ describe('compiler tests', () => {
         required: true,
         annotations: {},
         field: 'department',
-        labelEnum: {
-          engineering: 'Engineering',
-          ops: 'Human Resources',
-        },
+        labelEnum: [
+          { value: 'engineering', label: 'Engineering' },
+          { value: 'ops', label: 'Human Resources' },
+        ],
       },
     },
     name: 'foo',

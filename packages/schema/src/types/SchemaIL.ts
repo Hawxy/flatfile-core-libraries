@@ -29,10 +29,16 @@ export interface BaseSchemaILField extends BaseField {
 export interface BaseSchemaILFieldArgs
   extends Omit<BaseSchemaILField, 'field'> {}
 
+export type EnumOption = {
+  value: string | number | boolean
+  label: string
+}
+
+// type boolOrString = boolean | string
 export interface SchemaILEnumField extends BaseField {
   type: 'enum'
   matchStrategy: 'fuzzy' | 'exact'
-  labelEnum: Record<string, string>
+  labelEnum: Array<EnumOption>
 }
 
 export interface LinkedSheetField extends BaseField {

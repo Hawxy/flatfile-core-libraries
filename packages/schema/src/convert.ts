@@ -26,9 +26,9 @@ export const compileEnum = (
     type: 'string',
     label: inputField.label,
     ...(inputField.required ? { required: inputField.required } : {}),
-    enum: map(Object.keys(inputField.labelEnum), (key) => key),
+    enum: inputField.labelEnum.map(({ value }) => value.toString()),
     description: inputField.description,
-    enumLabel: map(Object.values(inputField.labelEnum), (key) => key),
+    enumLabel: inputField.labelEnum.map(({ label }) => label.toString()),
   }
   if (inputField.matchStrategy === 'exact') {
     retVal.enumMatch = 'exact'

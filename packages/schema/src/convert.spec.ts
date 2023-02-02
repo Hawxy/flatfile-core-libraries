@@ -58,7 +58,11 @@ const ddlSchema: SchemaILModel = {
       matchStrategy: 'fuzzy',
       type: 'enum',
       annotations: {},
-      labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
+      labelEnum: [
+        { value: 'red', label: 'Red' },
+        { value: 'blue', label: 'Blue' },
+        { value: 'green', label: 'Green' },
+      ],
       required: false,
     },
   },
@@ -77,7 +81,11 @@ describe('compiler tests', () => {
         label: 'Color',
         field: 'color',
         annotations: {},
-        labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
+        labelEnum: [
+          { value: 'red', label: 'Red' },
+          { value: 'blue', label: 'Blue' },
+          { value: 'green', label: 'Green' },
+        ],
       })
     ).toMatchObject({
       type: 'string',
@@ -92,7 +100,11 @@ describe('compiler tests', () => {
         label: 'Color',
         field: 'color',
         annotations: {},
-        labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
+        labelEnum: [
+          { value: 'red', label: 'Red' },
+          { value: 'blue', label: 'Blue' },
+          { value: 'green', label: 'Green' },
+        ],
       })
     ).toMatchObject({
       type: 'string',
@@ -109,7 +121,11 @@ describe('compiler tests', () => {
         label: 'Color',
         field: 'color',
         annotations: {},
-        labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
+        labelEnum: [
+          { value: 'red', label: 'Red' },
+          { value: 'blue', label: 'Blue' },
+          { value: 'green', label: 'Green' },
+        ],
       })
     ).toMatchObject({
       type: 'string',
@@ -134,7 +150,11 @@ describe('compiler tests', () => {
           matchStrategy: 'exact',
           type: 'enum',
           annotations: {},
-          labelEnum: { red: 'Red', blue: 'Blue', green: 'Green' },
+          labelEnum: [
+            { value: 'red', label: 'Red' },
+            { value: 'blue', label: 'Blue' },
+            { value: 'green', label: 'Green' },
+          ],
           required: false,
         },
       },

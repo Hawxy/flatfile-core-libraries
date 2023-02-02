@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { BooleanCast } from '../../configure/src/stdlib/CastFunctions'
 import {
   SchemaILModel,
   BaseSchemaILField,
@@ -55,11 +56,8 @@ const convertBase = (
 
 const getEnumOptions = (field: SchemaILEnumField): EnumPropertyOption[] => {
   return _.map(
-    _.toPairs(field.labelEnum),
-    (pair: string[]): EnumPropertyOption => {
-      const [val, label] = pair
-      return { value: val, label: label }
-    }
+    field.labelEnum,
+    ({ value, label }): EnumPropertyOption => ({ value, label })
   )
 }
 

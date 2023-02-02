@@ -4,7 +4,7 @@ import { makeField, mergeFieldOptions } from '../ddl/MakeField'
 import { isFullyPresent } from '../utils/isFullyPresent'
 import { TextField } from './TextField'
 
-type LabelObject = { label: string }
+type LabelObject = { label: string; value?: string | number | boolean }
 // OptionField
 type LabelOptions = string | LabelObject
 
@@ -27,16 +27,20 @@ export const OptionField = makeField<
       )
     }
   }
-  const labelEnum = mapValues(mergedOptions.options, (value: LabelOptions) => {
-    if (typeof value === 'string') {
-      return value
-    } else {
-      return value.label
-    }
-  })
+  const labelEnum = Object.entries(mergedOptions.options).map(
+    ([optionKey, optionValue]) => ({
+      value:
+        typeof optionValue === 'string'
+          ? optionKey
+          : Object.prototype.hasOwnProperty.call(optionValue, 'value') &&
+            optionValue.value !== undefined
+          ? optionValue.value
+          : optionKey,
+      label: typeof optionValue === 'string' ? optionValue : optionValue.label,
+    })
+  )
 
   const consolidatedOptions = mergeFieldOptions(mergedOptions, {
-    //type: 'enum',
     labelEnum,
     matchStrategy: mergedOptions.matchStrategy || 'fuzzy',
   })

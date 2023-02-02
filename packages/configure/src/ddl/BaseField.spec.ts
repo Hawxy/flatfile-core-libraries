@@ -57,7 +57,37 @@ describe('BaseField', () => {
         matchStrategy: 'fuzzy',
         primary: false,
         required: false,
-        labelEnum: { foo: 'Foo', bar: 'Display label for bar' },
+        labelEnum: [
+          { value: 'foo', label: 'Foo' },
+          { value: 'bar', label: 'Display label for bar' },
+        ],
+        type: 'enum',
+        unique: false,
+      })
+    })
+
+    test('toSchemaIL works with booleans', () => {
+      expect(
+        OptionField({
+          label: 'Plan type',
+          options: {
+            premium: 'Premium',
+            standard: 'Standard',
+            none: { value: false, label: 'None' },
+          },
+        }).toSchemaILField('option_field')
+      ).toMatchObject({
+        description: '',
+        field: 'option_field',
+        label: 'Plan type',
+        matchStrategy: 'fuzzy',
+        primary: false,
+        required: false,
+        labelEnum: [
+          { value: 'premium', label: 'Premium' },
+          { value: 'standard', label: 'Standard' },
+          { value: false, label: 'None' },
+        ],
         type: 'enum',
         unique: false,
       })
@@ -77,7 +107,10 @@ describe('BaseField', () => {
         matchStrategy: 'exact',
         primary: false,
         required: false,
-        labelEnum: { foo: 'Foo', bar: 'Display label for bar' },
+        labelEnum: [
+          { value: 'foo', label: 'Foo' },
+          { value: 'bar', label: 'Display label for bar' },
+        ],
         type: 'enum',
         unique: false,
       })
