@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.10
+
+### Patch Changes
+
+- ff3f695: Adds a default egress format to DateField
+
 ## 0.5.9
 
 ### Patch Changes
