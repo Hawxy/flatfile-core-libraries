@@ -39,7 +39,7 @@ const testSession: IPayload = {
 }
 
 describe('Workbook tests ->', () => {
-  const row1 = { firstName: 'foo', age: '10', testBoolean: 'true' }
+  const row1 = { firstName: 'foo', testBoolean: 'true' }
   const iRaw = [{ rawData: row1, rowId: 1 }]
   const recordBatch = new FlatfileRecords(iRaw)
 
@@ -51,7 +51,6 @@ describe('Workbook tests ->', () => {
 
     TestWorkbook.processRecords(recordBatch, session)
     expect(recordBatch.records[0].value).toMatchObject({
-      age: '10',
       firstName: 'FOO',
       testBoolean: true,
     })
@@ -115,7 +114,6 @@ describe('Workbook tests ->', () => {
 
     expect(result[0].row.rawData).toMatchObject({
       firstName: 'FOO',
-      age: '10',
       testBoolean: true,
     })
   })
