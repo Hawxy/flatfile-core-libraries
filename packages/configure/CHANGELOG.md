@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.11
+
+### Patch Changes
+
+- 882b2aa: Move SheetTester into this repo, and add tests for non-existent fields.
+
 ## 0.5.10
 
 ### Patch Changes
