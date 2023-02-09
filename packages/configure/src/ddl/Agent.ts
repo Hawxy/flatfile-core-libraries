@@ -31,5 +31,5 @@ interface ConfigurationOptions {
   name?: string
   description?: string
   spaceConfigs: List<SpaceConfig> // this should probably be like "templates"'
-  blueprints?: typeof Blueprint[]
+  blueprints?: (typeof Blueprint)[]
 }

@@ -85,7 +85,11 @@ export const init = async (options: LegacyInitOptions) => {
   try {
     await exec('node --version')
     nodeSpinner.succeed(`${chalk.dim('Verified node installed')}\n`)
-    console.log(`${chalk.dim('Platform SDK supports node versions 16+, earlier versions may cause errors.\n')}`)
+    console.log(
+      `${chalk.dim(
+        'Platform SDK supports node versions 16+, earlier versions may cause errors.\n'
+      )}`
+    )
     const output = await exec('node --version')
 
     console.log(`You are running version ${chalk.cyan(output.stdout)}`)

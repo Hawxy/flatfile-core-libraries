@@ -144,7 +144,7 @@ export class EventHandler extends AuthenticatedClient {
 
   public async routeEvent(event: Event) {
     const internalEvent = new FlatfileEvent(event)
-    
+
     await this.emit(internalEvent)
   }
 }

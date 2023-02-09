@@ -9,7 +9,6 @@ import { authAction } from './auth.action'
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 
-
 export interface XInitOptions {
   name?: string
   clientId?: string
@@ -64,14 +63,18 @@ export const init = async (options: XInitOptions) => {
     )}\n`
   )
 
-    const nodeSpinner = ora({
+  const nodeSpinner = ora({
     text: `${chalk.dim(`Verifying node installed\n`)}`,
   }).start()
 
   try {
     await exec('node --version')
     nodeSpinner.succeed(`${chalk.dim('Verified node installed')}\n`)
-    console.log(`${chalk.dim('Platform SDK supports node versions 16+, earlier versions may cause errors.\n')}`)
+    console.log(
+      `${chalk.dim(
+        'Platform SDK supports node versions 16+, earlier versions may cause errors.\n'
+      )}`
+    )
     const output = await exec('node --version')
 
     console.log(`You are running version ${chalk.cyan(output.stdout)}`)
