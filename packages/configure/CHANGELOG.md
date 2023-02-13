@@ -1,5 +1,15 @@
 # @flatfile/configure
 
+## 0.5.12
+
+### Patch Changes
+
+- 94f1993: Remove Default XLSX Parsing
+- f60ac67: Registers Sheet actions by key instead of name
+- cf3bd5f: Update @flatfile/api version
+- Updated dependencies [cf3bd5f]
+  - @flatfile/schema@0.2.12
+
 ## 0.5.11
 
 ### Patch Changes

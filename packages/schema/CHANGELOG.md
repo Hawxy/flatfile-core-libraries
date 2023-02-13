@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.12
+
+### Patch Changes
+
+- cf3bd5f: Update @flatfile/api version
+
 ## 0.2.11
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.17
+
+### Patch Changes
+
+- cf3bd5f: Update @flatfile/api version
+
 ## 3.1.16
 
 ### Patch Changes
