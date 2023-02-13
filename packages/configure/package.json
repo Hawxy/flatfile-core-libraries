@@ -44,9 +44,9 @@
   "dependencies": {
     "@flatfile/api": "^0.0.11",
     "@flatfile/blueprint": "^0.0.6",
-    "@flatfile/hooks": "*",
-    "@flatfile/orm": "*",
-    "@flatfile/schema": "*",
+    "@flatfile/hooks": "^1.2.3",
+    "@flatfile/orm": "^0.1.0",
+    "@flatfile/schema": "^0.2.12",
     "axios": "^1.2.1",
     "case-anything": "^2.1.10",
     "date-fns": "^2.29.1",
