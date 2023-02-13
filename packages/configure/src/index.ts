@@ -10,6 +10,7 @@ export * from './ddl/Workbook'
 export * from './fields'
 export * from './stdlib/RegionCast'
 export * from './stdlib/SynonymCast'
+export * from './utils/flatfile.event'
 import * as stdlibCast from './stdlib/CastFunctions'
 export { makeField, GenericDefaults, mergeFieldOptions } from './ddl/MakeField'
 
