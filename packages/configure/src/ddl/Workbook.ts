@@ -20,8 +20,13 @@ export class Workbook extends EventHandler implements Mountable {
       sheets: {},
       ...options,
     }
-    _.map(options.sheets, (value, key) => {
-      this.addNode(value, key)
+    _.map(options.sheets, (sheet, key) => {
+      // Add the Sheet key as the slug
+      if (!sheet.slug) {
+        sheet.slug = key
+      }
+      sheet.registerActions()
+      this.addNode(sheet, key)
     })
   }
 

@@ -8,7 +8,7 @@ export class EventHandler extends AuthenticatedClient {
    * Event target name, defaults to all events
    */
   public readonly targetName: string = '*'
-
+  public slug?: string
   /**
    * Cache of registered listeners on this instance
    * @private
@@ -65,8 +65,7 @@ export class EventHandler extends AuthenticatedClient {
    * @param event
    */
   async emit(event: FlatfileEvent): Promise<void> {
-    const target = this.findTargetNode(event.target)
-
+    const target = this.findTargetNode(event)
     if (!target) {
       return
     } else {
@@ -128,15 +127,17 @@ export class EventHandler extends AuthenticatedClient {
    * @param slug
    */
   public findTargetNode(
-    target: string,
+    event: FlatfileEvent,
     slug?: string
   ): EventHandler | undefined {
-    if (this.getEventTargetName(slug) === target) {
+    if (this.getEventTargetName(slug) === event.target) {
       return this
     }
 
     const childNodes = this.childNodes
-      .map(([n, slug]) => n.findTargetNode(target, slug))
+      .map(([n, slug]) => {
+        return n.findTargetNode(event, slug)
+      })
       .filter((v) => v)
 
     return childNodes.length > 0 ? childNodes[0] : undefined
@@ -148,86 +149,3 @@ export class EventHandler extends AuthenticatedClient {
     await this.emit(internalEvent)
   }
 }
-
-// export class FlatfileEvent extends AuthenticatedClient {
-//   /**
-//    * Event ID from the API
-//    *
-//    * @example us0_ev_82hgidh9skd
-//    * @readonly
-//    *
-//    */
-//   public readonly id?: string
-
-//   /**
-//    * Topic the event was produced on
-//    *
-//    * @example workbook:created
-//    * @readonly
-//    */
-//   public readonly topic?: string
-
-//   public readonly name: string
-//   public readonly target: string
-//   public readonly context: any
-//   public readonly body: any
-
-//   public readonly action?: string
-//   /**
-//    * Target entity id
-//    *
-//    * @example us0_wb_82hgidh9skd
-//    */
-//   // public readonly target: string // workbook(PrimaryCRMWorkbook)
-
-//   // public readonly context: any // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
-//   // public readonly body: any
-
-//   constructor(private readonly src: Event) {
-//     super()
-//     const actionName = src.context.actionName
-//     const sheetSlug = src.context.sheetSlug
-//     const domain = sheetSlug && src.domain === 'workbook' ? 'sheet' : src.domain
-//     const actionTarget = `${domain}(${actionName?.split(':')[0]})`
-//     this.name = src.topic // workbook:created
-//     this.target = actionName
-//       ? actionTarget
-//       : `sheet(${sheetSlug?.split('/').pop()})` // workbook(PrimaryCRMWorkbook)
-//     this.context = src.context // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
-//     this.body = src.payload
-//     this.action = actionName
-//   }
-
-//   /**
-//    * Should return either event body if expanded already or fetch data from the
-//    * signed callback URL
-//    */
-//   get data(): Promise<any> {
-//     // fetch from url
-//     if (this.src.dataUrl) {
-//       return this.http.get(`/${this.src.dataUrl}`).then((res) => {
-//         return res.data.data
-//       })
-//     } else {
-//       return this.body
-//     }
-//   }
-
-//   /**
-//    * Fetch the actual body of each context item referenced
-//    * @param _contexts
-//    * @todo later
-//    */
-//   expand(..._contexts: string[]) {
-//     // await ev.expand('acccount', 'space')
-//     // ev.account
-//     // -> accounts.getAccount('id')
-//   }
-
-//   ack(_progress: number = 100) {
-//     // call ack API with error
-//     // only on ackable events
-//   }
-// }
-
-// export type EventCallback = (evt: FlatfileEvent) => void

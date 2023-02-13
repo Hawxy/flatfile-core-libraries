@@ -142,7 +142,6 @@ export class Sheet<FC extends FieldConfig>
   implements Mountable
 {
   public targetName = 'sheet'
-  public slug: string
   public options: SheetOptions<FC> = {
     allowCustomFields: false,
     readOnly: false,
@@ -166,7 +165,7 @@ export class Sheet<FC extends FieldConfig>
     if (passedOptions) {
       Object.assign(this.options, passedOptions)
     }
-    this.slug = slugify(name)
+    
     const malleableFields: Record<string, AnyField> = fields
     toPairs(fields).map(([key, field]) => {
       //do dag checking here on dependsOn, uses, and modifies
@@ -205,15 +204,6 @@ export class Sheet<FC extends FieldConfig>
       )
     } else if (_.values(contributedSheetComputes).length == 1) {
       this.sheetCompute = _.values(contributedSheetComputes)[0]
-    }
-
-    const actions = this.options.actions
-    if (actions) {
-      _.map(actions, (action, _key) => {
-        this.on(`${this.slug}:${action.slug}`, (event) => {
-          return action.handler(event, action.options)
-        })
-      })
     }
   }
 
@@ -291,6 +281,20 @@ export class Sheet<FC extends FieldConfig>
     return records
   }
 
+  public registerActions() {
+    const actions = this.options.actions
+    if (actions) {
+      _.map(actions, (action, _key) => {
+        this.on(
+          `${this.slug || slugify(this.name)}:${action.slug}`,
+          (event) => {
+            return action.handler(event, action.options)
+          }
+        )
+      })
+    }
+  }
+
   public toSchemaIL(namespace: string, slug: string): SchemaILModel {
     let base: SchemaILModel = {
       name: this.name,
@@ -315,7 +319,7 @@ export class Sheet<FC extends FieldConfig>
 
   // TODO: need to handle deploys from just sheets as Agents with default slugs for configs properly
   mount(): Agent {
-    const slug = this.slug
+    const slug = this.slug || slugify(this.name)
     return new Agent({
       spaceConfigs: {
         [slug]: new SpaceConfig({

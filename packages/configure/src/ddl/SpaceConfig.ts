@@ -24,6 +24,7 @@ export class SpaceConfig extends EventHandler implements Mountable {
   }
 
   getEventTargetName(): string {
+    // TODO: make this use the slug so we can handle events/actions for different Spaces in an Agent
     return `space(*)`
   }
 
