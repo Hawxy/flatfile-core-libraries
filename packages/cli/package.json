@@ -14,7 +14,7 @@
     "test": "jest --runInBand --forceExit --passWithNoTests"
   },
   "dependencies": {
-    "@flatfile/api": "^0.0.9",
+    "@flatfile/api": "^0.0.11",
     "@rollup/plugin-commonjs": "^23.0.3",
     "@rollup/plugin-json": "^5.0.2",
     "@rollup/plugin-node-resolve": "^15.0.1",

@@ -21,7 +21,7 @@
     "clean": true
   },
   "dependencies": {
-    "@flatfile/api": "^0.0.9",
+    "@flatfile/api": "^0.0.11",
     "@flatfile/blueprint": "^0.0.6"
   },
   "devDependencies": {
