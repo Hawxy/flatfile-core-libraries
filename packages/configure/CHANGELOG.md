@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.13
+
+### Patch Changes
+
+- feaf82f: Use specific versions of @flatfile/ packages to make sure everything is in sync.
+
 ## 0.5.12
 
 ### Patch Changes
