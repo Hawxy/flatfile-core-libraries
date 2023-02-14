@@ -1,5 +1,5 @@
 type HelloWorld = string
 
-const example: HelloWorld  = 'Hello World'
+const example: HelloWorld = 'Hello World'
 
 export { example, type HelloWorld }
