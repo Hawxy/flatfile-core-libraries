@@ -70,9 +70,18 @@ describe('Workbook tests ->', () => {
         nonExistentField: 'oops',
       },
     ]
-    expect.assertions(1)
+    expect.assertions(2)
     try {
       await testSheet.testRecord(inputRows[0])
+    } catch (e) {
+      expect(e).toEqual(
+        new Error(
+          'Attempted to process record with field nonExistentField which does not exist on sheet TestSheet'
+        )
+      )
+    }
+    try {
+      await testSheet.transformField('nonExistentField', 'alex')
     } catch (e) {
       expect(e).toEqual(
         new Error(

@@ -31,34 +31,7 @@ export class SheetTester {
     }
   }
 
-  private async transformRecord(recordBatch: {}) {
-    const session = new FlatfileSession({
-      ...this.testSession,
-      schemaSlug: this.sheetName,
-    })
-
-    const iRaw = [{ rawData: recordBatch, rowId: 1 }]
-
-    const inputRecords = new FlatfileRecords(iRaw)
-
-    await this.workbook.processRecords(inputRecords, session)
-    return inputRecords.records[0]?.toJSON()
-  }
-
-  private async transformRecords(recordBatch: Record<string, any>[]) {
-    const session = new FlatfileSession({
-      ...this.testSession,
-      schemaSlug: this.sheetName,
-    })
-    const iRaw = recordBatch.map((rawData, index) => {
-      return { rawData, rowId: index }
-    })
-
-    const inputRecords = new FlatfileRecords(iRaw)
-
-    this.workbook.options.sheets
-
-    // Check for extra record fields and throw an error if found
+  private checkRecordsForExtraFields(recordBatch: Record<string, any>[]) {
     const { namespace } = this.workbook.options
     const sheetTarget = this.sheetName
     const targets = Object.keys(this.workbook.options.sheets)
@@ -82,6 +55,38 @@ export class SheetTester {
         })
       })
     }
+  }
+
+  private async transformRecord(recordBatch: {}) {
+    const session = new FlatfileSession({
+      ...this.testSession,
+      schemaSlug: this.sheetName,
+    })
+
+    const iRaw = [{ rawData: recordBatch, rowId: 1 }]
+
+    const inputRecords = new FlatfileRecords(iRaw)
+
+    this.checkRecordsForExtraFields([recordBatch])
+
+    await this.workbook.processRecords(inputRecords, session)
+    return inputRecords.records[0]?.toJSON()
+  }
+
+  private async transformRecords(recordBatch: Record<string, any>[]) {
+    const session = new FlatfileSession({
+      ...this.testSession,
+      schemaSlug: this.sheetName,
+    })
+    const iRaw = recordBatch.map((rawData, index) => {
+      return { rawData, rowId: index }
+    })
+
+    const inputRecords = new FlatfileRecords(iRaw)
+
+    this.workbook.options.sheets
+
+    this.checkRecordsForExtraFields(recordBatch)
 
     await this.workbook.processRecords(inputRecords, session)
     return inputRecords
