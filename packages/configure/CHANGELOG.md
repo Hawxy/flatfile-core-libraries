@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.14
+
+### Patch Changes
+
+- 5e71a27: Adds field existence check to SheetTester.transformField
+
 ## 0.5.13
 
 ### Patch Changes
