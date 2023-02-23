@@ -1,3 +1,5 @@
+import { BaseCustomTableThemeProps } from './CustomTheme'
+
 export interface IThemeConfig {
   /**
    * Global styles
@@ -14,9 +16,5 @@ export interface IThemeConfig {
   /**
    * Data table styles
    */
-  table?: {
-    [key: string]: {
-      [key: string]: string
-    }
-  }
+  table?: Partial<BaseCustomTableThemeProps>
 }

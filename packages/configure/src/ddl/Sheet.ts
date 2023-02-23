@@ -165,7 +165,7 @@ export class Sheet<FC extends FieldConfig>
     if (passedOptions) {
       Object.assign(this.options, passedOptions)
     }
-    
+
     const malleableFields: Record<string, AnyField> = fields
     toPairs(fields).map(([key, field]) => {
       //do dag checking here on dependsOn, uses, and modifies

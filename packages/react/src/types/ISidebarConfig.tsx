@@ -1,9 +1,15 @@
 export interface ISidebarConfig {
   /**
    * Landing page upon loading a space
-   * Defaults to primary workbook or first document, if there is one
+   * Defaults to primary workbook or first document, if there is one.
    */
-  defaultPage?: string
+  defaultPage?: {
+    documentId?: string
+    workbook?: {
+      workbookId: string
+      sheetId?: string
+    }
+  }
   /**
    * Toggle branding logo
    * Defaults to true
@@ -20,12 +26,7 @@ export interface ISidebarConfig {
    */
   showDataChecklist?: boolean
   /**
-   * Toggle all files uploaded vs. only files uploaded by guest
-   * Defaults to false
-   */
-  showFullFilesPage?: boolean
-  /**
-   * Toggle sidebar access
+   * Toggle whether sidebar defaults to open inside of a Workbook
    * Defaults to false
    */
   showSidebar?: boolean
