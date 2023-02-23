@@ -35,6 +35,7 @@ export function config(
     secret?: string
     auth?: string
     team?: number
+    internal?: object
   }>
 ): Config {
   const fullConfig = {
@@ -105,6 +106,7 @@ const ConfigValidation = z.object({
   version: z.number().gte(1),
   x: z.boolean(),
   auth: z.boolean(),
+  internal: z.object({}).catchall(z.string()).optional(),
 })
 
 export type Config = z.infer<typeof ConfigValidation>

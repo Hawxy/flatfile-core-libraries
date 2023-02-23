@@ -14,7 +14,7 @@ import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import terser from '@rollup/plugin-terser'
 import { Action, Agent, List } from '@flatfile/configure'
-
+import injectProcessEnv from 'rollup-plugin-inject-process-env'
 export async function publishAction(
   file: string,
   options: Partial<{
@@ -67,7 +67,7 @@ export async function publishAction(
     const bundle = await rollup({
       input: file,
       treeshake: true,
-
+      inlineDynamicImports: true,
       plugins: [
         json(),
         typescript({
@@ -77,6 +77,7 @@ export async function publishAction(
           declarationMap: false,
         }),
         commonjs(),
+        injectProcessEnv(config().internal),
         resolve({
           preferBuiltins: false,
         }),
