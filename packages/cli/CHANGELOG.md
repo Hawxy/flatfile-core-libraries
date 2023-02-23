@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.18
+
+### Patch Changes
+
+- 51ba23e: Adds Env Vars to Agent Code
+
 ## 3.1.17
 
 ### Patch Changes
