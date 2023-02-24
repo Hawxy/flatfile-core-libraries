@@ -8,7 +8,7 @@ import {
 
 import { EventTopic } from '@flatfile/api'
 
-import XLSXParser from './XLSXParser'
+import { ExcelExtractor } from '@flatfile/plugin-xlsx-extractor'
 
 const TestSheet = new Sheet(
   'TestSheet',
@@ -63,13 +63,15 @@ const Workbook1 = new Workbook({
 })
 
 const SpaceConfig1 = new SpaceConfig({
-  name: 'xlsx Config',
-  slug: 'xlsx-test-1',
+  name: 'xlsx Config 3',
+  slug: 'xlsx-test-3',
   workbookConfigs: {
     Workbook1,
   },
 })
 
-SpaceConfig1.on([EventTopic.Uploadcompleted], XLSXParser)
+SpaceConfig1.on([EventTopic.Uploadcompleted], (event) => {
+  return new ExcelExtractor(event, { rawNumbers: true }).runExtraction()
+})
 
 export default SpaceConfig1

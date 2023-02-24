@@ -1,0 +1,28 @@
+{
+  "name": "@flatfile/plugin-xlsx-extractor",
+  "version": "0.0.1",
+  "description": "An XLSX Extractor Plugin for X",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "@flatfile/api": "^0.0.11",
+    "@flatfile/configure": "*",
+    "@flatfile/eslint-config-platform-sdk": "*",
+    "@flatfile/jest-preset-platform-sdk": "*",
+    "@flatfile/ts-config-platform-sdk": "*",
+    "remeda": "^1.6.2",
+    "tsup": "^6.6.3",
+    "xlsx": "^0.18.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
