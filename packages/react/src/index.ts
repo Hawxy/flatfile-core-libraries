@@ -1,5 +1,0 @@
-export * from './components/Space'
-export * from './hooks/useSpace'
-export * from './types/ISpaceConfig'
-export * from './types/ISidebarConfig'
-export * from './types/IThemeConfig'

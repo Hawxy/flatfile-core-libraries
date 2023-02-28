@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-dom'
 import { basicConfig } from './examples/basicConfig'
 import { ISpaceConfig } from './types/ISpaceConfig'
 import { useThemeGenerator } from './hooks/useThemeGenerator'
@@ -44,6 +44,4 @@ const ExampleApp = () => {
   )
 }
 
-ReactDOM.createRoot(document?.getElementById('root') as Element).render(
-  <ExampleApp />
-)
+ReactDOM.render(<ExampleApp />, document?.getElementById('root') as Element)

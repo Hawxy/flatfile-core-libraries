@@ -1,6 +1,6 @@
 # Platform SDK
 
-This monorepo is configured with the following tools: 
+This monorepo is configured with the following tools:
 
 - [Turborepo](https://turborepo.org) - Monorepo build system
 - [NPM Workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces) - Managing workspaces

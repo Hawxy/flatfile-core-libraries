@@ -8,8 +8,7 @@ SpaceConfig1.on([EventTopic.Uploadcompleted], (event) => {
 })
 ```
 
-The Extractor can accept an addition options parameter that includes `rawNumbers: boolean` which will be passed along to the Sheet.js parsing engine. 
-
+The Extractor can accept an addition options parameter that includes `rawNumbers: boolean` which will be passed along to the Sheet.js parsing engine.
 
 ```ts
 SpaceConfig1.on([EventTopic.Uploadcompleted], (event) => {
