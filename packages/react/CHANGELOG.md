@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 5.0.2
+
+### Patch Changes
+
+- a886180: Add readme
+
 ## 5.0.1
 
 ### Patch Changes
