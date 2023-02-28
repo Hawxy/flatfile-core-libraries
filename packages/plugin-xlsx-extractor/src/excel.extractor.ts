@@ -45,20 +45,12 @@ export class ExcelExtractor extends AbstractExtractor {
     })
 
     // use a basic pattern check on the 1st row - should be switched to core header detection
-    const hasHeader = rows[0]
-      ? Object.values(rows[0]).some((v) => v?.includes('*'))
-      : false
-
-    // use a basic pattern check on the 2nd row - can be modified
-    const hasSubHeader = !!rows[0]
-      ? Object.values(rows[1]).some((v) => v?.toString().includes(':'))
-      : false
+    const hasHeader = this.isHeaderCandidate(rows[0])
 
     const colMap: Record<string, string> | null = hasHeader
       ? (rows.shift() as Record<string, string>)
       : null
 
-    const subHeader = hasSubHeader ? rows.shift() : null
     if (colMap) {
       const headers = mapValues(colMap, (val) => val?.replace('*', ''))
       const required = mapValues(colMap, (val) => val?.includes('*'))
@@ -66,7 +58,6 @@ export class ExcelExtractor extends AbstractExtractor {
       return {
         headers: Object.values(headers).filter((v) => v),
         required: mapKeys(required, (k) => headers[k]),
-        descriptions: subHeader ? mapKeys(subHeader, (k) => headers[k]) : null,
         data,
       }
     } else {
@@ -107,5 +98,25 @@ export class ExcelExtractor extends AbstractExtractor {
     } catch (e) {
       return false
     }
+  }
+
+  /**
+   * This needs to be improved but right now it looks for a pattern unlikely
+   * to be in a header.
+   *
+   * Yes header | foo | bar | baz |
+   * No header  | 99  | asd | 0   |
+   *
+   * @param header
+   */
+  isHeaderCandidate(header: Record<string, string | number>): boolean {
+    if (!header) {
+      return false
+    }
+
+    // rule out anything that contains a pure number or non-string
+    return !Object.values(header).some((v) =>
+      typeof v === 'string' ? /^[0-9]+$/.test(v) : !!v
+    )
   }
 }
