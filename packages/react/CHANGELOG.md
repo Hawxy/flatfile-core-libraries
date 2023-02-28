@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 5.0.3
+
+### Patch Changes
+
+- 1a6f8e4: Package bundling updates
+
 ## 5.0.2
 
 ### Patch Changes
