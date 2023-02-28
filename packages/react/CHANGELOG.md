@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 5.0.1
+
+### Patch Changes
+
+- 87431f7: Make package public
+
 ## 5.0.0
 
 ### Major Changes
