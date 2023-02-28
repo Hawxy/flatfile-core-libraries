@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 5.0.4
+
+### Patch Changes
+
+- a30b3e6: Export useThemeGenerator hook
+
 ## 5.0.3
 
 ### Patch Changes
