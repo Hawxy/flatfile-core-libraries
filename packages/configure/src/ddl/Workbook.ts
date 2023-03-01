@@ -18,6 +18,7 @@ export class Workbook extends EventHandler implements Mountable {
       namespace: 'default',
       name: 'Default',
       sheets: {},
+      labels: [],
       ...options,
     }
     _.map(options.sheets, (sheet, key) => {
@@ -119,8 +120,7 @@ interface IWorkbookOptions {
   slug?: string
   sheets: Record<string, Sheet<any>>
   ref?: string
-  options?: {
-    // tbd
-  }
+  labels?: Array<string>
+  options?: {}
   portals?: Portal[]
 }

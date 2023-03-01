@@ -174,6 +174,7 @@ export async function publishAction(
               return {
                 name: wb.options.name,
                 slug: `${slug}/${wbSlug}`,
+                labels: wb.options.labels,
                 primary: i === 0,
                 sheets: mapObj(wb.options.sheets, (model, modelSlug) => {
                   if (model.options.actions) {
