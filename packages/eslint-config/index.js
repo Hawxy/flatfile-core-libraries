@@ -32,6 +32,9 @@ module.exports = {
         },
         warnOnUnsupportedTypeScriptVersion: true,
       },
+      rules: {
+        'no-dupe-class-members': 'off',
+      },
     },
   ],
   settings: {

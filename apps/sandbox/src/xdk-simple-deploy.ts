@@ -120,8 +120,8 @@ const SheetWithLink = new Sheet(
 
 const Workbook1 = new Workbook({
   name: 'Workbook 1',
-  slug: 'xdk-test',
-  namespace: 'xdk-test',
+  slug: 'workbook-test',
+  namespace: 'workbook-1',
   sheets: {
     TestSheet,
     SheetWithLink,
@@ -129,8 +129,8 @@ const Workbook1 = new Workbook({
 })
 
 const SpaceConfig1 = new SpaceConfig({
-  name: 'xlsx Config',
-  slug: 'xlsx-test-1',
+  name: 'Space Config from SDK',
+  slug: 'space-config-1',
   workbookConfigs: {
     Workbook1,
   },

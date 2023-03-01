@@ -4,7 +4,9 @@
   "version": "1.0.6",
   "description": "",
   "devDependencies": {
+    "@flatfile/listener": "*",
     "@flatfile/configure": "*",
+    "@flatfile/api": "^0.0.12",
     "@types/node": "^14.14.10",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
@@ -21,8 +23,8 @@
   "scripts": {
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "deploy": "flatfile publish src/setup.ts",
-    "xdeploy": "flatfile publish src/xdk-simple-deploy.ts",
-    "publish": "flatfile publish",
+    "deploy:xdk": "flatfile publish src/xdk-simple-deploy.ts",
+    "deploy:pubsub": "flatfile pubsub src/pubsub.ts",
     "create:env": "flatfile create:env -n",
     "quickstart": "flatfile quickstart",
     "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",

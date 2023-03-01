@@ -14,7 +14,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@flatfile/api": "^0.0.11",
+    "@flatfile/api": "^0.0.12",
     "@flatfile/configure": "*",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/jest-preset-platform-sdk": "*",

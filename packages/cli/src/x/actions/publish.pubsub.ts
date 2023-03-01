@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { info } from '../../legacy/ui/info'
 import { config } from '../../config'
-import { Blueprint, EventTopic } from '@flatfile/api'
+import { EventTopic } from '@flatfile/api'
 import { authAction } from './auth.action'
 import ora from 'ora'
 
@@ -13,9 +13,8 @@ import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import terser from '@rollup/plugin-terser'
-import { Agent } from '@flatfile/configure'
-import injectProcessEnv from 'rollup-plugin-inject-process-env'
-export async function publishAction(
+
+export async function publishPubSub(
   file: string,
   options: Partial<{
     account: string
@@ -24,7 +23,6 @@ export async function publishAction(
   }>
 ) {
   const outDir = path.join(process.cwd(), '.flatfile')
-
   const env = options.env || config().env
   if (!env) {
     console.log(
@@ -77,7 +75,6 @@ export async function publishAction(
           declarationMap: false,
         }),
         commonjs(),
-        injectProcessEnv(config().internal),
         resolve({
           preferBuiltins: false,
         }),
@@ -94,13 +91,13 @@ export async function publishAction(
           return
         }
 
-        console.log({ code: warning.code })
         console.warn({ message: warning.message })
       },
     })
 
     await bundle.write({
       file: path.join(outDir, 'build.js'),
+      // dir: path.join(outDir),
       format: 'cjs',
       exports: 'auto',
       plugins: [
@@ -110,7 +107,6 @@ export async function publishAction(
       ],
     })
     bundle.close()
-
     info('Send Build.js')
   } catch (e) {
     console.log(e)
@@ -126,7 +122,7 @@ export async function publishAction(
 
   try {
     const envSpinner = ora({
-      text: `Find or Create Environment`,
+      text: `Finding Environment`,
     }).start()
     let environment
     try {
@@ -145,75 +141,12 @@ export async function publishAction(
     const buildFile = path.join(outDir, 'build.js')
     const buffer = fs.readFileSync(buildFile)
     const source = buffer.toString()
-    const config = require(buildFile)
+    const client = require(buildFile)
 
-    if (!('mount' in config)) {
+    if (!('mount' in client)) {
       return console.error(
         '🛑 You must export a mountable class (Agent, Space, Workbook, or Sheet) as a default export from the entry file.'
       )
-    }
-    const {
-      options: { spaceConfigs },
-    } = config.mount() as Agent
-
-    for (const slug in spaceConfigs) {
-      const spaceConfigSpinner = ora({
-        text: `Create Space Config with slug: ${chalk.dim(slug)}`,
-      }).start()
-      const spaceConfig = spaceConfigs[slug]
-
-      let actionsSummary: string = ''
-      try {
-        const spacePatternConfig = {
-          name: spaceConfig.options.name,
-          // TODO Do we need a unique slug for this in the Platform SDK or X? Should we generate them in X?
-          slug,
-          blueprints: mapObj(
-            spaceConfig.options.workbookConfigs,
-            (wb, wbSlug, i) => {
-              return {
-                name: wb.options.name,
-                slug: `${slug}/${wbSlug}`,
-                labels: wb.options.labels,
-                primary: i === 0,
-                sheets: mapObj(wb.options.sheets, (model, modelSlug) => {
-                  if (model.options.actions) {
-                    const actionSlugs = mapObj(
-                      model.options.actions,
-                      (action) => {
-                        return `${model.slug}:${action.options.slug}`
-                      }
-                    )
-                    actionsSummary =
-                      actionsSummary +
-                      chalk.dim(
-                        `\n      ${model.slug} action slugs: ${actionSlugs.join(
-                          ', '
-                        )}`
-                      )
-                  }
-                  return model.toBlueprint(wbSlug, modelSlug)
-                }),
-              } as Blueprint
-            }
-          ),
-        }
-        const spaceConfigRes = await apiClient.addSpaceConfig({
-          spacePatternConfig,
-        })
-        spaceConfigSpinner.succeed(
-          `Space Config Created ${chalk.dim(spaceConfigRes?.data?.id)}`
-        )
-        if (actionsSummary) {
-          const actionsSummarTitle = chalk.green(
-            '  This Space Config has actions 🎉:'
-          )
-          console.log(actionsSummarTitle, actionsSummary)
-        }
-      } catch (e) {
-        spaceConfigSpinner.fail(`Space Config to be created ${chalk.dim(e)}`)
-        process.exit(1)
-      }
     }
 
     // Create an Agent with the default Data Hook
@@ -221,15 +154,18 @@ export async function publishAction(
       text: `Create Agent`,
     }).start()
     try {
+      const topics = [
+        EventTopic.Recordscreated,
+        EventTopic.Recordsupdated,
+        EventTopic.Uploadcompleted,
+        EventTopic.Actiontriggered,
+        EventTopic.Clientinit,
+      ]
+
       const agent = await apiClient.createAgent({
         environmentId: env ?? '',
         agentConfig: {
-          topics: [
-            EventTopic.Recordscreated,
-            EventTopic.Recordsupdated,
-            EventTopic.Uploadcompleted,
-            EventTopic.Actiontriggered,
-          ],
+          topics,
           compiler: 'js',
           source,
         },
@@ -241,16 +177,4 @@ export async function publishAction(
   } catch (e) {
     console.log(e)
   }
-}
-
-function mapObj<T, K>(
-  obj: Record<string, K>,
-  cb: (value: K, key: string, i: number) => T
-): T[] {
-  const slugs = Object.keys(obj)
-  let i = 0
-  return slugs.map((slug) => {
-    const model = obj[slug]
-    return cb(model, slug, i++)
-  })
 }
