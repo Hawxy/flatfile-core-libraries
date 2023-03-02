@@ -61,5 +61,4 @@ program
   .option('--api-url <url>', 'the API url to use')
   .action(publishPubSub)
 
-
 program.parse()

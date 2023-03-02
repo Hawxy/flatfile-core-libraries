@@ -74,8 +74,14 @@ describe('Client', () => {
           })
       })
       await client.dispatchEvent({ topic: 'records:created' })
-      await client.dispatchEvent({ topic: 'records:created', domain: 'foo:bar' })
-      await client.dispatchEvent({ topic: 'records:created', domain: 'foo:baz' })
+      await client.dispatchEvent({
+        topic: 'records:created',
+        domain: 'foo:bar',
+      })
+      await client.dispatchEvent({
+        topic: 'records:created',
+        domain: 'foo:baz',
+      })
       expect(testFn).toHaveBeenCalledTimes(1)
     })
   })
