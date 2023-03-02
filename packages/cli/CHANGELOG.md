@@ -1,5 +1,12 @@
 # @flatfile/cli
 
+## 3.1.19
+
+### Patch Changes
+
+- 4b918a2: Adds the new @flatfile/listener package
+- 53a2990: Add labels to Workbooks
+
 ## 3.1.18
 
 ### Patch Changes

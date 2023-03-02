@@ -1,5 +1,12 @@
 # @flatfile/configure
 
+## 0.5.15
+
+### Patch Changes
+
+- 4b918a2: Adds the new @flatfile/listener package
+- 53a2990: Add labels to Workbooks
+
 ## 0.5.14
 
 ### Patch Changes
