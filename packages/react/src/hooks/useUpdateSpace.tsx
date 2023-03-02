@@ -1,5 +1,5 @@
 import { useHttpClient } from './useHttpClient'
-import { SpaceConfig, SpacePatternConfig } from '@flatfile/api'
+import { Action } from '@flatfile/api'
 
 /**
  * @name useUpdateSpace
@@ -17,11 +17,13 @@ export const useUpdateSpace = ({ accessToken }: { accessToken: string }) => {
     spaceConfigId,
     environmentId,
     metadata,
+    actions,
   }: {
     spaceId: string
     spaceConfigId?: string
     environmentId: string
-    metadata: {}
+    metadata?: {}
+    actions?: Action[]
   }) => {
     const space = await httpClient.updateSpaceById({
       spaceId,
@@ -30,6 +32,7 @@ export const useUpdateSpace = ({ accessToken }: { accessToken: string }) => {
         spaceConfigId,
         environmentId,
         metadata,
+        actions,
       },
     })
 

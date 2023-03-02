@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useState } from 'react'
+import { createRoot } from 'react-dom/client'
 import { basicConfig } from './examples/basicConfig'
 import { ISpaceConfig } from './types/ISpaceConfig'
-import { useThemeGenerator } from './hooks/useThemeGenerator'
+import { makeTheme } from './utils/makeTheme'
 import { useSpace } from './hooks/useSpace'
 
 const spaceProps: ISpaceConfig = {
@@ -10,19 +10,29 @@ const spaceProps: ISpaceConfig = {
   accessToken: '',
   environmentId: '',
   spaceConfig: basicConfig,
+  themeConfig: makeTheme({ primaryColor: '#546a76', textColor: '#fff' }),
+  sidebarConfig: {
+    showDataChecklist: false,
+  },
+  document: {
+    title: 'Test doc',
+    body:
+      '![Shop](https://coconut.show/logo-big.png)\n' +
+      '\\\n' +
+      '&nbsp;\n' +
+      '\n' +
+      '---\n' +
+      '\n' +
+      '# Welcome to the Coconut Shop!\n' +
+      '\n' +
+      'Please upload your contacts to the Coconut Shop using the Files menu on the left.\n',
+  },
 }
 
 const ExampleApp = () => {
   const [showSpace, setShowSpace] = useState(false)
 
-  const theme = useThemeGenerator({ primary: '#cbdfbd' })
-
-  const fullSpaceProps = {
-    ...spaceProps,
-    themeConfig: theme,
-  }
-
-  const { error, data } = useSpace(fullSpaceProps)
+  const { error, data } = useSpace(spaceProps)
 
   return (
     <div style={{ padding: '16px' }}>
@@ -44,4 +54,6 @@ const ExampleApp = () => {
   )
 }
 
-ReactDOM.render(<ExampleApp />, document?.getElementById('root') as Element)
+const root = createRoot(document?.getElementById('root') as Element)
+
+root.render(<ExampleApp />)

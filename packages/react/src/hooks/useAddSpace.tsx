@@ -1,3 +1,4 @@
+import { Action } from '@flatfile/api'
 import { useHttpClient } from './useHttpClient'
 
 /**
@@ -15,16 +16,19 @@ export const useAddSpace = ({ accessToken }: { accessToken: string }) => {
     environmentId,
     spaceConfigId,
     metadata,
+    actions,
   }: {
     environmentId: string
     spaceConfigId: string
     metadata: {}
+    actions?: Action[]
   }) => {
     const space = await httpClient.addSpace({
       spaceConfig: {
         spaceConfigId,
         environmentId,
         metadata,
+        actions,
         name: 'Embedded space',
       },
     })
