@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 5.0.5
+
+### Patch Changes
+
+- 0b4c235: update makeTheme helper function, add support for documents and spaceConfigId
+
 ## 5.0.4
 
 ### Patch Changes
