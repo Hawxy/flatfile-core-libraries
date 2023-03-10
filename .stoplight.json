@@ -1,0 +1,32 @@
+{
+  "exclude": ["apps", ".github", ".changeset"],
+  "formats": {
+    "openapi": {
+      "rootDir": "reference",
+      "include": [
+        "**"
+      ]
+    },
+    "json_schema": {
+      "rootDir": "models",
+      "include": [
+        "**"
+      ]
+    },
+    "markdown": {
+      "rootDir": "/packages",
+      "include": [
+        "**"
+      ]
+    },
+    "markdown": {
+      "rootDir": "/docs",
+      "include": [
+        "**"
+      ]
+    },
+    "image": {
+      "rootDir": "assets/images"
+    }
+  }
+}

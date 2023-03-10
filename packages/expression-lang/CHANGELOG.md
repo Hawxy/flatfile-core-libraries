@@ -5,5 +5,3 @@
 ### Patch Changes
 
 - 4a1b9d9: First version of expression-language
-
-  ssssssssssssssssssssssssssssssssssssssssss
