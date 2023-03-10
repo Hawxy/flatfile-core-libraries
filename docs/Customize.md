@@ -140,7 +140,6 @@ Make a POST request with the following:
     "name": "My Space",
     "metadata": {
       "sidebarConfig": {
-        "showPoweredBy": true,
         "showGuestInvite": true,
         "showDataChecklist": false,
         "showSidebar": true,
@@ -154,7 +153,6 @@ Make a POST request with the following:
 
 | prop                  | description |
 | --------------------- | ------------   |
-| `showPoweredByFlatfile` |      `optional` **boolean** [true]<br/>TODO: about this      |
 | `showGuestInvite`       |      `optional` **boolean** [false]<br/>TODO: about this     |
 | `showDataChecklist`     |      `optional` **boolean** [false]<br/>TODO: about this     |
 | `showSidebar`           |      `optional` **boolean** [false]<br/>TODO: about this     |

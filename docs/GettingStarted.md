@@ -14,14 +14,13 @@ stoplight-id: qes765em7e7fl
 
 ### Sign up and get your keys in the Dashboard
 
-1. Clone [platform-sdk-starter](https://github.com/FlatFilers/platform-sdk-starter) repo
-2. [Sign up](https://dashboard.flatfile.com/account/sign-up) for a new Flatfile account
-3. Go to your Flatfile dashboard and create an API access key and secret.
+1. [Sign up](https://dashboard.flatfile.com/account/sign-up) for a new Flatfile account
+3. Go to your Flatfile dashboard and create an API access key and secret in the Developer area.
 4. Once you create an access key, copy the terminal command at the bottom of the dialog. (Save this command to a Notepad, you'll need the values in it later)
 
 ### Ok, now we're working in terminal
 
-1. Using terminal commands, navigate to the local working directory where you cloned the repo.
+1. Using terminal commands, navigate to your preferred working directory.
 2. Copy and run the terminal command you copied in the preview step. 
 3. Replace `flatfile-workbook` with your desired project name: 
 

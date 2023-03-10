@@ -98,13 +98,7 @@ Make a POST request with the following and save your `id` from the request respo
 
 When you launch an embedded importer, you're actually launching an entire Space for that Guest.
 
-There are two ways to create a Space component. The `useSpace` hook is the recommended way to access a mounted Space component because it will check for an error before you render the Space. You can also mount the Space component directly if you want more control. Depending on which props are passed to the Space, different things happen behind the scenes.
-
-1. **Existing Space** - If you'd like to launch an existing space with the pre-existing config, pass in only your `spaceId`.
-2. **Existing spaceConfig but new space** - If you'd like to launch a new space with an exisiting space config, pass in only a `spaceConfigId`
-3. **All new everything** - Pass in your raw `spaceConfig`.
-
-All three of these scenarios require an `accessToken` and `environmentId` to launch the space.
+There are two ways to create a Space component. The `useSpace` hook is the recommended way to access a mounted Space component because it will check for an error before you render the Space. You can also mount the Space component directly if you want more control. 
 
 #### useSpace hook
 
@@ -205,9 +199,9 @@ export default Button;
 | --------------- | ---------------------------------------- |
 | `accessToken`   | `required` **string**<br/>Used to allow users to request our private services |
 | `environmentId` | `required` **string**<br/>The base object that holds all spaces |
-| `spaceId` | `required if no spaceConfig or no spaceConfigId` **string**<br/>Identifier for an existing space |
-| `spaceConfig` | `required if no spaceId` **Object**<br/>An object containing your Blueprint definitions |
-| `spaceConfigId` | `required if no spaceConfig && noSpaceId` **string**<br/>Identifier for previously created spaceConfig | 
+| `spaceId` | `required (if no spaceConfig or no spaceConfigId)` **string**<br/>Identifier for an existing space.<br/>Note: If you'd like to launch an existing space with a pre-existing config, pass in only your `spaceId`. |
+| `spaceConfig` | `required (if no spaceId)` **Object**<br/>An object containing your Blueprint definitions<br/>Note: Pass in your raw `spaceConfig` if you want a brand new Space & spaceConfig on every launch. |
+| `spaceConfigId` | `required (if no spaceConfig && no spaceId)` **string**<br/>Identifier for previously created spaceConfig<br/>Note: If you'd like to launch a new space with an exisiting spaceConfig, pass in only a `spaceConfigId` | 
 | `themeConfig`   | `optional` **Object**<br/>An object containing theme configuration options. See available options. |
 | `sidebarConfig` | `optional` **Object**<br/>An object containing sidebar configuration options. See available options. |
 | `document` | `optional` **{ title: string, body: string}**<br/>Additional help text your user may need |
@@ -263,194 +257,12 @@ const { error, data: { component } } =
 
 #### Manual CSS overrides
 
-Instead of passing two colors to `makeTheme` and letting us construct a theme for you, you can access each individual CSS variable that we use in the dashboard. Just adhere to the types defined in [IThemeConfig]('./src/types/IThemeConfig.tsx').
-
-**Here's an example of all customizable attributes**
-
-```typescript
-{
-  "theme": {
-    "root": {
-        "primaryColor": "red",
-        "dangerColor": "maroon",
-        "warningColor": "yellow"
-    },
-    "sidebar": {
-        "logo": "https://image.png",
-        "textColor": "pink",
-        "titleColor": "purple",
-        "focusBgColor": "aqua",
-        "focusTextColor": "orange",
-        "backgroundColor": "yellow",
-        "footerTextColor": "white",
-        "textUltralightColor": "blue"
-    },
-    "table": {
-        "inputs": {
-            "radio": {
-                "color": "blue"
-                }
-            "checkbox": {
-                "color": "blue"
-            }
-        },
-        "filters": {
-            "color": "yellow"
-                "active": {
-                    "backgroundColor": "purple"
-                }
-            "error": {
-                "activeBackgroundColor": "aqua"
-            }
-        },
-        "column": {
-            "header": {
-                "fontSize": "16px",
-                "backgroundColor": "green",
-                "color": "blue",
-                "dragHandle": {
-                    "idle": "yellow",
-                    "dragging": "blue"
-                }
-            }
-        },
-        "fontFamily": "cursive",
-        "indexColumn": {
-        "backgroundColor": "gray"
-        "selected": {
-            "color": "gray"
-            "backgroundColor": "gray"
-        }
-        },
-        "cell": {
-            "selected": {
-                "backgroundColor": "gray"
-            }
-            "active": {
-                "borderColor": "gray"
-                "spinnerColor": "gray"
-            }
-        },
-        "boolean": {
-            "toggleChecked": "gray"
-        },
-        "loading": {
-            "color": "gray"
-        }
-    }
-  }
-}
-
-```
-
-#### Visual Reference
-
-Sidebar Style
-![Sidebar Visual Reference](https://images.ctfassets.net/hjneo4qi4goj/33im4ShO4IJrsPxSJqSXXg/cc89d46f7da3fb1a9a2dca55501c683a/sidebar_theme.png)
-
-Table Style
-![Sidebar Visual Reference](https://images.ctfassets.net/hjneo4qi4goj/4w6wUWR0hKy2WiAxit8PqX/56018d73709f99a42456911a84f2ffa0/table_theme.png)
+Instead of passing two colors to `makeTheme` and letting us construct a theme for you, you can access each individual CSS variable that we use in the dashboard. Just adhere to the types defined in [IThemeConfig]('./src/types/IThemeConfig.tsx'). See [CSS Reference](Customize.md).
 
 
-#### Try it live
+### Guest Sidebar
 
-https://codesandbox.io/s/embedded-flatfile-forked-c0et6i?file=/src/App.tsx
-
-Or, use the API endpoint to push a theme directly to your Space. Make a POST request with the following:
-
-```json http
-{
-  "method": "post",
-  "url": "https://api.x.flatfile.com/v1/spaces",
-  "headers": {
-    "Authorization": "Bearer <123 Paste Token here>"
-  },
-
-  "body": {
-    "spaceConfigId": "string",
-    "environmentId": "string",
-    "name": "My Space",
-    "metadata": {
-       "theme": {
-        "root": {
-          "primaryColor": "red",
-          "dangerColor": "maroon",
-          "warningColor": "yellow"
-        },
-        "sidebar": {
-          "logo": "https://image.png",
-          "textColor": "pink",
-          "titleColor": "purple",
-          "focusBgColor": "aqua",
-          "focusTextColor": "orange",
-          "backgroundColor": "yellow",
-          "footerTextColor": "white",
-          "textUltralightColor": "blue"
-        },
-        "table": {
-          "inputs": {
-              "radio": {
-                  "color": "blue"
-                  },
-              "checkbox": {
-                  "color": "blue"
-              }
-          },
-          "filters": {
-            "color": "yellow",
-              "active": {
-                "backgroundColor": "purple"
-              },
-            "error": {
-              "activeBackgroundColor": "aqua"
-            }
-          },
-          "column": {
-            "header": {
-              "fontSize": "16px",
-              "backgroundColor": "green",
-              "color": "blue",
-              "dragHandle": {
-                "idle": "yellow",
-                "dragging": "blue"
-              }
-            }
-          },
-          "fontFamily": "cursive",
-          "indexColumn": {
-            "backgroundColor": "gray",
-            "selected": {
-              "color": "gray",
-              "backgroundColor": "gray"
-            }
-          },
-          "cell": {
-            "selected": {
-                "backgroundColor": "gray"
-            },
-            "active": {
-                "borderColor": "gray",
-                "spinnerColor": "gray"
-            }
-          },
-          "boolean": {
-              "toggleChecked": "gray"
-          },
-          "loading": {
-              "color": "gray"
-          }
-        },
-      }
-    }
-  }
-}
-```
-
-
-
-### Sidebar
-
-You can customize your sidebar using the [ISidebarConfig]('./src/types/ISidebarConfig.tsx') type. You'll then pass it to your  `useSpace` hook or `Space` component.
+You can customize your guest sidebar using the [ISidebarConfig]('./src/types/ISidebarConfig.tsx') type or you can hide it completely (most common). Pass your sidebar configuration to your  `useSpace` hook or `Space` component.
 
 ```typescript
 const mySidebarConfig = {
