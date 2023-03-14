@@ -59,10 +59,9 @@ export class FlatfileEvent extends AuthenticatedClient {
    * signed callback URL
    */
   get data(): Promise<any> {
-    if (this.context.workbookId && this.context.sheetId) {
+    if (this.context.sheetId) {
       return this.api
         .getRecords({
-          workbookId: this.context.workbookId,
           sheetId: this.context.sheetId,
           versionId: this.context.versionId,
           includeCounts: false,

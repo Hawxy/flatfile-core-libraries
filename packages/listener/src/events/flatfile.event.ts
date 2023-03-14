@@ -39,17 +39,17 @@ export class FlatfileEvent extends AuthenticatedClient {
    * @todo this should work with the included callback URL
    */
   get data(): Promise<any> {
-    const { workbookId, sheetId, versionId } = this.context
-
-    if (workbookId && sheetId) {
+    const { sheetId, versionId } = this.context
+    if (sheetId && versionId) {
       return this.api
         .getRecords({
-          workbookId,
           sheetId,
           versionId,
           includeCounts: false,
         })
-        .then((res) => res.data)
+        .then((res) => {
+          return res.data
+        })
     } else {
       return this.payload
     }

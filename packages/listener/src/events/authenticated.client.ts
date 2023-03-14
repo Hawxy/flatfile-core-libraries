@@ -2,7 +2,8 @@ import { Configuration, DefaultApi } from '@flatfile/api'
 // TODO: We will need to make this conditional depending on if it's in the NodeVM or the Browser
 import fetch from 'node-fetch'
 
-const FLATFILE_API_URL = process.env.FLATFILE_API_URL || 'http://localhost:3000'
+const FLATFILE_API_URL =
+  process.env.AGENT_INTERNAL_URL || 'http://localhost:3000'
 
 export class AuthenticatedClient {
   private _api?: DefaultApi
@@ -20,7 +21,6 @@ export class AuthenticatedClient {
         Authorization: `Bearer ${process.env.FLATFILE_BEARER_TOKEN || '...'}`,
       },
     })
-
     return new DefaultApi(ClientConfig)
   }
 }

@@ -20,7 +20,7 @@ export class AuthenticatedClient {
         Authorization: `Bearer ${process.env.FLATFILE_BEARER_TOKEN}`,
       },
     })
-
+    
     return new DefaultApi(ClientConfig)
   }
 }

@@ -356,7 +356,6 @@ export class Sheet<FC extends FieldConfig>
 
     try {
       await this.api.updateRecords({
-        workbookId: e.context.workbookId,
         sheetId: e.context.sheetId,
         recordsUpdates,
       })

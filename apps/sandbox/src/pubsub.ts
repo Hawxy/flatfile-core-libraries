@@ -1,20 +1,22 @@
 import { Client, FlatfileVirtualMachine } from '@flatfile/listener'
+import { RecordWithLinks } from '@flatfile/api'
 
 const example = Client.create((client) => {
   /**
    * This is a basic hook on events with no sugar on top
    */
   client.on('records:*', { target: 'sheet(TestSheet)' }, async (event) => {
-    const { workbookId, sheetId } = event.context
+    const { sheetId } = event.context
     try {
-      const records = await event.data
-      const recordsUpdates = records?.records.map((record: any) => {
+      const records = (await event.data).records
+
+      const recordsUpdates = records?.map((record: RecordWithLinks) => {
         record.values.middleName.value = 'TestSheet'
 
         return record
       })
+
       await client.api.updateRecords({
-        workbookId,
         sheetId,
         recordsUpdates,
       })

@@ -88,7 +88,6 @@ export class ExcelExtractor extends AbstractExtractor {
         }
         const recordsData = this.makeAPIRecords(capture[sheet.name])
         await this.api.addRecords({
-          workbookId: workbook.id,
           sheetId: sheet.id,
           recordsData,
         })

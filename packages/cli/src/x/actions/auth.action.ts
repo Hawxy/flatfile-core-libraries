@@ -41,7 +41,7 @@ export async function authAction({
       let authResponse
       try {
         authResponse = await authClient.getAccessToken({
-          getAccessTokenRequest: {
+          apiCredentials: {
             clientId,
             secret,
           },
