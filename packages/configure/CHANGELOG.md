@@ -1,5 +1,14 @@
 # @flatfile/configure
 
+## 0.5.16
+
+### Patch Changes
+
+- 2e25be3: Update packages with updated @flatfile/api
+- 2e25be3: Adds readonly to Sheet and Field
+- Updated dependencies [2e25be3]
+  - @flatfile/schema@0.2.13
+
 ## 0.5.15
 
 ### Patch Changes

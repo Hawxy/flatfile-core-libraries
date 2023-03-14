@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 5.0.6
+
+### Patch Changes
+
+- 2e25be3: Update packages with updated @flatfile/api
+- Updated dependencies [2e25be3]
+  - @flatfile/configure@0.5.16
+
 ## 5.0.5
 
 ### Patch Changes

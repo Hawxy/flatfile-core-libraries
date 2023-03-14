@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.1.20
+
+### Patch Changes
+
+- 2e25be3: Update packages with updated @flatfile/api
+
 ## 3.1.19
 
 ### Patch Changes
