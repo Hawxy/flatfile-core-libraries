@@ -56,7 +56,10 @@ const TestSheet = new Sheet(
       label: 'First Name',
       description: "This is a human's first name",
     }),
-    middleName: TextField('Middle'),
+    middleName: TextField({
+      label: 'Middle Name',
+      readonly: true,
+    }),
     lastName: TextField({
       label: 'Last Name',
       compute: (val: string): string => {
@@ -115,6 +118,7 @@ const SheetWithLink = new Sheet(
       }
       record.set('lastName', 'Joey')
     },
+    readonly: true,
   }
 )
 
@@ -129,8 +133,8 @@ const Workbook1 = new Workbook({
 })
 
 const SpaceConfig1 = new SpaceConfig({
-  name: 'Space Config from SDK',
-  slug: 'space-config-1',
+  name: 'Readonly Field Test 2',
+  slug: 'readonly-2',
   workbookConfigs: {
     Workbook1,
   },

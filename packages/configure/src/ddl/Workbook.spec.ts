@@ -16,7 +16,7 @@ const CategoryAndBoolean = new Sheet(
   },
   {
     allowCustomFields: true,
-    readOnly: true,
+    readonly: true,
   }
 )
 
@@ -82,7 +82,7 @@ describe('Workbook tests ->', () => {
       },
       {
         allowCustomFields: true,
-        readOnly: true,
+        readonly: true,
       }
     )
 

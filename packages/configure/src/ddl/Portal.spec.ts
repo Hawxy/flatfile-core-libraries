@@ -24,7 +24,7 @@ const CategoryAndBoolean = new Sheet(
   },
   {
     allowCustomFields: true,
-    readOnly: true,
+    readonly: true,
   }
 )
 

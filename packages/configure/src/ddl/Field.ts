@@ -243,6 +243,7 @@ export class Field<T, Unused extends Record<string, any> = {}> {
     const base = {
       field: fieldName,
       label: this.options.label || fieldName,
+      readonly: this.options.readonly,
       annotations: {},
       ...pick(this.options, [
         'description',

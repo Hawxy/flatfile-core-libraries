@@ -10,6 +10,7 @@ interface BaseField {
   required?: boolean
   primary?: boolean
   unique?: boolean
+  readonly?: boolean
   stageVisibility?: FieldVisibilityTypes
   annotations: {
     default?: boolean
@@ -73,6 +74,7 @@ export interface SchemaILModel<
   slug: string
   namespace: string
   fields: Fields
+  readonly?: boolean
   required?: Array<keyof Fields | Array<keyof Fields>>
   unique?: Array<keyof Fields | Array<keyof Fields>>
   primary?: keyof Fields

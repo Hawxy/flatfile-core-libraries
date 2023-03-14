@@ -130,7 +130,7 @@ https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNI
 
 export interface SheetOptions<FC> {
   allowCustomFields: boolean
-  readOnly: boolean
+  readonly: boolean
   recordCompute: RecordCompute
   batchRecordsCompute: RecordsComputeType
   previewFieldKey?: string
@@ -144,7 +144,7 @@ export class Sheet<FC extends FieldConfig>
   public targetName = 'sheet'
   public options: SheetOptions<FC> = {
     allowCustomFields: false,
-    readOnly: false,
+    readonly: false,
     recordCompute(): void {},
     // the default implementation of batchRecordsCompute is a no-op
     batchRecordsCompute: async (records: FlatfileRecords<any>) => {},
@@ -302,6 +302,7 @@ export class Sheet<FC extends FieldConfig>
       namespace,
       fields: {},
       allowCustomFields: this.options.allowCustomFields,
+      readonly: this.options.readonly,
       actions: this.options.actions
         ? mapObj(this.options.actions, (action) => action.options)
         : undefined,

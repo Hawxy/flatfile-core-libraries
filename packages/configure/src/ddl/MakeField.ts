@@ -29,6 +29,7 @@ export const GenericDefaults: BaseSchemaILFieldArgs = {
     computeMessage: 'This value was automatically reformatted - original data:',
   },
   getSheetCompute: false,
+  readonly: false,
 }
 
 const objCustomizer = (objValue: object, srcValue: object): object => {

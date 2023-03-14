@@ -15,7 +15,7 @@ const CategoryAndBoolean = new Sheet(
   },
   {
     allowCustomFields: true,
-    readOnly: true,
+    readonly: true,
     recordCompute: (record, session, logger) => {
       if (session?.env?.secret) {
         record.set('envField', session.env.secret)

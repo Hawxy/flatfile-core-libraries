@@ -50,6 +50,7 @@ const convertBase = (
     type: field.type,
     label: field.label,
     key: field.field,
+    readonly: field.readonly || false,
     description: field.description,
   }
 }
@@ -73,6 +74,7 @@ export const convertEnum = (field: SchemaILEnumField): EnumProperty => {
     label: field.label,
     key: field.field,
     description: field.description,
+    readonly: field.readonly || false,
     config: {
       options: getEnumOptions(field),
     },
@@ -86,6 +88,7 @@ const convertLinkedField = (field: ReferenceField): ReferenceProperty => {
     label: field.label,
     type: 'reference',
     description: field.description,
+    readonly: field.readonly || false,
     config: {
       ref: field.sheetKey,
       key: field.foreignKey,
@@ -129,6 +132,7 @@ export const SchemaILModelToSheetConfig = (
     fields,
     slug: model.slug,
     name: model.name,
+    readonly: model.readonly || false,
     actions: model.actions,
   }
 }

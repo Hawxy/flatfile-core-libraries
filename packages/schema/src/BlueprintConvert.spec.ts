@@ -27,6 +27,7 @@ describe('compiler tests', () => {
       label: 'First Name',
       description: 'A Description of a nice First Name',
       required: true,
+      readonly: true,
       annotations: {},
       field: 'first_name',
     }
@@ -36,6 +37,7 @@ describe('compiler tests', () => {
       label: 'First Name',
       description: 'A Description of a nice First Name',
       key: 'first_name',
+      readonly: true,
       constraints: [{ type: 'required' }],
     }
     expect(SchemaILFieldtoProperty(stringField)).toStrictEqual(blueprintOutput)
@@ -60,6 +62,7 @@ describe('compiler tests', () => {
       key: 'department',
       label: 'Department',
       description: undefined,
+      readonly: false,
       constraints: [{ type: 'required' }],
       config: {
         options: [
@@ -97,6 +100,7 @@ describe('compiler tests', () => {
       key: 'spanishTrue',
       label: 'spanishTrue',
       description: undefined,
+      readonly: false,
       constraints: [{ type: 'required' }],
       config: {
         options: [
@@ -129,6 +133,7 @@ describe('compiler tests', () => {
       key: 'salary',
       label: 'Salary',
       description: undefined,
+      readonly: false,
       constraints: [{ type: 'required' }],
     }
 
@@ -149,6 +154,7 @@ describe('compiler tests', () => {
       key: 'salary',
       label: 'Salary',
       description: undefined,
+      readonly: false,
       constraints: [{ type: 'computed' }],
     }
 
@@ -159,6 +165,7 @@ describe('compiler tests', () => {
 describe('compiler tests', () => {
   const simpleSheetConfig: SheetConfig = {
     name: 'foo',
+    readonly: true,
     fields: [
       {
         type: 'number',
@@ -181,6 +188,7 @@ describe('compiler tests', () => {
     },
     name: 'foo',
     allowCustomFields: false,
+    readonly: true,
     slug: 'test',
     namespace: 'testspace',
   }
