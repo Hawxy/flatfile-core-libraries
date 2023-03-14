@@ -4,11 +4,18 @@ Embed React is a front-end SDK wrapper around the [Flatfile API](https://flatfil
 
 The [reference](#customize) below will cover complete customization details which includes adding your brand colors, logos, & fonts.
 
-You can use embedded Flatfile to receive data via a self-serve experience. To find the additional Flatfile integration paths that may work better for your business, explore our [docs](flatfile.stoplight.io).
+You can use embedded Flatfile to receive data via a self-serve experience. To find the additional Flatfile integration paths that may work better for your business, explore our [docs](https://flatfile.stoplight.io).
 
 ### Before you begin
 
-The minimum supported version of React is v18. If you use an older version, upgrade React to use this library. You will also need Node.js v18 installed on your machine.
+The minimum supported version of React is v16. If you use an older version, upgrade React to use this library. You will also need Node.js v18 installed on your machine.
+
+Check your versions in terminal:
+
+```npm
+node --version
+npm view react version
+```
 
 #### Concepts
 
@@ -55,7 +62,7 @@ yarn install @flatfile/react@5.0.5
 
 From your [dashboard](https://dashboard.flatfile.com/), you can create a new API client ID and secret or reference the getting started page for one that was created for you already.
 
-Make a `POST` request with the following and save your `accessToken` from the request response.
+Make a `POST` request with the following and save your `accessToken` from the request response (to use later in your [UseSpace hook](#usespace-hook)). 
 
 ```json http
 {
@@ -72,14 +79,14 @@ Make a `POST` request with the following and save your `accessToken` from the re
 
 Your first Environment was created for you when your Account was created but you'll need to create a new Environment passing `"shared_link"` as the value for `guestAuthentication`.
 
-Make a POST request with the following and save your `id` from the request response.
+Make a POST request by pasting your real `accessToken` with `${accessToken}` and save your `id` (`environmentId`) from the request response (to use later in your [UseSpace hook](#usespace-hook)).
 
 ```json http
 {
   "method": "post",
   "url": "https://api.x.flatfile.com/v1/environments",
   "headers": {
-    "Authorization": "Bearer <123 Paste Token here>"
+    "Authorization": "Bearer ${accessToken}"
   },
   "body": {
     "name": "dev",
@@ -91,6 +98,7 @@ Make a POST request with the following and save your `id` from the request respo
 }
 ```
 
+From your Flatfile dashboard, notice that you now have a new Environment in the dropdown on the bottom left. After refreshing the page, the "name" you specified in your API call will show up as a new option. Toggle to this Environment as this is where you'll be deploying.
 
 ## Build
 
@@ -114,7 +122,7 @@ const YourApplication = () => {
     const [showSpace, setShowSpace ] = useState(false)
 
     const mySpaceConfig = {
-      slug: 'string'
+      slug: 'string',
       name: 'Hellerr',
       blueprints: Blueprint[] //see tab 2 for an example Blueprint
     }
@@ -145,31 +153,33 @@ const YourApplication = () => {
 }
 ```
 ```Blueprint
-{
-  "slug": "persistent-slug",
-  "name": "Blueprint name",
-  "primary": false,
-  "sheets": [
-    {
-      "name": "string",
-      "description": "string",
-      "slug": "string",
-      "fields": [
-        {
-          "key": "name",
-          "type": "string",
-          "label": "Full Name",
-          "description": "The full name of the customer",
-          "constraints": [
-            {
-              "type": "required"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "slug": "persistent-slug",
+    "name": "Blueprint name",
+    "primary": false,
+    "sheets": [
+      {
+        "name": "string",
+        "description": "string",
+        "slug": "string",
+        "fields": [
+          {
+            "key": "name",
+            "type": "string",
+            "label": "Full Name",
+            "description": "The full name of the customer",
+            "constraints": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
 ```
 
 #### Mount Space directly
