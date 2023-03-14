@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "@flatfile/api": "^0.0.15",
+    "@flatfile/blueprint": "^0.0.7",
+    "@flatfile/listener": "*",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/jest-preset-platform-sdk": "*",
     "@flatfile/ts-config-platform-sdk": "*",
@@ -43,7 +45,6 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@flatfile/blueprint": "^0.0.6",
     "@flatfile/hooks": "^1.2.3",
     "@flatfile/orm": "^0.1.0",
     "@flatfile/schema": "^0.2.12",

@@ -1,5 +1,5 @@
 import { AuthenticatedClient } from './authenticated.client'
-import { Event } from '@flatfile/api'
+import { Event, RecordsResponseData } from '@flatfile/api'
 
 export class FlatfileEvent extends AuthenticatedClient {
   /**

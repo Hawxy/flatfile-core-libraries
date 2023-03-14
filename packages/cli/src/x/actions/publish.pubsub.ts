@@ -13,6 +13,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import terser from '@rollup/plugin-terser'
+import injectProcessEnv from 'rollup-plugin-inject-process-env'
 
 export async function publishPubSub(
   file: string,
@@ -75,6 +76,7 @@ export async function publishPubSub(
           declarationMap: false,
         }),
         commonjs(),
+        injectProcessEnv(config().internal),
         resolve({
           preferBuiltins: false,
         }),

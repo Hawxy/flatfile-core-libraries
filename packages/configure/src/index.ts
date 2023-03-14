@@ -11,6 +11,7 @@ export * from './fields'
 export * from './stdlib/RegionCast'
 export * from './stdlib/SynonymCast'
 export * from './utils/flatfile.event'
+export * from './plugins'
 
 import * as stdlibCast from './stdlib/CastFunctions'
 export { makeField, GenericDefaults, mergeFieldOptions } from './ddl/MakeField'
