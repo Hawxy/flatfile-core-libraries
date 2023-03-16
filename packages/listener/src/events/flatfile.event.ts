@@ -20,6 +20,7 @@ export class FlatfileEvent extends AuthenticatedClient {
   public readonly topic: string
   public readonly domain: string
   public readonly target: string
+  public readonly action: string
   public readonly context: any
   public readonly payload: any
 
@@ -30,6 +31,7 @@ export class FlatfileEvent extends AuthenticatedClient {
     this.context = src.context // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
     this.payload = src.payload
     this.target = src.target || ''
+    this.action = src.context.actionName || ''
   }
 
   /**
