@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.17
+
+### Patch Changes
+
+- c3ecef6: Improve error messaging and allow bypassing data loss check.
+
 ## 0.5.16
 
 ### Patch Changes
