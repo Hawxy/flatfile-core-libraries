@@ -122,7 +122,7 @@ export class Field<T, Unused extends Record<string, any> = {}> {
     const possiblyCast = this.options.cast(rawValue)
     if (typeof possiblyCast === 'undefined') {
       throw new Error(
-        `casting ${rawValue} returned undefined.  This is an error, fix 'cast' function`
+        `There was an error when processing value '${rawValue}'. The field attempted to cast '${rawValue}' to 'undefined'.`
       )
     }
     let actuallyCast: Nullable<T>
@@ -155,20 +155,21 @@ export class Field<T, Unused extends Record<string, any> = {}> {
         !verifyEgressCycle(this, reallyActuallyCast)
     } catch (e: any) {
       throw new Error(
-        `field threw an error at egressFormat with a value of ${reallyActuallyCast} of type ${typeof reallyActuallyCast}`
+        `There was an error when processing value ${rawValue}. The field threw an error when trying to write the final value to the cell.`
       )
     }
     if (this.options.egressFormat && egressFail) {
       const egressVal = this.options.egressFormat(reallyActuallyCast)
+      console.log(`egressVal: ${egressVal}`)
       throw new Error(
-        `field couldn't reify to same value after egressFormat. Value ${reallyActuallyCast} of type ${typeof reallyActuallyCast} was egressFormatted to to string of '${egressVal}' which couldn't be cast back to ${reallyActuallyCast}. Persisting this would result in data loss. The original value ${rawValue} was not changed.`
+        `There was an error when processing value '${rawValue}'. The result was '${egressVal}', which constitutes a loss of data. If '${egressVal}' is the correct result, you can fix this error by entering '${egressVal}' into this cell.`
       )
     }
     const compMessages: Message[] = []
     const computed: T = this.options.compute(reallyActuallyCast)
     if (typeof computed === 'undefined') {
       throw new Error(
-        `Calling compute of ${rawValue} with typed value of ${reallyActuallyCast} returned undefined.  This is an error, fix 'compute' function`
+        `There was an error when processing value '${rawValue}'. The field attempted to compute ${rawValue} to 'undefined'.`
       )
     }
     if (reallyActuallyCast !== computed && this.options.annotations.compute) {
@@ -294,7 +295,9 @@ export class Field<T, Unused extends Record<string, any> = {}> {
       }
       return EnumField
     } else {
-      throw new Error(`Unexpected type of ${t} which isn't in schemaIL types`)
+      throw new Error(
+        `Attempted to create a field with type ${t}, which is not supported.`
+      )
     }
   }
 

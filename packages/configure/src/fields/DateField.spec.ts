@@ -61,13 +61,13 @@ describe('DateField tests ->', () => {
     await TestWorkbook.checkRowResult({
       rawData: { hiredOn: 'hello' },
       expectedOutput: { hiredOn: 'hello' },
-      message: `Error: 'hello' parsed to 'Invalid Date' which is invalid`,
+      message: `Error: Value could not be interpreted as a date.`,
     })
 
     await TestWorkbook.checkRowResult({
       rawData: { hiredOn: '12041992' },
       expectedOutput: { hiredOn: '12041992' },
-      message: `Error: '12041992' parsed to 'Invalid Date' which is invalid`,
+      message: `Error: Value could not be interpreted as a date.`,
     })
   })
 

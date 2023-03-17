@@ -42,7 +42,7 @@ describe('Cast Function tests ->', () => {
 
     // throwing an error on 'four' allows the user to realize an error and rewrite 'four' to 4
     // even though 'four' could be interpreted as a number, we have chosen not to
-    assertThrow('four', "'four' parsed to 'NaN' which is non-finite")
+    assertThrow('four', 'Value could not be interpreted as a number.')
 
     // NaNs are a complex topic, the basic reason we don't include them
     // is that they don't work well future computations or comparisons.
@@ -52,13 +52,13 @@ describe('Cast Function tests ->', () => {
     // (NaN > Nan) === false
     // (NaN < Nan) === false
 
-    assertThrow('asdf', "'asdf' parsed to 'NaN' which is non-finite")
-    assertThrow('nan', "'nan' parsed to 'NaN' which is non-finite")
-    assertThrow(NaN, "'NaN' parsed to 'NaN' which is non-finite")
+    assertThrow('asdf', 'Value could not be interpreted as a number.')
+    assertThrow('nan', 'Value could not be interpreted as a number.')
+    assertThrow(NaN, 'Value could not be interpreted as a number.')
 
     // Similarly Infinity rarely comes up, and isn't Computable
-    assertThrow(1 / 0, "'Infinity' parsed to 'Infinity' which is non-finite")
-    assertThrow(-1 / 0, "'-Infinity' parsed to '-Infinity' which is non-finite")
+    assertThrow(1 / 0, 'Value could not be interpreted as a number.')
+    assertThrow(-1 / 0, 'Value could not be interpreted as a number.')
 
     // add tests for scientific notation and other number formats
   })
@@ -101,7 +101,7 @@ describe('Cast Function tests ->', () => {
     assertBC('-1', false)
     assertBC('off', false)
 
-    assertThrow('foobar', "'foobar' can't be converted to boolean")
+    assertThrow('foobar', 'Value could not be interpreted as a boolean.')
   })
 
   test('DateCast handles most reasonable cases', () => {
@@ -119,12 +119,9 @@ describe('Cast Function tests ->', () => {
     const d = new Date(dString)
     assertDC(dString, d)
 
-    assertThrow('foo', "'foo' parsed to 'Invalid Date' which is invalid")
-    assertThrow(1 / 0, "Infinity parsed to 'Invalid Date' which is invalid")
-    assertThrow(
-      '2022-07-35',
-      "'2022-07-35' parsed to 'Invalid Date' which is invalid"
-    )
+    assertThrow('foo', 'Value could not be interpreted as a date.')
+    assertThrow(1 / 0, 'Value could not be interpreted as a date.')
+    assertThrow('2022-07-35', 'Value could not be interpreted as a date.')
   })
 
   const Null = _.constant(null)

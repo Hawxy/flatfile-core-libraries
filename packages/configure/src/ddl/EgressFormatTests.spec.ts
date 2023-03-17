@@ -29,7 +29,7 @@ describe('EgressFormatTests ->', () => {
       rawData: { b: '20' }, //egress format will try to return 30, but this will fail verifyEgressCycle, test that '20' is still saved
       expectedOutput: { b: '20' },
       message:
-        "Error: field couldn't reify to same value after egressFormat. Value 20 of type number was egressFormatted to to string of '30' which couldn't be cast back to 20. Persisting this would result in data loss. The original value 20 was not changed.",
+        "Error: There was an error when processing value '20'. The result was '30', which constitutes a loss of data. If '30' is the correct result, you can fix this error by entering '30' into this cell.",
     })
 
     await TestSchema.checkRowResult({
@@ -55,7 +55,7 @@ describe('EgressFormatTests ->', () => {
       rawData: { b: '20' },
       expectedOutput: { b: '20' },
       message:
-        'Error: field threw an error at egressFormat with a value of 20 of type number',
+        'Error: There was an error when processing value 20. The field threw an error when trying to write the final value to the cell.',
     })
 
     await TestSchema.checkRowResult({

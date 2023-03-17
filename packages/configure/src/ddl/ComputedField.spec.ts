@@ -143,7 +143,7 @@ describe('computedFiled ->', () => {
       expectedOutput,
       //TODO add extra checks for multiple dependsOn fields that aren't present
       message:
-        "required arg of b has value of 'null' which isn't fully present for computed Field c",
+        "This field depends on field b, which has a value of 'null'. Please provide a non-empty value for b.",
     })
   })
 

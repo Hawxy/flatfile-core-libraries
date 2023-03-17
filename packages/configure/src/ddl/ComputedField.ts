@@ -29,7 +29,7 @@ const recordComputeForComputedField = (
         anyMissing = true
         record.pushInfoMessage(
           destinationKey,
-          `required arg of ${fieldName} has value of '${val}' which isn't fully present for computed Field ${computeArgs.destination}`,
+          `This field depends on field ${fieldName}, which has a value of '${val}'. Please provide a non-empty value for ${fieldName}.`,
           'error',
           'other'
         )
@@ -44,7 +44,7 @@ const recordComputeForComputedField = (
         anyMissing = true
         record.pushInfoMessage(
           destinationKey,
-          `possbilyDepends arg of ${fieldName} has value of undefined which can only be the result of an earlier error on the field. halting computed field computation. for computed Field ${computeArgs.destination}`,
+          `This field depends on field ${fieldName}, which is undefined'. Please provide a non-empty value for ${fieldName}.`,
           'error',
           'other'
         )

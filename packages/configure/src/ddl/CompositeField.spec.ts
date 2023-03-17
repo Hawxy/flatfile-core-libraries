@@ -52,7 +52,7 @@ describe.only('compositeField ->', () => {
     }
     //TODO  add tests for an extraFieldsToAdd that is the name of a fully named key
     expect(flawedSheetConstruction).toThrow(
-      'extraFieldsToAdd error, extra already exists in fields, b was trying to add it'
+      `Attemped to add field 'extra' twice to the same Sheet. Sheets cannot contain duplicate fields.`
     )
   })
 

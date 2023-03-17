@@ -1,6 +1,10 @@
 import { isValid, toDate } from 'date-fns'
 import { Dirty, Nullable } from '../ddl/Field'
 
+const getUnableToCastMessage = (type: string) => {
+  return `Value could not be interpreted as a ${type}.`
+}
+
 //it is good practice for cast functions to be exaustive over raw, and throw an error
 //if the incoming value is not of the expected type
 export const StringCast = (raw: Dirty<string>): string | null => {
@@ -12,9 +16,7 @@ export const StringCast = (raw: Dirty<string>): string | null => {
     }
     return raw
   }
-  throw new Error(
-    `Unexpected type in StringCast for val of ${raw}, typeof val ${typeof raw}`
-  )
+  throw new Error(`Value could not be interpreted as a string.`)
 }
 
 export const ChainCast = <InitialType, FinalType>(
@@ -107,14 +109,12 @@ export const NumberCast = StringChainCast(
       const strippedStr = raw.replace(',', '')
       num = Number(strippedStr)
     } else {
-      throw new Error(
-        `Unexpected type in NumberCast for val of ${raw}, typeof val ${typeof raw}`
-      )
+      throw new Error(getUnableToCastMessage('number'))
     }
     if (isFinite(num)) {
       return num
     } else {
-      throw new Error(`'${raw}' parsed to '${num}' which is non-finite`)
+      throw new Error(getUnableToCastMessage('number'))
     }
   }
 )
@@ -144,11 +144,9 @@ export const BooleanCast = StringChainCast(
       if (FALSY_VALUES.includes(normString)) {
         return false
       }
-      throw new Error(`'${raw}' can't be converted to boolean`)
+      throw new Error(getUnableToCastMessage('boolean'))
     } else {
-      throw new Error(
-        `Unexpected type in BooleanCast for val of ${raw}, typeof val ${typeof raw}`
-      )
+      throw new Error(getUnableToCastMessage('boolean'))
     }
   }
 )
@@ -163,7 +161,7 @@ export const DateCast = (
     if (isValid(numParsed)) {
       return numParsed
     } else {
-      throw new Error(`${raw} parsed to '${numParsed}' which is invalid`)
+      throw new Error(getUnableToCastMessage('date'))
     }
   } else if (typeof raw === 'string') {
     if (raw === '') {
@@ -173,7 +171,7 @@ export const DateCast = (
     if (isValid(parsedDate)) {
       return parsedDate
     } else {
-      throw new Error(`'${raw}' parsed to '${parsedDate}' which is invalid`)
+      throw new Error(getUnableToCastMessage('date'))
     }
   }
   return null

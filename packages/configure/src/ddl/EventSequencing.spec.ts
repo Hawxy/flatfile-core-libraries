@@ -80,7 +80,7 @@ describe('Field Hook ->', () => {
       level: 'error',
       stage: 'cast',
       message:
-        "Error: casting b returned undefined.  This is an error, fix 'cast' function",
+        "Error: There was an error when processing value 'b'. The field attempted to cast 'b' to 'undefined'.",
     })
   })
 
@@ -235,7 +235,7 @@ test('default NumberCast errors on string,  saves the original value', async () 
   await ft.matchFieldMessage('b', {
     level: 'error',
     stage: 'cast',
-    message: "Error: 'b' parsed to 'NaN' which is non-finite",
+    message: 'Error: Value could not be interpreted as a number.',
   })
 })
 

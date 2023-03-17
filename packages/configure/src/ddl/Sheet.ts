@@ -178,7 +178,7 @@ export class Sheet<FC extends FieldConfig>
           malleableFields[extraKey] = extraField
         } else {
           throw Error(
-            `extraFieldsToAdd error, ${extraKey} already exists in fields, ${key} was trying to add it`
+            `Attemped to add field '${extraKey}' twice to the same Sheet. Sheets cannot contain duplicate fields.`
           )
         }
       })
