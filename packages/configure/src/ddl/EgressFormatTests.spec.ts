@@ -38,6 +38,24 @@ describe('EgressFormatTests ->', () => {
     })
   })
 
+  test('improper egress at compute is ignored when allowDataLoss option is set', async () => {
+    const TestSchema = new WorkbookTester(
+      { b: NumberField({ egressFormat: ef20Improper, allowDataLoss: true }) },
+      {}
+    )
+
+    await TestSchema.checkRowResult({
+      rawData: { b: '20' },
+      expectedOutput: { b: '30' },
+      message: false,
+    })
+
+    await TestSchema.checkRowResult({
+      rawData: { b: '21' },
+      expectedOutput: { b: '21' },
+    })
+  })
+
   const ef20Error = (val: number) => {
     if (val === 20) {
       throw new Error('egress failure')

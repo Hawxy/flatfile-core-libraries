@@ -48,6 +48,10 @@ export interface IFieldHooks<T> {
   egressFormat: ((value: T) => string) | false
 }
 
+export interface IExtraFieldOptions {
+  allowDataLoss?: boolean
+}
+
 export type AnyField = Field<any>
 
 export const FieldHookDefaults = <T>(): IFieldHooks<T> => ({
@@ -105,7 +109,9 @@ export const verifyEgressCycle = <T>(field: Field<T>, castVal: T): boolean => {
   return castVal === recast
 }
 
-export type FieldOnlyOptions<T> = SchemaILFieldArgs & IFieldHooks<T>
+export type FieldOnlyOptions<T> = SchemaILFieldArgs &
+  IFieldHooks<T> &
+  IExtraFieldOptions
 
 export class Field<T, Unused extends Record<string, any> = {}> {
   public constructor(public options: FieldOnlyOptions<T>) {}
@@ -148,23 +154,26 @@ export class Field<T, Unused extends Record<string, any> = {}> {
     rawValue: any
   ): [Nullable<T>, Message[]] {
     // start with an actual value of correct type, call compute with proper error handling, pull off computed value and messages
-    let egressFail: boolean = false
-    try {
-      egressFail =
-        this.options.egressFormat &&
-        !verifyEgressCycle(this, reallyActuallyCast)
-    } catch (e: any) {
-      throw new Error(
-        `There was an error when processing value ${rawValue}. The field threw an error when trying to write the final value to the cell.`
-      )
+    if (!this.options.allowDataLoss) {
+      let egressFail: boolean = false
+      try {
+        egressFail =
+          this.options.egressFormat &&
+          !verifyEgressCycle(this, reallyActuallyCast)
+      } catch (e: any) {
+        throw new Error(
+          `There was an error when processing value ${rawValue}. The field threw an error when trying to write the final value to the cell.`
+        )
+      }
+      if (this.options.egressFormat && egressFail) {
+        const egressVal = this.options.egressFormat(reallyActuallyCast)
+        console.log(`egressVal: ${egressVal}`)
+        throw new Error(
+          `There was an error when processing value '${rawValue}'. The result was '${egressVal}', which constitutes a loss of data. If '${egressVal}' is the correct result, you can fix this error by entering '${egressVal}' into this cell.`
+        )
+      }
     }
-    if (this.options.egressFormat && egressFail) {
-      const egressVal = this.options.egressFormat(reallyActuallyCast)
-      console.log(`egressVal: ${egressVal}`)
-      throw new Error(
-        `There was an error when processing value '${rawValue}'. The result was '${egressVal}', which constitutes a loss of data. If '${egressVal}' is the correct result, you can fix this error by entering '${egressVal}' into this cell.`
-      )
-    }
+
     const compMessages: Message[] = []
     const computed: T = this.options.compute(reallyActuallyCast)
     if (typeof computed === 'undefined') {
