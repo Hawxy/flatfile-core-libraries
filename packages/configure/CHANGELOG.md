@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.18
+
+### Patch Changes
+
+- 2a0b010: Update @flatfile/api
+
 ## 0.5.17
 
 ### Patch Changes
