@@ -157,11 +157,30 @@ export async function publishPubSub(
     }).start()
     try {
       const topics = [
-        EventTopic.Recordscreated,
-        EventTopic.Recordsupdated,
-        EventTopic.Uploadcompleted,
         EventTopic.Actiontriggered,
         EventTopic.Clientinit,
+        EventTopic.Filedeleted,
+        EventTopic.Jobcompleted,
+        EventTopic.Jobdeleted,
+        EventTopic.Jobfailed,
+        EventTopic.Jobstarted,
+        EventTopic.Jobupdated,
+        EventTopic.Jobwaiting,
+        EventTopic.Recordscreated,
+        EventTopic.Recordsdeleted,
+        EventTopic.Recordsupdated,
+        EventTopic.Sheetvalidated,
+        EventTopic.Spaceadded,
+        EventTopic.Spaceremoved,
+        EventTopic.Uploadcompleted,
+        EventTopic.Uploadfailed,
+        EventTopic.Uploadstarted,
+        EventTopic.Useradded,
+        EventTopic.Useroffline,
+        EventTopic.Useronline,
+        EventTopic.Userremoved,
+        EventTopic.Workbookadded,
+        EventTopic.Workbookremoved,
       ]
 
       const agent = await apiClient.createAgent({
