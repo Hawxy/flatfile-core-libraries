@@ -1,5 +1,11 @@
 # @flatfile/plugin-xlsx-extractor
 
+## 0.0.4
+
+### Patch Changes
+
+- de0972b: Update to new api
+
 ## 0.0.3
 
 ### Patch Changes
