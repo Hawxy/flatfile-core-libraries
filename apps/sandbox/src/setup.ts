@@ -82,7 +82,7 @@ const NewSheetFromSDK = new Sheet(
   },
   {
     allowCustomFields: true,
-    readOnly: true,
+    readonly: true,
     recordCompute(
       record: FlatfileRecord<any>,
       session: FlatfileSession,

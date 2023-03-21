@@ -113,7 +113,7 @@ const SheetWithLink = new Sheet(
     recordCompute: (record) => {
       const links = record.getLinks('lastName')
       const middleName = links[0].middleName
-      if (!!middleName) {
+      if (middleName) {
         record.set('nickname', middleName)
       }
       record.set('lastName', 'Joey')

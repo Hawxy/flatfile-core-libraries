@@ -12,9 +12,8 @@
     "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
     "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@flatfile/api": "^0.0.15",
+    "@flatfile/api": "^0.0.16",
     "@flatfile/configure": "*",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/jest-preset-platform-sdk": "*",
