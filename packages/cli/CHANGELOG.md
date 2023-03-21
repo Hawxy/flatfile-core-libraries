@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.2.0
+
+### Minor Changes
+
+- 73b65b8: added all event topics to listener
+
 ## 3.1.20
 
 ### Patch Changes
