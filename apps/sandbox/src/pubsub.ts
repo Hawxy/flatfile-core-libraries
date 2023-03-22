@@ -6,6 +6,7 @@ import {
 import { RecordHook, createBlueprintFromConfigure } from '@flatfile/configure'
 import { FlatfileRecord } from '@flatfile/hooks'
 import xdk from './xdk-simple-deploy'
+import { EventTopic } from '@flatfile/api'
 
 const example = Client.create((client) => {
   /**
@@ -17,9 +18,9 @@ const example = Client.create((client) => {
     { target: 'sheet(TestSheet)' },
     (event: FlatfileEvent) => {
       RecordHook(event, (record: FlatfileRecord) => {
-        const age = record.get('age')
+        const firstName = record.get('firstName')
         // Gettign the real types here would be nice but seems tricky
-        record.set('middleName', 'TestSheet ' + age)
+        record.set('middleName', 'TestSheet ' + firstName)
         return record
       })
     }
@@ -45,7 +46,7 @@ const example = Client.create((client) => {
         if (!spaceConfig.data?.id) return
         const space = await client.api.addSpace({
           spaceConfig: {
-            name: 'Test Space',
+            name: 'Test Space 2',
             environmentId: event.context.environmentId,
             spaceConfigId: spaceConfig.data.id,
           },

@@ -48,7 +48,6 @@
     "@flatfile/hooks": "^1.2.3",
     "@flatfile/orm": "^0.1.0",
     "@flatfile/schema": "^0.2.13",
-    "axios": "^1.2.1",
     "case-anything": "^2.1.10",
     "date-fns": "^2.29.1",
     "xlsx": "^0.18.5"

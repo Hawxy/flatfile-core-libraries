@@ -1,6 +1,6 @@
 import { AuthenticatedClient } from './authenticated.client'
-import { Event, RecordsResponseData } from '@flatfile/api'
-
+import { Event } from '@flatfile/api'
+import fetch from 'node-fetch'
 export class FlatfileEvent extends AuthenticatedClient {
   /**
    * Event ID from the API
@@ -41,17 +41,8 @@ export class FlatfileEvent extends AuthenticatedClient {
    * @todo this should work with the included callback URL
    */
   get data(): Promise<any> {
-    const { sheetId, versionId } = this.context
-    if (sheetId && versionId) {
-      return this.api
-        .getRecords({
-          sheetId,
-          versionId,
-          includeCounts: false,
-        })
-        .then((res) => {
-          return res.data
-        })
+    if (this.src.dataUrl) {
+      return this.fetch(this.src.dataUrl)
     } else {
       return this.payload
     }

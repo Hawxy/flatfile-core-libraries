@@ -9,7 +9,9 @@ export const RecordHook = async (
 ) => {
   const { sheetId } = event.context
   try {
-    const records = (await event.data)!.records
+    const records = (await event.data).records
+    if (!records) return
+
     const batch = await prepareXRecords(records)
 
     // run client defined data hooks
