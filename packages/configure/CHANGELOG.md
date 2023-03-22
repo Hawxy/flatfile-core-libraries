@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.19
+
+### Patch Changes
+
+- c946831: Updates to use the dataUrl for getting records
+
 ## 0.5.18
 
 ### Patch Changes

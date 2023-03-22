@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.0.3
+
+### Patch Changes
+
+- c946831: Updates to use the dataUrl for getting records
+
 ## 0.0.2
 
 ### Patch Changes
