@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 5.0.10
+
+### Patch Changes
+
+- 1c2157f: Add support for naming a space and passing additional space info
+
 ## 5.0.9
 
 ### Patch Changes
