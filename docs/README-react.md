@@ -52,10 +52,10 @@ The **Space Config** houses your Blueprint definitions. **Blueprints** are a bea
 Install Embed React from the npm public registry.
 
 ```npm
-npm install @flatfile/react@5.0.5
+npm install @flatfile/react@5.0.8
 ```
 ```yarn
-yarn install @flatfile/react@5.0.5
+yarn install @flatfile/react@5.0.8
 ```
 
 #### 1. Generate an access token
@@ -106,11 +106,7 @@ From your Flatfile dashboard, notice that you now have a new Environment in the 
 
 When you launch an embedded importer, you're actually launching an entire Space for that Guest.
 
-There are two ways to create a Space component. The `useSpace` hook is the recommended way to access a mounted Space component because it will check for an error before you render the Space. You can also mount the Space component directly if you want more control. 
-
-#### useSpace hook
-
-The `useSpace` hook returns a Space component. If you need to access the Space object directly, mount it directly instead.
+The `useSpace` hook returns a Space component. By using this hook versus mounting directly, you are able to check for any errors before rendering the component. If you need to access the Space object directly, mount it directly instead.
 
 **Error handling**: If something internal to the Space component throws an error, we return it via **error** or the Space component if it builds correctly. This allows you to render your own error state.
 
@@ -182,27 +178,6 @@ const YourApplication = () => {
 ]
 ```
 
-#### Mount Space directly
-
-Import the `Space` component directly into your client-side application.
-
-```typescript
-import Space from '@flatfile/react'
-
-const Button = () => {
-  return (
-    <Space 
-      accessToken= "access-token"
-      environmentId= "environment-id"
-      spaceConfig= mySpaceConfig
-      >
-    </Space>
-  );
-};
-
-export default Button;
-```
-
 <br/>
 
 | Prop            | Description                              |
@@ -214,6 +189,8 @@ export default Button;
 | `spaceConfigId` | `required (if no spaceConfig && no spaceId)` **string**<br/>Identifier for previously created spaceConfig<br/>Note: If you'd like to launch a new space with an exisiting spaceConfig, pass in only a `spaceConfigId` | 
 | `themeConfig`   | `optional` **Object**<br/>An object containing theme configuration options. See available options. |
 | `sidebarConfig` | `optional` **Object**<br/>An object containing sidebar configuration options. See available options. |
+| `name`   | `optional` **string**<br/>A name for the embedded space (displayed to user) |
+| `spaceInfo`   | `optional` **Object**<br/>An object containing additional metadata for the space. |
 | `document` | `optional` **{ title: string, body: string}**<br/>Additional help text your user may need |
 
 ## Customize

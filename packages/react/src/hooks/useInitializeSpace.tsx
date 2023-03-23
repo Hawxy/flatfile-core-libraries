@@ -1,17 +1,19 @@
 import { useCallback } from 'react'
-import { ISpaceConfig } from '../types/ISpaceConfig'
+import { ISpace } from '../types/ISpace'
 import { useAddSpace } from './useAddSpace'
 import { useCreateSpaceConfig } from './useCreateSpaceConfig'
 import { useUpdateSpace } from './useUpdateSpace'
 import { useAddDocumentToSpace } from './useAddDocumentToSpace'
 
-export const useInitializeSpace = (props: ISpaceConfig) => {
+export const useInitializeSpace = (props: ISpace) => {
   const {
     accessToken,
     spaceConfig,
     themeConfig,
     environmentId,
+    name,
     spaceId,
+    spaceInfo,
     spaceConfigId,
     sidebarConfig,
     document,
@@ -21,7 +23,7 @@ export const useInitializeSpace = (props: ISpaceConfig) => {
   const { createSpace } = useAddSpace({ accessToken })
   const { updateSpace } = useUpdateSpace({ accessToken })
   const { addDocumentToSpace } = useAddDocumentToSpace({ accessToken })
-  const metadata = { theme: themeConfig, sidebarConfig }
+  const metadata = { theme: themeConfig, sidebarConfig, spaceInfo }
 
   const handleInit = useCallback(async () => {
     let spaceToLaunch
@@ -51,6 +53,7 @@ export const useInitializeSpace = (props: ISpaceConfig) => {
           environmentId,
           metadata,
           actions,
+          name
         })
         spaceToLaunch = updatedSpace
       } catch (error: any) {
@@ -88,6 +91,7 @@ export const useInitializeSpace = (props: ISpaceConfig) => {
           metadata,
           environmentId,
           actions,
+          name
         })
         spaceToLaunch = newSpace
       } catch (error) {

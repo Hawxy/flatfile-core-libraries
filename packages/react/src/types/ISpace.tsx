@@ -3,7 +3,12 @@ import { XOR } from 'ts-xor'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
 
-export interface BaseSpaceConfig {
+export interface BaseSpace {
+  /**
+   * Name of space
+   * Optional
+   */
+  name?: string
   /**
    * Access token accessed via /auth/access-token
    * Required
@@ -14,6 +19,11 @@ export interface BaseSpaceConfig {
    * Required
    */
   environmentId: string
+  /**
+   * Additional metadata to be passed to the space
+   * Optional
+   */
+  spaceInfo?: Partial<ISpaceInfo>
   /**
    * Theme values for space, sidebar and data table
    * Optional
@@ -36,7 +46,14 @@ export interface BaseSpaceConfig {
   actions?: Action[]
 }
 
-interface SpaceWithSpaceId extends BaseSpaceConfig {
+export interface ISpaceInfo {
+  userId?: string
+  name?: string
+  companyId?: string
+  companyName?: string
+}
+
+interface SpaceWithSpaceId extends BaseSpace {
   /**
    * Identifier for space
    * Required if no config or configId
@@ -44,7 +61,7 @@ interface SpaceWithSpaceId extends BaseSpaceConfig {
   spaceId: string
 }
 
-interface SpaceWithSpaceConfigId extends BaseSpaceConfig {
+interface SpaceWithSpaceConfigId extends BaseSpace {
   /**
    * Identifier for space
    * Optional
@@ -57,7 +74,7 @@ interface SpaceWithSpaceConfigId extends BaseSpaceConfig {
   spaceConfigId: string
 }
 
-interface SpaceWithRawSpaceConfig extends BaseSpaceConfig {
+interface SpaceWithRawSpaceConfig extends BaseSpace {
   /**
    * Identifier for space
    * Optional
@@ -76,7 +93,7 @@ interface SpaceWithRawSpaceConfig extends BaseSpaceConfig {
     | any
 }
 
-export type ISpaceConfig = XOR<
+export type ISpace = XOR<
   XOR<SpaceWithSpaceId, SpaceWithSpaceConfigId>,
   XOR<SpaceWithSpaceConfigId, SpaceWithRawSpaceConfig>
 >

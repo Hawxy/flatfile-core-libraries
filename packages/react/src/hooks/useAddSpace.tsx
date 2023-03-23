@@ -17,11 +17,13 @@ export const useAddSpace = ({ accessToken }: { accessToken: string }) => {
     spaceConfigId,
     metadata,
     actions,
+    name
   }: {
     environmentId: string
     spaceConfigId: string
     metadata: {}
     actions?: Action[]
+    name?: string
   }) => {
     const space = await httpClient.addSpace({
       spaceConfig: {
@@ -29,7 +31,7 @@ export const useAddSpace = ({ accessToken }: { accessToken: string }) => {
         environmentId,
         metadata,
         actions,
-        name: 'Embedded space',
+        name,
       },
     })
     return { space }

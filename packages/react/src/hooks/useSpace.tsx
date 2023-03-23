@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { useInitializeSpace } from './useInitializeSpace'
-import { ISpaceConfig } from '../types/ISpaceConfig'
+import { ISpace } from '../types/ISpace'
 import Space from '../components/Space'
 
 /**
@@ -9,7 +9,7 @@ import Space from '../components/Space'
  * @returns { error: string | undefined, data: { component: ReactElement } }
  */
 
-export const useSpace = (props: ISpaceConfig) => {
+export const useSpace = (props: ISpace) => {
   const [error, setError] = useState<string | undefined>(undefined)
   const { handleInit } = useInitializeSpace(props)
 

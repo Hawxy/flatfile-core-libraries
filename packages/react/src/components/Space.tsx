@@ -1,6 +1,6 @@
 import React, { ReactElement, useState, useEffect, useCallback } from 'react'
 import { SpaceIframe } from './SpaceStyles'
-import { ISpaceConfig } from '../types/ISpaceConfig'
+import { ISpace } from '../types/ISpace'
 import { useInitializeSpace } from '../hooks/useInitializeSpace'
 
 /**
@@ -9,7 +9,7 @@ import { useInitializeSpace } from '../hooks/useInitializeSpace'
  * @param props
  */
 
-const Space = (props: ISpaceConfig): ReactElement | null => {
+const Space = (props: ISpace ): ReactElement | null => {
   const { handleInit } = useInitializeSpace(props)
   const [spaceUrl, setSpaceUrl] = useState<string | undefined>(undefined)
 

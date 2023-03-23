@@ -18,12 +18,14 @@ export const useUpdateSpace = ({ accessToken }: { accessToken: string }) => {
     environmentId,
     metadata,
     actions,
+    name
   }: {
     spaceId: string
     spaceConfigId?: string
     environmentId: string
     metadata?: {}
     actions?: Action[]
+    name?: string 
   }) => {
     const space = await httpClient.updateSpaceById({
       spaceId,
@@ -33,6 +35,7 @@ export const useUpdateSpace = ({ accessToken }: { accessToken: string }) => {
         environmentId,
         metadata,
         actions,
+        name
       },
     })
 
