@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.2.1
+
+### Patch Changes
+
+- a66cacd: Subscribes agent deploys to all events as well
+
 ## 3.2.0
 
 ### Minor Changes
