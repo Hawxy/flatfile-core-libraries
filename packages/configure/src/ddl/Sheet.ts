@@ -53,6 +53,7 @@ type SheetComputeType = (
 
 import { Action } from './Action'
 import { FlatfileEvent } from '../utils/flatfile.event'
+import { SheetAccess } from '@flatfile/blueprint';
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
@@ -131,6 +132,7 @@ https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNI
 export interface SheetOptions<FC> {
   allowCustomFields: boolean
   readonly: boolean
+  access: SheetAccess[]
   recordCompute: RecordCompute
   batchRecordsCompute: RecordsComputeType
   previewFieldKey?: string
@@ -144,7 +146,9 @@ export class Sheet<FC extends FieldConfig>
   public targetName = 'sheet'
   public options: SheetOptions<FC> = {
     allowCustomFields: false,
+    // TODO: deprecate
     readonly: false,
+    access: ['*'],
     recordCompute(): void {},
     // the default implementation of batchRecordsCompute is a no-op
     batchRecordsCompute: async (records: FlatfileRecords<any>) => {},
@@ -303,6 +307,7 @@ export class Sheet<FC extends FieldConfig>
       fields: {},
       allowCustomFields: this.options.allowCustomFields,
       readonly: this.options.readonly,
+      access: this.options.access,
       actions: this.options.actions
         ? mapObj(this.options.actions, (action) => action.options)
         : undefined,

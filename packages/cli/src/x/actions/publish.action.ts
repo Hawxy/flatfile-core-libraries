@@ -168,6 +168,8 @@ export async function publishAction(
           name: spaceConfig.options.name,
           // TODO Do we need a unique slug for this in the Platform SDK or X? Should we generate them in X?
           slug,
+          // TODO: add this when X can handle it
+          // access: spaceConfig.options.access,
           blueprints: mapObj(
             spaceConfig.options.workbookConfigs,
             (wb, wbSlug, i) => {

@@ -27,8 +27,8 @@
     "test": "jest --runInBand --forceExit --passWithNoTests"
   },
   "devDependencies": {
-    "@flatfile/api": "^0.0.16",
-    "@flatfile/blueprint": "^0.0.7",
+    "@flatfile/api": "^0.0.17",
+    "@flatfile/blueprint": "^0.0.8",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/jest-preset-platform-sdk": "*",
     "@flatfile/listener": "*",

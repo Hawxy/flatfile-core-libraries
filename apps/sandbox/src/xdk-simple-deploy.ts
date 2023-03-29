@@ -95,6 +95,7 @@ const TestSheet = new Sheet(
     actions: {
       GenerateJSONAction,
     },
+    access: ['add', 'edit'],
   }
 )
 

@@ -1,9 +1,11 @@
+import _ from 'lodash'
+import { SpaceAccess } from '@flatfile/api';
+
 import { Role } from './Role'
 import { Workbook } from './Workbook'
 import { EventHandler } from '../utils/event.handler'
 import { Agent } from './Agent'
 import { Mountable } from '../utils/mountable'
-import _ from 'lodash'
 /**
  * Generate a new space configuration for Flatfile. Space configurations
  * are used as a template when creating a new space as well as handle the routing
@@ -46,4 +48,5 @@ interface ConfigurationOptions {
   description?: string
   theme?: any
   roles?: List<Role>
+  access?: SpaceAccess[]
 }
