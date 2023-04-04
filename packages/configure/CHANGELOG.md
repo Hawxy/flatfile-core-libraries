@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.21
+
+### Patch Changes
+
+- d5a587e: Add support for record metadata to configure.
+
 ## 0.5.20
 
 ### Patch Changes

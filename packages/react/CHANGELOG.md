@@ -1,5 +1,12 @@
 # @flatfile/react
 
+## 5.0.12
+
+### Patch Changes
+
+- Updated dependencies [d5a587e]
+  - @flatfile/configure@0.5.21
+
 ## 5.0.11
 
 ### Patch Changes
