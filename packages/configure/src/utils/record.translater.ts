@@ -40,10 +40,11 @@ export class RecordTranslater<T extends FlatfileRecord | RecordWithLinks> {
               rawData[k] = v.value as TPrimitive
             }
           }
-
+          const metadata = record.metadata
           const rawRecord = {
             rowId: record.id,
             rawData,
+            metadata,
           } as IRawRecord
 
           return rawRecord
@@ -70,9 +71,11 @@ export class RecordTranslater<T extends FlatfileRecord | RecordWithLinks> {
             valid: true,
           }
         }
+        const metadata = recordWithInfo.row.metadata
         return {
           id: String(record.rowId),
           values,
+          metadata,
         }
       })
     } else {
