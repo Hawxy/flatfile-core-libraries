@@ -4,7 +4,7 @@
   "version": "1.0.6",
   "description": "",
   "devDependencies": {
-    "@flatfile/api": "^0.0.17",
+    "@flatfile/api": "^0.0.18",
     "@flatfile/configure": "*",
     "@flatfile/listener": "*",
     "@flatfile/plugin-xlsx-extractor": "*",

@@ -22,7 +22,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@flatfile/api": "^0.0.17",
+    "@flatfile/api": "^0.0.18",
     "@flatfile/blueprint": "^0.0.8",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/ts-config-platform-sdk": "*",

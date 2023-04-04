@@ -5,6 +5,7 @@ export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = {
 }
 
 export interface IRawRecord {
+  metadata?: Object
   rawData: TRecordData
   rowId: number
 }

@@ -10,6 +10,7 @@ describe('FlatfileRecord', () => {
   beforeEach(() => {
     rawRecord = {
       rawData: { name: 'Jared', age: 12, favePet: null },
+      metadata: { title: 'I am some metadata' },
       rowId: 1,
     }
     person = new FlatfileRecord(rawRecord)
@@ -115,6 +116,17 @@ describe('FlatfileRecord', () => {
       record.setLinkedValue('favePet', 'name', 'rover').value
     ).toHaveProperty('favePet::name')
     expect(record.getLinkedValue('favePet', 'name')).toBe('rover')
+  })
+
+  it('returns the metadata for a record', () => {
+    expect(person.getMetadata()).toEqual({ title: 'I am some metadata' })
+  })
+
+  it('updates the metadata for a record', () => {
+    person.setMetadata({ title: 'I am some different metadata' })
+    expect(person.getMetadata()).toEqual({
+      title: 'I am some different metadata',
+    })
   })
 
   afterEach(() => {

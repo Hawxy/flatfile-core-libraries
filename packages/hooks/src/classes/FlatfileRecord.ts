@@ -11,6 +11,7 @@ export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = {
 }
 
 export interface IRawRecord {
+  metadata?: Object
   rawData: TRecordDataWithLinks
   rowId: number | string
 }
@@ -60,6 +61,7 @@ export class FlatfileRecord<
   M extends TRecordDataWithLinks = TRecordDataWithLinks
 > {
   private readonly data: M
+  private readonly metadata: Object
   private readonly mutated: M
   private readonly _rowId: number | string
   private _info: IRecordInfo<M>[] = []
@@ -67,6 +69,7 @@ export class FlatfileRecord<
   constructor(raw: IRawRecord) {
     this.mutated = Object.assign({}, raw.rawData) as M
     this.data = Object.assign({}, raw.rawData) as M
+    this.metadata = Object.assign({}, raw.metadata)
     this._rowId = raw.rowId
     // this.links = new FlatfileRecords(raw.links)
   }
@@ -135,6 +138,11 @@ export class FlatfileRecord<
     return this
   }
 
+  public setMetadata(data: Object) {
+    Object.defineProperty(this, 'metadata', { value: data })
+    return this
+  }
+
   public setLinkedValue(
     linkedFieldKey: string,
     childKey: string,
@@ -158,6 +166,10 @@ export class FlatfileRecord<
     }
 
     return null
+  }
+
+  public getMetadata(): Object {
+    return this.metadata
   }
 
   public getLinks(field: string): any {
@@ -234,6 +246,7 @@ export class FlatfileRecord<
       row: {
         rawData: this.mutated,
         rowId: this.rowId,
+        metadata: this.metadata,
       },
       info: this._info,
     }
