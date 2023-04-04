@@ -1,5 +1,11 @@
 # @flatfile/plugin-xlsx-extractor
 
+## 0.0.5
+
+### Patch Changes
+
+- 8ed4e8c: Bumps API version and adds support for record metadata to @flatfile/hooks.
+
 ## 0.0.4
 
 ### Patch Changes

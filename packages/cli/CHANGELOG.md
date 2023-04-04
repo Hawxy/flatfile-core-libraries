@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.2.2
+
+### Patch Changes
+
+- 8ed4e8c: Bumps API version and adds support for record metadata to @flatfile/hooks.
+
 ## 3.2.1
 
 ### Patch Changes

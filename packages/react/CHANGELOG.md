@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 5.0.11
+
+### Patch Changes
+
+- 8ed4e8c: Bumps API version and adds support for record metadata to @flatfile/hooks.
+- Updated dependencies [8ed4e8c]
+  - @flatfile/configure@0.5.20
+
 ## 5.0.10
 
 ### Patch Changes

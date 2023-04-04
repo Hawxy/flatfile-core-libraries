@@ -1,5 +1,14 @@
 # @flatfile/listener
 
+## 0.0.4
+
+### Patch Changes
+
+- 8ed4e8c: Bumps API version and adds support for record metadata to @flatfile/hooks.
+- Updated dependencies [8ed4e8c]
+  - @flatfile/schema@0.2.14
+  - @flatfile/hooks@1.2.4
+
 ## 0.0.3
 
 ### Patch Changes
