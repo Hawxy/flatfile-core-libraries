@@ -16,7 +16,7 @@ Make a POST request with the following:
   "method": "post",
   "url": "https://api.x.flatfile.com/v1/spaces",
   "headers": {
-    "Authorization": "Bearer <123 Paste Token here>"
+    "Authorization": "Bearer ${accessToken}"
   },
 
   "body": {

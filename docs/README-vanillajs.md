@@ -126,7 +126,6 @@ Make a POST request by pasting your real `accessToken` with `${accessToken}`and 
           "name": "string",
           "description": "string",
           "slug": "string",
-          "readonly": true,
           "access": [
             "*"
           ],
@@ -142,14 +141,38 @@ Make a POST request by pasting your real `accessToken` with `${accessToken}`and 
                 }
               ],
               "readonly": true
+            },
+            {
+              "key": "name",
+              "type": "string",
+              "label": "First Name",
+              "description": "The first name of the customer",
+              "constraints": [
+                {
+                  "type": "required"
+                }
+              ],
+              "readonly": false
+            },
+            {
+              "key": "name",
+              "type": "string",
+              "label": "Last Name",
+              "description": "The last name of the customer",
+              "constraints": [
+                {
+                  "type": "required"
+                }
+              ],
+              "readonly": false
             }
           ],
           "actions": [
             {
-              "slug": "string",
-              "label": "string",
+              "slug": "submit",
+              "label": "Submit",
               "type": "string",
-              "description": "string",
+              "description": "Submit your data",
               "primary": true
             }
           ]
@@ -177,15 +200,6 @@ To create a Space, make a POST request by pasting your real `accessToken` with `
   "environmentId": "${environmentId}",
   "name": "My Space",
   "displayOrder": 1,
-  "actions": [
-    {
-      "slug": "string",
-      "label": "string",
-      "type": "string",
-      "description": "string",
-      "primary": true
-    }
-  ],
   "guestAuthentication": [
     "shared_link"
   ],
