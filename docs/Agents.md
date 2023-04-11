@@ -48,10 +48,11 @@ A Job is a batch of work that you schedule to be completed asynchronously. Proce
 
 **See [API Reference](../v10/0252a7beaa310-list-jobs)**
 
-**There are 3 types of jobs:**
+**There are 4 types of jobs:**
 - Extracting data from a file (moving data from a file to a workbook)
 - Mapping data from one workbook to another (moving data from a workbook to a workbook)
 - Deleting data from a workbook (operate on data in a single workbook)
+- Custom Jobs (new)
 
 ### Up next
 

@@ -1,4 +1,4 @@
-# Embed React
+# [@flatfile/react](https://www.npmjs.com/package/@flatfile/react)
 
 Embed React is a front-end SDK wrapper around the [Flatfile API](https://flatfile.stoplight.io/docs/v10/). It allows you to  securely and easily add an embedded import experience to any React app.
 

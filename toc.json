@@ -66,6 +66,22 @@
     },
     {
       "type": "group",
+      "title": "@flatfile/listener",
+      "items": [
+        {
+          "type": "item",
+          "title": "Getting Started",
+          "uri": "/docs/README-listener.md"
+        },
+        {
+          "type": "item",
+          "title": "Changelog",
+          "uri": "/packages/listener/CHANGELOG.md"
+        }
+      ]
+    },
+    {
+      "type": "group",
       "title": "@flatfile/cli",
       "items": [
         {
