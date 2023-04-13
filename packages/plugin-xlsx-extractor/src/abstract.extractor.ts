@@ -8,7 +8,7 @@ import type {
 } from '@flatfile/api'
 import { mapValues } from 'remeda'
 import { FlatfileEvent } from '@flatfile/configure'
-
+import { FlatfileEvent as ListenerEvent } from '@flatfile/listener'
 /**
  * This is a universal helper for writing custom file extractors within Flatfile
  */
@@ -23,7 +23,7 @@ export class AbstractExtractor {
    */
   public api: DefaultApi
 
-  constructor(public event: FlatfileEvent) {
+  constructor(public event: FlatfileEvent | ListenerEvent) {
     this.fileId = event.context.fileId
     this.api = event.api
   }

@@ -2,13 +2,14 @@ import * as XLSX from 'xlsx'
 import { mapKeys, mapValues } from 'remeda'
 import { AbstractExtractor, SheetCapture } from './abstract.extractor'
 import { FlatfileEvent } from '@flatfile/configure'
+import { FlatfileEvent as ListenerEvent } from '@flatfile/listener'
 
 export class ExcelExtractor extends AbstractExtractor {
   private readonly _options: {
     rawNumbers?: boolean
   }
   constructor(
-    public event: FlatfileEvent,
+    public event: FlatfileEvent | ListenerEvent,
     public options?: {
       rawNumbers?: boolean
     }
