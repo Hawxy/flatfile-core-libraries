@@ -71,6 +71,8 @@ yarn install @flatfile/listener@latest
 
 Using our powerful [@flatfile/listener](https://www.npmjs.com/package/@flatfile/listener) library we can intervene between any event and run a callback function based on values provided inside that event.
 
+The following is a list of events you can subscribe to:
+
 ```typescript
 
 declare const EventTopic: {
