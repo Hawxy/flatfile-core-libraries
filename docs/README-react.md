@@ -195,6 +195,48 @@ const YourApplication = () => {
 
 ## Customize
 
+### Space Info
+
+In order to make distinguishing between spaces easier, there are four values under `spaceInfo` you can pass into the `useSpace` hook.
+
+```typescript
+export interface ISpaceInfo {
+  userId?: string
+  name?: string
+  companyId?: string
+  companyName?: string
+}
+
+// example
+
+const spaceInfo = {
+  userId: '123',
+  name: 'Flatfile Francesca',
+  companyId: 'id_123',
+  companyName: 'Flatfile'
+}
+
+```
+```useSpace
+
+const spaceInfo = {
+  userId: '123',
+  name: 'Flatfile Francesca',
+  companyId: 'id_123',
+  companyName: 'Flatfile'
+}
+
+const { error, data: { component } } = 
+  useSpace({ 
+    themeConfig: theme, 
+    accessToken, 
+    environmentId,
+    spaceConfig,
+    spaceInfo
+  })
+```
+
+
 ### Theme
 
 Since Embed React is mounted in an iframe, it will not inherit styling from your application. You can configure to match the design of your site with the `themeConfig` prop.
@@ -344,6 +386,5 @@ const { error, data: { component } } =
   {...props}
   />
 ```
-
 
 
