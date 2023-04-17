@@ -1,5 +1,12 @@
 # @flatfile/plugin-xlsx-extractor
 
+## 0.0.6
+
+### Patch Changes
+
+- 4cae4ac: Adds support for FlatfileEvent from listener
+- 55f9fff: Update API version and use configless space creation in listener example.
+
 ## 0.0.5
 
 ### Patch Changes

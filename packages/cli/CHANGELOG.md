@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.2.3
+
+### Patch Changes
+
+- 55f9fff: Update API version and use configless space creation in listener example.
+
 ## 3.2.2
 
 ### Patch Changes

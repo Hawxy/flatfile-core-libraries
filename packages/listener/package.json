@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/listener",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A PubSub Listener for configuring and using Flatfile",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -30,7 +30,7 @@
   "dependencies": {
     "@flatfile/hooks": "1.2.4",
     "@flatfile/orm": "0.1.0",
-    "@flatfile/schema": "0.2.14",
+    "@flatfile/schema": "0.2.15",
     "case-anything": "^2.1.10",
     "date-fns": "^2.29.1",
     "xlsx": "^0.18.5"

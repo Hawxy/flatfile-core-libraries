@@ -1,5 +1,13 @@
 # @flatfile/listener
 
+## 0.0.5
+
+### Patch Changes
+
+- 55f9fff: Update API version and use configless space creation in listener example.
+- Updated dependencies [55f9fff]
+  - @flatfile/schema@0.2.15
+
 ## 0.0.4
 
 ### Patch Changes
