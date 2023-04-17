@@ -13,7 +13,7 @@
     "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests"
   },
   "devDependencies": {
-    "@flatfile/api": "^0.0.18",
+    "@flatfile/api": "^0.0.19",
     "@flatfile/configure": "*",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/jest-preset-platform-sdk": "*",

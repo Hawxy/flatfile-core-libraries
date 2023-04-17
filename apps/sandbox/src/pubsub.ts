@@ -39,20 +39,40 @@ const example = Client.create((client) => {
         const blueprint = createBlueprintFromConfigure(xdk.mount())
         if (!blueprint) return
 
-        // Create Space Config
-        const spaceConfig = await client.api.addSpaceConfig({
-          spacePatternConfig: blueprint,
-        })
-        if (!spaceConfig.data?.id) return
+        const environmentId = event.context.environmentId
+
+        // Create Space
         const space = await client.api.addSpace({
           spaceConfig: {
             name: 'Test Space 2',
-            environmentId: event.context.environmentId,
-            spaceConfigId: spaceConfig.data.id,
+            environmentId,
+          },
+        })
+
+        if (!space.data) return
+
+        // Create Workbook
+        const workbook = await client.api.addWorkbook({
+          workbookConfig: {
+            name: 'Test Workbook',
+            spaceId: space.data.id,
+            environmentId,
+            sheets: blueprint.blueprints[0].sheets,
+          },
+        })
+
+        if (!workbook.data) return
+
+        // Update Space with Workbook
+        await client.api.updateSpaceById({
+          spaceId: space.data.id,
+          spaceConfig: {
+            primaryWorkbookId: workbook.data.id,
+            environmentId,
           },
         })
       } catch (e) {
-        console.log(`error creating SpaceConfig or Space: ${e}`)
+        console.log(`error creating Space or Workbook: ${e}`)
       }
     }
   })
