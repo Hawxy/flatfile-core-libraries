@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.23
+
+### Patch Changes
+
+- d8470d8: Fix to NumberField so it accepts numbers with mulitple commas.
+
 ## 0.5.22
 
 ### Patch Changes
