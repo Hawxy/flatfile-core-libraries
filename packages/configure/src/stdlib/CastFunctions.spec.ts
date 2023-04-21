@@ -39,6 +39,7 @@ describe('Cast Function tests ->', () => {
 
     assertNC('5', 5)
     assertNC('500,000', 500000)
+    assertNC('500,000,000', 500000000)
 
     // throwing an error on 'four' allows the user to realize an error and rewrite 'four' to 4
     // even though 'four' could be interpreted as a number, we have chosen not to

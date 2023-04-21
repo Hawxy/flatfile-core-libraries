@@ -106,7 +106,7 @@ export const NumberCast = StringChainCast(
       num = raw
     } else if (typeof raw === 'string') {
       // I think I just want the error to propagate here, so no wrapping
-      const strippedStr = raw.replace(',', '')
+      const strippedStr = raw.replaceAll(',', '')
       num = Number(strippedStr)
     } else {
       throw new Error(getUnableToCastMessage('number'))
