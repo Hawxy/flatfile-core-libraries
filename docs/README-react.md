@@ -67,7 +67,7 @@ Make a `POST` request with the following and save your `accessToken` from the re
 ```json http
 {
   "method": "post",
-  "url": "https://api.x.flatfile.com/v1/auth/access-token",
+  "url": "https://platform.flatfile.com/api/v1/auth/access-token",
   "body": {
     "clientId": "string",
     "secret": "string"
@@ -84,7 +84,7 @@ Make a POST request by pasting your real `accessToken` with `${accessToken}` and
 ```json http
 {
   "method": "post",
-  "url": "https://api.x.flatfile.com/v1/environments",
+  "url": "https://platform.flatfile.com/api/v1/environments",
   "headers": {
     "Authorization": "Bearer ${accessToken}"
   },

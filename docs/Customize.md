@@ -14,7 +14,7 @@ Make a POST request with the following:
 ```json http
 {
   "method": "post",
-  "url": "https://api.x.flatfile.com/v1/spaces",
+  "url": "https://platform.flatfile.com/api/v1/spaces",
   "headers": {
     "Authorization": "Bearer ${accessToken}"
   },
@@ -132,7 +132,7 @@ Make a POST request with the following:
 ```json http
 {
   "method": "post",
-  "url": "https://api.x.flatfile.com/v1/spaces",
+  "url": "https://platform.flatfile.com/api/v1/spaces",
 
   "body": {
     "spaceConfigId": "string",

@@ -92,7 +92,7 @@ export const init = async (options: XInitOptions) => {
     console.log(`${chalk.dim(loginLink)}\n`)
   }
 
-  const apiUrl = 'https://api.x.flatfile.com/v1'
+  const apiUrl = 'https://platform.flatfile.com/api/v1'
   return inquirer
     .prompt(questions)
     .then(async (answers) => {
@@ -158,7 +158,7 @@ export const init = async (options: XInitOptions) => {
       if (!fs.existsSync('.flatfilerc')) {
         const flatfilerc = `
         {
-            "endpoint": "https://api.x.flatfile.com/v1",
+            "endpoint": "https://platform.flatfile.com/api/v1",
             "env": "${environment}",
             "version": "10",
             "clientId": "${clientId}",

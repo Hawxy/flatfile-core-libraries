@@ -39,7 +39,7 @@ Rename `.flatfilerc.example` to `.flatfilerc`. Make sure that â€œ`.flatfilerc`â€
 
 ```json
 {
-    "endpoint": "https://api.x.flatfile.com/v1", //always this
+    "endpoint": "https://platform.flatfile.com/api/v1", //always this
     "env": "us_env_6fXBNCpi", //`environment_id` presented at the welcome screen
     "version": "10", //always this
     "team": "1", //always this

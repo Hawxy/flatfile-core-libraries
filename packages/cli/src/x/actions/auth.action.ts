@@ -17,7 +17,7 @@ export async function authAction({
     text: `Creating authenticated client`,
   }).start()
   const auth = config().auth
-  const DEFAULT_API_URL = apiUrl ?? 'https://api.x.flatfile.com/v1'
+  const DEFAULT_API_URL = apiUrl ?? 'https://platform.flatfile.com/api/v1'
   const ClientConfig = (accessToken: string) => {
     return new Configuration({
       basePath: DEFAULT_API_URL,

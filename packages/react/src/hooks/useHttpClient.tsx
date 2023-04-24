@@ -2,7 +2,7 @@ import { Configuration, DefaultApi } from '@flatfile/api'
 
 export const ClientConfig = (accessToken: string) => {
   return new Configuration({
-    basePath: 'https://api.x.flatfile.com/v1',
+    basePath: 'https://platform.flatfile.com/api/v1',
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
