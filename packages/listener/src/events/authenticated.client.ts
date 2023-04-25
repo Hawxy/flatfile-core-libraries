@@ -19,6 +19,7 @@ export class AuthenticatedClient {
       accessToken: process.env.FLATFILE_BEARER_TOKEN,
       headers: {
         Authorization: `Bearer ${process.env.FLATFILE_BEARER_TOKEN || '...'}`,
+        'x-disable-hooks': 'true'
       },
     })
     return new DefaultApi(ClientConfig)
@@ -33,6 +34,7 @@ export class AuthenticatedClient {
     const headers = {
       Authorization:
         `Bearer ${process.env.FLATFILE_BEARER_TOKEN}` ?? `Bearer ...`,
+        'x-disable-hooks': 'true'
     }
     const fetchUrl = FLATFILE_API_URL + '/' + url
     
