@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.25
+
+### Patch Changes
+
+- 668bd41: use replace instead of replaceAll for older versions of node
+
 ## 0.5.24
 
 ### Patch Changes
