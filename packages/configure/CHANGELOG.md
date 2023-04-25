@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.24
+
+### Patch Changes
+
+- 4039970: Adds 'x-disable-hooks': 'true' to event payload to x
+
 ## 0.5.23
 
 ### Patch Changes
