@@ -11,6 +11,7 @@ import { switchVersion } from './switch.version'
 import { createEnvironmentAction } from './x/actions/create.environment.action'
 import { switchInit } from './switch.init'
 import { publishPubSub } from './x/actions/publish.pubsub'
+import { deployAction } from './x/actions/deploy.action'
 
 dotenv.config()
 
@@ -25,6 +26,13 @@ program
   .option('-t, --team <team-id>', 'the Team ID to publish to')
   .option('--api-url <url>', 'the API url to use')
   .action(switchVersion(legacyPublishAction, publishAction))
+
+program
+  .command('deploy [file]')
+  .description('Deploy your project as a Flatfile Agent')
+  .option('-k, --token <url>', 'the authentication token to use (or set env FLATFILE_API_KEY or FLATFILE_BEARER_TOKEN)')
+  .option('-h, --api-url <url>', '(optional) the API URL to use (or set env FLATFILE_API_URL)')
+  .action(deployAction)
 
 program
   .command('init')
@@ -56,7 +64,7 @@ program
 
 program
   .command('pubsub <file>')
-  .description('publish a PubSub Agent')
+  .description('publish a PubSub Agent (deprecated)')
   .option('-t, --team <team-id>', 'the Team ID to publish to')
   .option('--api-url <url>', 'the API url to use')
   .action(publishPubSub)

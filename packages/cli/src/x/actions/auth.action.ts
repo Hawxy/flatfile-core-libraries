@@ -1,8 +1,26 @@
 import { Configuration, DefaultApi } from '@flatfile/api'
-import chalk from 'chalk'
 import fetch from 'node-fetch'
 import ora from 'ora'
 import { config } from '../../config'
+
+export function apiKeyClient({
+  apiUrl,
+  apiKey,
+}: {
+  apiUrl: string
+  apiKey: string
+}): DefaultApi {
+
+  return new DefaultApi(
+    new Configuration({
+      fetchApi: fetch,
+      basePath: apiUrl ?? 'https://platform.flatfile.com/api/v1',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    })
+  )
+}
 
 export async function authAction({
   apiUrl,

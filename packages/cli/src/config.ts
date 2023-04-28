@@ -24,20 +24,7 @@ const interpolation = require('interpolate-json').interpolation
  *
  * @param overrides
  */
-export function config(
-  overrides?: Partial<{
-    env?: string
-    version?: string | number
-    region?: string
-    endpoint?: string
-    account?: string
-    clientId?: string
-    secret?: string
-    auth?: string
-    team?: number
-    internal?: object
-  }>
-): Config {
+export function config(overrides?: Partial<Config>): Config {
   const fullConfig = {
     ...rawConfig,
     ...removeEmpty(overrides),
@@ -85,6 +72,7 @@ dotenv.config()
 
 // import .env values into rc as defaults that can be overwritten
 const rawConfig = rc('flatfile', {
+  // legacy configs
   env: 'test',
   version: 3,
   account: null,
@@ -94,19 +82,27 @@ const rawConfig = rc('flatfile', {
   x: false,
   endpoint: 'https://api.${region}.flatfile.com',
   auth: true,
+
+  // platform configs
+  entry: null,
+  api_url: 'https://platform.flatfile.com/api/v1', // configuration property used for x
 })
 
 const ConfigValidation = z.object({
   account: z.string().nullable().optional(),
+  team: z.number().nullable().optional(),
   endpoint: z.string().min(1).optional(),
   env: z.string().min(1).optional(),
   region: z.string().min(1).optional(),
-  clientId: z.string().min(1).nullable(),
-  secret: z.string().min(1).nullable(),
-  version: z.number().gte(1),
-  x: z.boolean(),
-  auth: z.boolean(),
+  clientId: z.string().min(1).nullable().optional(),
+  secret: z.string().min(1).nullable().optional(),
+  version: z.number().gte(1).optional(),
+  x: z.boolean().optional(),
+  auth: z.boolean().optional(),
   internal: z.object({}).catchall(z.string()).optional(),
+
+  entry: z.string().min(4).nullable().optional(),
+  api_url: z.string().min(4).nullable().optional(),
 })
 
 export type Config = z.infer<typeof ConfigValidation>

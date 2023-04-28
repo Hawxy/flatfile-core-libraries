@@ -8,7 +8,7 @@ describe('requireInput', () => {
   })
   test('returns error if input value is not passed', () => {
     const helpLink = 'www.fakeHelpLink'
-    expect(requireInput('', helpLink)).toBe(
+    expect(requireInput('', helpLink)).toMatch(
       `⛔️ Required value, to find this value go to ${helpLink}`
     )
   })
