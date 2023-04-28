@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.0
+
+### Minor Changes
+
+- 640b392: Add flatfile deploy command for platform usecases
+
 ## 3.2.3
 
 ### Patch Changes
