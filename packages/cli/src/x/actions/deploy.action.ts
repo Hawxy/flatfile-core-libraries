@@ -21,6 +21,9 @@ export async function deployAction(
   }>
 ): Promise<void> {
   const outDir = path.join(process.cwd(), '.flatfile')
+  if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir, { recursive: true })
+  }
 
   const apiUrl = options?.apiUrl || config().api_url
 
@@ -109,7 +112,16 @@ export async function deployAction(
         if (err) {
           return console.log(err)
         }
-        const result = data.replace(/{ENTRY_PATH}/g, file!)
+        const result = data.replace(
+          /{ENTRY_PATH}/g,
+          path.join(
+            path.relative(
+              path.dirname(path.join(outDir, '_entry.js')),
+              path.dirname(file!)
+            ),
+            path.basename(file!)
+          )
+        )
 
         fs.writeFile(
           path.join(outDir, '_entry.js'),
@@ -186,10 +198,16 @@ export async function deployAction(
       return
     }
 
+    validatingSpinner.succeed('Code package passed validation')
+
+    const envSpinner = ora({
+      text: `Validating environment...`
+    }).start()
+
     const environments = await apiClient.getEnvironments()
 
     const environment = environments.data?.[0]
-    validatingSpinner.succeed('Code package passed validation')
+    envSpinner.succeed(`Environment "${environment?.name}" selected`)
     const deployingSpinner = ora({
       text: `Deploying event listener to Flatfile`,
     }).start()
