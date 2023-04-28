@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.1
+
+### Patch Changes
+
+- fe4762d: Resolve deployment bug
+
 ## 3.3.0
 
 ### Minor Changes
