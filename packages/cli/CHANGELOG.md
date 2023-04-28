@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.2
+
+### Patch Changes
+
+- 73cec59: Adding support for any type of entry file
+
 ## 3.3.1
 
 ### Patch Changes
