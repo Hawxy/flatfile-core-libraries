@@ -162,16 +162,20 @@ export async function deployAction(
       },
     })
 
+    const liteMode = process.env.FLATFILE_COMPILE_MODE === 'no-minify'
+
     await bundle.write({
       file: path.join(outDir, 'build.cjs'),
       format: 'cjs',
       exports: 'auto',
-      sourcemap: 'inline',
-      plugins: [
-        // Minifies the bundle
-        // TODO: Be able to turn this off for debugging
-        terser(),
-      ],
+      sourcemap: liteMode ? false : 'inline',
+      plugins: liteMode
+        ? []
+        : [
+            // Minifies the bundle
+            // TODO: Be able to turn this off for debugging
+            terser(),
+          ],
     })
     await bundle.close()
     buildingSpinner.succeed('Code package compiled to .flatfile/build.js')
@@ -201,7 +205,7 @@ export async function deployAction(
     validatingSpinner.succeed('Code package passed validation')
 
     const envSpinner = ora({
-      text: `Validating environment...`
+      text: `Validating environment...`,
     }).start()
 
     const environments = await apiClient.getEnvironments()
