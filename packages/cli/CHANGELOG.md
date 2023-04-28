@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.3
+
+### Patch Changes
+
+- 0cbf01b: Add lower cpu compilation mode FLATFILE_COMPILE_MODE=no-minify
+
 ## 3.3.2
 
 ### Patch Changes
