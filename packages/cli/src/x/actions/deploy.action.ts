@@ -163,7 +163,7 @@ export async function deployAction(
     })
 
     await bundle.write({
-      file: path.join(outDir, 'build.js'),
+      file: path.join(outDir, 'build.cjs'),
       format: 'cjs',
       exports: 'auto',
       sourcemap: 'inline',
@@ -186,7 +186,7 @@ export async function deployAction(
     text: `Validating code package...`,
   }).start()
   try {
-    const buildFile = path.join(outDir, 'build.js')
+    const buildFile = path.join(outDir, 'build.cjs')
     const buffer = fs.readFileSync(buildFile)
     const source = buffer.toString()
     const client = require(buildFile)
