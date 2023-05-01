@@ -1,5 +1,11 @@
 # @flatfile/hooks
 
+## 1.3.0
+
+### Minor Changes
+
+- 72447b1: Adds compute, transform, and validate methods to FlatfileRecord.
+
 ## 1.2.4
 
 ### Patch Changes

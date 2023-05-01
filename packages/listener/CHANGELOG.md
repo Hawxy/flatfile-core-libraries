@@ -1,5 +1,12 @@
 # @flatfile/listener
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [72447b1]
+  - @flatfile/hooks@1.3.0
+
 ## 0.0.6
 
 ### Patch Changes
