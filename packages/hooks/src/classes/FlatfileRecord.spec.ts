@@ -129,6 +129,84 @@ describe('FlatfileRecord', () => {
     })
   })
 
+  it('computes a field based on the value of the field', () => {
+    person.compute('age', (age) => Number(age) + 1, 'age was increased by one')
+    expect(person.get('age')).toBe(13)
+    const messages = person.toJSON().info
+    expect(messages.length).toBe(1)
+    expect(messages[0]).toMatchObject({
+      field: 'age',
+      level: 'info',
+      message: 'age was increased by one',
+    })
+  })
+
+  it('computes a field based on the value of multiple fields', () => {
+    person.compute(
+      'name',
+      (name, record) => `${name} ${record.get('age')}`,
+      'age was appended to name'
+    )
+    expect(person.get('name')).toBe('Jared 12')
+    const messages = person.toJSON().info
+    expect(messages.length).toBe(1)
+    expect(messages[0]).toMatchObject({
+      field: 'name',
+      level: 'info',
+      message: 'age was appended to name',
+    })
+  })
+
+  it('adds an error message if a validate condition is not met', () => {
+    person.validate(
+      'age',
+      (age) => {
+        return Number(age) > 13
+      },
+      'must be older than 13'
+    )
+    const messages = person.toJSON().info
+    expect(messages.length).toBe(1)
+    expect(messages[0]).toMatchObject({
+      field: 'age',
+      level: 'error',
+      message: 'must be older than 13',
+    })
+  })
+
+  it('does not add an error message if a validate condition is met', () => {
+    person.validate(
+      'age',
+      (age) => {
+        return Number(age) > 11
+      },
+      'must be older than 11'
+    )
+    const messages = person.toJSON().info
+    expect(messages.length).toBe(0)
+  })
+
+  it('validates based on the value of mulitple fields', () => {
+    person.validate(
+      'age',
+      (age, record) => {
+        if (record.get('name') === 'Jared') {
+          return Number(age) > 13
+        } else {
+          return Number(age) > 11
+        }
+      },
+      'Jared must be older than 13'
+    )
+    const messages = person.toJSON().info
+    expect(messages.length).toBe(1)
+    expect(messages[0]).toMatchObject({
+      field: 'age',
+      level: 'error',
+      message: 'Jared must be older than 13',
+    })
+  })
+
   afterEach(() => {
     restore()
   })

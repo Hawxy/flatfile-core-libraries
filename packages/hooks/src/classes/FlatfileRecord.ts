@@ -241,6 +241,46 @@ export class FlatfileRecord<
     return this
   }
 
+  public compute(
+    field: string,
+    transformation: (
+      value: TPrimitive,
+      record: FlatfileRecord<M>
+    ) => TPrimitive,
+    message?: string
+  ): this {
+    this.set(field, transformation(this.get(field), this))
+    if (message) {
+      this.addComment(field, message)
+    }
+    return this
+  }
+
+  public computeIfPresent(
+    field: string,
+    transformation: (
+      value: TPrimitive,
+      record: FlatfileRecord<M>
+    ) => TPrimitive,
+    message?: string
+  ): this {
+    if (this.get(field)) {
+      this.compute(field, transformation, message)
+    }
+    return this
+  }
+
+  public validate(
+    field: string,
+    validator: (value: TPrimitive, record: FlatfileRecord<M>) => boolean,
+    message: string
+  ): this {
+    if (!validator(this.get(field), this)) {
+      this.addError(field, message)
+    }
+    return this
+  }
+
   public toJSON(): IRawRecordWithInfo<M> {
     return {
       row: {
