@@ -8,20 +8,6 @@
     },
     {
       "type": "divider",
-      "title": "Concepts"
-    },
-    {
-      "type": "item",
-      "title": "Workbooks",
-      "uri": "/docs/Workbooks.md"
-    },
-    {
-      "type": "item",
-      "title": "Agents",
-      "uri": "/docs/Agents.md"
-    },
-    {
-      "type": "divider",
       "title": "Guides"
     },
     {
@@ -31,13 +17,8 @@
     },
     {
       "type": "item",
-      "title": "Migrating to v10",
+      "title": "Migrating to Platform",
       "uri": "/docs/Migrating.md"
-    },
-{
-      "type": "item",
-      "title": "Customize",
-      "uri": "/docs/Customize.md"
     },
     {
       "type": "divider",
@@ -61,118 +42,6 @@
           "type": "item",
           "title": "Using Vanilla JS",
           "uri": "/docs/README-vanillajs.md"
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "title": "@flatfile/listener",
-      "items": [
-        {
-          "type": "item",
-          "title": "Getting Started",
-          "uri": "/docs/README-listener.md"
-        },
-        {
-          "type": "item",
-          "title": "Changelog",
-          "uri": "/packages/listener/CHANGELOG.md"
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "title": "@flatfile/cli",
-      "items": [
-        {
-          "type": "item",
-          "title": "About",
-          "uri": "/packages/cli/README.md"
-        },
-        {
-          "type": "item",
-          "title": "Changelog",
-          "uri": "/packages/cli/CHANGELOG.md"
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "title": "@flatfile/configure",
-      "items": [
-        {
-          "type": "item",
-          "title": "About",
-          "uri": "/packages/configure/README.md"
-        },
-        {
-          "type": "item",
-          "title": "Changelog",
-          "uri": "/packages/configure/CHANGELOG.md"
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "title": "@flatfile/expression-lang",
-      "items": [
-        {
-          "type": "item",
-          "title": "About",
-          "uri": "/packages/expression-lang/README.md"
-        },
-        {
-          "type": "item",
-          "title": "Changelog",
-          "uri": "/packages/expression-lang/CHANGELOG.md"
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "title": "@flatfile/hooks",
-      "items": [
-        {
-          "type": "item",
-          "title": "About",
-          "uri": "/packages/hooks/README.md"
-        },
-        {
-          "type": "item",
-          "title": "Changelog",
-          "uri": "/packages/hooks/CHANGELOG.md"
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "title": "@flatfile/orm",
-      "items": [
-                {
-          "type": "item",
-          "title": "About",
-          "uri": "/packages/orm/README.md"
-        },
-        {
-          "type": "item",
-          "title": "Changelog",
-          "uri": "/packages/orm/CHANGELOG.md"
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "title": "@flatfile/schema",
-      "items": [
-        {
-          "type": "item",
-          "title": "About",
-          "uri": "/packages/schema/README.md"
-        },
-        {
-          "type": "item",
-          "title": "Changelog",
-          "uri": "/packages/schema/CHANGELOG.md"
         }
       ]
     }

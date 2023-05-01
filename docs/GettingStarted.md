@@ -4,6 +4,8 @@ stoplight-id: qes765em7e7fl
 
 # Getting Started
 
+**The most up to date getting started are at [flatfile.com/docs](https://flatfile.com/docs). Head over there!**
+
 ## Technical requirements:
 
 - Node version 16 or higher installed. (Note: if you don’t have node.js on your machine, download it [here](https://nodejs.org/en/download/))
