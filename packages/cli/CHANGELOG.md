@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.4
+
+### Patch Changes
+
+- 8ea7135: Fix the events being subscribed to on publish
+
 ## 3.3.3
 
 ### Patch Changes
