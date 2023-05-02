@@ -217,32 +217,39 @@ export async function deployAction(
     }).start()
 
     try {
+      // TODO: This just need to be **
       const topics = [
-        EventTopic.Actiontriggered,
-        EventTopic.Clientinit,
-        EventTopic.Filedeleted,
-        EventTopic.Jobcompleted,
-        EventTopic.Jobdeleted,
-        EventTopic.Jobfailed,
-        EventTopic.Jobstarted,
-        EventTopic.Jobupdated,
-        EventTopic.Jobwaiting,
-        EventTopic.Recordscreated,
-        EventTopic.Recordsdeleted,
-        EventTopic.Recordsupdated,
-        EventTopic.Sheetvalidated,
-        EventTopic.Spaceadded,
-        EventTopic.Spaceremoved,
-        EventTopic.Uploadcompleted,
-        EventTopic.Uploadfailed,
-        EventTopic.Uploadstarted,
-        EventTopic.Useradded,
-        EventTopic.Useroffline,
-        EventTopic.Useronline,
-        EventTopic.Userremoved,
-        EventTopic.Workbookadded,
-        EventTopic.Workbookremoved,
-      ]
+        'agent:created',
+        'agent:updated',
+        'agent:deleted',
+
+        'space:created',
+        'space:deleted',
+
+        'workbook:created',
+        'workbook:deleted',
+
+        'sheet:created',
+        'sheet:updated',
+        'sheet:deleted',
+        'record:created',
+        'record:updated',
+        'record:deleted',
+
+        'file:created',
+        'file:updated',
+        'file:deleted',
+
+        'job:created',
+        'job:updated',
+        'job:deleted',
+        'job:failed',
+        'job:completed',
+
+        'commit:created',
+        'commit:updated',
+        'layer:created',
+      ] as EventTopic[]
 
       const agent = await apiClient.createAgent({
         environmentId: environment?.id!,
