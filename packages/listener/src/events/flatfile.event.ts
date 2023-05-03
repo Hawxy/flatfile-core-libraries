@@ -1,6 +1,7 @@
 import { AuthenticatedClient } from './authenticated.client'
 import { Event } from '@flatfile/api'
 import fetch from 'node-fetch'
+import { EventCache } from './cache'
 export class FlatfileEvent extends AuthenticatedClient {
   /**
    * Event ID from the API
@@ -23,9 +24,11 @@ export class FlatfileEvent extends AuthenticatedClient {
   public readonly action: string
   public readonly context: any
   public readonly payload: any
+  public readonly cache: EventCache
 
   constructor(private readonly src: Event) {
     super()
+    this.cache = new EventCache()
     this.domain = src.domain
     this.topic = src.topic
     this.context = src.context // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
@@ -48,26 +51,13 @@ export class FlatfileEvent extends AuthenticatedClient {
     }
   }
 
-  /**
-   * Fetch the actual body of each context item referenced
-   * @param _contexts
-   * @todo implement when our Event context payload becomes IDs
-   */
-  // expand(..._contexts: string[]) {
-  // await ev.expand('acccount', 'space')
-  // ev.account
-  // -> accounts.getAccount('id')
-  // }
-
-  /**
-   * Respond with an ack progress updates
-   * @param _progress
-   * @todo later
-   */
-  // ack(_progress: number = 100) {
-  //   // call ack API with error
-  //   // only on ackable events
-  // }
+  private afterAllCallbacks: Map<any, any> = new Map()
+  afterAll<T>(callback: () => T, cacheKey?: string): void {
+    const key = cacheKey || callback.toString()
+    if (!this.afterAllCallbacks.get(key)) {
+      this.afterAllCallbacks.set(key, callback)
+    }
+  }
 }
 
 export type EventCallback = (evt: FlatfileEvent) => void

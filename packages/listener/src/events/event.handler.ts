@@ -95,6 +95,9 @@ export class EventHandler extends AuthenticatedClient {
     for (const node of this.nodes) {
       await node.dispatchEvent(event)
     }
+
+    await event.afterAllCallbacks.forEach(async (cb: any) => cb(event))
+    event.cache.delete()
   }
 
   /**
