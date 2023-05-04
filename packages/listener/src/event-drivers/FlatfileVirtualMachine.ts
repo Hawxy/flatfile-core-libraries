@@ -1,5 +1,5 @@
 import { EventDriver } from './_EventDriver'
-import { FlatfileEvent } from '../events'
+import { EventHandler, FlatfileEvent } from '../events'
 
 /**
  * Flatfile's Virtual Machine is stateless / serverless. So when a new event
@@ -15,5 +15,24 @@ export class FlatfileVirtualMachine extends EventDriver {
    */
   handle(event: FlatfileEvent) {
     this.dispatchEvent(event)
+  }
+
+  mountEventHandler(handler: EventHandler): this {
+    const IS_NODE =
+      typeof global === 'object' &&
+      '[object global]' === global.toString.call(global)
+    const IS_BROWSER =
+      // @ts-ignore - ts says window is undefined here, but when mounted it is not
+      typeof window === 'object' &&
+      // @ts-ignore - ts says window is undefined here, but when mounted it is not
+      '[object Window]' === window.toString.call(window)
+
+    if (IS_NODE && !IS_BROWSER)
+      handler.setVariables({
+        fetchApi: require('node-fetch')
+      })
+
+    this._handler = handler
+    return this
   }
 }

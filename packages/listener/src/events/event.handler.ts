@@ -20,7 +20,6 @@ export class EventHandler extends AuthenticatedClient {
 
   constructor(filter?: EventFilter) {
     super()
-
     if (filter) {
       this.filterQuery = filter
     }
@@ -79,16 +78,20 @@ export class EventHandler extends AuthenticatedClient {
    * @param event
    */
   async dispatchEvent(event: FlatfileEvent | ApiEvent | any): Promise<void> {
-    // TODO: validate the json payload as a valid Flatfile event
-    // TODO: handle authentication token && API URL so they don't get overwritten here
     if (!(event instanceof FlatfileEvent)) {
+      const { _apiUrl, _accessToken } = event
       event = new FlatfileEvent(event)
+      if (_apiUrl && _accessToken) {
+        event.setVariables({
+          apiUrl: _apiUrl,
+          accessToken: _accessToken,
+        })
+      }
     }
 
     if (!this.matchEvent(event, this.filterQuery)) {
       return
     }
-
     await this.trigger(event)
 
     // dispatch the event on any registered children first
