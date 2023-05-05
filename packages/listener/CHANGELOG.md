@@ -1,5 +1,12 @@
 # @flatfile/listener
 
+## 0.0.8
+
+### Patch Changes
+
+- 74852f3: Adds Event Cache
+- 65aea7a: Adds conditional fetchApi variable to authenticated client to allow for client-side use
+
 ## 0.0.7
 
 ### Patch Changes

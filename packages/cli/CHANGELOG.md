@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.5
+
+### Patch Changes
+
+- 919c1f1: Adds backwards compatible support for legacy events
+
 ## 3.3.4
 
 ### Patch Changes
