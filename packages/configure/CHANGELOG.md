@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.27
+
+### Patch Changes
+
+- 720394d: Fixes async hooks
+
 ## 0.5.26
 
 ### Patch Changes

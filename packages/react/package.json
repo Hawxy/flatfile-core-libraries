@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/react",
-  "version": "5.0.17",
+  "version": "5.0.18",
   "description": "Flatfile React components",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@flatfile/api": "^0.0.19",
-    "@flatfile/configure": "0.5.26",
+    "@flatfile/configure": "0.5.27",
     "@tanstack/react-query": "^4.23.0",
     "@types/tinycolor2": "^1.4.3",
     "random-word-slugs": "^0.1.6",
