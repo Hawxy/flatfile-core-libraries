@@ -1,6 +1,5 @@
 import { AuthenticatedClient } from './authenticated.client'
 import { Event } from '@flatfile/api'
-import fetch from 'node-fetch'
 import { EventCache } from './cache'
 export class FlatfileEvent extends AuthenticatedClient {
   /**
@@ -26,8 +25,12 @@ export class FlatfileEvent extends AuthenticatedClient {
   public readonly payload: any
   public readonly cache: EventCache
 
-  constructor(private readonly src: Event) {
-    super()
+  constructor(
+    private readonly src: Event,
+    accessToken?: string,
+    apiUrl?: string
+  ) {
+    super(accessToken, apiUrl)
     this.cache = new EventCache()
     this.domain = src.domain
     this.topic = src.topic

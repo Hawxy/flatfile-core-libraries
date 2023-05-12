@@ -10,11 +10,10 @@ export function apiKeyClient({
   apiUrl: string
   apiKey: string
 }): DefaultApi {
-
   return new DefaultApi(
     new Configuration({
       fetchApi: fetch,
-      basePath: apiUrl ?? 'https://platform.flatfile.com/api/v1',
+      basePath: `${apiUrl ?? 'https://platform.flatfile.com/api'}/v1`,
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },

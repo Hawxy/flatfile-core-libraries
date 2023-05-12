@@ -12,6 +12,7 @@ import { createEnvironmentAction } from './x/actions/create.environment.action'
 import { switchInit } from './switch.init'
 import { publishPubSub } from './x/actions/publish.pubsub'
 import { deployAction } from './x/actions/deploy.action'
+import { developAction } from './x/actions/develop.action'
 
 dotenv.config()
 
@@ -30,9 +31,33 @@ program
 program
   .command('deploy [file]')
   .description('Deploy your project as a Flatfile Agent')
-  .option('-k, --token <url>', 'the authentication token to use (or set env FLATFILE_API_KEY or FLATFILE_BEARER_TOKEN)')
-  .option('-h, --api-url <url>', '(optional) the API URL to use (or set env FLATFILE_API_URL)')
+  .option(
+    '-k, --token <url>',
+    'the authentication token to use (or set env FLATFILE_API_KEY or FLATFILE_BEARER_TOKEN)'
+  )
+  .option(
+    '-h, --api-url <url>',
+    '(optional) the API URL to use (or set env FLATFILE_API_URL)'
+  )
   .action(deployAction)
+
+program
+  .command('develop [file]')
+  .alias('dev [file]')
+  .description('Deploy your project as a Flatfile Agent')
+  .option(
+    '-k, --token <string>',
+    'the authentication token to use (or set env FLATFILE_API_KEY or FLATFILE_BEARER_TOKEN)'
+  )
+  .option(
+    '-h, --api-url <url>',
+    '(optional) the API URL to use (or set env FLATFILE_API_URL)'
+  )
+  .option(
+    '-e, --env <string>',
+    '(optional) the Environment to use (or set env FLATFILE_ENVIRONMENT_ID)'
+  )
+  .action(developAction)
 
 program
   .command('init')

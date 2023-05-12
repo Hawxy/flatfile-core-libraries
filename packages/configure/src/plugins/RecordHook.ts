@@ -9,7 +9,7 @@ export const RecordHook = async (
 ) => {
   const { sheetId } = event.context
   try {
-    const records = (await event.data).records
+    const { records } = await event.data
     if (!records) return
 
     const batch = await prepareXRecords(records)

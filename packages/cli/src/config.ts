@@ -85,7 +85,7 @@ const rawConfig = rc('flatfile', {
 
   // platform configs
   entry: null,
-  api_url: 'https://platform.flatfile.com/api/v1', // configuration property used for x
+  api_url: 'https://platform.flatfile.com/api', // configuration property used for x
 })
 
 const ConfigValidation = z.object({

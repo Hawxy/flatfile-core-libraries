@@ -18,8 +18,8 @@ export class EventHandler extends AuthenticatedClient {
    */
   private listeners: [string | string[], EventFilter, EventCallback][] = []
 
-  constructor(filter?: EventFilter) {
-    super()
+  constructor(filter?: EventFilter, accessToken?: string, apiUrl?: string) {
+    super(accessToken, apiUrl)
     if (filter) {
       this.filterQuery = filter
     }
@@ -79,12 +79,11 @@ export class EventHandler extends AuthenticatedClient {
    */
   async dispatchEvent(event: FlatfileEvent | ApiEvent | any): Promise<void> {
     if (!(event instanceof FlatfileEvent)) {
-      const { _apiUrl, _accessToken } = event
-      event = new FlatfileEvent(event)
-      if (_apiUrl && _accessToken) {
+      event = new FlatfileEvent(event, this._accessToken, this._apiUrl)
+      if (this._apiUrl && this._accessToken) {
         event.setVariables({
-          apiUrl: _apiUrl,
-          accessToken: _accessToken,
+          apiUrl: this._apiUrl,
+          accessToken: this._accessToken,
         })
       }
     }

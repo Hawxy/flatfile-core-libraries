@@ -2,16 +2,15 @@ import chalk from 'chalk'
 import fs from 'fs'
 import path from 'path'
 import { config } from '../../config'
-import { EventTopic } from '@flatfile/api'
 import { apiKeyClient } from './auth.action'
 import ora from 'ora'
-
-import { rollup } from 'rollup'
-import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
-import resolve from '@rollup/plugin-node-resolve'
+// TODO: Can we do better with these types?
+// @ts-expect-error
 import readJson from 'read-package-json'
-import terser from '@rollup/plugin-terser'
+// @ts-expect-error
+import ncc from '@vercel/ncc'
+import { deployTopics } from '../../shared/constants'
+import { getAuth } from '../../shared/get-auth'
 
 export async function deployAction(
   file?: string | null | undefined,
@@ -25,26 +24,14 @@ export async function deployAction(
     fs.mkdirSync(outDir, { recursive: true })
   }
 
-  const apiUrl = options?.apiUrl || config().api_url
-
-  const apiKey =
-    options?.token ||
-    process.env.FLATFILE_API_KEY ||
-    process.env.FLATFILE_SECRET_KEY ||
-    process.env.FLATFILE_BEARER_TOKEN
-
-  if (!apiKey) {
-    console.log(
-      `🛑 You must provide an authentication key. Either set the ${chalk.bold(
-        'FLATFILE_API_KEY'
-      )} or ${chalk.bold(
-        'FLATFILE_BEARER_TOKEN'
-      )} environment variable, or pass it as an option to this command with ${chalk.bold(
-        '--token'
-      )}`
-    )
-    process.exit(1)
+  let authRes
+  try {
+    authRes = await getAuth(options)
+  } catch (e) {
+    console.log(e)
+    return
   }
+  const { apiKey, apiUrl, environment } = authRes
 
   file ??= config().entry
 
@@ -74,7 +61,7 @@ export async function deployAction(
       path.join(process.cwd(), 'package.json'),
       () => {},
       false,
-      function (er, data) {
+      function (er: any, data: any) {
         if (er) {
           console.log(
             'Could not find package.json in the current directory. Deploy flatfile from the root of your project.'
@@ -104,80 +91,29 @@ export async function deployAction(
     process.exit(1)
   }
 
-  try {
-    fs.readFile(
-      path.join(__dirname, '..', 'templates', 'entry.js'),
-      'utf8',
-      function (err, data) {
-        if (err) {
-          return console.log(err)
-        }
-        const result = data.replace(
-          /{ENTRY_PATH}/g,
-          path.join(
-            path.relative(
-              path.dirname(path.join(outDir, '_entry.js')),
-              path.dirname(file!)
-            ),
-            path.basename(file!)
-          )
-        )
+  const liteMode = process.env.FLATFILE_COMPILE_MODE === 'no-minify'
 
-        fs.writeFile(
-          path.join(outDir, '_entry.js'),
-          result,
-          'utf8',
-          function (err) {
-            if (err) return console.log(err)
-          }
-        )
-      }
+  try {
+    const data = fs.readFileSync(
+      path.join(__dirname, '..', 'templates', 'entry.js'),
+      'utf8'
     )
+    const result = data.replace(
+      /{ENTRY_PATH}/g,
+      path.join(
+        path.relative(
+          path.dirname(path.join(outDir, '_entry.js')),
+          path.dirname(file!)
+        ),
+        path.basename(file!)
+      )
+    )
+
+    fs.writeFileSync(path.join(outDir, '_entry.js'), result, 'utf8')
     const buildingSpinner = ora({
       text: `Building deployable code package`,
     }).start()
-    const bundle = await rollup({
-      input: path.join(outDir, '_entry.js'),
-      inlineDynamicImports: true,
-      plugins: [
-        json(),
-        commonjs(),
-        // injectProcessEnv(config().internal),
-        resolve({
-          preferBuiltins: false,
-        }),
-      ],
-      // Silences warning about using this being undefined
-      onwarn: function (warning) {
-        if (
-          warning.code === 'THIS_IS_UNDEFINED' ||
-          warning.code === 'CIRCULAR_DEPENDENCY' ||
-          warning.code === 'UNRESOLVED_IMPORT' ||
-          warning.code === 'PLUGIN_WARNING'
-        ) {
-          return
-        }
 
-        console.warn({ message: warning.message })
-      },
-    })
-
-    const liteMode = process.env.FLATFILE_COMPILE_MODE === 'no-minify'
-
-    await bundle.write({
-      file: path.join(outDir, 'build.cjs'),
-      format: 'cjs',
-      exports: 'auto',
-      sourcemap: liteMode ? false : 'inline',
-      plugins: liteMode
-        ? []
-        : [
-            // Minifies the bundle
-            // TODO: Be able to turn this off for debugging
-            terser(),
-          ],
-    })
-    await bundle.close()
     buildingSpinner.succeed('Code package compiled to .flatfile/build.js')
   } catch (e) {
     console.error(e)
@@ -190,92 +126,38 @@ export async function deployAction(
     text: `Validating code package...`,
   }).start()
   try {
-    const buildFile = path.join(outDir, 'build.cjs')
-    const buffer = fs.readFileSync(buildFile)
-    const source = buffer.toString()
-    const client = require(buildFile)
-
-    if (!('mount' in client)) {
-      validatingSpinner.fail(
-        'An issue was found in the compiled code. No mount() method detected on client.'
-      )
-      return
-    }
-
     validatingSpinner.succeed('Code package passed validation')
 
-    const envSpinner = ora({
-      text: `Validating environment...`,
-    }).start()
+    ora({
+      text: `Environment "${environment?.name}" selected`,
+    }).succeed()
 
-    const environments = await apiClient.getEnvironments()
-
-    const environment = environments.data?.[0]
-    envSpinner.succeed(`Environment "${environment?.name}" selected`)
     const deployingSpinner = ora({
       text: `Deploying event listener to Flatfile`,
     }).start()
 
     try {
-      // TODO: This just need to be **
-      const topics = [
-        'agent:created',
-        'agent:updated',
-        'agent:deleted',
-
-        'space:created',
-        'space:deleted',
-        'space:added', // legacy
-        'space:removed', // legacy
-
-        'workbook:created',
-        'workbook:deleted',
-        'workbook:added', // legacy
-        'workbook:removed', // legacy
-
-        'sheet:created',
-        'sheet:updated',
-        'sheet:deleted',
-        'sheet:validated', // legacy
-
-        'record:created',
-        'record:updated',
-        'record:deleted',
-        'records:created', // legacy
-        'records:updated', // legacy
-        'records:deleted', // legacy
-
-        'file:created',
-        'file:updated',
-        'file:deleted',
-        'upload:started', // legacy
-        'upload:failed', // legacy
-        'upload:completed', // legacy
-
-        'job:created',
-        'job:updated',
-        'job:deleted',
-        'job:failed',
-        'job:completed',
-        'job:started', // legacy
-        'job:waiting', // legacy
-        'action:triggered', // legacy
-
-        'commit:created',
-        'commit:updated',
-        'layer:created',
-
-        'client:init', // legacy
-      ] as EventTopic[]
+      const { err, code } = await ncc(path.join(outDir, '_entry.js'), {
+        minify: liteMode,
+        target: 'es2020',
+        cache: false,
+      })
+      if (err) {
+        deployingSpinner.fail(
+          `Event listener failed to build ${chalk.dim(err)}\n`
+        )
+        process.exit(1)
+      }
 
       const agent = await apiClient.createAgent({
         environmentId: environment?.id!,
         agentConfig: {
-          topics,
+          topics: deployTopics,
           compiler: 'js',
-          source,
+          source: code,
         },
       })
+      // console.log({ map, assets })
 
       deployingSpinner.succeed(
         `Event listener deployed and running on your environment "${
