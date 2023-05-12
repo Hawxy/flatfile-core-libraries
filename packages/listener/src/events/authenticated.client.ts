@@ -45,6 +45,7 @@ export class AuthenticatedClient {
 
     const headers = {
       Authorization: `Bearer ${this._accessToken}`,
+      'x-disable-hooks': 'true',
     }
     const fetchUrl = this._apiUrl + '/' + url
 
