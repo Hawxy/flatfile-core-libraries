@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.6
+
+### Patch Changes
+
+- 46357d9: flatfile deploy and develop
+
 ## 3.3.5
 
 ### Patch Changes

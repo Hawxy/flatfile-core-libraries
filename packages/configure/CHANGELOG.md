@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.28
+
+### Patch Changes
+
+- 46357d9: flatfile deploy and develop
+
 ## 0.5.27
 
 ### Patch Changes
