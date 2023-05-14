@@ -1,5 +1,12 @@
 # @flatfile/listener
 
+## 0.0.10
+
+### Patch Changes
+
+- 4807720: removes unused node dependencies
+- 82e80e3: Add in x-disable-hooks header
+
 ## 0.0.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.29
+
+### Patch Changes
+
+- 4807720: removes unused node dependencies
+
 ## 0.5.28
 
 ### Patch Changes
