@@ -104,4 +104,4 @@ Package publishing is automated through changeset and github workflows. To insti
 3. Push the resulting `.changeset` file along with the package changes from the first step
 4. Create PR with these changes and merge into main
 
-This will trigger a github action to create a new PR with the increased version and changelog. Once this PR gets merged, CI runs again and releases the package(s) to npm.
+This will trigger a Github action to create a new PR with the increased version and changelog. Once this PR gets merged, CI runs again and releases the package(s) to npm.
