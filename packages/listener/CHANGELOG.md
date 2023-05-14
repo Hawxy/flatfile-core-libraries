@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.1.0
+
+### Minor Changes
+
+- 4d88069: Adds a major improvement to event filtering, allowing you to grep the key path and defaulting to matching any key in the object
+
 ## 0.0.10
 
 ### Patch Changes
