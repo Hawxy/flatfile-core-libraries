@@ -1,5 +1,6 @@
 import { Arrayable } from './event.handler'
 import wildMatch from 'wildcard-match'
+import flat from 'flat'
 
 /**
  * Glob style matching of a value
@@ -18,32 +19,82 @@ export function glob(val: any, filter: string | string[]): boolean {
  * Glob style matching of values in an object
  *
  * @param object
- * @param filter
+ * @param filterObject
  */
 export function objectMatches(
   object: Record<string, any>,
-  filter: Record<string, Arrayable<string>>
+  filterObject: JSONPrimitive | FilterObj
 ): boolean {
+  const cleanFilter: FilterObj =
+    !filterObject || typeof filterObject !== 'object'
+      ? { '**': filterObject }
+      : filterObject
+
+  if (typeof object !== 'object') {
+    throw new Error('You cannot filter a non-object')
+  }
   let denied = false
-  for (const x in filter) {
-    const prop: Arrayable<string> = object[x]
+  const filter: FilterObj = flat(cleanFilter, { safe: true })
+  const flattened = flat(object, { safe: true }) as Record<
+    string,
+    JSONPrimitive
+  >
 
-    if (!object?.[x]) {
-      return false
-    }
+  // all filters MUST resolve true
+  for (const keyPattern in filter) {
+    const keys = filterKeys(flattened, keyPattern)
 
-    if (
-      typeof prop === 'string' ||
-      (Array.isArray(prop) && typeof prop[0] === 'string')
-    ) {
-      if (Array.isArray(prop)) {
-        denied ||= !prop.some((p) => {
-          return glob(p, filter[x])
-        })
-      } else {
-        denied ||= !glob(prop, filter[x])
-      }
-    }
+    const valuePattern = (
+      Array.isArray(filter[keyPattern])
+        ? filter[keyPattern]
+        : [filter[keyPattern]]
+    ) as JSONPrimitive[]
+
+    // only one filter must match
+    denied ||= !keys.some((key) => {
+      const value: JSONPrimitive = flattened[key]
+      return valuePattern.some((match) => globOrMatch(value, match))
+    })
   }
   return !denied
 }
+
+/**
+ * Glob keys of an object and return the narrowed set
+ *
+ * @param object
+ * @param glob
+ */
+function filterKeys<T extends Record<string, any>>(
+  object: Record<string, any>,
+  glob: string
+): Array<keyof T> {
+  glob = glob.includes('*') || glob.includes('.') ? glob : `**.${glob}`
+  const matcher = wildMatch(glob, '.')
+  return Object.keys(object).filter((key) => matcher(key))
+}
+
+function globOrMatch(
+  val: Arrayable<JSONPrimitive>,
+  filter: JSONPrimitive
+): boolean {
+  if (val === undefined || val === null) {
+    return filter === null
+  }
+  if (Array.isArray(val)) {
+    return val.some((v) => globOrMatch(v, filter))
+  }
+  if (typeof filter === 'string') {
+    return glob(val.toString(), filter)
+  }
+
+  // otherwise do a simple comparison
+  return val === filter
+}
+
+type JSONPrimitive = string | number | boolean | null
+
+type FilterObj = Record<
+  string,
+  Arrayable<JSONPrimitive> | Record<string, Arrayable<JSONPrimitive>>
+>
