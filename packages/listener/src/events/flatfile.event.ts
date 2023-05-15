@@ -37,7 +37,7 @@ export class FlatfileEvent extends AuthenticatedClient {
     this.context = src.context // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
     this.payload = src.payload
     this.target = src.target || ''
-    this.action = src.context.actionName || ''
+    this.action = src.context?.actionName || ''
   }
 
   /**

@@ -1,5 +1,5 @@
 /**
- * The Client
+ * The Flatfile Listener
  *
  * The Flatfile PubSub Client is just a simple event subscriber. It can
  * receive events from any PubSub driver. The default drivers are:
@@ -31,7 +31,7 @@
 import { EventFilter, EventHandler } from './events'
 import { EventDriver } from './event-drivers/_EventDriver'
 
-export class Client extends EventHandler {
+export class FlatfileListener extends EventHandler {
   /**
    * Subscribe to events only within a certain namespace.
    *
@@ -49,15 +49,10 @@ export class Client extends EventHandler {
    * @param cb
    */
   filter(filter: EventFilter, cb?: SubFn) {
-    const client = new Client(filter)
+    const client = new FlatfileListener(filter)
     this.addNode(client)
     cb?.(client)
     return client
-  }
-
-  setupFunctions: Array<(...args: any[]) => void> = []
-  public beforeMount(cb: SubFn) {
-    this.setupFunctions.push(cb)
   }
 
   /**
@@ -65,9 +60,9 @@ export class Client extends EventHandler {
    *
    * @param cb
    */
-  public static create(cb: SubFn): Client {
-    const client = new Client()
-    client.beforeMount(() => cb(client))
+  public static create(cb: SubFn): FlatfileListener {
+    const client = new FlatfileListener()
+    cb(client)
     return client
   }
 
@@ -75,10 +70,9 @@ export class Client extends EventHandler {
    * Mount this client using an acceptable Event Driver
    */
   mount(driver: EventDriver) {
-    this.setupFunctions.forEach((f) => f())
     driver.mountEventHandler(this)
     return this
   }
 }
 
-type SubFn = (client: Client) => void
+type SubFn = (client: FlatfileListener) => void

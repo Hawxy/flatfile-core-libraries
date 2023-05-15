@@ -1,6 +1,6 @@
-import { Client, FlatfileVirtualMachine } from '../'
+import { FlatfileListener, FlatfileVirtualMachine } from '../'
 
-const example = Client.create((client) => {
+const example = FlatfileListener.create((client) => {
   /**
    * This is a basic hook on events with no sugar on top
    */

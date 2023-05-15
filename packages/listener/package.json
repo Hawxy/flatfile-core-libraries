@@ -5,12 +5,12 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "type": "module",
   "scripts": {
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "dev": "tsup src/index.ts --format esm,cjs --dts  --watch",
-    "poll": "tsup src/dev.ts --format esm,cjs --watch --dts --onSuccess \"node dist/dev.js\""
+    "poll": "tsup src/dev.ts --format esm,cjs --watch --dts --onSuccess \"node dist/dev.js\"",
+    "test": "jest --passWithNoTests"
   },
   "license": "MIT",
   "devDependencies": {

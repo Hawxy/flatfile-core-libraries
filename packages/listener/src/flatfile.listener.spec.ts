@@ -1,4 +1,4 @@
-import { Client } from './Client'
+import { FlatfileListener } from './flatfile.listener'
 
 describe('Client', () => {
   let testFn: jest.Mock
@@ -8,16 +8,16 @@ describe('Client', () => {
   })
 
   describe('triggering', () => {
-    test('triggers basic event listeners', () => {
-      const client = Client.create((c) => {
+    test('triggers basic event listeners', async () => {
+      const client = FlatfileListener.create((c) => {
         c.on('foo', testFn)
       })
-      client.dispatchEvent({ topic: 'foo' })
+      await client.dispatchEvent({ topic: 'foo' })
       expect(testFn).toHaveBeenCalledTimes(1)
     })
 
     test('triggers namespaced event listeners', () => {
-      const client = Client.create((c) => {
+      const client = FlatfileListener.create((c) => {
         c.on('records:created', testFn)
       })
       client.dispatchEvent({ topic: 'records:created' })
@@ -25,7 +25,7 @@ describe('Client', () => {
     })
 
     test('triggers event listener for array of events', () => {
-      const client = Client.create((c) => {
+      const client = FlatfileListener.create((c) => {
         c.on(['records:created', 'records:updated'], testFn)
       })
       client.dispatchEvent({ topic: 'records:created' })
@@ -34,7 +34,7 @@ describe('Client', () => {
     })
 
     test('triggers event listener for wildcard query of events', () => {
-      const client = Client.create((c) => {
+      const client = FlatfileListener.create((c) => {
         c.on('records:*', testFn)
       })
       client.dispatchEvent({ topic: 'records:created' })
@@ -46,7 +46,7 @@ describe('Client', () => {
 
   describe('filtering', () => {
     test('trigger only when filter match - on listener', async () => {
-      const client = Client.create((c) => {
+      const client = FlatfileListener.create((c) => {
         c.on('records:created', { domain: 'foo' }, testFn)
       })
       await client.dispatchEvent({ topic: 'records:created' })
@@ -55,7 +55,7 @@ describe('Client', () => {
     })
 
     test('trigger only when filter match - on scope', async () => {
-      const client = Client.create((c) => {
+      const client = FlatfileListener.create((c) => {
         c.filter({ domain: 'foo' }, (f) => {
           f.on('records:created', testFn)
         })
@@ -66,7 +66,7 @@ describe('Client', () => {
     })
 
     test('multiple layers of filtering', async () => {
-      const client = Client.create((c) => {
+      const client = FlatfileListener.create((c) => {
         c.filter({ domain: 'foo:*' })
           .filter({ domain: 'foo:bar' })
           .use((f) => {
