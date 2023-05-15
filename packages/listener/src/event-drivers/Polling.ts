@@ -37,7 +37,7 @@ export class PollingEventDriver extends EventDriver {
       apiUrl: this.apiUrl,
     })
 
-    let lastTimestamp = new Date()
+    let lastTimestamp = new Date(Date.now() - 5000)
     if (!this.environmentId) {
       throw new Error('environmentId is required')
     }
@@ -74,7 +74,7 @@ export class PollingEventDriver extends EventDriver {
         })
         .catch(console.error)
 
-      lastTimestamp = new Date()
+      lastTimestamp = new Date(Date.now() - 5000)
     }, 500)
   }
 
