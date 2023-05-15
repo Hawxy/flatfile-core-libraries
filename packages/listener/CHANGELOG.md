@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.1.1
+
+### Patch Changes
+
+- 356c35d: Minor CI improvements and backwards compatible rename of Client to FlatfileListener
+
 ## 0.1.0
 
 ### Minor Changes
