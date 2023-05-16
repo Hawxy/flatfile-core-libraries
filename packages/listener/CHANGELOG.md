@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.1.2
+
+### Patch Changes
+
+- 22d2466: Pull last 5 seconds of events in Polling Driver
+
 ## 0.1.1
 
 ### Patch Changes
