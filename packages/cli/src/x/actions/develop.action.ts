@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import { config } from '../../config'
-import { NodeVM } from 'vm2'
 import { Client, PollingEventDriver } from '@flatfile/listener'
 import ora from 'ora'
 // TODO: Can we do better with these types?
@@ -74,34 +73,20 @@ export async function developAction(
       watch: true,
     })
 
-    const processMock = {
-      env: {
-        FLATFILE_API_KEY: apiKey,
-        AGENT_INTERNAL_URL: process.env.AGENT_INTERNAL_URL,
-      },
-    }
-    // @ts-expect-error
-    processMock[Symbol.toStringTag] = 'process'
-
-    const vm = new NodeVM({
-      sandbox: {
-        process: processMock,
-      },
-      require: {
-        external: true,
-        builtin: ['*'],
-        root: './',
-      },
-      wrapper: 'commonjs',
-    })
-
-    watcher.handler(({ err, code }: { err: any; code: any }) => {
+    watcher.handler(async ({ err, code }: { err: any; code: any }) => {
       if (err) {
         console.error(err)
       } else {
         try {
-          const listener = vm.run(code)
-
+          // const listener = vm.run(code)
+          Object.keys(require.cache).forEach(function (id) {
+            if (id.includes('develop.js')) {
+              delete require.cache[id]
+            }
+          })
+          const listenerPath = path.join(outDir, 'develop.js')
+          await fs.promises.writeFile(listenerPath, code)
+          const listener = require(listenerPath)
           const devClient = Client.create(listener.default)
           devClient.setVariables({
             accessToken: apiKey,

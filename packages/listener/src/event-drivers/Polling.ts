@@ -1,6 +1,21 @@
 import c from 'ansi-colors'
 import { EventDriver } from './_EventDriver'
 
+const prepTargetForEvent = (event: any) => {
+  const actionName = event.payload?.['actionName']
+  const sheetSlug = event.context.sheetSlug
+  const domain =
+    sheetSlug && event.domain === 'workbook' ? 'sheet' : event.domain
+  const actionTarget = `${domain}(${actionName?.split(':')[0]})`
+
+  const target =
+    domain === 'file'
+      ? 'space(*)'
+      : actionName
+      ? actionTarget
+      : `sheet(${sheetSlug?.split('/').pop()})` // workbook(PrimaryCRMWorkbook)
+  return target
+}
 /**
  * Todo: this should just be using the version from listener
  */
@@ -68,6 +83,7 @@ export class PollingEventDriver extends EventDriver {
                 )} ${e.createdAt?.toLocaleString()}\n`
               )
               events.set(e.id, true)
+              e.target = prepTargetForEvent(e)
               this.dispatchEvent(e)
             }
           })

@@ -17,9 +17,10 @@
   "dependencies": {
     "@flatfile/configure": "*",
     "@flatfile/listener": "*",
+    "@flatfile/plugin-dxp-configure": "^0.0.3",
     "@flatfile/plugin-xlsx-extractor": "*",
-    "flatfile": "*",
     "color": "^4.2.3",
+    "flatfile": "*",
     "react": "^17.0.1"
   },
   "scripts": {
@@ -28,6 +29,8 @@
     "deploy:xdk": "flatfile publish src/xdk-simple-deploy.ts",
     "deploy:pubsub": "flatfile deploy src/develop/pubsub.ts",
     "dev:pubsub": "flatfile develop src/develop/pubsub.ts",
+    "dxp:develop": "flatfile develop src/dxp-configure-test/listener.ts",
+    "dxp:deploy": "flatfile deploy src/dxp-configure-test/listener.ts",
     "create:env": "flatfile create:env -n",
     "quickstart": "flatfile quickstart",
     "lint": "TIMING=1 eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",

@@ -53,7 +53,7 @@ type SheetComputeType = (
 
 import { Action } from './Action'
 import { FlatfileEvent } from '../utils/flatfile.event'
-import { SheetAccess } from '@flatfile/blueprint';
+import { SheetAccess } from '@flatfile/blueprint'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }
