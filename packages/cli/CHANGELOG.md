@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.7
+
+### Patch Changes
+
+- 9641918: Fix develop command for using node fetch
+
 ## 3.3.6
 
 ### Patch Changes
