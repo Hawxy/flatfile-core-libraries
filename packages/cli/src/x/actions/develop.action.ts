@@ -44,10 +44,17 @@ export async function developAction(
       path.join(process.cwd(), 'index.js'),
       path.join(process.cwd(), 'src', 'index.js'),
       path.join(process.cwd(), '.build', 'index.js'),
+      path.join(process.cwd(), 'dist', 'index.js'),
     ]
     file = files.find((f) => fs.existsSync(f))
   } else {
     file = path.join(process.cwd(), file)
+  }
+  if (!file) {
+    console.error(
+      'Could not find a viable entry file. Please specify the exact path to the entry file or add an "entry" configuration to your .flatfilerc'
+    )
+    return
   }
 
   process.env.AGENT_INTERNAL_URL = apiUrl
