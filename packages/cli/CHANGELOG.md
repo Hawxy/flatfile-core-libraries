@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.3.8
+
+### Patch Changes
+
+- 626f896: check for .ts files when running npx flatfile
+
 ## 3.3.7
 
 ### Patch Changes
