@@ -41,7 +41,9 @@ export async function developAction(
   if (!file) {
     const files = [
       path.join(process.cwd(), 'index.js'),
+      path.join(process.cwd(), 'index.ts'),
       path.join(process.cwd(), 'src', 'index.js'),
+      path.join(process.cwd(), 'src', 'index.ts'),
       path.join(process.cwd(), '.build', 'index.js'),
       path.join(process.cwd(), 'dist', 'index.js'),
     ]
@@ -51,7 +53,7 @@ export async function developAction(
   }
   if (!file) {
     console.error(
-      'Could not find a viable entry file. Please specify the exact path to the entry file or add an "entry" configuration to your .flatfilerc'
+      'Could not find a viable entry file. Please specify the exact path to the entry file or add an "entry" configuration to your .env or .flatfilerc'
     )
     return
   }
