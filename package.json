@@ -10,6 +10,8 @@
     "dev": "turbo run dev --parallel --continue",
     "lint": "turbo run lint",
     "clean": "turbo run clean && rm -rf node_modules && rm -rf .parcel-cache",
+    "clean:make": "npm run clean && npm i && npm run build && npm i",
+    "make": "npm i && npm run build && npm i",
     "test": "turbo run test",
     "format": "prettier --ignore-path .gitignore --write \"**/*.{js,jsx,ts,tsx,md}\"",
     "changeset": "changeset",
