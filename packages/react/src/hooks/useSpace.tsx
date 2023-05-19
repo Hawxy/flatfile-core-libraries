@@ -1,37 +1,22 @@
-import React, { useState, useCallback } from 'react'
-import { useInitializeSpace } from './useInitializeSpace'
+import React, { ReactElement, useState } from 'react'
 import { ISpace } from '../types/ISpace'
 import Space from '../components/Space'
+import { EmbeddedContext } from '../contexts/EmbeddedContext'
 
 /**
  * @name useSpace
- * @description Returns a space component or an error if internal api calls fail
- * @returns { error: string | undefined, data: { component: ReactElement } }
+ * @description Returns a space component
+ * @returns { component: ReactElement }
  */
 
-export const useSpace = (props: ISpace) => {
-  const [error, setError] = useState<string | undefined>(undefined)
-  const { handleInit } = useInitializeSpace(props)
+export const useSpace = (props: ISpace): { component: ReactElement } => {
+  const [currentSpace, setCurrentSpace] = useState(undefined)
 
-  const init = useCallback(async () => {
-    try {
-      await handleInit()
-    } catch (e: any) {
-      setError(e)
-    }
-  }, [handleInit])
-
-  useCallback(() => {
-    init()
-  }, [])
-
-  if (error) {
-    return { error }
-  } else {
-    return {
-      data: {
-        component: <Space {...props} />,
-      },
-    }
+  return {
+    component: (
+      <EmbeddedContext.Provider value={{ currentSpace, setCurrentSpace }}>
+        <Space {...props} />
+      </EmbeddedContext.Provider>
+    )
   }
 }

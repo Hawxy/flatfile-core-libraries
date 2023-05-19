@@ -10,16 +10,16 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'index.ts'),
       name: 'Embed React',
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
       output: {
         globals: {
-          react: 'React',
-        },
-      },
-    },
+          react: 'React'
+        }
+      }
+    }
   },
   test: {
     environment: 'jsdom',
@@ -30,17 +30,17 @@ export default defineConfig({
     coverage: {
       100: true,
       all: true,
-      reporter: ['text', 'json', 'html'],
-    },
+      reporter: ['text', 'json', 'html']
+    }
   },
   clearScreen: false,
   plugins: [
     react(),
     dts({
-      insertTypesEntry: true,
-    }),
+      insertTypesEntry: true
+    })
   ],
   server: {
-    open: true,
-  },
+    open: true
+  }
 })

@@ -1,29 +1,25 @@
-import { Blueprint, DocumentConfig, Action } from '@flatfile/api'
-import { XOR } from 'ts-xor'
+import React, { FC } from 'react'
+import { Flatfile } from '@flatfile/api'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
+import { FlatfileListener } from '@flatfile/listener'
 
-export interface BaseSpace {
+export interface ISpace {
   /**
    * Name of space
    * Optional
    */
   name?: string
   /**
-   * Access token accessed via /auth/access-token
+   * Publishable key accessed via auth/api-keys or Flatfile dashboard > Developer
    * Required
    */
-  accessToken: string
+  publishableKey: string
   /**
    * Identifier for environment
    * Required
    */
   environmentId: string
-  /**
-   * Additional metadata to be passed to the space
-   * Optional
-   */
-  spaceInfo?: Partial<ISpaceInfo>
   /**
    * Theme values for space, sidebar and data table
    * Optional
@@ -38,62 +34,50 @@ export interface BaseSpace {
    * Document to pass to space
    * Optional
    */
-  document?: DocumentConfig
+  document?: Flatfile.DocumentConfig
   /**
-   * Actions belonging to a Space
+   * Additional metadata to be passed to the space
    * Optional
    */
-  actions?: Action[]
-}
+  spaceInfo?: Partial<ISpaceInfo>
+  /**
+   * Shape of data you will be receiving:
+   * Required
+   */
+  workbook: Pick<Flatfile.WorkbookConfig, 'name' | 'sheets' | 'actions'>
+  /**
+   * Listener for advanced functionality
+   * Optional
+   */
+  listener?: FlatfileListener
+  /**
+   *
+   * style the iframe using CSS Properties
+   */
+  iframeStyles?: React.CSSProperties
+  /**
+   *
+   * style the iframe using CSS Properties
+   */
+  closeSpace?: {
+    operation: string
+    onClose: (data: any) => void
+  }
+  /**
+   * Error element to override default Error component
+   * Optional
+   */
+  error?: (error: Error | string) => React.ReactElement
+  /**
+   * Loading element to override default Loading component
+   * Optional
+   */
 
+  loading?: React.ReactElement
+}
 export interface ISpaceInfo {
   userId?: string
   name?: string
   companyId?: string
   companyName?: string
 }
-
-interface SpaceWithSpaceId extends BaseSpace {
-  /**
-   * Identifier for space
-   * Required if no config or configId
-   */
-  spaceId: string
-}
-
-interface SpaceWithSpaceConfigId extends BaseSpace {
-  /**
-   * Identifier for space
-   * Optional
-   */
-  spaceId?: string
-  /**
-   * Id of shape of data you will be receiving:
-   * Required if no spaceId
-   */
-  spaceConfigId: string
-}
-
-interface SpaceWithRawSpaceConfig extends BaseSpace {
-  /**
-   * Identifier for space
-   * Optional
-   */
-  spaceId?: string
-  /**
-   * Shape of data you will be receiving:
-   * Required if no spaceId
-   */
-  spaceConfig:
-    | {
-        slug: string
-        name: string
-        blueprints: Blueprint[]
-      }
-    | any
-}
-
-export type ISpace = XOR<
-  XOR<SpaceWithSpaceId, SpaceWithSpaceConfigId>,
-  XOR<SpaceWithSpaceConfigId, SpaceWithRawSpaceConfig>
->

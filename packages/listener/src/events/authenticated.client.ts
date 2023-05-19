@@ -1,3 +1,4 @@
+import { CrossEnvConfig } from '@flatfile/cross-env-config'
 import axios from 'axios'
 
 export class AuthenticatedClient {
@@ -6,10 +7,10 @@ export class AuthenticatedClient {
 
   constructor(accessToken?: string, apiUrl?: string) {
     const FLATFILE_API_URL =
-      process.env.AGENT_INTERNAL_URL || 'http://localhost:3000'
+      CrossEnvConfig.get('AGENT_INTERNAL_URL') || 'http://localhost:3000'
+    const bearerToken = CrossEnvConfig.get('FLATFILE_BEARER_TOKEN')
 
-    this._accessToken =
-      accessToken || process.env.FLATFILE_BEARER_TOKEN || '...'
+    this._accessToken = accessToken || bearerToken || '...'
 
     this._apiUrl = apiUrl || FLATFILE_API_URL
   }
@@ -20,10 +21,12 @@ export class AuthenticatedClient {
       'x-disable-hooks': 'true',
     }
     const fetchUrl = this._apiUrl + '/' + url
-    console.log({ fetchUrl })
-    return axios.get(fetchUrl, { headers }).then((resp: any) => resp.data.data).catch((err: any) => {})
-  }
 
+    return axios
+      .get(fetchUrl, { headers })
+      .then((resp: any) => resp.data.data)
+      .catch((err: any) => {})
+  }
   /**
    *
    * @deprecated use @flatfile/cross-env-config instead
