@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.0
+
+### Minor Changes
+
+- 2a30e13: Add cross-env library for accessing environment variables
+
 ## 0.2.0
 
 ### Minor Changes

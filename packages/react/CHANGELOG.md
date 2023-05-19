@@ -1,5 +1,16 @@
 # @flatfile/react
 
+## 6.0.0
+
+### Major Changes
+
+- 2a30e13: Add listener to react package
+
+### Patch Changes
+
+- Updated dependencies [2a30e13]
+  - @flatfile/listener@0.3.0
+
 ## 5.0.21
 
 ### Patch Changes
