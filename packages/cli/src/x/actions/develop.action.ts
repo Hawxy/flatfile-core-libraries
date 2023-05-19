@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { config } from '../../config'
-import { Client, PollingEventDriver } from '@flatfile/listener'
+import { Client } from '@flatfile/listener'
 import ora from 'ora'
 // TODO: Can we do better with these types?
 // @ts-expect-error
@@ -9,6 +9,7 @@ import readJson from 'read-package-json'
 // @ts-expect-error
 import ncc from '@vercel/ncc'
 import { getAuth } from '../../shared/get-auth'
+import { PollingEventDriver } from '../../shared/utils/polling'
 
 export async function developAction(
   file?: string | null | undefined,

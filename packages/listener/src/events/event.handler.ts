@@ -1,7 +1,7 @@
 import { AuthenticatedClient } from './authenticated.client'
 import { EventCallback, FlatfileEvent } from './flatfile.event'
 import { glob, objectMatches } from './glob.match'
-import { Event as ApiEvent } from '@flatfile/api'
+import type { Flatfile } from '@flatfile/api'
 
 /**
  * EventHandler is a Flatfile flavored implementation of EventTarget
@@ -77,7 +77,7 @@ export class EventHandler extends AuthenticatedClient {
    *
    * @param event
    */
-  async dispatchEvent(event: FlatfileEvent | ApiEvent | any): Promise<void> {
+  async dispatchEvent(event: FlatfileEvent | Flatfile.Event | any): Promise<void> {
     if (!(event instanceof FlatfileEvent)) {
       event = new FlatfileEvent(event, this._accessToken, this._apiUrl)
       if (this._apiUrl && this._accessToken) {
@@ -107,7 +107,7 @@ export class EventHandler extends AuthenticatedClient {
    * @alias dispatchEvent
    * @param event
    */
-  async routeEvent(event: ApiEvent) {
+  async routeEvent(event: Flatfile.Event) {
     return this.dispatchEvent(event)
   }
 

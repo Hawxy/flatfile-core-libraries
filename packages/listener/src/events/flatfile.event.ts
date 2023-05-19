@@ -1,5 +1,5 @@
 import { AuthenticatedClient } from './authenticated.client'
-import { Event } from '@flatfile/api'
+import type { Flatfile } from '@flatfile/api'
 import { EventCache } from './cache'
 export class FlatfileEvent extends AuthenticatedClient {
   /**
@@ -26,7 +26,7 @@ export class FlatfileEvent extends AuthenticatedClient {
   public readonly cache: EventCache
 
   constructor(
-    private readonly src: Event,
+    private readonly src: Flatfile.Event,
     accessToken?: string,
     apiUrl?: string
   ) {

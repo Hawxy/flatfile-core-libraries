@@ -1,6 +1,7 @@
 import { recordHook } from '@flatfile/plugin-record-hook'
 import fetch from 'node-fetch'
 import axios from 'axios'
+import api from '@flatfile/api'
 
 export default function (listener) {
   /**
@@ -40,18 +41,20 @@ export default function (listener) {
     { context: { sheetSlug: 'contacts' } },
     async (event) => {
       const { sheetId } = event.context
-      const records = (await event.data).records
-
+      const { records } = await event.data
+      if (!records) return
       records.forEach((record) => {
-        record.values.lastName.value = 'Rock'
+        record.values.last_name.value = 'Rock'
 
         Object.keys(record.values).forEach((key) => {
+          delete record.values[key].updatedAt
           if (record.values[key].value === null) {
             delete record.values[key]
           }
         })
       })
-      await event.api.records.update(sheetId, records)
+
+      await api.records.update(sheetId, records)
     }
   )
 
@@ -60,28 +63,26 @@ export default function (listener) {
    */
 
   listener.on('action:triggered', async (event) => {
-    const webhookReceiver =
-      '<WEBHOOK URL>'
+    const webhookReceiver = '<WEBHOOK URL>'
     // copy your https://webhook.site URL for testing
     const res = await fetch(webhookReceiver, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ ...event.payload, 'method': 'fetch' }),
+      body: JSON.stringify({ ...event.payload, method: 'fetch' })
     })
   })
-  
+
   listener.on('action:triggered', async (event) => {
-    const webhookReceiver =
-    '<WEBHOOK URL>'
+    const webhookReceiver = '<WEBHOOK URL>'
     // copy your https://webhook.site URL for testing
     const res = await axios(webhookReceiver, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      data: JSON.stringify({ ...event.payload, 'method': 'axios' }),
+      data: JSON.stringify({ ...event.payload, method: 'axios' })
     })
   })
 }

@@ -1,5 +1,7 @@
 import c from 'ansi-colors'
-import { EventDriver } from './_EventDriver'
+import { EventDriver } from '@flatfile/listener'
+import { Configuration, DefaultApi } from '@flatfile/api'
+import fetch from 'node-fetch'
 
 const prepTargetForEvent = (event: any) => {
   const actionName = event.payload?.['actionName']
@@ -56,42 +58,55 @@ export class PollingEventDriver extends EventDriver {
     if (!this.environmentId) {
       throw new Error('environmentId is required')
     }
-    setInterval(() => {
-      this.handler.api
-        .getEvents({
-          since: lastTimestamp,
-          includeAcknowledged: false,
-          environmentId: this.environmentId,
+
+    try {
+      const authClient = new DefaultApi(
+        new Configuration({
+          accessToken: this.accessToken,
+          fetchApi: fetch,
+          basePath: this.apiUrl + '/v1',
         })
-        .then((res) => {
-          process.stdout.cursorTo(0)
-          process.stdout.clearLine(1)
-
-          if (!res.data?.length) {
-            process.stdout.write(
-              `${c.white.bgMagentaBright(
-                'listening for events'
-              )} at ${lastTimestamp.toLocaleString()}`
-            )
-          }
-
-          res.data?.forEach((e) => {
-            if (!events.get(e.id)) {
-              process.stdout.write(
-                `${c.white.bgBlue(e.topic)} ${c.white.bgYellow(
-                  e.id
-                )} ${e.createdAt?.toLocaleString()}\n`
-              )
-              events.set(e.id, true)
-              e.target = prepTargetForEvent(e)
-              this.dispatchEvent(e)
-            }
+      )
+      setInterval(() => {
+        authClient
+          .getEvents({
+            since: lastTimestamp,
+            includeAcknowledged: false,
+            environmentId: this.environmentId,
           })
-        })
-        .catch(console.error)
+          .then((res) => {
+            process.stdout.cursorTo(0)
+            process.stdout.clearLine(1)
 
-      lastTimestamp = new Date(Date.now() - 5000)
-    }, 500)
+            if (!res.data?.length) {
+              process.stdout.write(
+                `${c.white.bgMagentaBright(
+                  'listening for events'
+                )} at ${lastTimestamp.toLocaleString()}`
+              )
+            }
+
+            res.data?.forEach((e) => {
+              if (!events.get(e.id)) {
+                process.stdout.write(
+                  `${c.white.bgBlue(e.topic)} ${c.white.bgYellow(
+                    e.id
+                  )} ${e.createdAt?.toLocaleString()}\n`
+                )
+                events.set(e.id, true)
+                e.target = prepTargetForEvent(e)
+                this.dispatchEvent(e)
+              }
+            })
+          })
+          .catch(console.error)
+
+        lastTimestamp = new Date(Date.now() - 5000)
+      }, 500)
+    } catch (e) {
+      console.log(e)
+      process.exit(1)
+    }
   }
 
   shutdown() {}

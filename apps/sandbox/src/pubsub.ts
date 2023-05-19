@@ -3,27 +3,24 @@ import {
   FlatfileVirtualMachine,
   FlatfileEvent,
 } from '@flatfile/listener'
-import { RecordHook, createBlueprintFromConfigure } from '@flatfile/configure'
+import { createBlueprintFromConfigure } from '@flatfile/configure'
 import { FlatfileRecord } from '@flatfile/hooks'
+import { recordHook } from '@flatfile/plugin-record-hook'
 import xdk from './xdk-simple-deploy'
-import { EventTopic } from '@flatfile/api'
+import api, { Flatfile } from '@flatfile/api'
 
 const example = Client.create((client) => {
   /**
    * This is a basic hook on events with no sugar on top
    */
 
-  client.on(
-    'records:*',
-    { target: 'sheet(TestSheet)' },
-    (event: FlatfileEvent) => {
-      RecordHook(event, (record: FlatfileRecord) => {
-        const firstName = record.get('firstName')
-        // Gettign the real types here would be nice but seems tricky
-        record.set('middleName', 'TestSheet ' + firstName)
-        return record
-      })
-    }
+  client.use(
+    recordHook('TestSheet', (record: FlatfileRecord) => {
+      const firstName = record.get('firstName')
+      // Gettign the real types here would be nice but seems tricky
+      record.set('middleName', 'TestSheet ' + firstName)
+      return record
+    })
   )
 
   /**
@@ -42,34 +39,27 @@ const example = Client.create((client) => {
         const environmentId = event.context.environmentId
 
         // Create Space
-        const space = await client.api.addSpace({
-          spaceConfig: {
-            name: 'Test Space 2',
-            environmentId,
-          },
+        const space = await api.spaces.create({
+          name: 'Test Space 2',
+          environmentId,
         })
 
         if (!space.data) return
 
         // Create Workbook
-        const workbook = await client.api.addWorkbook({
-          workbookConfig: {
-            name: 'Test Workbook',
-            spaceId: space.data.id,
-            environmentId,
-            sheets: blueprint.blueprints[0].sheets,
-          },
+        const workbook = await api.workbooks.create({
+          name: 'Test Workbook',
+          spaceId: space.data.id,
+          environmentId,
+          sheets: blueprint.blueprints[0].sheets as Flatfile.SheetConfig[],
         })
 
         if (!workbook.data) return
 
         // Update Space with Workbook
-        await client.api.updateSpaceById({
-          spaceId: space.data.id,
-          spaceConfig: {
-            primaryWorkbookId: workbook.data.id,
-            environmentId,
-          },
+        await api.spaces.update(space.data.id, {
+          primaryWorkbookId: workbook.data.id,
+          environmentId,
         })
       } catch (e) {
         console.log(`error creating Space or Workbook: ${e}`)
