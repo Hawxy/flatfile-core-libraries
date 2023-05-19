@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.30
+
+### Patch Changes
+
+- e81e4d4: Remove RecordHook
+
 ## 0.5.29
 
 ### Patch Changes

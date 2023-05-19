@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.2.0
+
+### Minor Changes
+
+- 637342b: Remove @flatfile/api from listener
+
 ## 0.1.2
 
 ### Patch Changes

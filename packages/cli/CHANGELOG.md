@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.0
+
+### Minor Changes
+
+- 637342b: Remove @flatfile/api from listener
+
 ## 3.3.8
 
 ### Patch Changes
