@@ -22,9 +22,9 @@ export function getEntryFile(
   }
   if (!file) {
     console.error(
-      '⛔️Could not find the common entry files we look for. Looked for:\n' +
+      '⛔️ Could not find the common entry files we look for. Looked for:\n' +
         AUTODETECT_FILE_PATHS.map((p) => `\t${p}`).join('\n') +
-        +'\nPlease specify the exact path to the entry file one of these ways:\n' +
+        '\n\nPlease specify the exact path to the entry file one of these ways:\n' +
         `- Via the CLI command (eg. npx flatfile ${cmd} ./src/my-file.js)\n` +
         '- Adding an "entry" configuration to your .flatfilerc'
     )
