@@ -20,10 +20,10 @@
     "dts": true,
     "clean": true
   },
-  "dependencies": {},
+  "dependencies": {
+    "@flatfile/blueprint": "^0.0.9"
+  },
   "devDependencies": {
-    "@flatfile/api": "^0.0.19",
-    "@flatfile/blueprint": "^0.0.8",
     "@flatfile/eslint-config-platform-sdk": "*",
     "@flatfile/ts-config-platform-sdk": "*",
     "@types/jest": "^28.1.4",

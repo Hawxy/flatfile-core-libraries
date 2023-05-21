@@ -1,5 +1,5 @@
-import { FieldConfig } from '@flatfile/configure'
-import { FlatfileRecord } from '@flatfile/hooks'
+import type { FieldConfig } from '@flatfile/configure'
+import type { FlatfileRecord } from '@flatfile/hooks'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }

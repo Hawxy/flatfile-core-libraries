@@ -1,5 +1,5 @@
-import { Action, SheetAccess } from '@flatfile/api'
-import { FieldVisibilityTypes } from './JsonSchema'
+import type { Action, SheetAccess } from '@flatfile/blueprint'
+import type { FieldVisibilityTypes } from './JsonSchema'
 
 export type BaseFieldTypes = 'string' | 'number' | 'boolean' | 'composite'
 
@@ -20,6 +20,7 @@ interface BaseField {
   }
   contributeToRecordCompute?: any
   getSheetCompute?: any
+  blueprint?: any
 }
 
 export interface BaseSchemaILField extends BaseField {

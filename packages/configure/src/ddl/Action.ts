@@ -2,7 +2,7 @@ import { Action as ActionOptions } from '@flatfile/blueprint'
 import { FlatfileEvent } from '../utils/flatfile.event'
 
 export class Action {
-  public readonly slug: string
+  public readonly slug?: string
   public readonly label: string
   public readonly options: ActionOptions
 
@@ -22,7 +22,11 @@ export class Action {
       }
     } else {
       this.slug = nameOrOptions.slug
-      this.label = nameOrOptions.label || nameOrOptions.slug
+      this.label =
+        nameOrOptions.label ||
+        nameOrOptions.slug ||
+        nameOrOptions.operation ||
+        'Unknown Action'
       this.options = nameOrOptions
     }
     this.handler = handler

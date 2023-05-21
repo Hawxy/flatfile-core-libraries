@@ -1,10 +1,10 @@
-import {
+import type {
   SchemaILModel,
   SchemaILField,
   SchemaILEnumField,
   LinkedSheetField,
 } from './types/SchemaIL'
-import { IJsonSchema, IJsonSchemaProperty } from './types/JsonSchema'
+import type { IJsonSchema, IJsonSchemaProperty } from './types/JsonSchema'
 import {
   filter,
   fromPairs,

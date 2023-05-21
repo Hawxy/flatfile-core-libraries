@@ -9,8 +9,8 @@ import { AnyField, Message } from './Field'
 import {
   IJsonSchema,
   SchemaILModel,
-  SchemaILToJsonSchema,
   SchemaILModelToSheetConfig,
+  SchemaILToJsonSchema,
 } from '@flatfile/schema'
 
 import { toPairs } from 'remeda'
@@ -22,10 +22,10 @@ import { Agent } from './Agent'
 import { List, SpaceConfig } from './SpaceConfig'
 import { Workbook } from './Workbook'
 import { EventTopic, RecordWithLinks } from '@flatfile/api'
-import { SheetConfig } from '@flatfile/blueprint'
-import { EventHandler } from '../utils/event.handler'
-import { RecordTranslater } from '../utils/record.translater'
+import { SheetAccess, SheetConfig } from '@flatfile/blueprint'
+import { EventHandler, FlatfileEvent, RecordTranslater } from '../utils'
 import { slugify } from '../utils/slugify'
+import { Action } from './Action'
 
 export type RecordsComputeType = (
   records: FlatfileRecords<any>,
@@ -50,10 +50,6 @@ type SheetComputeType = (
       destination: string
     }
 )[]
-
-import { Action } from './Action'
-import { FlatfileEvent } from '../utils/flatfile.event'
-import { SheetAccess } from '@flatfile/blueprint'
 
 type Unique = {
   [K in Extract<keyof FieldConfig, string>]: { [value: string]: number[] }

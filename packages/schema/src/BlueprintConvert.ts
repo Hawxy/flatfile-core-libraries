@@ -1,23 +1,22 @@
 import _ from 'lodash'
-import { BooleanCast } from '../../configure/src/stdlib/CastFunctions'
-import {
-  SchemaILModel,
+import type {
   BaseSchemaILField,
-  SchemaILField,
-  SchemaILEnumField,
   ReferenceField,
+  SchemaILEnumField,
+  SchemaILField,
+  SchemaILModel,
 } from './types/SchemaIL'
 
-import {
-  Constraint,
-  Property,
-  StringProperty,
+import type {
   BooleanProperty,
+  Constraint,
   EnumProperty,
   EnumPropertyOption,
   NumberProperty,
-  SheetConfig,
+  Property,
   ReferenceProperty,
+  SheetConfig,
+  StringProperty,
 } from '@flatfile/blueprint'
 
 const getConstraints = (field: SchemaILField): Constraint[] =>
@@ -45,6 +44,7 @@ const convertBase = (
       label: field.label,
     }
   }
+  const overrides = field.blueprint || {}
   return {
     constraints: getConstraints(field),
     type: field.type,
@@ -52,6 +52,7 @@ const convertBase = (
     key: field.field,
     readonly: field.readonly || false,
     description: field.description,
+    ...overrides,
   }
 }
 
@@ -68,6 +69,8 @@ export const convertEnum = (field: SchemaILEnumField): EnumProperty => {
       "X doesn't yet support 'matchStrategy':'exact'.  behavior may be unepxected"
     )
   }
+  const overrides = field.blueprint || {}
+
   return {
     constraints: getConstraints(field),
     type: 'enum',
@@ -78,10 +81,13 @@ export const convertEnum = (field: SchemaILEnumField): EnumProperty => {
     config: {
       options: getEnumOptions(field),
     },
+    ...overrides,
   }
 }
 
 const convertLinkedField = (field: ReferenceField): ReferenceProperty => {
+  const overrides = field.blueprint || {}
+
   return {
     constraints: getConstraints(field),
     key: field.field,
@@ -94,6 +100,7 @@ const convertLinkedField = (field: ReferenceField): ReferenceProperty => {
       key: field.foreignKey,
       relationship: field.relationship || 'has-one',
     },
+    ...overrides,
   }
 }
 

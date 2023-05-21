@@ -1,18 +1,9 @@
+import { SchemaILField, SchemaILModel } from './types/SchemaIL'
 import {
-  SchemaILModel,
-  BaseSchemaILField,
-  SchemaILField,
-  SchemaILEnumField,
-} from './types/SchemaIL'
-import _ from 'lodash'
-import {
-  Constraint,
-  StringProperty,
-  BooleanProperty,
   EnumProperty,
-  EnumPropertyOption,
   NumberProperty,
   SheetConfig,
+  StringProperty,
 } from '@flatfile/blueprint'
 
 import {
@@ -30,6 +21,11 @@ describe('compiler tests', () => {
       readonly: true,
       annotations: {},
       field: 'first_name',
+      blueprint: {
+        metadata: {
+          foo: 'bar',
+        },
+      },
     }
 
     const blueprintOutput: StringProperty = {
@@ -39,6 +35,9 @@ describe('compiler tests', () => {
       key: 'first_name',
       readonly: true,
       constraints: [{ type: 'required' }],
+      metadata: {
+        foo: 'bar',
+      },
     }
     expect(SchemaILFieldtoProperty(stringField)).toStrictEqual(blueprintOutput)
   })
