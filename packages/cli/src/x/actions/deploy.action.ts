@@ -1,7 +1,6 @@
 import chalk from 'chalk'
 import fs from 'fs'
 import path from 'path'
-import { config } from '../../config'
 import { apiKeyClient } from './auth.action'
 import ora from 'ora'
 // TODO: Can we do better with these types?
@@ -11,6 +10,7 @@ import readJson from 'read-package-json'
 import ncc from '@vercel/ncc'
 import { deployTopics } from '../../shared/constants'
 import { getAuth } from '../../shared/get-auth'
+import { getEntryFile } from '../../shared/get-entry-file'
 
 export async function deployAction(
   file?: string | null | undefined,
@@ -33,27 +33,10 @@ export async function deployAction(
   }
   const { apiKey, apiUrl, environment } = authRes
 
-  file ??= config().entry
+  file = getEntryFile(file, 'develop')
 
   if (!file) {
-    const files = [
-      path.join(process.cwd(), 'index.js'),
-      path.join(process.cwd(), 'src', 'index.js'),
-      path.join(process.cwd(), '.build', 'index.js'),
-    ]
-    file = files.find((f) => fs.existsSync(f))
-  } else {
-    file = path.join(process.cwd(), file)
-  }
-  if (!apiUrl) {
-    console.log(
-      `You must provide a API Endpoint URL. Either set the ${chalk.bold(
-        'FLATFILE_API_URL'
-      )} environment variable, 'endpoint' in your .flatfilerc or pass the ID in as an option to this command with ${chalk.bold(
-        '--endpoint'
-      )}`
-    )
-    process.exit(1)
+    return
   }
 
   const hasListener = await new Promise((resolve, reject) => {

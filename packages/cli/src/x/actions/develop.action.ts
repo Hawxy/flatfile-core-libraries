@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import { config } from '../../config'
 import { Client } from '@flatfile/listener'
 import ora from 'ora'
 // TODO: Can we do better with these types?
@@ -10,6 +9,7 @@ import readJson from 'read-package-json'
 import ncc from '@vercel/ncc'
 import { getAuth } from '../../shared/get-auth'
 import { PollingEventDriver } from '../../shared/utils/polling'
+import { getEntryFile } from '../../shared/get-entry-file'
 
 export async function developAction(
   file?: string | null | undefined,
@@ -37,25 +37,9 @@ export async function developAction(
   process.env.FLATFILE_API_KEY = apiKey
   process.env.FLATFILE_SECRET_KEY = apiKey
 
-  file ??= config().entry
+  file = getEntryFile(file, 'develop')
 
   if (!file) {
-    const files = [
-      path.join(process.cwd(), 'index.js'),
-      path.join(process.cwd(), 'index.ts'),
-      path.join(process.cwd(), 'src', 'index.js'),
-      path.join(process.cwd(), 'src', 'index.ts'),
-      path.join(process.cwd(), '.build', 'index.js'),
-      path.join(process.cwd(), 'dist', 'index.js'),
-    ]
-    file = files.find((f) => fs.existsSync(f))
-  } else {
-    file = path.join(process.cwd(), file)
-  }
-  if (!file) {
-    console.error(
-      'Could not find a viable entry file. Please specify the exact path to the entry file or add an "entry" configuration to your .env or .flatfilerc'
-    )
     return
   }
 
