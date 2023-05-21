@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.1
+
+### Patch Changes
+
+- aaaf3cf: subscribe to more events
+
 ## 3.4.0
 
 ### Minor Changes
