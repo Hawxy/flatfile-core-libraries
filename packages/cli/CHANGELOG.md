@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.2
+
+### Patch Changes
+
+- 60a94d7: share file discovery logic
+
 ## 3.4.1
 
 ### Patch Changes
