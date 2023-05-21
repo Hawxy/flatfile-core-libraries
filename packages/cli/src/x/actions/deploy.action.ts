@@ -33,7 +33,7 @@ export async function deployAction(
   }
   const { apiKey, apiUrl, environment } = authRes
 
-  file = getEntryFile(file, 'develop')
+  file = getEntryFile(file, 'deploy')
 
   if (!file) {
     return
