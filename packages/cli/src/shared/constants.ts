@@ -41,6 +41,9 @@ export const deployTopics = [
   'upload:completed', // legacy
 
   'job:created',
+  'job:ready',
+  'job:scheduled',
+  'job:canceled',
   'job:updated',
   'job:deleted',
   'job:failed',
