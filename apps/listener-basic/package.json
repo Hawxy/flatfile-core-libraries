@@ -7,6 +7,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@flatfile/listener": "^0.0.8"
+    "@flatfile/listener": "*"
   }
 }
