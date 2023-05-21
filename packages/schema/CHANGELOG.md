@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.16
+
+### Patch Changes
+
+- 43c354d: update blueprint types
+
 ## 0.2.15
 
 ### Patch Changes

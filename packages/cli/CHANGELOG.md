@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.3
+
+### Patch Changes
+
+- d23b665: improving error message on entry file
+
 ## 3.4.2
 
 ### Patch Changes

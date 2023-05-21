@@ -1,5 +1,13 @@
 # @flatfile/configure
 
+## 0.5.31
+
+### Patch Changes
+
+- 43c354d: update blueprint types
+- Updated dependencies [43c354d]
+  - @flatfile/schema@0.2.16
+
 ## 0.5.30
 
 ### Patch Changes

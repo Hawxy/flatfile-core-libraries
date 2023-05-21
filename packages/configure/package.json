@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/configure",
-  "version": "0.5.30",
+  "version": "0.5.31",
   "description": "",
   "private": false,
   "main": "dist/index.js",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@flatfile/hooks": "^1.2.4",
-    "@flatfile/schema": "^0.2.15",
+    "@flatfile/schema": "^0.2.16",
     "case-anything": "^2.1.10",
     "date-fns": "^2.29.1",
     "xlsx": "^0.18.5"
