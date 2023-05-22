@@ -71,7 +71,7 @@ export class PollingEventDriver extends EventDriver {
         authClient
           .getEvents({
             since: lastTimestamp,
-            includeAcknowledged: false,
+            includeAcknowledged: true,
             environmentId: this.environmentId,
           })
           .then((res) => {
