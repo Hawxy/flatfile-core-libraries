@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.4
+
+### Patch Changes
+
+- 438d908: resolve a bug with event streaming
+
 ## 3.4.3
 
 ### Patch Changes
