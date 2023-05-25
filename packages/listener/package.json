@@ -32,7 +32,7 @@
     "flat": "^5.0.2"
   },
   "peerDependencies": {
-    "@flatfile/api": "^1.4.5",
+    "@flatfile/api": "^1.4.9",
     "axios": "^1.4.0"
   }
 }

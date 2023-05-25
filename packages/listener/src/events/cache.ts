@@ -3,10 +3,8 @@ export class EventCache {
 
   async init<T>(key: string, callback: () => Promise<T>): Promise<T> {
     if (this.eventCache.get(key)) {
-      console.log(`Cache hit for ${key}`)
       return this.eventCache.get(key)
     } else {
-      console.log(`no cache hit for ${key}`)
       const result = await callback()
       this.eventCache.set(key, result)
       return result
@@ -15,7 +13,6 @@ export class EventCache {
 
   async set<T>(key: string, callback: () => Promise<T>): Promise<T> {
     if (this.eventCache.get(key)) {
-      console.log(`cache set for ${key}`)
       const result = await callback()
       this.eventCache.set(key, result)
       return result
