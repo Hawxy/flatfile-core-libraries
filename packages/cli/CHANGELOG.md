@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.5
+
+### Patch Changes
+
+- 90a1f9a: Allow more than 10 environments
+
 ## 3.4.4
 
 ### Patch Changes

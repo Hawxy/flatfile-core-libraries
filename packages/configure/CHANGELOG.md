@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.32
+
+### Patch Changes
+
+- 3661315: Add blueprint to field in toSchemaIL()
+
 ## 0.5.31
 
 ### Patch Changes
