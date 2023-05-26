@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.6
+
+### Patch Changes
+
+- f8fe0cc: Update @flatfile/api version
+
 ## 3.4.5
 
 ### Patch Changes
