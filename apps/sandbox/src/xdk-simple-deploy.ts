@@ -59,6 +59,7 @@ const TestSheet = new Sheet(
     middleName: TextField({
       label: 'Middle Name',
       readonly: true,
+      blueprint: { metadata: { do: 'thing' } },
     }),
     lastName: TextField({
       label: 'Last Name',
