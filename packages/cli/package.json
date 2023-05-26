@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
-    "@flatfile/api": "^0.0.19",
+    "@flatfile/api": "^0.0.21",
     "@flatfile/listener": "*",
     "@rollup/plugin-babel": "^6.0.3",
     "@types/inquirer": "^9.0.2",
