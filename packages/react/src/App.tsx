@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { createRoot } from 'react-dom/client'
+import ReactDOM from 'react-dom'
 import { ISpace } from './types/ISpace'
 import { makeTheme } from './utils/makeTheme'
 import { useSpace } from './hooks/useSpace'
@@ -44,6 +44,6 @@ const ExampleApp = () => {
   )
 }
 
-const root = createRoot(document?.getElementById('root') as Element)
+const root = document?.getElementById('root')
 
-root.render(<ExampleApp />)
+ReactDOM.render(<ExampleApp />, root)

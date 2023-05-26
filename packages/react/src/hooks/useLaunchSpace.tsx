@@ -11,7 +11,7 @@ import { EmbeddedContext } from '../contexts/EmbeddedContext'
 
 export const useLaunchSpace = (props: ISpace) => {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string>()
+  const [error, setError] = useState<string | Error>()
   const { currentSpace, setCurrentSpace } = useContext(EmbeddedContext)
 
   const initSpace = useCallback(async () => {

@@ -6,6 +6,16 @@ const saveTokenToWindow = (token: string) => {
 }
 
 export const initializeSpace = async (spaceProps: ISpace) => {
+  if (!spaceProps.publishableKey) {
+    console.warn('Missing required publishable key')
+    throw new Error('Missing required publishable key')
+  }
+
+  if (!spaceProps.environmentId) {
+    console.warn('Missing required environment id')
+    throw new Error('Missing required environment id')
+  }
+
   const space = await createSpace(spaceProps)
 
   if (space?.data.accessToken) {
@@ -19,7 +29,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
       spaceId: space.data?.id
     })
   } else {
-    console.log(`Error getting spaceId and accessToken`)
+    console.warn(`Error getting spaceId and accessToken`)
     throw new Error(`Error getting spaceId and accessToken`)
   }
 
