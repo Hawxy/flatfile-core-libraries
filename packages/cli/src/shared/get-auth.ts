@@ -121,7 +121,7 @@ async function getEnvironment(options: any, apiUrl: string, apiKey: string) {
   }).start()
   const apiClient = apiKeyClient({ apiUrl, apiKey: apiKey! })
 
-  const environments = await apiClient.getEnvironments()
+  const environments = await apiClient.getEnvironments({pageSize: 100})
   if (environments.data?.length === 0) {
     envSpinner.fail(`No Environments found.`)
     process.exit(1)
