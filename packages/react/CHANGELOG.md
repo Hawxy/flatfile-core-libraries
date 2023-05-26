@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 6.0.1
+
+### Patch Changes
+
+- 06aa53d: Downgrade react version and update loader
+
 ## 6.0.0
 
 ### Major Changes
