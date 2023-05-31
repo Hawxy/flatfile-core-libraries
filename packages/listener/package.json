@@ -12,6 +12,9 @@
     "poll": "tsup src/dev.ts --format esm,cjs --watch --dts --onSuccess \"node dist/dev.js\"",
     "test": "jest --passWithNoTests"
   },
+  "files": [
+    "dist/**"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@flatfile/eslint-config-platform-sdk": "*",

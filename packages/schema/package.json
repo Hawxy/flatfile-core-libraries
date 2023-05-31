@@ -13,6 +13,9 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests"
   },
+  "files": [
+    "dist/**"
+  ],
   "tsup": {
     "entry": [
       "src/index.ts"

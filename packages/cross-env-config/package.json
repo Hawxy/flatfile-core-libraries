@@ -11,6 +11,9 @@
     "dev": "tsup src/index.ts --format esm,cjs --dts  --watch",
     "test": "jest --passWithNoTests"
   },
+  "files": [
+    "dist/**"
+  ],
   "author": "David Boskovic",
   "license": "ISC",
   "devDependencies": {
