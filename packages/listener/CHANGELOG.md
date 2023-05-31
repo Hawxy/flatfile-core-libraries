@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.2
+
+### Patch Changes
+
+- 84f6807: resolves a minor bug with afterAll callbacks and adds recursive listener introspection
+
 ## 0.3.1
 
 ### Patch Changes
