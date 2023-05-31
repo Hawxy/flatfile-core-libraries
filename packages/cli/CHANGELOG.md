@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.8
+
+### Patch Changes
+
+- 841c32d: Fix bug to allow setting api url via .env file
+
 ## 3.4.7
 
 ### Patch Changes
