@@ -1,5 +1,13 @@
 # @flatfile/cli
 
+## 3.4.7
+
+### Patch Changes
+
+- 52fa034: cleans up dist
+- Updated dependencies [52fa034]
+  - @flatfile/cross-env-config@0.0.3
+
 ## 3.4.6
 
 ### Patch Changes

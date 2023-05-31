@@ -1,5 +1,11 @@
 # @flatfile/schema
 
+## 0.2.17
+
+### Patch Changes
+
+- 52fa034: cleans up dist
+
 ## 0.2.16
 
 ### Patch Changes

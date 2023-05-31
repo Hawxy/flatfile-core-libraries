@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.3
+
+### Patch Changes
+
+- 52fa034: cleans up dist
+
 ## 0.3.2
 
 ### Patch Changes

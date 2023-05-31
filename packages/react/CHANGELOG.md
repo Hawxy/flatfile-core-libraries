@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 6.0.2
+
+### Patch Changes
+
+- Updated dependencies [52fa034]
+  - @flatfile/cross-env-config@0.0.3
+  - @flatfile/listener@0.3.3
+
 ## 6.0.1
 
 ### Patch Changes
