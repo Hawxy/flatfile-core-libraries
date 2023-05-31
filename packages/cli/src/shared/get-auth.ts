@@ -12,7 +12,7 @@ export async function getAuth(options: any): Promise<{
   environment: any
 }> {
   const apiUrl =
-    options?.apiUrl || config().api_url || process.env.FLATFILE_API_URL
+    options?.apiUrl || process.env.FLATFILE_API_URL || config().api_url
 
   if (!apiUrl) {
     console.log(
@@ -121,7 +121,7 @@ async function getEnvironment(options: any, apiUrl: string, apiKey: string) {
   }).start()
   const apiClient = apiKeyClient({ apiUrl, apiKey: apiKey! })
 
-  const environments = await apiClient.getEnvironments({pageSize: 100})
+  const environments = await apiClient.getEnvironments({ pageSize: 100 })
   if (environments.data?.length === 0) {
     envSpinner.fail(`No Environments found.`)
     process.exit(1)
