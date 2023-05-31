@@ -77,7 +77,9 @@ export class EventHandler extends AuthenticatedClient {
    *
    * @param event
    */
-  async dispatchEvent(event: FlatfileEvent | Flatfile.Event | any): Promise<void> {
+  async dispatchEvent(
+    event: FlatfileEvent | Flatfile.Event | any
+  ): Promise<void> {
     if (!(event instanceof FlatfileEvent)) {
       event = new FlatfileEvent(event, this._accessToken, this._apiUrl)
       if (this._apiUrl && this._accessToken) {
@@ -88,15 +90,7 @@ export class EventHandler extends AuthenticatedClient {
       }
     }
 
-    if (!this.matchEvent(event, this.filterQuery)) {
-      return
-    }
-    await this.trigger(event)
-
-    // dispatch the event on any registered children first
-    for (const node of this.nodes) {
-      await node.dispatchEvent(event)
-    }
+    await this.trigger(event, true)
 
     await event.afterAllCallbacks.forEach(async (cb: any) => cb(event))
     event.cache.delete()
@@ -118,11 +112,15 @@ export class EventHandler extends AuthenticatedClient {
    *       potential race conditions and uncaught errors
    *
    * @param event
+   * @param recursive
    */
-  async trigger(event: FlatfileEvent): Promise<void> {
-    const listeners = this.getListeners(event)
+  async trigger(
+    event: FlatfileEvent,
+    recursive: boolean = false
+  ): Promise<void> {
+    const listeners = this.getListeners(event, recursive)
     for (const cb of listeners) {
-      await cb(event)
+      await cb.callback(event)
     }
   }
 
@@ -130,15 +128,33 @@ export class EventHandler extends AuthenticatedClient {
    * Get any listeners from this target subscribing to this event
    *
    * @param event
+   * @param recursive
    */
-  public getListeners(event: FlatfileEvent): EventCallback[] {
-    return this.listeners
+  public getListeners(
+    event: FlatfileEvent,
+    recursive: boolean = false
+  ): Listener[] {
+    // never return any listeners if the event doesn't match the filter
+    // event recursion should not occur either
+    if (!this.matchEvent(event, this.filterQuery)) {
+      return []
+    }
+
+    // look at listeners registered here
+    const listeners = this.listeners
       .filter(([query, filter]) => {
         const globbed = glob(event.topic, query)
         const matched = this.matchEvent(event, filter)
         return globbed && matched
       })
-      .map(([_q, _ctx, cb]) => cb)
+      .map(([query, filter, callback]) => ({ query, filter, callback }))
+
+    return !recursive
+      ? listeners
+      : [
+          ...listeners,
+          ...this.nodes.flatMap((n) => n.getListeners(event, true)),
+        ]
   }
 
   /**
@@ -169,3 +185,8 @@ export class EventHandler extends AuthenticatedClient {
 export type EventFilter = Record<string, Arrayable<string>>
 
 export type Arrayable<T> = T | Array<T>
+export type Listener = {
+  query: string | string[]
+  filter: any
+  callback: EventCallback
+}
