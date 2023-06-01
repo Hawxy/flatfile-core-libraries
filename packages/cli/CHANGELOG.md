@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.4.9
+
+### Patch Changes
+
+- 0a52861: bugfix of included templates
+
 ## 3.4.8
 
 ### Patch Changes
