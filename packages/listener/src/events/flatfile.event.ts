@@ -1,5 +1,5 @@
 import { AuthenticatedClient } from './authenticated.client'
-import type { Flatfile } from '@flatfile/api'
+import { Event } from '@flatfile/api/api'
 import { EventCache } from './cache'
 export class FlatfileEvent extends AuthenticatedClient {
   /**
@@ -20,13 +20,14 @@ export class FlatfileEvent extends AuthenticatedClient {
   public readonly topic: string
   public readonly domain: string
   public readonly target: string
+  public readonly origin: object
   public readonly action: string
   public readonly context: any
   public readonly payload: any
   public readonly cache: EventCache
 
   constructor(
-    private readonly src: Flatfile.Event,
+    private readonly src: Event,
     accessToken?: string,
     apiUrl?: string
   ) {
@@ -37,6 +38,7 @@ export class FlatfileEvent extends AuthenticatedClient {
     this.context = src.context // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
     this.payload = src.payload
     this.target = src.target || ''
+    this.origin = src.origin || {}
     this.action = src.context?.actionName || ''
   }
 
