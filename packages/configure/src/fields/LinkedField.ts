@@ -1,4 +1,4 @@
-import { Field } from '../ddl/Field'
+import { Dirty, Field } from '../ddl/Field'
 import { makeField, mergeFieldOptions } from '../ddl/MakeField'
 import { FieldConfig, Sheet } from '../ddl/Sheet'
 import { TextField } from './TextField'
@@ -20,6 +20,7 @@ export const LinkedField = makeField<
     type: 'schema_ref',
     sheetName,
     upsert,
+    cast: (value) => value,
   })
 
   return new Field(consolidatedOptions)
