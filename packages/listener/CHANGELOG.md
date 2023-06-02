@@ -1,5 +1,12 @@
 # @flatfile/listener
 
+## 0.3.4
+
+### Patch Changes
+
+- c624a67: Add `event.update(data)` method
+- 91c2e75: Adds `origin` to FlatfileEvent
+
 ## 0.3.3
 
 ### Patch Changes
