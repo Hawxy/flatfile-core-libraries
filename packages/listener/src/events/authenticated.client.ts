@@ -15,17 +15,24 @@ export class AuthenticatedClient {
     this._apiUrl = apiUrl || FLATFILE_API_URL
   }
 
-  fetch(url: string) {
+  async fetch(url: string, options?: any) {
     const headers = {
       Authorization: `Bearer ${this._accessToken}`,
       'x-disable-hooks': 'true',
     }
+    const axiosInstance = axios.create({
+      headers,
+    })
     const fetchUrl = this._apiUrl + '/' + url
-
-    return axios
-      .get(fetchUrl, { headers })
-      .then((resp: any) => resp.data.data)
-      .catch((err: any) => {})
+    const config = {
+      url: fetchUrl,
+      method: 'GET',
+      ...options,
+    }
+    try {
+      const resp = await axiosInstance(config)
+      return resp.data.data
+    } catch (err) {}
   }
   /**
    *

@@ -8,6 +8,7 @@ import { FlatfileRecord } from '@flatfile/hooks'
 import { recordHook } from '@flatfile/plugin-record-hook'
 import xdk from './xdk-simple-deploy'
 import api, { Flatfile } from '@flatfile/api'
+import { RecordsWithLinks } from '@flatfile/api/api'
 
 const example = Client.create((client) => {
   /**
@@ -21,6 +22,18 @@ const example = Client.create((client) => {
       record.set('middleName', 'TestSheet ' + firstName)
       return record
     })
+  )
+
+  client.on(
+    'records:*',
+    { target: 'sheet(TestSheet)' },
+    async (event: FlatfileEvent) => {
+      const records: RecordsWithLinks = await event.data
+      records.map((record) => {
+        record.values.firstName.value = 'Alex '
+      })
+      await event.update(records)
+    }
   )
 
   /**

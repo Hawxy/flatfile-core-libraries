@@ -19,10 +19,7 @@ export default (client) => {
           return record
         })
 
-        await event.api.updateRecords({
-          sheetId: event.context.sheetId,
-          recordsUpdates,
-        })
+        await event.update(recordsUpdates)
       } catch (e) {
         console.log(`Error getting records: ${e}`)
       }

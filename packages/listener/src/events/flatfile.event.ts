@@ -1,6 +1,7 @@
 import { AuthenticatedClient } from './authenticated.client'
-import { Event } from '@flatfile/api/api'
+
 import { EventCache } from './cache'
+import { RecordsWithLinks, Event } from '@flatfile/api/api'
 export class FlatfileEvent extends AuthenticatedClient {
   /**
    * Event ID from the API
@@ -62,6 +63,23 @@ export class FlatfileEvent extends AuthenticatedClient {
     if (!this.afterAllCallbacks.get(key)) {
       this.afterAllCallbacks.set(key, callback)
     }
+  }
+
+  async update(records: RecordsWithLinks) {
+    if (!this.src.dataUrl) {
+      throw new Error('Cannot set data on an event without a dataUrl')
+    }
+
+    // TODO: do we need to remove source from the messages array?
+    const prepRecords = records.map((record) => {
+      record.messages?.map((message) => {
+        delete message.source
+      })
+    })
+    await this.fetch(this.src.dataUrl, {
+      method: 'POST',
+      data: JSON.stringify(prepRecords),
+    })
   }
 }
 
