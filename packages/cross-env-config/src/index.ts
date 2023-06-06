@@ -104,6 +104,9 @@ export class CrossEnvConfig {
       values.push(process.env[prop])
     }
 
+    // check if running in a browser-like environment
+    values.push(...this.checkForBrowserVariables(prop))
+
     // return the first value found
     const foundValue = values.find((v) => v !== undefined)
     if (foundValue !== undefined) {
@@ -117,5 +120,32 @@ export class CrossEnvConfig {
     }
 
     return undefined
+  }
+
+  /**
+   * Internal function for checking for stored variables in a browser-like environment
+   *
+   * @param prop
+   * @private
+   */
+
+  private static checkForBrowserVariables(prop: string): any[] {
+    let values: any[] = []
+
+    if (typeof window === 'object') {
+      const windowValue = (window as any)[`CROSSENV_${prop}`]
+      if (windowValue !== undefined) {
+        values.push(windowValue)
+      }
+
+      if (typeof sessionStorage === 'object') {
+        const storedValue = sessionStorage.getItem(`CROSSENV_${prop}`)
+        if (storedValue !== null) {
+          values.push(storedValue)
+        }
+      }
+    }
+
+    return values
   }
 }

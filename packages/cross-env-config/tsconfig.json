@@ -3,7 +3,7 @@
     "include": ["./src"],
     "exclude": ["dist", "build", "node_modules"],
     "compilerOptions": {
-        "lib": ["ESNext"],
+        "lib": ["ESNext", "dom"],
         "module": "ESNext",
         "target": "es2020"
     },

@@ -60,4 +60,30 @@ describe('CrossEnvConfig', () => {
     CrossEnvConfig.set('TEST_VAR', 'test value')
     expect(CrossEnvConfig.get('ALIAS_VAR')).toBe('test alias override value')
   })
+
+  it('returns the window value if it exists', () => {
+    const prop = 'MY_VAR'
+    const value = 'TEST_VAL'
+    ;(global as any).window = {
+      [`CROSSENV_${prop}`]: value
+    }
+
+    expect(CrossEnvConfig.get(prop)).toBe(value)
+  })
+
+  it('returns the sessionStorage value if it exists', () => {
+    ;(global as any).window = {}
+    ;(global as any).sessionStorage = {
+      getItem: jest.fn().mockReturnValue('TEST_VAL')
+    }
+    expect(CrossEnvConfig.get('MY_VAR')).toBe('TEST_VAL')
+  })
+
+  it('returns undefined if neither window object nor sessionStorage has the value', () => {
+    ;(global as any).window = {}
+    ;(global as any).sessionStorage = {
+      getItem: jest.fn().mockReturnValue(undefined)
+    }
+    expect(CrossEnvConfig.get('MY_VAR')).toBe(undefined)
+  })
 })
