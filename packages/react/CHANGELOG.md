@@ -1,5 +1,12 @@
 # @flatfile/react
 
+## 6.0.3
+
+### Patch Changes
+
+- Updated dependencies [ce3ff5e]
+  - @flatfile/cross-env-config@0.0.4
+
 ## 6.0.2
 
 ### Patch Changes

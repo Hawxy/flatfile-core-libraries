@@ -1,5 +1,12 @@
 # @flatfile/cli
 
+## 3.4.10
+
+### Patch Changes
+
+- Updated dependencies [ce3ff5e]
+  - @flatfile/cross-env-config@0.0.4
+
 ## 3.4.9
 
 ### Patch Changes

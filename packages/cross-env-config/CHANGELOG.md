@@ -1,5 +1,11 @@
 # @flatfile/cross-env-config
 
+## 0.0.4
+
+### Patch Changes
+
+- ce3ff5e: Add support for session storage and window stored variables
+
 ## 0.0.3
 
 ### Patch Changes
