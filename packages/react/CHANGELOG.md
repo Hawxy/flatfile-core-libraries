@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 6.0.4
+
+### Patch Changes
+
+- fa2c392: Removing flatfile design system from react package
+
 ## 6.0.3
 
 ### Patch Changes
