@@ -1,5 +1,4 @@
 import { Flatfile } from '@flatfile/api'
-import { Modal } from '@flatfile/design-system'
 import { PubNubProvider } from 'pubnub-react'
 import React, { useState } from 'react'
 import ConfirmModal from './ConfirmCloseModal'
@@ -115,13 +114,9 @@ const SpaceContents = (
   return (
     <div style={{ display: 'flex' }}>
       {showExitWarnModal && (
-        <Modal
-          contents={
-            <ConfirmModal
-              onConfirm={() => closeSpace?.onClose({})}
-              onCancel={() => setShowExitWarnModal(false)}
-            />
-          }
+        <ConfirmModal
+          onConfirm={() => closeSpace?.onClose({})}
+          onCancel={() => setShowExitWarnModal(false)}
         />
       )}
       <iframe style={getIframeStyles(iframeStyles!)} src={spaceUrl} />
