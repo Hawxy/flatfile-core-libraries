@@ -20,18 +20,18 @@ export const config: {
             {
               key: 'salary',
               type: 'number',
-              label: 'salary'
+              label: 'salary',
             },
             {
               key: 'needs_raise',
               type: 'boolean',
-              label: 'needs raise'
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              label: 'needs raise',
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }
 
 /**
@@ -47,10 +47,10 @@ export const crossfieldClient = Client.create((client) => {
 
       try {
         const {
-          data: { records }
+          data: { records },
         } = await event.api.getRecords({
           sheetId,
-          versionId
+          versionId,
         })
 
         console.log({ records })
@@ -69,7 +69,7 @@ export const crossfieldClient = Client.create((client) => {
 
         await event.api.updateRecords({
           sheetId,
-          recordsUpdates
+          recordsUpdates,
         })
       } catch (e) {
         console.log(

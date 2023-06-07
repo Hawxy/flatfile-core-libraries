@@ -9,7 +9,7 @@ import Pubnub from 'pubnub'
 
 export const useLaunchPubNub = ({
   spaceId,
-  accessToken
+  accessToken,
 }: {
   spaceId: string
   accessToken: string
@@ -33,6 +33,6 @@ export const useLaunchPubNub = ({
 
   return {
     localPubnub: pubnub,
-    error
+    error,
   }
 }

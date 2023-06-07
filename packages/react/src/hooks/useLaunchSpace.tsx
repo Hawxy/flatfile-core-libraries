@@ -53,6 +53,6 @@ export const useLaunchSpace = (props: ISpace) => {
     spaceId,
     accessToken,
     spaceUrl,
-    error
+    error,
   }
 }

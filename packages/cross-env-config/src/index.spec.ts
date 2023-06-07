@@ -65,7 +65,7 @@ describe('CrossEnvConfig', () => {
     const prop = 'MY_VAR'
     const value = 'TEST_VAL'
     ;(global as any).window = {
-      [`CROSSENV_${prop}`]: value
+      [`CROSSENV_${prop}`]: value,
     }
 
     expect(CrossEnvConfig.get(prop)).toBe(value)
@@ -74,7 +74,7 @@ describe('CrossEnvConfig', () => {
   it('returns the sessionStorage value if it exists', () => {
     ;(global as any).window = {}
     ;(global as any).sessionStorage = {
-      getItem: jest.fn().mockReturnValue('TEST_VAL')
+      getItem: jest.fn().mockReturnValue('TEST_VAL'),
     }
     expect(CrossEnvConfig.get('MY_VAR')).toBe('TEST_VAL')
   })
@@ -82,7 +82,7 @@ describe('CrossEnvConfig', () => {
   it('returns undefined if neither window object nor sessionStorage has the value', () => {
     ;(global as any).window = {}
     ;(global as any).sessionStorage = {
-      getItem: jest.fn().mockReturnValue(undefined)
+      getItem: jest.fn().mockReturnValue(undefined),
     }
     expect(CrossEnvConfig.get('MY_VAR')).toBe(undefined)
   })

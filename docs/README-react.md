@@ -1,6 +1,6 @@
 # [@flatfile/react](https://www.npmjs.com/package/@flatfile/react)
 
-Embed React is a front-end SDK wrapper around the [Flatfile API](https://flatfile.stoplight.io/docs/v10/). It allows you to  securely and easily add an embedded import experience to any React app.
+Embed React is a front-end SDK wrapper around the [Flatfile API](https://flatfile.stoplight.io/docs/v10/). It allows you to securely and easily add an embedded import experience to any React app.
 
 The [reference](#customize) below will cover complete customization details which includes adding your brand colors, logos, & fonts.
 
@@ -39,9 +39,9 @@ flowchart LR
 
 **Environments** are isolated entities and are intended to be a safe space to create and test different configurations. (Common examples for Environment names are: Test, Staging, & Production.) For your new embedded data importer, you'll need to create a new Environment so anonymous guests can use your importer.
 
-**Spaces** are where your customers come to experience Flatfile. When you launch an embedded importer, you're actually launching an entire Space for that Guest. You can configure (and often pare down) these Spaces to look exactly like you need them to for your use case. 
+**Spaces** are where your customers come to experience Flatfile. When you launch an embedded importer, you're actually launching an entire Space for that Guest. You can configure (and often pare down) these Spaces to look exactly like you need them to for your use case.
 
-Within a Space, you can have one or more **Workbooks**.  Workbooks manage a data exchange experience for a specific type of data. Examples of Workbooks could be Employees, Contacts, or Accounts. 
+Within a Space, you can have one or more **Workbooks**. Workbooks manage a data exchange experience for a specific type of data. Examples of Workbooks could be Employees, Contacts, or Accounts.
 
 When **Files** are uploaded, the data from those files is extracted into a Workbook.The Workbook is where the majority of the work and interaction occurs when using Flatfile.
 
@@ -54,6 +54,7 @@ Install Embed React from the npm public registry.
 ```npm
 npm install @flatfile/react@5.0.8
 ```
+
 ```yarn
 yarn install @flatfile/react@5.0.8
 ```
@@ -62,7 +63,7 @@ yarn install @flatfile/react@5.0.8
 
 From your [dashboard](https://dashboard.flatfile.com/), you can create a new API client ID and secret or reference the getting started page for one that was created for you already.
 
-Make a `POST` request with the following and save your `accessToken` from the request response (to use later in your [UseSpace hook](#usespace-hook)). 
+Make a `POST` request with the following and save your `accessToken` from the request response (to use later in your [UseSpace hook](#usespace-hook)).
 
 ```json http
 {
@@ -91,9 +92,7 @@ Make a POST request by pasting your real `accessToken` with `${accessToken}` and
   "body": {
     "name": "dev",
     "isProd": false,
-    "guestAuthentication": [
-      "shared_link"
-    ]
+    "guestAuthentication": ["shared_link"]
   }
 }
 ```
@@ -123,9 +122,9 @@ const YourApplication = () => {
       blueprints: Blueprint[] //see tab 2 for an example Blueprint
     }
 
-    const { error, data: { component } } = useSpace({ 
-      accessToken: 'access-token', 
-      environmentId: 'environment-id', 
+    const { error, data: { component } } = useSpace({
+      accessToken: 'access-token',
+      environmentId: 'environment-id',
       spaceConfig: mySpaceConfig }
     )
 
@@ -139,15 +138,16 @@ const YourApplication = () => {
           >
             Toggle Space
           </button>
-          
+
           {error && (<div>Sorry, there's been an error</div>)}
-          
+
           {showSpace && component}
 
         </div>
       )
 }
 ```
+
 ```Blueprint
 [
   {
@@ -180,18 +180,18 @@ const YourApplication = () => {
 
 <br/>
 
-| Prop            | Description                              |
-| --------------- | ---------------------------------------- |
-| `accessToken`   | `required` **string**<br/>Used to allow users to request our private services |
-| `environmentId` | `required` **string**<br/>The base object that holds all spaces |
-| `spaceId` | `required (if no spaceConfig or no spaceConfigId)` **string**<br/>Identifier for an existing space.<br/>Note: If you'd like to launch an existing space with a pre-existing config, pass in only your `spaceId`. |
-| `spaceConfig` | `required (if no spaceId)` **Object**<br/>An object containing your Blueprint definitions<br/>Note: Pass in your raw `spaceConfig` if you want a brand new Space & spaceConfig on every launch. |
-| `spaceConfigId` | `required (if no spaceConfig && no spaceId)` **string**<br/>Identifier for previously created spaceConfig<br/>Note: If you'd like to launch a new space with an exisiting spaceConfig, pass in only a `spaceConfigId` | 
-| `themeConfig`   | `optional` **Object**<br/>An object containing theme configuration options. See available options. |
-| `sidebarConfig` | `optional` **Object**<br/>An object containing sidebar configuration options. See available options. |
-| `name`   | `optional` **string**<br/>A name for the embedded space (displayed to user) |
-| `spaceInfo`   | `optional` **Object**<br/>An object containing additional metadata for the space. |
-| `document` | `optional` **{ title: string, body: string}**<br/>Additional help text your user may need |
+| Prop            | Description                                                                                                                                                                                                           |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `accessToken`   | `required` **string**<br/>Used to allow users to request our private services                                                                                                                                         |
+| `environmentId` | `required` **string**<br/>The base object that holds all spaces                                                                                                                                                       |
+| `spaceId`       | `required (if no spaceConfig or no spaceConfigId)` **string**<br/>Identifier for an existing space.<br/>Note: If you'd like to launch an existing space with a pre-existing config, pass in only your `spaceId`.      |
+| `spaceConfig`   | `required (if no spaceId)` **Object**<br/>An object containing your Blueprint definitions<br/>Note: Pass in your raw `spaceConfig` if you want a brand new Space & spaceConfig on every launch.                       |
+| `spaceConfigId` | `required (if no spaceConfig && no spaceId)` **string**<br/>Identifier for previously created spaceConfig<br/>Note: If you'd like to launch a new space with an exisiting spaceConfig, pass in only a `spaceConfigId` |
+| `themeConfig`   | `optional` **Object**<br/>An object containing theme configuration options. See available options.                                                                                                                    |
+| `sidebarConfig` | `optional` **Object**<br/>An object containing sidebar configuration options. See available options.                                                                                                                  |
+| `name`          | `optional` **string**<br/>A name for the embedded space (displayed to user)                                                                                                                                           |
+| `spaceInfo`     | `optional` **Object**<br/>An object containing additional metadata for the space.                                                                                                                                     |
+| `document`      | `optional` **{ title: string, body: string}**<br/>Additional help text your user may need                                                                                                                             |
 
 ## Customize
 
@@ -213,10 +213,10 @@ const spaceInfo = {
   userId: '123',
   name: 'Flatfile Francesca',
   companyId: 'id_123',
-  companyName: 'Flatfile'
+  companyName: 'Flatfile',
 }
-
 ```
+
 ```useSpace
 
 const spaceInfo = {
@@ -226,16 +226,15 @@ const spaceInfo = {
   companyName: 'Flatfile'
 }
 
-const { error, data: { component } } = 
-  useSpace({ 
-    themeConfig: theme, 
-    accessToken, 
+const { error, data: { component } } =
+  useSpace({
+    themeConfig: theme,
+    accessToken,
     environmentId,
     spaceConfig,
     spaceInfo
   })
 ```
-
 
 ### Theme
 
@@ -250,27 +249,27 @@ The `makeTheme` helper function accepts three values (primaryColor, textColor, l
 **Error handling**: Internally, our `makeTheme` helper validates that the colors passed in are valid colors. This means they can be correctly parsed. (Names, rgb, hsv, hex)
 
 ```typescript
-const theme = makeTheme(
-  { 
-    primaryColor: 'red',
-    textColor: 'white',
-    logo: 'https://images.ctfassets.net/hjneo4qi4goj/gL6Blz3kTPdZXWknuIDVx/7bb7c73d93b111ed542d2ed426b42fd5/flatfile.svg'
-  }
-)
+const theme = makeTheme({
+  primaryColor: 'red',
+  textColor: 'white',
+  logo: 'https://images.ctfassets.net/hjneo4qi4goj/gL6Blz3kTPdZXWknuIDVx/7bb7c73d93b111ed542d2ed426b42fd5/flatfile.svg',
+})
 ```
+
 ```useSpace title="Example passed to useSpace hook"
-const { error, data: { component } } = 
-  useSpace({ 
-    themeConfig: theme, 
-    accessToken, 
+const { error, data: { component } } =
+  useSpace({
+    themeConfig: theme,
+    accessToken,
     environmentId,
     spaceConfig
   })
 ```
+
 ```Space title="Example passed to Space"
-<Space 
-  themeConfig={theme} 
-  accessToken={accessToken} 
+<Space
+  themeConfig={theme}
+  accessToken={accessToken}
   environmentId={environmentId}
   spaceConfig={mySpaceConfig}
   {...props}
@@ -279,19 +278,18 @@ const { error, data: { component } } =
 
 <br/>
 
-| Prop        | Description                              |
-| ----------- | ---------------------------------------- |
-| `primaryColor`   | `optional` **string** ['red']<br/>Primary brand color |
-| `textColor` | `optional` **string** ['white']<br/>Text color |
+| Prop           | Description                                           |
+| -------------- | ----------------------------------------------------- |
+| `primaryColor` | `optional` **string** ['red']<br/>Primary brand color |
+| `textColor`    | `optional` **string** ['white']<br/>Text color        |
 
 #### Manual CSS overrides
 
 Instead of passing two colors to `makeTheme` and letting us construct a theme for you, you can access each individual CSS variable that we use in the dashboard. Just adhere to the types defined in [IThemeConfig]('./src/types/IThemeConfig.tsx'). See [CSS Reference](Customize.md).
 
-
 ### Guest Sidebar
 
-You can customize your guest sidebar using the [ISidebarConfig]('./src/types/ISidebarConfig.tsx') type or you can hide it completely (most common). Pass your sidebar configuration to your  `useSpace` hook or `Space` component.
+You can customize your guest sidebar using the [ISidebarConfig]('./src/types/ISidebarConfig.tsx') type or you can hide it completely (most common). Pass your sidebar configuration to your `useSpace` hook or `Space` component.
 
 ```typescript
 const mySidebarConfig = {
@@ -299,48 +297,50 @@ const mySidebarConfig = {
   defaultPage: {
     workbook: {
       workbookId: '123',
-      sheetId: '123'
-    }
-  }
+      sheetId: '123',
+    },
+  },
 }
 ```
+
 ```useSpace title="Example passed to useSpace hook"
-const { error, data: { component } } = 
-  useSpace({ 
-    sidebarConfig: mySidebarConfig, 
-    accessToken, 
-    environmentId  
+const { error, data: { component } } =
+  useSpace({
+    sidebarConfig: mySidebarConfig,
+    accessToken,
+    environmentId
   })
 
 ```
+
 ```Space title="Example passed to Space"
-<Space 
-  sidebarConfig={mySidebarConfig} 
-  accessToken={accessToken} 
+<Space
+  sidebarConfig={mySidebarConfig}
+  accessToken={accessToken}
   environmentId={environmentId}
   spaceConfig={spaceConfig}
   {...props}
   />
 
 const { error, data: { component }} = useSpace(
-  { 
-  sidebarConfig, 
-  accessToken, 
-  environmentId, 
-  spaceConfig 
+  {
+  sidebarConfig,
+  accessToken,
+  environmentId,
+  spaceConfig
   }
 )
 ```
 
 <br/>
 
-| prop                  | description |
-| --------------------- | ------------   |
-| `defaultPage > documentId`           |      `optional` **string** [null]<br/>Set the default Markdown page to show when the importer opens     |
-| `defaultPage > workbook.workbookId` `defaultPage > workbook.sheetId`           |      `optional` **string** [null]<br/>Set the default Workbook and Sheet to show when the importer opens     |
-| `showGuestInvite`       |      `optional` **boolean** [false]<br/>Allow your guests to invite others to the importer     |
-| `showDataChecklist`     |      `optional` **boolean** [false]<br/>Show or hide the data checklist     |
-| `showSidebar`           |      `optional` **boolean** [false]<br/>Show or hide the sidebar as a whole     |
+| prop                                                                 | description                                                                                         |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `defaultPage > documentId`                                           | `optional` **string** [null]<br/>Set the default Markdown page to show when the importer opens      |
+| `defaultPage > workbook.workbookId` `defaultPage > workbook.sheetId` | `optional` **string** [null]<br/>Set the default Workbook and Sheet to show when the importer opens |
+| `showGuestInvite`                                                    | `optional` **boolean** [false]<br/>Allow your guests to invite others to the importer               |
+| `showDataChecklist`                                                  | `optional` **boolean** [false]<br/>Show or hide the data checklist                                  |
+| `showSidebar`                                                        | `optional` **boolean** [false]<br/>Show or hide the sidebar as a whole                              |
 
 #### Visual Reference
 
@@ -354,37 +354,37 @@ Documents, written in Markdown, provide extra clarification and instructions to 
 const mainDocument = {
   title: 'Getting Started',
   body:
-      '![Shop](https://coconut.show/logo-big.png)\n' +
-      '\\\n' +
-      '&nbsp;\n' +
-      '\n' +
-      '---\n' +
-      '\n' +
-      '# Welcome to the Surf Shop!\n' +
-      '\n' +
-      'Please upload your contacts to the Surf Shop using the Files menu on the left.\n',
+    '![Shop](https://coconut.show/logo-big.png)\n' +
+    '\\\n' +
+    '&nbsp;\n' +
+    '\n' +
+    '---\n' +
+    '\n' +
+    '# Welcome to the Surf Shop!\n' +
+    '\n' +
+    'Please upload your contacts to the Surf Shop using the Files menu on the left.\n',
 }
 ```
+
 ```useSpace title="Example passed to useSpace hook"
-const { error, data: { component } } = 
+const { error, data: { component } } =
   useSpace({
     spaceConfigId,
-    sidebarConfig: mySidebarConfig, 
-    accessToken, 
+    sidebarConfig: mySidebarConfig,
+    accessToken,
     environmentId,
     document: mainDocument
   })
 
 ```
+
 ```Space title="Example passed to Space"
 <Space
   spaceConfigId={spaceConfigId}
-  sidebarConfig={mySidebarConfig} 
-  accessToken={accessToken} 
+  sidebarConfig={mySidebarConfig}
+  accessToken={accessToken}
   environmentId={environmentId}
   document={mainDocument}
   {...props}
   />
 ```
-
-

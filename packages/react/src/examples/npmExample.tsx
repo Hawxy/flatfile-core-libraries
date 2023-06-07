@@ -16,8 +16,8 @@ export const config: Pick<
         {
           key: 'color',
           type: 'string',
-          label: 'Color'
-        }
+          label: 'Color',
+        },
       ],
       actions: [
         {
@@ -25,10 +25,10 @@ export const config: Pick<
           operation: 'colors:convert-color',
           description: 'Would you like to convert colors?',
           mode: 'foreground',
-          confirm: true
-        }
-      ]
-    }
+          confirm: true,
+        },
+      ],
+    },
   ],
   actions: [
     {
@@ -37,9 +37,9 @@ export const config: Pick<
       description: 'Would you like to submit your workbook?',
       mode: 'foreground',
       primary: true,
-      confirm: true
-    }
-  ]
+      confirm: true,
+    },
+  ],
 }
 
 async function convertColors(jobId: string, sheetId: string) {
@@ -51,11 +51,11 @@ async function convertColors(jobId: string, sheetId: string) {
 
   const Flatfile = new FlatfileClient({
     token: storedToken,
-    environment: 'https://platform.flatfile.com/api/v1'
+    environment: 'https://platform.flatfile.com/api/v1',
   })
 
   await Flatfile.jobs.ack(jobId, {
-    info: "I'm starting the converting colors job"
+    info: "I'm starting the converting colors job",
   })
 
   const records = await Flatfile.records.get(sheetId)
@@ -69,7 +69,7 @@ async function convertColors(jobId: string, sheetId: string) {
   await Flatfile.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
 
   await Flatfile.jobs.complete(jobId, {
-    info: "Job's work is done"
+    info: "Job's work is done",
   })
 }
 
@@ -82,13 +82,13 @@ async function submit(jobId: string) {
 
   const Flatfile = new FlatfileClient({
     token: storedToken,
-    environment: 'https://platform.flatfile.com/api/v1'
+    environment: 'https://platform.flatfile.com/api/v1',
   })
 
   await Flatfile.jobs.ack(jobId, {
     info: "I'm starting the job - inside client",
     // progress only makes sense if multipart job - optional
-    progress: 33
+    progress: 33,
   })
 
   // hit your api here
@@ -96,7 +96,7 @@ async function submit(jobId: string) {
 
   await Flatfile.jobs.complete(jobId, {
     info: "Job's work is done",
-    outcome: { next: { type: 'wait' } }
+    outcome: { next: { type: 'wait' } },
   })
 }
 

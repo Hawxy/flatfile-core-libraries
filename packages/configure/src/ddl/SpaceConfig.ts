@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { SpaceAccess } from '@flatfile/api';
+import { SpaceAccess } from '@flatfile/api'
 
 import { Role } from './Role'
 import { Workbook } from './Workbook'

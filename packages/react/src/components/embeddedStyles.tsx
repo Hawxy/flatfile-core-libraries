@@ -28,7 +28,7 @@ export const getIframeStyles = (styles: React.CSSProperties) => {
       borderWidth: 0,
       borderRadius: '20px',
       background: '#fff',
-      padding: '16px'
+      padding: '16px',
     }
   )
 }

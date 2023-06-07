@@ -7,5 +7,5 @@ export interface EmbeddedContextType {
 
 export const EmbeddedContext = createContext<EmbeddedContextType>({
   currentSpace: undefined,
-  setCurrentSpace: () => {}
+  setCurrentSpace: () => {},
 })

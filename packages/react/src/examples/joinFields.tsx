@@ -17,20 +17,20 @@ export const config: Pick<
           label: 'First name',
           constraints: [
             {
-              type: 'required'
-            }
-          ]
+              type: 'required',
+            },
+          ],
         },
         {
           key: 'last_name',
           type: 'string',
-          label: 'last name'
+          label: 'last name',
         },
         {
           key: 'full_name',
           type: 'string',
-          label: 'full name'
-        }
+          label: 'full name',
+        },
       ],
       actions: [
         {
@@ -38,10 +38,10 @@ export const config: Pick<
           operation: 'contacts:join-fields',
           description: 'Would you like to join fields?',
           mode: 'foreground',
-          confirm: true
-        }
-      ]
-    }
+          confirm: true,
+        },
+      ],
+    },
   ],
   actions: [
     {
@@ -50,9 +50,9 @@ export const config: Pick<
       description: 'Would you like to submit your workbook?',
       mode: 'foreground',
       primary: true,
-      confirm: true
-    }
-  ]
+      confirm: true,
+    },
+  ],
 }
 
 async function joinFields(jobId: string, sheetId: string) {
@@ -64,11 +64,11 @@ async function joinFields(jobId: string, sheetId: string) {
 
   const Flatfile = new FlatfileClient({
     token: storedToken,
-    environment: 'https://platform.flatfile.com/api/v1'
+    environment: 'https://platform.flatfile.com/api/v1',
   })
 
   await Flatfile.jobs.ack(jobId, {
-    info: "I'm starting the joining fields job"
+    info: "I'm starting the joining fields job",
   })
 
   const records = await Flatfile.records.get(sheetId)
@@ -81,7 +81,7 @@ async function joinFields(jobId: string, sheetId: string) {
   await Flatfile.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
 
   await Flatfile.jobs.complete(jobId, {
-    info: "Job's work is done"
+    info: "Job's work is done",
   })
 }
 

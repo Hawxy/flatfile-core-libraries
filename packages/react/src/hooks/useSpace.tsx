@@ -17,6 +17,6 @@ export const useSpace = (props: ISpace): { component: ReactElement } => {
       <EmbeddedContext.Provider value={{ currentSpace, setCurrentSpace }}>
         <Space {...props} />
       </EmbeddedContext.Provider>
-    )
+    ),
   }
 }

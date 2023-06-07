@@ -23,9 +23,9 @@ export const config: {
               label: 'First name',
               constraints: [
                 {
-                  type: 'required'
-                }
-              ]
+                  type: 'required',
+                },
+              ],
             },
             {
               key: 'last_name',
@@ -33,26 +33,26 @@ export const config: {
               label: 'last name',
               constraints: [
                 {
-                  type: 'required'
-                }
-              ]
+                  type: 'required',
+                },
+              ],
             },
             {
               key: 'full_name',
               type: 'string',
-              label: 'full name'
-            }
+              label: 'full name',
+            },
           ],
           actions: [
             {
               slug: 'split-field',
-              label: 'Split field'
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              label: 'Split field',
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }
 
 /**
@@ -68,10 +68,10 @@ export const splitFieldClient = Client.create((client) => {
 
       try {
         const {
-          data: { records }
+          data: { records },
         } = await event.api.getRecords({
           sheetId,
-          versionId
+          versionId,
         })
 
         console.log({ records })
@@ -90,7 +90,7 @@ export const splitFieldClient = Client.create((client) => {
 
         await event.api.updateRecords({
           sheetId,
-          recordsUpdates
+          recordsUpdates,
         })
       } catch (e) {
         console.log(

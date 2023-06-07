@@ -21,13 +21,13 @@ export const config: {
             {
               key: 'brewery-name',
               type: 'string',
-              label: 'Brewery name'
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              label: 'Brewery name',
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }
 
 /**
@@ -44,10 +44,10 @@ export const externalApiClient = Client.create((client) => {
 
       try {
         const {
-          data: { records }
+          data: { records },
         } = await event.api.getRecords({
           sheetId,
-          versionId
+          versionId,
         })
 
         if (!records) return
@@ -78,7 +78,7 @@ export const externalApiClient = Client.create((client) => {
 
         await event.api.updateRecords({
           sheetId,
-          recordsUpdates: recordsUpdates as RecordsUpdates
+          recordsUpdates: recordsUpdates as RecordsUpdates,
         })
       } catch (e) {
         console.log(

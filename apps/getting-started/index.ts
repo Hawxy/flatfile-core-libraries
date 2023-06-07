@@ -68,9 +68,9 @@ export default function (listener) {
     const res = await fetch(webhookReceiver, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ ...event.payload, method: 'fetch' })
+      body: JSON.stringify({ ...event.payload, method: 'fetch' }),
     })
   })
 
@@ -80,9 +80,9 @@ export default function (listener) {
     const res = await axios(webhookReceiver, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      data: JSON.stringify({ ...event.payload, method: 'axios' })
+      data: JSON.stringify({ ...event.payload, method: 'axios' }),
     })
   })
 }

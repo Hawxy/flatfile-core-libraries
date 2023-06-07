@@ -21,13 +21,13 @@ export const config: {
             {
               key: 'email',
               type: 'string',
-              label: 'email'
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              label: 'email',
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }
 
 /**
@@ -43,10 +43,10 @@ export const regExClient = Client.create((client) => {
 
       try {
         const {
-          data: { records }
+          data: { records },
         } = await event.api.getRecords({
           sheetId,
-          versionId
+          versionId,
         })
 
         const regex = new RegExp('^S+@S+$')
@@ -63,8 +63,8 @@ export const regExClient = Client.create((client) => {
               {
                 message: 'value must contain an @',
                 type: 'error',
-                source: 'custom-logic'
-              }
+                source: 'custom-logic',
+              },
             ]
           }
 
@@ -75,7 +75,7 @@ export const regExClient = Client.create((client) => {
 
         await event.api.updateRecords({
           sheetId,
-          recordsUpdates: recordsUpdates as RecordsUpdates
+          recordsUpdates: recordsUpdates as RecordsUpdates,
         })
       } catch (e) {
         console.log(

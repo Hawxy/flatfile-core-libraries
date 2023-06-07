@@ -22,13 +22,13 @@ export const config: {
             {
               key: 'color',
               type: 'string',
-              label: 'Color'
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              label: 'Color',
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }
 
 /**
@@ -45,10 +45,10 @@ export const npmPackageClient = Client.create((client) => {
 
       try {
         const {
-          data: { records }
+          data: { records },
         } = await event.api.getRecords({
           sheetId,
-          versionId
+          versionId,
         })
 
         if (!records) return
@@ -64,7 +64,7 @@ export const npmPackageClient = Client.create((client) => {
 
         await event.api.updateRecords({
           sheetId,
-          recordsUpdates: recordsUpdates as RecordsUpdates
+          recordsUpdates: recordsUpdates as RecordsUpdates,
         })
       } catch (e) {
         console.log(

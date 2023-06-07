@@ -21,13 +21,13 @@ yarn add @flatfile/cross-env-config
 To use `@flatfile/cross-env-config`, first import the `CrossEnvConfig` class:
 
 ```javascript
-import { CrossEnvConfig } from '@flatfile/cross-env-config';
+import { CrossEnvConfig } from '@flatfile/cross-env-config'
 ```
 
 You can then use the `get` method to fetch the value of an environment variable:
 
 ```javascript
-const value = CrossEnvConfig.get('MY_ENV_VAR');
+const value = CrossEnvConfig.get('MY_ENV_VAR')
 ```
 
 This will first check if there are any overrides set for this key, then it will check the attached config registry, the attached config factory, and finally the environment variables.
@@ -37,7 +37,7 @@ This will first check if there are any overrides set for this key, then it will 
 You can set override values for any key using the `set` method:
 
 ```javascript
-CrossEnvConfig.set('MY_ENV_VAR', 'my value');
+CrossEnvConfig.set('MY_ENV_VAR', 'my value')
 ```
 
 This value will take precedence over the attached config registry, config factory, and environment variables.
@@ -50,9 +50,9 @@ You can attach an object to act as a config registry. This is useful if you want
 const myConfig = {
   MY_ENV_VAR: 'my value',
   ANOTHER_ENV_VAR: 'another value',
-};
+}
 
-CrossEnvConfig.attachConfigRegistry(myConfig);
+CrossEnvConfig.attachConfigRegistry(myConfig)
 ```
 
 The values in this registry will take precedence over the attached config factory and environment variables, but not over any overrides.
@@ -63,8 +63,8 @@ You can attach a function to act as a config factory. This is useful if you need
 
 ```javascript
 CrossEnvConfig.attachConfigFactory((key) => {
-  return `Value for ${key}`;
-});
+  return `Value for ${key}`
+})
 ```
 
 The values produced by this factory will take precedence over the environment variables, but not over any overrides or the attached config registry.
@@ -74,7 +74,7 @@ The values produced by this factory will take precedence over the environment va
 If you have different naming constructs for different environments, you can use the `alias` method to map one key to another:
 
 ```javascript
-CrossEnvConfig.alias('MY_ENV_VAR', 'MY_ALIAS');
+CrossEnvConfig.alias('MY_ENV_VAR', 'MY_ALIAS')
 ```
 
 In this case, if `CrossEnvConfig.get('MY_ALIAS')` is called and no value is found for 'MY_ALIAS' in the override, registry, factory, or environment, it will return the value of 'MY_ENV_VAR'.
