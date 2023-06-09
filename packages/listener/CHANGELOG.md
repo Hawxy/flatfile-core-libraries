@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.5
+
+### Patch Changes
+
+- db6ff92: after all callbacks now resolve before the promise completes
+
 ## 0.3.4
 
 ### Patch Changes
