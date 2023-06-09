@@ -29,7 +29,7 @@
  */
 
 import { EventFilter, EventHandler } from './events'
-import { EventDriver } from './event-drivers/_EventDriver'
+import { EventDriver } from './event-drivers'
 
 export class FlatfileListener extends EventHandler {
   /**
@@ -38,7 +38,7 @@ export class FlatfileListener extends EventHandler {
    * @param namespace
    * @param cb
    */
-  namespace(namespace: string | string[], cb?: SubFn) {
+  namespace(namespace: string | string[], cb?: SubFn<this>) {
     return this.filter({ namespace }, cb)
   }
 
@@ -48,8 +48,8 @@ export class FlatfileListener extends EventHandler {
    * @param filter
    * @param cb
    */
-  filter(filter: EventFilter, cb?: SubFn) {
-    const client = new FlatfileListener(filter)
+  filter(filter: EventFilter, cb?: SubFn<this>): this {
+    const client = new (this.constructor as any)(filter)
     this.addNode(client)
     cb?.(client)
     return client
@@ -60,8 +60,11 @@ export class FlatfileListener extends EventHandler {
    *
    * @param cb
    */
-  public static create(cb: SubFn): FlatfileListener {
-    const client = new FlatfileListener()
+  public static create<T extends FlatfileListener>(
+    this: Constructor<T>,
+    cb: SubFn<T>
+  ): T {
+    const client = new this()
     cb(client)
     return client
   }
@@ -75,4 +78,6 @@ export class FlatfileListener extends EventHandler {
   }
 }
 
-type SubFn = (client: FlatfileListener) => void
+type SubFn<T extends FlatfileListener> = (client: T) => void
+
+type Constructor<T> = { new (): T }

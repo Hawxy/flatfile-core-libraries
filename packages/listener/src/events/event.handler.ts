@@ -16,7 +16,7 @@ export class EventHandler extends AuthenticatedClient {
    * Cache of registered listeners on this instance
    * @private
    */
-  private listeners: [string | string[], EventFilter, EventCallback][] = []
+  protected listeners: [string | string[], EventFilter, EventCallback][] = []
 
   constructor(filter?: EventFilter, accessToken?: string, apiUrl?: string) {
     super(accessToken, apiUrl)
@@ -31,7 +31,7 @@ export class EventHandler extends AuthenticatedClient {
    *
    * @private
    */
-  private nodes: EventHandler[] = []
+  protected nodes: EventHandler[] = []
 
   /**
    * Register a subscriber for events that match this path
@@ -166,7 +166,7 @@ export class EventHandler extends AuthenticatedClient {
    *
    * @param fn
    */
-  use(fn: (handler: this) => void) {
+  use(fn: (handler: this) => void): this {
     fn(this)
     return this
   }
