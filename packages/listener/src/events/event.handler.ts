@@ -92,7 +92,10 @@ export class EventHandler extends AuthenticatedClient {
 
     await this.trigger(event, true)
 
-    await event.afterAllCallbacks.forEach(async (cb: any) => cb(event))
+    for (const [_key, cb] of event.afterAllCallbacks) {
+      await cb(event)
+    }
+
     event.cache.delete()
   }
 
