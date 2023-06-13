@@ -71,14 +71,15 @@ export class FlatfileEvent extends AuthenticatedClient {
     }
 
     // TODO: do we need to remove source from the messages array?
-    const prepRecords = records.map((record) => {
+    records.map((record) => {
       record.messages?.map((message) => {
         delete message.source
       })
     })
+    
     await this.fetch(this.src.dataUrl, {
-      method: 'POST',
-      data: JSON.stringify(prepRecords),
+      method: 'PUT',
+      data: records,
     })
   }
 }
