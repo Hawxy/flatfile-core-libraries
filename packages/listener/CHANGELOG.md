@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.7
+
+### Patch Changes
+
+- dcc0267: Update event.update()
+
 ## 0.3.6
 
 ### Patch Changes
