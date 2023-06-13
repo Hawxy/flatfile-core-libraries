@@ -1,6 +1,6 @@
 {
   "name": "flatfile",
-  "version": "3.4.11-rc.6",
+  "version": "3.4.5",
   "description": "",
   "main": "./dist/index.js",
   "bin": {
@@ -47,7 +47,7 @@
     "uuid": "^9.0.0",
     "wildcard-match": "^5.1.2",
     "zod": "^3.19.1",
-    "@flatfile/listener-driver-pubsub": "^0.0.4"
+    "@flatfile/listener-driver-pubsub": "^1.0.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
