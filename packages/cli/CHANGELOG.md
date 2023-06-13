@@ -1,5 +1,46 @@
 # @flatfile/cli
 
+## 3.4.11
+
+### Patch Changes
+
+- f227290: This version introduces some significant improvements to the capabilities of npx flatfile develop. All outgoing HTTP requests are logged in the debug stream, and we now have a much cleaner analysis of events that are received and where/how they are processed.
+- Updated dependencies [f227290]
+  - @flatfile/listener-driver-pubsub@1.0.1
+
+## 3.4.10
+
+### Patch Changes
+
+- Updated dependencies [ce3ff5e]
+  - @flatfile/cross-env-config@0.0.4
+
+## 3.4.9
+
+### Patch Changes
+
+- 0a52861: bugfix of included templates
+
+## 3.4.8
+
+### Patch Changes
+
+- 841c32d: Fix bug to allow setting api url via .env file
+
+## 3.4.7
+
+### Patch Changes
+
+- 52fa034: cleans up dist
+- Updated dependencies [52fa034]
+  - @flatfile/cross-env-config@0.0.3
+
+## 3.4.6
+
+### Patch Changes
+
+- f8fe0cc: Update @flatfile/api version
+
 ## 3.4.5
 
 ### Patch Changes
