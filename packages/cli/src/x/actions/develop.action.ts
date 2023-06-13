@@ -8,8 +8,8 @@ import readJson from 'read-package-json'
 // @ts-expect-error
 import ncc from '@vercel/ncc'
 import { getAuth } from '../../shared/get-auth'
-import { PollingEventDriver } from '../../shared/utils/polling'
 import { getEntryFile } from '../../shared/get-entry-file'
+import { PubSubDriver } from '@flatfile/listener-driver-pubsub'
 
 export async function developAction(
   file?: string | null | undefined,
@@ -50,11 +50,7 @@ export async function developAction(
       text: `Environment "${environment?.name}" selected`,
     }).succeed()
 
-    const pollDriver = new PollingEventDriver({
-      environmentId: environment.id,
-      apiUrl: apiUrl,
-      accessToken: apiKey,
-    })
+    const driver = new PubSubDriver(environment.id)
 
     const watcher = ncc(file, {
       watch: true,
@@ -80,14 +76,15 @@ export async function developAction(
             apiUrl,
           })
 
-          devClient.mount(pollDriver)
-          pollDriver.start()
+          devClient.mount(driver)
           console.log('\n File change detected. 🚀 ')
         } catch (e) {
           console.error(e)
         }
       }
     })
+
+    await driver.start()
   } catch (e) {
     console.error(e)
   }
