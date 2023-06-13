@@ -1,5 +1,5 @@
+import api, { Flatfile } from '@flatfile/api'
 import { FlatfileListener } from '@flatfile/listener'
-import { Flatfile, FlatfileClient } from '@flatfile/api'
 
 export const config: Pick<
   Flatfile.WorkbookConfig,
@@ -17,20 +17,20 @@ export const config: Pick<
           label: 'First name',
           constraints: [
             {
-              type: 'required',
-            },
-          ],
+              type: 'required'
+            }
+          ]
         },
         {
           key: 'last_name',
           type: 'string',
-          label: 'last name',
+          label: 'last name'
         },
         {
           key: 'full_name',
           type: 'string',
-          label: 'full name',
-        },
+          label: 'full name'
+        }
       ],
       actions: [
         {
@@ -38,10 +38,10 @@ export const config: Pick<
           operation: 'contacts:split-fields',
           description: 'Would you like to split fields?',
           mode: 'foreground',
-          confirm: true,
-        },
-      ],
-    },
+          confirm: true
+        }
+      ]
+    }
   ],
   actions: [
     {
@@ -50,28 +50,17 @@ export const config: Pick<
       description: 'Would you like to submit your workbook?',
       mode: 'foreground',
       primary: true,
-      confirm: true,
-    },
-  ],
+      confirm: true
+    }
+  ]
 }
 
 async function splitFields(jobId: string, sheetId: string) {
-  const storedToken = sessionStorage.getItem('token')
-
-  if (!storedToken) {
-    throw new Error('Error retrieving stored token')
-  }
-
-  const Flatfile = new FlatfileClient({
-    token: storedToken,
-    environment: 'https://platform.flatfile.com/api/v1',
+  await api.jobs.ack(jobId, {
+    info: "I'm starting the spliting fields job"
   })
 
-  await Flatfile.jobs.ack(jobId, {
-    info: "I'm starting the spliting fields job",
-  })
-
-  const records = await Flatfile.records.get(sheetId)
+  const records = await api.records.get(sheetId)
   const recordsUpdates = records.data.records?.map((record) => {
     const fullName = record.values['full_name'].value
     const splitName = fullName?.toLocaleString().split(' ')
@@ -82,10 +71,10 @@ async function splitFields(jobId: string, sheetId: string) {
     return record
   })
 
-  await Flatfile.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
+  await api.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
 
-  await Flatfile.jobs.complete(jobId, {
-    info: "Job's work is done",
+  await api.jobs.complete(jobId, {
+    info: "Job's work is done"
   })
 }
 

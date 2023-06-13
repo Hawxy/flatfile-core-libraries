@@ -1,5 +1,6 @@
+import api, { Flatfile } from '@flatfile/api'
+import { recordHook } from '@flatfile/plugin-record-hook'
 import { FlatfileListener } from '@flatfile/listener'
-import { Flatfile, FlatfileClient } from '@flatfile/api'
 
 export const config: Pick<
   Flatfile.WorkbookConfig,
@@ -17,20 +18,20 @@ export const config: Pick<
           label: 'First name',
           constraints: [
             {
-              type: 'required',
-            },
-          ],
+              type: 'required'
+            }
+          ]
         },
         {
           key: 'last_name',
           type: 'string',
-          label: 'last name',
+          label: 'last name'
         },
         {
           key: 'full_name',
           type: 'string',
-          label: 'full name',
-        },
+          label: 'full name'
+        }
       ],
       actions: [
         {
@@ -38,10 +39,10 @@ export const config: Pick<
           operation: 'contacts:join-fields',
           description: 'Would you like to join fields?',
           mode: 'foreground',
-          confirm: true,
-        },
-      ],
-    },
+          confirm: true
+        }
+      ]
+    }
   ],
   actions: [
     {
@@ -50,38 +51,27 @@ export const config: Pick<
       description: 'Would you like to submit your workbook?',
       mode: 'foreground',
       primary: true,
-      confirm: true,
-    },
-  ],
+      confirm: true
+    }
+  ]
 }
 
 async function joinFields(jobId: string, sheetId: string) {
-  const storedToken = sessionStorage.getItem('token')
-
-  if (!storedToken) {
-    throw new Error('Error retrieving stored token')
-  }
-
-  const Flatfile = new FlatfileClient({
-    token: storedToken,
-    environment: 'https://platform.flatfile.com/api/v1',
+  await api.jobs.ack(jobId, {
+    info: "I'm starting the joining fields job"
   })
 
-  await Flatfile.jobs.ack(jobId, {
-    info: "I'm starting the joining fields job",
-  })
-
-  const records = await Flatfile.records.get(sheetId)
+  const records = await api.records.get(sheetId)
   const recordsUpdates = records.data.records?.map((record) => {
     const fullName = `${record.values['first_name'].value} ${record.values['last_name'].value}`
     record.values['full_name'].value = fullName
     return record
   })
 
-  await Flatfile.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
+  await api.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
 
-  await Flatfile.jobs.complete(jobId, {
-    info: "Job's work is done",
+  await api.jobs.complete(jobId, {
+    info: "Job's work is done"
   })
 }
 
@@ -98,5 +88,13 @@ export const listener = FlatfileListener.create((client) => {
       console.log('join-fields', event)
       return joinFields(context.jobId, context.sheetId)
     }
+  )
+
+  client.use(
+    recordHook('TestSheet', (record) => {
+      record.set('last_name', 'new last name')
+      record.addError('last_name', 'this is an incorrect last name')
+      return record
+    })
   )
 })

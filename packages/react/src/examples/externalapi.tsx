@@ -1,5 +1,5 @@
+import api, { Flatfile } from '@flatfile/api'
 import { FlatfileListener } from '@flatfile/listener'
-import { Flatfile, FlatfileClient } from '@flatfile/api'
 
 export const config: Pick<
   Flatfile.WorkbookConfig,
@@ -17,10 +17,10 @@ export const config: Pick<
           label: 'Brewery name',
           constraints: [
             {
-              type: 'required',
-            },
-          ],
-        },
+              type: 'required'
+            }
+          ]
+        }
       ],
       actions: [
         {
@@ -28,10 +28,10 @@ export const config: Pick<
           operation: 'breweries:verify',
           description: 'Would you like to verify breweries?',
           mode: 'foreground',
-          confirm: true,
-        },
-      ],
-    },
+          confirm: true
+        }
+      ]
+    }
   ],
   actions: [
     {
@@ -40,9 +40,9 @@ export const config: Pick<
       description: 'Would you like to submit your workbook?',
       mode: 'foreground',
       primary: true,
-      confirm: true,
-    },
-  ],
+      confirm: true
+    }
+  ]
 }
 
 async function verifyBreweries(jobId: string, sheetId: string) {
@@ -54,19 +54,8 @@ async function verifyBreweries(jobId: string, sheetId: string) {
     throw new Error('Missing sheetId')
   }
 
-  const storedToken = sessionStorage.getItem('token')
-
-  if (!storedToken) {
-    throw new Error('Error retrieving stored token')
-  }
-  // authenticate into Flatfile API
-  const Flatfile = new FlatfileClient({
-    token: storedToken,
-    environment: 'https://platform.flatfile.com/api/v1',
-  })
-
   // fetch Flatfile records by sheet
-  const records = await Flatfile.records.get(sheetId)
+  const records = await api.records.get(sheetId)
   if (!records) return
 
   // hit external brewery api
@@ -94,37 +83,26 @@ async function verifyBreweries(jobId: string, sheetId: string) {
   })
 
   // update Flatfile records
-  await Flatfile.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
+  await api.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
 
   // complete the job
-  await Flatfile.jobs.complete(jobId, {
-    info: 'Brewery verification job is complete!',
+  await api.jobs.complete(jobId, {
+    info: 'Brewery verification job is complete!'
   })
 }
 
 async function submit(jobId: string) {
-  const storedToken = sessionStorage.getItem('token')
-
-  if (!storedToken) {
-    throw new Error('Error retrieving stored token')
-  }
-
-  const Flatfile = new FlatfileClient({
-    token: storedToken,
-    environment: 'https://platform.flatfile.com/api/v1',
-  })
-
-  await Flatfile.jobs.ack(jobId, {
+  await api.jobs.ack(jobId, {
     info: "I'm starting the job - inside client",
-    progress: 33,
+    progress: 33
   })
 
   // hit your api here
   await new Promise((res) => setTimeout(res, 2000))
 
-  await Flatfile.jobs.complete(jobId, {
+  await api.jobs.complete(jobId, {
     info: "Job's work is done",
-    outcome: { next: { type: 'wait' } },
+    outcome: { next: { type: 'wait' } }
   })
 }
 

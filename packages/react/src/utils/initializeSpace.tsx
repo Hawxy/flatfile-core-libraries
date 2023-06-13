@@ -1,10 +1,6 @@
 import { FlatfileClient } from '@flatfile/api'
 import { ISpace } from '../types/ISpace'
 
-const saveTokenToWindow = (token: string) => {
-  sessionStorage.setItem('token', token)
-}
-
 export const initializeSpace = async (spaceProps: ISpace) => {
   if (!spaceProps.publishableKey) {
     console.warn('Missing required publishable key')
@@ -18,15 +14,11 @@ export const initializeSpace = async (spaceProps: ISpace) => {
 
   const space = await createSpace(spaceProps)
 
-  if (space?.data.accessToken) {
-    await saveTokenToWindow(space?.data.accessToken)
-  }
-
   if (space?.data?.accessToken && space.data.id) {
     await addSpaceInfo({
       spaceProps,
       accessToken: space?.data?.accessToken,
-      spaceId: space.data?.id,
+      spaceId: space.data?.id
     })
   } else {
     console.warn(`Error getting spaceId and accessToken`)
@@ -40,13 +32,13 @@ const createSpace = async (spaceProps: ISpace) => {
   const { environmentId, name, publishableKey } = spaceProps
   const flatfile = new FlatfileClient({
     token: publishableKey,
-    environment: 'https://platform.flatfile.com/api/v1',
+    environment: 'https://platform.flatfile.com/api/v1'
   })
 
   try {
     const space = await flatfile.spaces.create({
       environmentId,
-      name,
+      name
     })
 
     return space
@@ -63,7 +55,7 @@ const createSpace = async (spaceProps: ISpace) => {
 const addSpaceInfo = async ({
   spaceProps,
   accessToken,
-  spaceId,
+  spaceId
 }: {
   spaceProps: ISpace
   accessToken: string
@@ -75,12 +67,12 @@ const addSpaceInfo = async ({
     document,
     themeConfig,
     sidebarConfig,
-    spaceInfo,
+    spaceInfo
   } = spaceProps
 
   const flatfile = new FlatfileClient({
     token: accessToken,
-    environment: 'https://platform.flatfile.com/api/v1',
+    environment: 'https://platform.flatfile.com/api/v1'
   })
 
   let localWorkbook
@@ -91,19 +83,19 @@ const addSpaceInfo = async ({
       name: workbook.name,
       actions: workbook.actions,
       spaceId,
-      environmentId,
+      environmentId
     })
 
     const metadata = {
       theme: themeConfig,
       sidebarConfig,
-      spaceInfo,
+      spaceInfo
     }
 
     await flatfile.spaces.update(spaceId, {
       environmentId,
       primaryWorkbookId: localWorkbook.data.id,
-      metadata,
+      metadata
     })
   } catch (e) {
     console.log(
@@ -118,7 +110,7 @@ const addSpaceInfo = async ({
     try {
       await flatfile.documents.create(spaceId, {
         title: document.title,
-        body: document.body,
+        body: document.body
       })
     } catch (e) {
       console.log(

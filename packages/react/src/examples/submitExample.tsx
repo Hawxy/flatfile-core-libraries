@@ -1,5 +1,5 @@
 import { FlatfileListener } from '@flatfile/listener'
-import { Flatfile, FlatfileClient } from '@flatfile/api'
+import api, { Flatfile, FlatfileClient } from '@flatfile/api'
 
 export const config: Pick<
   Flatfile.WorkbookConfig,
@@ -17,9 +17,9 @@ export const config: Pick<
           label: 'First name',
           constraints: [
             {
-              type: 'required',
-            },
-          ],
+              type: 'required'
+            }
+          ]
         },
         {
           key: 'last_name',
@@ -27,17 +27,17 @@ export const config: Pick<
           label: 'last name',
           constraints: [
             {
-              type: 'unique',
-            },
-          ],
+              type: 'unique'
+            }
+          ]
         },
         {
           key: 'full_name',
           type: 'string',
-          label: 'full name',
-        },
-      ],
-    },
+          label: 'full name'
+        }
+      ]
+    }
   ],
   actions: [
     {
@@ -46,29 +46,18 @@ export const config: Pick<
       description: 'Would you like to submit your workbook?',
       mode: 'foreground',
       primary: true,
-      confirm: true,
-    },
-  ],
+      confirm: true
+    }
+  ]
 }
 
 async function startCustomJob(jobId: string) {
   console.log('starting custom job at' + new Date())
 
-  const storedToken = sessionStorage.getItem('token')
-
-  if (!storedToken) {
-    throw new Error('Error retrieving stored token')
-  }
-
-  const Flatfile = new FlatfileClient({
-    token: storedToken,
-    environment: 'https://platform.flatfile.com/api/v1',
-  })
-
-  await Flatfile.jobs.ack(jobId, {
+  await api.jobs.ack(jobId, {
     info: "I'm starting the job - inside client",
     // progress only makes sense if multipart job - optional
-    progress: 33,
+    progress: 33
   })
 
   // convert records here
@@ -78,8 +67,8 @@ async function startCustomJob(jobId: string) {
   )
 
   if (res) {
-    await Flatfile.jobs.complete(jobId, {
-      info: "Job's work is done",
+    await api.jobs.complete(jobId, {
+      info: "Job's work is done"
     })
   }
 }

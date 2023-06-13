@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { ISpace } from './types/ISpace'
 import { makeTheme } from './utils/makeTheme'
 import { useSpace } from './hooks/useSpace'
-import { listener, config } from './examples/npmExample'
+import { listener, config } from './examples/joinFields'
 
 const spaceProps: ISpace = {
   name: 'Embedded Space',
@@ -14,9 +14,9 @@ const spaceProps: ISpace = {
   themeConfig: makeTheme({ primaryColor: '#546a76', textColor: '#fff' }),
   sidebarConfig: {
     showDataChecklist: false,
-    showSidebar: false,
+    showSidebar: false
   },
-  listener,
+  listener
 }
 
 const ExampleApp = () => {
@@ -25,9 +25,9 @@ const ExampleApp = () => {
   const { component } = useSpace({
     ...spaceProps,
     closeSpace: {
-      operation: 'colors:submit',
-      onClose: () => setShowSpace(false),
-    },
+      operation: 'contacts:submit',
+      onClose: () => setShowSpace(false)
+    }
   })
 
   return (
