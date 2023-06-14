@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.5.0
+
+### Minor Changes
+
+- a3f3314: Update listener
+
 ## 3.4.11
 
 ### Patch Changes
