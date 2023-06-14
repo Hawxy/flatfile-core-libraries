@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 6.1.0
+
+### Minor Changes
+
+- b1637a1: Bump dependency versions to support using recordHooks
+
 ## 6.0.4
 
 ### Patch Changes
