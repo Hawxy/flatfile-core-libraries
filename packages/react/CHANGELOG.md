@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 6.1.1
+
+### Patch Changes
+
+- 268c8d9: Downgrade plugin-record-hook version
+
 ## 6.1.0
 
 ### Minor Changes
