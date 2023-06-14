@@ -1,0 +1,5 @@
+---
+'flatfile': minor
+---
+
+Update listener
