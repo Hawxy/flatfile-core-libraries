@@ -1,6 +1,6 @@
 # Flatfile CLI
 
-Interact with Flatfile systems via CLI
+The Flatfile CLI is a command-line tool that simplifies the integration process with Flatfile by providing developers with commands to manage and configure their integration from their local environment.
 
 ## Usage
 

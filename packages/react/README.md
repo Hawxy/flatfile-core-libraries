@@ -1,13 +1,13 @@
-# Embed React
+# @flatfile/react
 
-Embed React is a front-end SDK wrapper around the [Flatfile API](https://flatfile.stoplight.io/docs/v10/). It allows you to securely and easily add an embedded import experience to any React app. Customization includes adding colors, logos, & fonts to match your brand.
+Embedded Flatfile in React is an SDK wrapper that enables you to seamlessly integrate a secure and user-friendly data import experience into your client-side application. With full customization options for colors, logos, and fonts, you can tailor the import interface to match your brand identity.
 
-You can use embedded Flatfile to receive data via a self-serve experience. To find the additional Flatfile integration paths that may work better for your business, explore our [docs](flatfile.stoplight.io).
+By utilizing embedded Flatfile, you can empower your users with a self-serve data import process. If you're looking for alternative integration paths that better suit your business requirements, refer to our [core paths](https://flatfile.com/docs/core-paths/).
 
 ### Before you begin
 
-The minimum supported version of React is v18. If you use an older version, upgrade React to use this library. You will also need Node.js v18 installed on your machine.
+The minimum supported version of React is v16. If you use an older version, upgrade React to use this library.
 
 ### Get started
 
-Follow [this guide](https://flatfile.stoplight.io/docs/platform-sdk-mono/d6ff961604945-embed-react) to configure a Flatfile embedded import experience.
+Follow [this guide](https://flatfile.com/docs/core-paths/embedding) to configure a Flatfile embedded import experience.
