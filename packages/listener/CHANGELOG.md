@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.8
+
+### Patch Changes
+
+- 6b64f31: adding readme files
+
 ## 0.3.7
 
 ### Patch Changes

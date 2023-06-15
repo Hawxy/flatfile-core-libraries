@@ -1,5 +1,11 @@
 # @flatfile/hooks
 
+## 1.3.1
+
+### Patch Changes
+
+- 6b64f31: adding readme files
+
 ## 1.3.0
 
 ### Minor Changes

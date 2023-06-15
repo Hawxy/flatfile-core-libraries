@@ -1,5 +1,13 @@
 # @flatfile/configure
 
+## 0.5.33
+
+### Patch Changes
+
+- 6b64f31: adding readme files
+- Updated dependencies [6b64f31]
+  - @flatfile/hooks@1.3.1
+
 ## 0.5.32
 
 ### Patch Changes

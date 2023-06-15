@@ -1,5 +1,13 @@
 # @flatfile/cli
 
+## 3.5.1
+
+### Patch Changes
+
+- 6b64f31: adding readme files
+- Updated dependencies [6b64f31]
+  - @flatfile/listener@0.3.8
+
 ## 3.5.0
 
 ### Minor Changes

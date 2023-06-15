@@ -1,5 +1,14 @@
 # @flatfile/react
 
+## 6.1.2
+
+### Patch Changes
+
+- 6b64f31: adding readme files
+- Updated dependencies [6b64f31]
+  - @flatfile/configure@0.5.33
+  - @flatfile/listener@0.3.8
+
 ## 6.1.1
 
 ### Patch Changes
