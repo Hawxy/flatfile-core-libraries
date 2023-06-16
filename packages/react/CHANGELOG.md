@@ -1,5 +1,12 @@
 # @flatfile/react
 
+## 6.1.3
+
+### Patch Changes
+
+- Updated dependencies [e8eff5c]
+  - @flatfile/listener@0.3.9
+
 ## 6.1.2
 
 ### Patch Changes

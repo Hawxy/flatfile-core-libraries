@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.9
+
+### Patch Changes
+
+- e8eff5c: Adds namespace functionality
+
 ## 0.3.8
 
 ### Patch Changes

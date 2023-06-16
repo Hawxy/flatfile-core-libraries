@@ -1,5 +1,13 @@
 # @flatfile/cli
 
+## 3.5.2
+
+### Patch Changes
+
+- e8eff5c: Update to latest version of listener
+- Updated dependencies [e8eff5c]
+  - @flatfile/listener@0.3.9
+
 ## 3.5.1
 
 ### Patch Changes
