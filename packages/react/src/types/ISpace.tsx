@@ -44,7 +44,7 @@ export interface ISpace {
    * Shape of data you will be receiving:
    * Required
    */
-  workbook: Pick<Flatfile.WorkbookConfig, 'name' | 'sheets' | 'actions'>
+  workbook: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
   /**
    * Listener for advanced functionality
    * Optional
