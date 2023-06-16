@@ -26,6 +26,7 @@ export class FlatfileEvent extends AuthenticatedClient {
   public readonly context: any
   public readonly payload: any
   public readonly cache: EventCache
+  public readonly namespace: string[]
 
   constructor(
     private readonly src: Event,
@@ -41,6 +42,7 @@ export class FlatfileEvent extends AuthenticatedClient {
     this.target = src.target || ''
     this.origin = src.origin || {}
     this.action = src.context?.actionName || ''
+    this.namespace = src.namespaces || []
   }
 
   /**
@@ -76,7 +78,7 @@ export class FlatfileEvent extends AuthenticatedClient {
         delete message.source
       })
     })
-    
+
     await this.fetch(this.src.dataUrl, {
       method: 'PUT',
       data: records,

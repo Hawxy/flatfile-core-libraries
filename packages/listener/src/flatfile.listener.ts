@@ -38,8 +38,8 @@ export class FlatfileListener extends EventHandler {
    * @param namespace
    * @param cb
    */
-  namespace(namespace: string | string[], cb?: SubFn<this>) {
-    return this.filter({ namespace }, cb)
+  namespace(namespaces: string | string[], cb?: SubFn<this>) {
+    return this.filter({ namespaces }, cb)
   }
 
   /**

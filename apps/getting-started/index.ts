@@ -2,87 +2,188 @@ import { recordHook } from '@flatfile/plugin-record-hook'
 import fetch from 'node-fetch'
 import axios from 'axios'
 import api from '@flatfile/api'
+import { FlatfileListener } from '@flatfile/listener'
 
-export default function (listener) {
-  /**
-   * Part 1 example
-   */
+export default function (listener: FlatfileListener) {
+  listener.namespace(['*:red'], (red) => {
+    red.filter({ job: 'space:configure' }, (configure) => {
+      configure.on(
+        'job:ready',
+        async ({ context: { spaceId, environmentId, jobId } }) => {
+          try {
+            await api.jobs.ack(jobId, {
+              info: 'Gettin started.',
+              progress: 10,
+            })
 
-  listener.on('**', (event) => {
-    console.log(
-      `-> My event listener received an event: ${JSON.stringify(event)}`
-    )
-  })
+            await api.workbooks.create({
+              spaceId,
+              environmentId,
+              name: 'Red',
+              labels: ['primary'],
+              // namespace: 'red',
+              sheets: [
+                {
+                  name: 'Red Contacts',
+                  slug: 'contacts',
+                  fields: [
+                    {
+                      key: 'firstName',
+                      type: 'string',
+                      label: 'First Name',
+                    },
+                    {
+                      key: 'lastName',
+                      type: 'string',
+                      label: 'Last Name',
+                    },
+                    {
+                      key: 'email',
+                      type: 'string',
+                      label: 'Email',
+                    },
+                  ],
+                  actions: [
+                    {
+                      operation: 'duplicate',
+                      mode: 'background',
+                      label: 'Duplicate Sheet',
+                      type: 'string',
+                      description:
+                        'Duplicate this Sheet and lock down the original.',
+                      primary: true,
+                    },
+                  ],
+                },
+              ],
+              actions: [
+                {
+                  operation: 'submitActionFg',
+                  mode: 'foreground',
+                  label: 'Submit foreground',
+                  type: 'string',
+                  description: 'Submit data to webhook.site',
+                  primary: true,
+                },
+              ],
+            })
 
-  /**
-   * Part 2 example
-   */
+            await api.documents.create(spaceId, {
+              title: 'Getting Started',
+              body:
+                '# Welcome\n' +
+                '### Say hello to your first customer Space in the new Flatfile!\n' +
+                "Let's begin by first getting acquainted with what you're seeing in your Space initially.\n" +
+                '---\n',
+            })
 
-  const validEmailAddress = /^[\w\d.-]+@[\w\d]+\.\w+$/
+            await api.jobs.complete(jobId, {
+              outcome: {
+                message: 'This job is now complete.',
+              },
+            })
+          } catch (error) {
+            console.error('Error:', error.stack)
 
-  listener.use(
-    recordHook('contacts', (record) => {
-      const value = record.get('firstName')?.toString()
-      if (value) {
-        record.set('firstName', value.toLowerCase())
-      }
-
-      if (!validEmailAddress.test(String(record.get('email')))) {
-        console.log('got email')
-        record.addError('email', 'Invalid email address')
-      }
-
-      return record
-    })
-  )
-
-  listener.on(
-    'commit:created',
-    { context: { sheetSlug: 'contacts' } },
-    async (event) => {
-      const { sheetId } = event.context
-      const { records } = await event.data
-      if (!records) return
-      records.forEach((record) => {
-        record.values.last_name.value = 'Rock'
-
-        Object.keys(record.values).forEach((key) => {
-          delete record.values[key].updatedAt
-          if (record.values[key].value === null) {
-            delete record.values[key]
+            await api.jobs.fail(jobId, {
+              outcome: {
+                message: 'This job encountered an error.',
+              },
+            })
           }
-        })
-      })
-
-      await api.records.update(sheetId, records)
-    }
-  )
-
-  /**
-   * Part 3 example
-   */
-
-  listener.on('action:triggered', async (event) => {
-    const webhookReceiver = '<WEBHOOK URL>'
-    // copy your https://webhook.site URL for testing
-    const res = await fetch(webhookReceiver, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...event.payload, method: 'fetch' }),
+        }
+      )
     })
   })
 
-  listener.on('action:triggered', async (event) => {
-    const webhookReceiver = '<WEBHOOK URL>'
-    // copy your https://webhook.site URL for testing
-    const res = await axios(webhookReceiver, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify({ ...event.payload, method: 'axios' }),
+  listener.namespace(['space:green'], (green) => {
+    green.filter({ job: 'space:configure' }, (configure) => {
+      configure.on(
+        'job:ready',
+        async ({ context: { spaceId, environmentId, jobId } }) => {
+          try {
+            await api.jobs.ack(jobId, {
+              info: 'Gettin started.',
+              progress: 10,
+            })
+
+            await api.workbooks.create({
+              spaceId,
+              environmentId,
+              name: 'Green',
+              labels: ['primary'],
+              sheets: [
+                {
+                  name: 'Green Contacts',
+                  slug: 'contacts',
+                  // namespace: 'green',
+                  fields: [
+                    {
+                      key: 'firstName',
+                      type: 'string',
+                      label: 'First Name',
+                    },
+                    {
+                      key: 'lastName',
+                      type: 'string',
+                      label: 'Last Name',
+                    },
+                    {
+                      key: 'email',
+                      type: 'string',
+                      label: 'Email',
+                    },
+                  ],
+                  actions: [
+                    {
+                      operation: 'duplicate',
+                      mode: 'background',
+                      label: 'Duplicate Sheet',
+                      type: 'string',
+                      description:
+                        'Duplicate this Sheet and lock down the original.',
+                      primary: true,
+                    },
+                  ],
+                },
+              ],
+              actions: [
+                {
+                  operation: 'submitActionFg',
+                  mode: 'foreground',
+                  label: 'Submit foreground',
+                  type: 'string',
+                  description: 'Submit data to webhook.site',
+                  primary: true,
+                },
+              ],
+            })
+
+            await api.documents.create(spaceId, {
+              title: 'Getting Started',
+              body:
+                '# Welcome\n' +
+                '### Say hello to your first customer Space in the new Flatfile!\n' +
+                "Let's begin by first getting acquainted with what you're seeing in your Space initially.\n" +
+                '---\n',
+            })
+
+            await api.jobs.complete(jobId, {
+              outcome: {
+                message: 'This job is now complete.',
+              },
+            })
+          } catch (error) {
+            console.error('Error:', error.stack)
+
+            await api.jobs.fail(jobId, {
+              outcome: {
+                message: 'This job encountered an error.',
+              },
+            })
+          }
+        }
+      )
     })
   })
 }
