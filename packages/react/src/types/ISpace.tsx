@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { Flatfile } from '@flatfile/api'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'

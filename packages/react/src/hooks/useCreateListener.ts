@@ -11,7 +11,8 @@ export const useCreateListener = ({
   accessToken,
   listener
 }: Pick<ISpace, 'listener'> & { accessToken: string }) => {
-  const apiUrl = 'https://platform.flatfile.com/api'
+  const apiUrl =
+    import.meta.env.VITE_API_URL || 'https://platform.flatfile.com/api'
 
   // set the api key to fully authenticate into Flatfile api
   ;(window as any).CROSSENV_FLATFILE_API_KEY = accessToken
@@ -35,6 +36,7 @@ export const useCreateListener = ({
         apiUrl,
         accessToken
       })
+
       return listener?.dispatchEvent(eventInstance)
     }
   }

@@ -1,5 +1,5 @@
 import tinycolor from 'tinycolor2'
-import { makeTheme } from './makeTheme'
+import { makeTheme } from '../makeTheme'
 
 describe('makeTheme', () => {
   test('throws for invalid colors', () => {
@@ -18,8 +18,8 @@ describe('makeTheme', () => {
         backgroundColor: primaryColorValid,
         titleColor: lightenedPrimary,
         textColor: lightenedPrimary,
-        footerTextColor: lightenedPrimary,
-      },
+        footerTextColor: lightenedPrimary
+      }
     })
   })
 
@@ -32,8 +32,8 @@ describe('makeTheme', () => {
         backgroundColor: colors.primaryColor,
         titleColor: colors.textColor,
         textColor: colors.textColor,
-        footerTextColor: colors.textColor,
-      },
+        footerTextColor: colors.textColor
+      }
     })
   })
   test('sets all textColor variables to primaryColor lightened if textColor is not passed', () => {
@@ -48,8 +48,8 @@ describe('makeTheme', () => {
         backgroundColor: colors.primaryColor,
         titleColor: lightenedPrimary,
         textColor: lightenedPrimary,
-        footerTextColor: lightenedPrimary,
-      },
+        footerTextColor: lightenedPrimary
+      }
     })
   })
   test('sets logo', () => {
@@ -61,8 +61,8 @@ describe('makeTheme', () => {
         backgroundColor: '',
         titleColor: '',
         textColor: '',
-        footerTextColor: '',
-      },
+        footerTextColor: ''
+      }
     })
   })
 })

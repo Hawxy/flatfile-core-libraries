@@ -13,10 +13,12 @@ const Header = styled.h3`
 `
 
 const DefaultError = ({ error }: { error: string | Error }) => {
+  const errorMessage = typeof error === 'string' ? error : error.message
+
   return (
     <Container>
       <Header>Something went wrong</Header>
-      <p>{JSON.stringify(error)}</p>
+      <p>{errorMessage}</p>
     </Container>
   )
 }

@@ -1,19 +1,12 @@
 import { Flatfile } from '@flatfile/api'
+import Pubnub from 'pubnub'
 import { PubNubProvider } from 'pubnub-react'
-import React, { useState } from 'react'
-import ConfirmModal from './ConfirmCloseModal'
+import React, { JSX, useState } from 'react'
 import { useCreateListener } from '../hooks/useCreateListener'
 import { useEventSubscriber } from '../hooks/useEventSubscriber'
-import { useLaunchPubNub } from '../hooks/useLaunchPubNub'
-import { useLaunchSpace } from '../hooks/useLaunchSpace'
 import { ISpace } from '../types/ISpace'
-import DefaultError from './Error'
-import Spinner from './Spinner'
-import {
-  CloseIframeButton,
-  SpinnerStyles,
-  getIframeStyles,
-} from './embeddedStyles'
+import ConfirmModal from './ConfirmCloseModal'
+import { CloseIframeButton, getIframeStyles } from './embeddedStyles'
 
 /**
  * @name Space
@@ -21,82 +14,46 @@ import {
  * @param props
  */
 
-const Space = (props: ISpace): any => {
-  const { error: ErrorElement, loading: LoadingElement } = props
-  const { spaceUrl, error, loading, spaceId, accessToken } =
-    useLaunchSpace(props)
-
-  if (error) {
-    if (ErrorElement) {
-      return ErrorElement(error)
-    }
-    return <DefaultError error={error} />
-  }
-
-  if (loading) {
-    if (LoadingElement) {
-      return LoadingElement
-    }
-    return (
-      <SpinnerStyles>
-        <Spinner />
-      </SpinnerStyles>
-    )
-  }
-
-  return spaceId && spaceUrl && accessToken ? (
-    <SpaceIframeWrap
-      accessToken={accessToken}
-      spaceSrc={spaceUrl}
-      spaceId={spaceId}
-      {...props}
-    />
-  ) : null
+interface SpaceComponent {
+  spaceId: string
+  spaceUrl: string
+  accessToken: string
+  pubNub: Pubnub
 }
 
-const SpaceIframeWrap = (
-  props: ISpace & {
-    spaceId: string
-    spaceSrc: string
-    accessToken: string
-  }
-) => {
-  const { spaceId, accessToken, spaceSrc } = props
-
-  const { localPubnub, error } = useLaunchPubNub({ spaceId, accessToken })
-
-  if (error) {
-    return <div>{`${JSON.stringify(error)}`}</div>
-  }
-
-  return localPubnub ? (
-    <PubNubProvider client={localPubnub}>
-      <SpaceContents spaceUrl={spaceSrc} {...props} />
+const Space = ({
+  spaceId,
+  spaceUrl,
+  accessToken,
+  pubNub,
+  ...props
+}: SpaceComponent & ISpace): JSX.Element | null => {
+  return spaceId && spaceUrl && accessToken && pubNub ? (
+    <PubNubProvider client={pubNub}>
+      <SpaceContents
+        spaceId={spaceId}
+        spaceUrl={spaceUrl}
+        accessToken={accessToken}
+        {...props}
+      />
     </PubNubProvider>
   ) : null
 }
 
-const SpaceContents = (
-  props: ISpace & {
-    spaceId: string
-    spaceUrl: string
-    accessToken: string
-  }
-) => {
+export const SpaceContents = (
+  props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string }
+): JSX.Element => {
   const [showExitWarnModal, setShowExitWarnModal] = useState(false)
   const { spaceId, spaceUrl, listener, accessToken, closeSpace, iframeStyles } =
     props
 
-  const { dispatchEvent } = useCreateListener({
-    listener,
-    accessToken,
-  })
+  const { dispatchEvent } = useCreateListener({ listener, accessToken })
 
   useEventSubscriber(
     [
       Flatfile.EventTopic.JobCreated,
       Flatfile.EventTopic.JobUpdated,
-      Flatfile.EventTopic.JobOutcomeAcknowledged,
+      Flatfile.EventTopic.JobOutcomeAcknowledged
     ],
     (event) => {
       const eventResponse = JSON.parse(event.message) ?? {}
@@ -106,21 +63,29 @@ const SpaceContents = (
       ) {
         closeSpace?.onClose({})
       }
+
       dispatchEvent(eventResponse)
     },
     spaceId
   )
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex' }} data-testid="space-contents">
       {showExitWarnModal && (
         <ConfirmModal
           onConfirm={() => closeSpace?.onClose({})}
           onCancel={() => setShowExitWarnModal(false)}
         />
       )}
-      <iframe style={getIframeStyles(iframeStyles!)} src={spaceUrl} />
-      <CloseIframeButton onClick={() => setShowExitWarnModal(true)}>
+      <iframe
+        data-testid="flatfile-iframe"
+        style={getIframeStyles(iframeStyles!)}
+        src={spaceUrl}
+      />
+      <CloseIframeButton
+        onClick={() => setShowExitWarnModal(true)}
+        data-testid="flatfile-close-button"
+      >
         <svg viewBox="0 0 24 24">
           <path d="M18.364 5.636c-0.781-0.781-2.048-0.781-2.828 0l-5.536 5.536 -5.536-5.536c-0.781-0.781-2.048-0.781-2.828 0s-0.781 2.048 0 2.828l5.536 5.536 -5.536 5.536c-0.781 0.781-0.781 2.048 0 2.828s2.048 0.781 2.828 0l5.536-5.536 5.536 5.536c0.781 0.781 2.048 0.781 2.828 0s0.781-2.048 0-2.828l-5.536-5.536 5.536-5.536c0.781-0.781 0.781-2.048 0-2.828z"></path>
         </svg>

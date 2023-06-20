@@ -1,125 +1,46 @@
-import { FlatfileClient } from '@flatfile/api'
 import { ISpace } from '../types/ISpace'
+import { getErrorMessage } from './getErrorMessage'
+import { addSpaceInfo } from './addSpaceInfo'
+import { authenticate } from './authenticate'
 
 export const initializeSpace = async (spaceProps: ISpace) => {
-  if (!spaceProps.publishableKey) {
-    console.warn('Missing required publishable key')
-    throw new Error('Missing required publishable key')
-  }
-
-  if (!spaceProps.environmentId) {
-    console.warn('Missing required environment id')
-    throw new Error('Missing required environment id')
-  }
-
-  const space = await createSpace(spaceProps)
-
-  if (space?.data?.accessToken && space.data.id) {
-    await addSpaceInfo({
-      spaceProps,
-      accessToken: space?.data?.accessToken,
-      spaceId: space.data?.id
-    })
-  } else {
-    console.warn(`Error getting spaceId and accessToken`)
-    throw new Error(`Error getting spaceId and accessToken`)
-  }
-
-  return space
-}
-
-const createSpace = async (spaceProps: ISpace) => {
-  const { environmentId, name, publishableKey } = spaceProps
-  const flatfile = new FlatfileClient({
-    token: publishableKey,
-    environment: 'https://platform.flatfile.com/api/v1'
-  })
+  let space
+  const { publishableKey, environmentId, name } = spaceProps
 
   try {
-    const space = await flatfile.spaces.create({
-      environmentId,
-      name
-    })
-
-    return space
-  } catch (e: any) {
-    console.log(
-      `${e}: \n\nDouble check your environmentId is tied to your publishable key and themeConfig / sidebarConfigs (if passing in) are in the right format.`
-    )
-    throw new Error(
-      `${e}: \n\nDouble check your environmentId is tied to your publishable key and themeConfig / sidebarConfigs (if passing in) are in the right format.`
-    )
-  }
-}
-
-const addSpaceInfo = async ({
-  spaceProps,
-  accessToken,
-  spaceId
-}: {
-  spaceProps: ISpace
-  accessToken: string
-  spaceId: string
-}) => {
-  const {
-    workbook,
-    environmentId,
-    document,
-    themeConfig,
-    sidebarConfig,
-    spaceInfo
-  } = spaceProps
-
-  const flatfile = new FlatfileClient({
-    token: accessToken,
-    environment: 'https://platform.flatfile.com/api/v1'
-  })
-
-  let localWorkbook
-
-  try {
-    localWorkbook = await flatfile.workbooks.create({
-      sheets: workbook.sheets,
-      name: workbook.name,
-      actions: workbook.actions,
-      spaceId,
-      environmentId
-    })
-
-    const metadata = {
-      theme: themeConfig,
-      sidebarConfig,
-      spaceInfo
+    if (!publishableKey) {
+      throw new Error('Missing required publishable key')
     }
 
-    await flatfile.spaces.update(spaceId, {
-      environmentId,
-      primaryWorkbookId: localWorkbook.data.id,
-      metadata
-    })
-  } catch (e) {
-    console.log(
-      `Error adding workbook to space: ${e} \n\nDouble check your workbookConfig is in the right format.`
-    )
-    throw new Error(
-      `Error adding workbook to space: ${e} \n\nDouble check your workbookConfig is in the right format.`
-    )
-  }
+    if (!environmentId) {
+      throw new Error('Missing required environment id')
+    }
 
-  if (document) {
+    const limitedAccessApi = authenticate(publishableKey)
     try {
-      await flatfile.documents.create(spaceId, {
-        title: document.title,
-        body: document.body
+      space = await limitedAccessApi.spaces.create({
+        environmentId,
+        name
       })
-    } catch (e) {
-      console.log(
-        `Error adding document to space: ${e} \n\nDouble check your document is in the right format {title: string, body: string}.`
-      )
+    } catch (error) {
+      throw new Error(`Failed to create space: ${getErrorMessage(error)}`)
+    }
 
+    if (!space) {
       throw new Error(
-        `Error adding document to space: ${e} \n\nDouble check your document is in the right format {title: string, body: string}.`
+        `Failed to create space: Error parsing token: ${publishableKey}`
       )
     }
+    if (!space.data.accessToken) {
+      throw new Error('Failed to retrieve accessToken')
+    }
+
+    const fullAccessApi = authenticate(space.data.accessToken)
+    await addSpaceInfo(spaceProps, space.data.id, fullAccessApi)
+    return space
+  } catch (error) {
+    const message = getErrorMessage(error)
+    console.error(`Failed to initialize space: ${message}`)
+    throw error
   }
 }

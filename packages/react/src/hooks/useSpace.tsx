@@ -1,22 +1,114 @@
-import React, { ReactElement, useState } from 'react'
-import { ISpace } from '../types/ISpace'
+import Pubnub from 'pubnub'
+import React, { JSX, useEffect, useState } from 'react'
+import DefaultError from '../components/Error'
 import Space from '../components/Space'
-import { EmbeddedContext } from '../contexts/EmbeddedContext'
+import Spinner from '../components/Spinner'
+import { SpinnerStyles } from '../components/embeddedStyles'
+import { ISpace } from '../types/ISpace'
+import { initializePubnub } from '../utils/initializePubnub'
+import { initializeSpace } from '../utils/initializeSpace'
 
-/**
- * @name useSpace
- * @description Returns a space component
- * @returns { component: ReactElement }
- */
-
-export const useSpace = (props: ISpace): { component: ReactElement } => {
-  const [currentSpace, setCurrentSpace] = useState(undefined)
-
-  return {
-    component: (
-      <EmbeddedContext.Provider value={{ currentSpace, setCurrentSpace }}>
-        <Space {...props} />
-      </EmbeddedContext.Provider>
-    ),
-  }
+export interface State {
+  pubNub: Pubnub | null
+  error?: Error | string
+  localSpaceId: string
+  accessTokenLocal: string
+  spaceUrl: string
 }
+
+export const useSpace = (props: ISpace): JSX.Element => {
+  const { error: ErrorElement, loading: LoadingElement } = props
+  const [initError, setInitError] = useState<Error | string>()
+  const [state, setState] = useState<State>({
+    pubNub: null,
+    localSpaceId: '',
+    accessTokenLocal: '',
+    spaceUrl: ''
+  })
+
+  const { localSpaceId, pubNub, spaceUrl, accessTokenLocal } = state
+
+  const initSpace = async () => {
+    try {
+      const { data } = await initializeSpace(props)
+
+      if (!data) {
+        throw new Error('Failed to initialize space')
+      }
+
+      const { id: spaceId, accessToken, guestLink } = data
+
+      if (!spaceId) {
+        throw new Error('Missing spaceId from space response')
+      }
+
+      if (!guestLink) {
+        throw new Error('Missing guest link from space response')
+      }
+
+      setState((prevState) => ({
+        ...prevState,
+        localSpaceId: spaceId,
+        spaceUrl: guestLink
+      }))
+
+      if (!accessToken) {
+        throw new Error('Missing access token from space response')
+      }
+
+      setState((prevState) => ({
+        ...prevState,
+        accessTokenLocal: accessToken
+      }))
+
+      const initializedPubNub = await initializePubnub({
+        spaceId,
+        accessToken
+      })
+
+      setState((prevState) => ({
+        ...prevState,
+        pubNub: initializedPubNub
+      }))
+    } catch (error: any) {
+      setInitError(error)
+    }
+  }
+
+  useEffect(() => {
+    initSpace()
+  }, [])
+
+  const errorElement = ErrorElement ? (
+    // Adding non-null assertion because this will never be hit if error is falsy, ts is unhappy.
+    ErrorElement(initError!)
+  ) : (
+    <DefaultError error={initError!} />
+  )
+
+  const loadingElement = LoadingElement ?? (
+    <SpinnerStyles>
+      <Spinner />
+    </SpinnerStyles>
+  )
+
+  if (initError) {
+    return errorElement
+  }
+
+  if (pubNub) {
+    return (
+      <Space
+        spaceId={localSpaceId}
+        spaceUrl={spaceUrl}
+        accessToken={accessTokenLocal}
+        pubNub={pubNub}
+        {...props}
+      />
+    )
+  }
+
+  return loadingElement
+}
+
+export default useSpace

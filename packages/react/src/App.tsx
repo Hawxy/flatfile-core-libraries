@@ -22,7 +22,7 @@ const spaceProps: ISpace = {
 const ExampleApp = () => {
   const [showSpace, setShowSpace] = useState(false)
 
-  const { component } = useSpace({
+  const space = useSpace({
     ...spaceProps,
     closeSpace: {
       operation: 'contacts:submit',
@@ -39,7 +39,7 @@ const ExampleApp = () => {
       >
         {showSpace === true ? 'Close' : 'Open'} space
       </button>
-      {showSpace && component}
+      {showSpace && space}
     </div>
   )
 }

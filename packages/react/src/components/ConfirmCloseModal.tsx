@@ -120,13 +120,13 @@ export const ModalText = styled.div`
 
 const ConfirmModal = ({
   onConfirm,
-  onCancel,
+  onCancel
 }: {
   onConfirm: () => void
   onCancel: () => void
 }) => {
   return (
-    <OuterShell>
+    <OuterShell data-testid="close-confirm-modal">
       <InnerShell>
         <Modal>
           <ModalHeading>Close Window</ModalHeading>
