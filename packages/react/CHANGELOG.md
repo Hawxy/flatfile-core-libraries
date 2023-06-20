@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.0.0
+
+### Major Changes
+
+- 141e333: Add fallback for pubnub connection and refactor useSpace
+
 ## 6.1.3
 
 ### Patch Changes
