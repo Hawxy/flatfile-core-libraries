@@ -10,6 +10,9 @@ import ncc from '@vercel/ncc'
 import { getAuth } from '../../shared/get-auth'
 import { getEntryFile } from '../../shared/get-entry-file'
 import { PubSubDriver } from '@flatfile/listener-driver-pubsub'
+import { DefaultApi, Configuration } from '@flatfile/api'
+import fetch from 'node-fetch'
+import { apiKeyClient } from './auth.action'
 
 export async function developAction(
   file?: string | null | undefined,
@@ -49,6 +52,16 @@ export async function developAction(
     ora({
       text: `Environment "${environment?.name}" selected`,
     }).succeed()
+
+    // Check if any agents are listed for environment
+    const apiClient = apiKeyClient({ apiUrl, apiKey: apiKey! })
+
+    const agents = await apiClient.getAgents({ environmentId: environment.id })
+    if (agents?.data && agents?.data?.length > 0) {
+      console.log(
+        'Looks like you already have deployed agents, please be aware of potentially unintended conflicts with your local development environment. Read more here: https://flatfile.com/docs/developer-tools/developing/running-local#shared-environments'
+      )
+    }
 
     const driver = new PubSubDriver(environment.id)
 
