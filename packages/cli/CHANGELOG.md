@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.5.4
+
+### Patch Changes
+
+- d26f2d1: Check for deployed agents before developing
+
 ## 3.5.3
 
 ### Patch Changes
