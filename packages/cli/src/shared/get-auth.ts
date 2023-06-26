@@ -100,16 +100,6 @@ export async function getAuth(options: any): Promise<{
   to your git repository.`
     }
 
-    // console.log(
-    //   `🛑 You must provide an authentication key. Either set the ${chalk.bold(
-    //     'FLATFILE_API_KEY'
-    //   )} or ${chalk.bold(
-    //     'FLATFILE_BEARER_TOKEN'
-    //   )} environment variable, or pass it as an option to this command with ${chalk.bold(
-    //     '--token'
-    //   )}`
-    // )
-    // process.exit(1)
   }
   const environment = await getEnvironment(options, apiUrl, apiKey)
   return { apiKey, apiUrl, environment }
@@ -119,11 +109,29 @@ async function getEnvironment(options: any, apiUrl: string, apiKey: string) {
   const envSpinner = ora({
     text: `Looking for environments...`,
   }).start()
-  const apiClient = apiKeyClient({ apiUrl, apiKey: apiKey! })
 
-  const environments = await apiClient.getEnvironments({ pageSize: 100 })
+  let environments
+  try {
+    const apiClient = apiKeyClient({ apiUrl, apiKey: apiKey! })
+    environments = await apiClient.getEnvironments({ pageSize: 100 })
+  } catch (e: any) {
+    if (e.response.status === 401) {
+      envSpinner.fail(`You must provide a valid API Key. Either set the ${chalk.bold('FLATFILE_API_KEY')} or ${chalk.bold('FLATFILE_BEARER_TOKEN')} environment variable.
+  Please reference our authentication documentation for further information:
+  ${chalk.underline.blue('https://flatfile.com/docs/developer-tools/security/authentication')}`)
+      process.exit(1)
+    } else {
+      console.log(`
+  An error occurred while attempting to retrieve your environments.
+  ${e.response.status}:${e.response.statusText}`)
+      process.exit(1)
+    }
+  }
+
   if (environments.data?.length === 0) {
-    envSpinner.fail(`No Environments found.`)
+    envSpinner.fail(`No Environments found.
+  Please reference our environments documentation for further information:
+  ${chalk.underline.blue('https://flatfile.com/docs/developer-tools/environment')}`)
     process.exit(1)
   }
 
@@ -161,7 +169,9 @@ async function getEnvironment(options: any, apiUrl: string, apiKey: string) {
   }
 
   if (!environment) {
-    throw `No Environments found.`
+    throw `No Environments found.
+Please reference our environments documentation for further information:
+${chalk.underline.blue('https://flatfile.com/docs/developer-tools/environment')}`
   }
 
   return environment
