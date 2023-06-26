@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.5.5
+
+### Patch Changes
+
+- 3b3c69f: Updates error messages when fetching environments in cli actions
+
 ## 3.5.4
 
 ### Patch Changes
