@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import '../index.css'
 
 const OuterShell = styled.div`
   background-color: rgba(64, 72, 87, 0.2);
@@ -120,7 +121,7 @@ export const ModalText = styled.div`
 
 const ConfirmModal = ({
   onConfirm,
-  onCancel
+  onCancel,
 }: {
   onConfirm: () => void
   onCancel: () => void
