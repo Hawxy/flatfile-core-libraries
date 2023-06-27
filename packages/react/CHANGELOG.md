@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.1.0
+
+### Minor Changes
+
+- d0d17ee: Adds support for up to React 18
+
 ## 7.0.0
 
 ### Major Changes
