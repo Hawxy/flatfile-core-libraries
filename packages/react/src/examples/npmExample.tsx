@@ -4,7 +4,7 @@ import api, { Flatfile } from '@flatfile/api'
 import Color from 'color'
 
 export const config: Pick<
-  Flatfile.WorkbookConfig,
+  Flatfile.CreateWorkbookConfig,
   'name' | 'sheets' | 'actions'
 > = {
   name: 'Color workbook',
@@ -16,19 +16,19 @@ export const config: Pick<
         {
           key: 'color',
           type: 'string',
-          label: 'Color'
-        }
+          label: 'Color',
+        },
       ],
       actions: [
         {
-          label: 'Convert color',
+          label: 'Convert color to hex',
           operation: 'colors:convert-color',
-          description: 'Would you like to convert colors?',
+          description: 'Would you like to convert colors to Hex?',
           mode: 'foreground',
-          confirm: true
-        }
-      ]
-    }
+          confirm: true,
+        },
+      ],
+    },
   ],
   actions: [
     {
@@ -37,14 +37,14 @@ export const config: Pick<
       description: 'Would you like to submit your workbook?',
       mode: 'foreground',
       primary: true,
-      confirm: true
-    }
-  ]
+      confirm: true,
+    },
+  ],
 }
 
 async function convertColors(jobId: string, sheetId: string) {
   await api.jobs.ack(jobId, {
-    info: "I'm starting the converting colors job"
+    info: "I'm starting the converting colors job",
   })
 
   const records = await api.records.get(sheetId)
@@ -58,24 +58,30 @@ async function convertColors(jobId: string, sheetId: string) {
   await api.records.update(sheetId, recordsUpdates as Flatfile.Record_[])
 
   await api.jobs.complete(jobId, {
-    info: "Job's work is done"
+    info: "Job's work is done",
   })
 }
 
 async function submit(jobId: string) {
-  await api.jobs.ack(jobId, {
-    info: "I'm starting the job - inside client",
-    // progress only makes sense if multipart job - optional
-    progress: 33
-  })
+  try {
+    await api.jobs.ack(jobId, {
+      info: "I'm starting the job - inside client",
+      progress: 33,
+    })
 
-  // hit your api here
-  await new Promise((res) => setTimeout(res, 2000))
+    // hit your API here
+    await new Promise((res) => setTimeout(res, 2000))
 
-  await api.jobs.complete(jobId, {
-    info: "Job's work is done",
-    outcome: { next: { type: 'wait' } }
-  })
+    await api.jobs.complete(jobId, {
+      info: "Job's work is done",
+      outcome: { next: { type: 'wait' } },
+    })
+  } catch (error) {
+    console.error('An error occurred:', error)
+    await api.jobs.fail(jobId, {
+      info: 'Job did not complete.',
+    })
+  }
 }
 
 /**

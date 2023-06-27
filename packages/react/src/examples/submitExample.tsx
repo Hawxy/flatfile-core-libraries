@@ -2,7 +2,7 @@ import { FlatfileListener } from '@flatfile/listener'
 import api, { Flatfile, FlatfileClient } from '@flatfile/api'
 
 export const config: Pick<
-  Flatfile.WorkbookConfig,
+  Flatfile.CreateWorkbookConfig,
   'name' | 'sheets' | 'actions'
 > = {
   name: 'Employees workbook',
@@ -17,9 +17,9 @@ export const config: Pick<
           label: 'First name',
           constraints: [
             {
-              type: 'required'
-            }
-          ]
+              type: 'required',
+            },
+          ],
         },
         {
           key: 'last_name',
@@ -27,17 +27,17 @@ export const config: Pick<
           label: 'last name',
           constraints: [
             {
-              type: 'unique'
-            }
-          ]
+              type: 'unique',
+            },
+          ],
         },
         {
           key: 'full_name',
           type: 'string',
-          label: 'full name'
-        }
-      ]
-    }
+          label: 'full name',
+        },
+      ],
+    },
   ],
   actions: [
     {
@@ -46,29 +46,36 @@ export const config: Pick<
       description: 'Would you like to submit your workbook?',
       mode: 'foreground',
       primary: true,
-      confirm: true
-    }
-  ]
+      confirm: true,
+    },
+  ],
 }
 
 async function startCustomJob(jobId: string) {
-  console.log('starting custom job at' + new Date())
+  try {
+    console.log('starting custom job at' + new Date())
 
-  await api.jobs.ack(jobId, {
-    info: "I'm starting the job - inside client",
-    // progress only makes sense if multipart job - optional
-    progress: 33
-  })
+    await api.jobs.ack(jobId, {
+      info: "I'm starting the job - inside client",
+      // progress only makes sense if multipart job - optional
+      progress: 33,
+    })
 
-  // convert records here
-  // await new Promise((res) => setTimeout(res, 2000))
-  const res = await fetch(
-    'https://webhook.site/ea44e287-2667-4e6a-a8db-f20bd4cea171'
-  )
+    // convert records here
+    // await new Promise((res) => setTimeout(res, 2000));
+    const res = await fetch(
+      'https://webhook.site/ea44e287-2667-4e6a-a8db-f20bd4cea171'
+    )
 
-  if (res) {
-    await api.jobs.complete(jobId, {
-      info: "Job's work is done"
+    if (res) {
+      await api.jobs.complete(jobId, {
+        info: "Job's work is done",
+      })
+    }
+  } catch (error) {
+    console.error('An error occurred:', error)
+    await api.jobs.fail(jobId, {
+      info: 'Job did not complete',
     })
   }
 }

@@ -14,9 +14,9 @@ const spaceProps: ISpace = {
   themeConfig: makeTheme({ primaryColor: '#546a76', textColor: '#fff' }),
   sidebarConfig: {
     showDataChecklist: false,
-    showSidebar: false
+    showSidebar: false,
   },
-  listener
+  listener,
 }
 
 const ExampleApp = () => {
@@ -26,8 +26,8 @@ const ExampleApp = () => {
     ...spaceProps,
     closeSpace: {
       operation: 'contacts:submit',
-      onClose: () => setShowSpace(false)
-    }
+      onClose: () => setShowSpace(false),
+    },
   })
 
   return (
