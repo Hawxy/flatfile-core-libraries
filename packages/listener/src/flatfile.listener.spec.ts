@@ -84,5 +84,70 @@ describe('Client', () => {
       })
       expect(testFn).toHaveBeenCalledTimes(1)
     })
+
+    test('trigger only when filter match - { context: { sheetSlug } }', async () => {
+      const client = FlatfileListener.create((c) => {
+        c.filter({ context: { sheetSlug: 'foo', sheetId: 'fdsa' } }, (f) => {
+          f.on('records:created', testFn)
+        })
+      })
+      await client.dispatchEvent({ topic: 'records:created' })
+      await client.dispatchEvent({
+        context: { sheetSlug: 'foo', sheetId: 'asdf' },
+        topic: 'records:created',
+      })
+      await client.dispatchEvent({
+        context: { sheetId: 'fdsa' },
+        topic: 'records:created',
+      })
+      await client.dispatchEvent({
+        context: { sheetSlug: 'foo', sheetId: 'fdsa' },
+        topic: 'records:created',
+      })
+      expect(testFn).toHaveBeenCalledTimes(1)
+    })
+    test('trigger only when filter match - { sheetSlug }', async () => {
+      const client = FlatfileListener.create((c) => {
+        c.filter({ sheetSlug: 'foo' }, (f) => {
+          f.on('records:created', testFn)
+        })
+      })
+      await client.dispatchEvent({ topic: 'records:created' })
+      await client.dispatchEvent({
+        context: { sheetSlug: 'foo', sheetId: 'asdf' },
+        topic: 'records:created',
+      })
+      await client.dispatchEvent({
+        context: { sheetSlug: 'foo', sheetId: 'fdsa' },
+        origin: { thing: { name: 'title' } },
+        topic: 'records:created',
+      })
+      await client.dispatchEvent({
+        context: { sheetId: 'fdsa' },
+        topic: 'records:created',
+      })
+      expect(testFn).toHaveBeenCalledTimes(2)
+    })
+    test('trigger only when filter match deeper nested object - { name: "title" }', async () => {
+      const client = FlatfileListener.create((c) => {
+        c.filter({ name: 'title' }, (f) => {
+          f.on('records:created', testFn)
+        })
+      })
+      await client.dispatchEvent({ topic: 'records:created' })
+      await client.dispatchEvent({
+        payload: { thing: { name: 'title' } },
+        topic: 'records:created',
+      })
+      await client.dispatchEvent({
+        thing: { name: 'title' },
+        topic: 'records:created',
+      })
+      await client.dispatchEvent({
+        name: 'title',
+        topic: 'records:created',
+      })
+      expect(testFn).toHaveBeenCalledTimes(3)
+    })
   })
 })

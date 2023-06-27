@@ -185,7 +185,12 @@ export class EventHandler extends AuthenticatedClient {
   }
 }
 
-export type EventFilter = Record<string, Arrayable<string>>
+export type EventFilter = Record<
+  string,
+  any
+  // TODO: Open question - 1 level nested object. Do we want/need more than that?
+  // Arrayable<string> | Record<string, Arrayable<string>>
+>
 
 export type Arrayable<T> = T | Array<T>
 export type Listener = {

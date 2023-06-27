@@ -9,11 +9,23 @@ describe('objectMatches', () => {
     expect(objectMatches({ foo: { bar: 'blue' } }, 'blue')).toBe(true)
     expect(objectMatches({ foo: ['bar', 'baz'] }, 'baz')).toBe(true)
     expect(objectMatches({ foo: ['bar', 'baz'] }, 'qux')).toBe(false)
+    expect(objectMatches({ foo: { bar: 'blue', baz: 'green' } }, 'blue')).toBe(
+      true
+    )
   })
 
   test('matches an object', () => {
     expect(objectMatches({ foo: 'bar' }, { foo: 'bar' })).toBe(true)
     expect(objectMatches({ foo: ['bar', 'baz'] }, { foo: 'bar' })).toBe(true)
+    expect(
+      objectMatches({ context: { foo: 'bar', bar: 'baz' } }, { foo: 'bar' })
+    ).toBe(true)
+    expect(
+      objectMatches(
+        { context: { foo: 'bar', bar: 'baz' } },
+        { context: { foo: 'bar' } }
+      )
+    ).toBe(true)
   })
 
   test('denies an object with no exact match', () => {
