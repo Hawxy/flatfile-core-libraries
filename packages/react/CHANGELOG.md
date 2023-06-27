@@ -1,5 +1,15 @@
 # @flatfile/react
 
+## 7.2.0
+
+### Minor Changes
+
+- b4b2bc5: Adds support for up to React 18
+
+### Patch Changes
+
+- b4b2bc5: fix to import index.css color variables
+
 ## 7.1.0
 
 ### Minor Changes
