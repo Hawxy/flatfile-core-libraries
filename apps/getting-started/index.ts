@@ -1,6 +1,3 @@
-import { recordHook } from '@flatfile/plugin-record-hook'
-import fetch from 'node-fetch'
-import axios from 'axios'
 import api from '@flatfile/api'
 import { FlatfileListener } from '@flatfile/listener'
 

@@ -84,6 +84,31 @@ export class FlatfileEvent extends AuthenticatedClient {
       data: records,
     })
   }
+
+  async secrets(
+    key: string,
+    options?: { environmentId?: string; spaceId?: string }
+  ) {
+    const environmentId = options?.environmentId || this.context.environmentId
+    const secrets = await this.cache.init('secrets', async () => {
+      const secretsResponse = await this.fetch(
+        `v1/secrets?environmentId=${environmentId}${
+          options?.spaceId ? `&spaceId=${options.spaceId}` : ''
+        }`
+      )
+      const SecretMap = new Map<string, string>()
+      secretsResponse.forEach((secret: { name: string; value: string }) => {
+        SecretMap.set(secret.name, secret.value)
+      })
+      return SecretMap
+    })
+
+    const value = secrets.get(key)
+    if (!value) {
+      throw new Error(`Secret ${key} not found`)
+    }
+    return value
+  }
 }
 
 export type EventCallback = (evt: FlatfileEvent) => void
