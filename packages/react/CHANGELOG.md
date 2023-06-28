@@ -1,5 +1,14 @@
 # @flatfile/react
 
+## 7.2.1
+
+### Patch Changes
+
+- ce3386c: Fix bug with nested event.src
+- Updated dependencies [ad5cf83]
+- Updated dependencies [ce3386c]
+  - @flatfile/listener@0.3.10
+
 ## 7.2.0
 
 ### Minor Changes

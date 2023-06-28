@@ -1,5 +1,14 @@
 # @flatfile/cli
 
+## 3.5.6
+
+### Patch Changes
+
+- ceb5351: Check for deployed agents before developing
+- Updated dependencies [ad5cf83]
+- Updated dependencies [ce3386c]
+  - @flatfile/listener@0.3.10
+
 ## 3.5.5
 
 ### Patch Changes

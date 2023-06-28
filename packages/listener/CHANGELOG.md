@@ -1,5 +1,12 @@
 # @flatfile/listener
 
+## 0.3.10
+
+### Patch Changes
+
+- ad5cf83: Adds Secrets to Event
+- ce3386c: Fixes bug with nested event.src
+
 ## 0.3.9
 
 ### Patch Changes
