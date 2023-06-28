@@ -32,7 +32,9 @@ export class AuthenticatedClient {
     try {
       const resp = await axiosInstance(config)
       return resp.data.data
-    } catch (err) {}
+    } catch (err) {
+      console.log('event.fetch error: ', err)
+    }
   }
   /**
    *

@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 
 export const useCreateListener = ({
   accessToken,
-  listener
+  listener,
 }: Pick<ISpace, 'listener'> & { accessToken: string }) => {
   const apiUrl =
     import.meta.env.VITE_API_URL || 'https://platform.flatfile.com/api'
@@ -23,7 +23,7 @@ export const useCreateListener = ({
         new Browser({
           apiUrl,
           accessToken,
-          fetchApi: fetch
+          fetchApi: fetch,
         })
       )
   }, [listener])
@@ -31,13 +31,11 @@ export const useCreateListener = ({
   return {
     dispatchEvent: (event: any) => {
       if (!event) return
-      const eventInstance = new FlatfileEvent(event)
-      eventInstance.setVariables({
-        apiUrl,
-        accessToken
-      })
+
+      const eventPayload = event.src ? event.src : event
+      const eventInstance = new FlatfileEvent(eventPayload, accessToken, apiUrl)
 
       return listener?.dispatchEvent(eventInstance)
-    }
+    },
   }
 }

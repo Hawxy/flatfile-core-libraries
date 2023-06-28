@@ -80,15 +80,10 @@ export class EventHandler extends AuthenticatedClient {
   async dispatchEvent(
     event: FlatfileEvent | Flatfile.Event | any
   ): Promise<void> {
-    if (!(event instanceof FlatfileEvent)) {
-      event = new FlatfileEvent(event, this._accessToken, this._apiUrl)
-      if (this._apiUrl && this._accessToken) {
-        event.setVariables({
-          apiUrl: this._apiUrl,
-          accessToken: this._accessToken,
-        })
-      }
-    }
+    if (!event) return
+    const eventPayload = event.src ? event.src : event
+
+    event = new FlatfileEvent(eventPayload, this._accessToken, this._apiUrl)
 
     await this.trigger(event, true)
 
