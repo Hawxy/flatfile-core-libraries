@@ -36,7 +36,7 @@ export class FlatfileEvent extends AuthenticatedClient {
   // public readonly context: any // -> [us0_acc_ihjh8943h9w, space_id, workbook_id]
   // public readonly body: any
 
-  constructor(private readonly src: Event) {
+  constructor(readonly src: Event) {
     super()
     const actionName = src.context.actionName
     const sheetSlug = src.context.sheetSlug

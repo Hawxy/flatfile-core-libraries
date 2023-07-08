@@ -357,9 +357,10 @@ export class Sheet<FC extends FieldConfig>
     ).toXRecords()
 
     try {
-      await this.api.updateRecords({
-        sheetId: e.context.sheetId,
-        recordsUpdates,
+      await e.fetch(e.src.dataUrl!, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(recordsUpdates),
       })
     } catch (e) {
       console.log(e)

@@ -1,6 +1,6 @@
 import { Configuration, DefaultApi } from '@flatfile/api'
 // TODO: We will need to make this conditional depending on if it's in the NodeVM or the Browser
-import fetch from 'node-fetch'
+import fetch, { RequestInit } from 'node-fetch'
 
 const FLATFILE_API_URL =
   process.env.AGENT_INTERNAL_URL || 'http://localhost:3000'
@@ -26,19 +26,22 @@ export class AuthenticatedClient {
   }
   private _fetch?: any
 
-  fetch(url: string) {
+  async fetch(url: string, options: RequestInit = {}) {
     if (this._fetch) {
       return this._fetch
     }
 
-    const headers = {
+    const headers: RequestInit['headers'] = {
       Authorization:
         `Bearer ${process.env.FLATFILE_BEARER_TOKEN}` ?? `Bearer ...`,
       'x-disable-hooks': 'true',
+      ...options.headers,
     }
     const fetchUrl = FLATFILE_API_URL + '/' + url
 
     return fetch(fetchUrl, {
+      method: 'GET',
+      ...options,
       headers,
     })
       .then((resp) => resp.json())
