@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.34
+
+### Patch Changes
+
+- 1575f8c: Make legacy hooks use the dataUrl for updates
+
 ## 0.5.33
 
 ### Patch Changes
