@@ -1,5 +1,17 @@
 # @flatfile/listener-driver-pubsub
 
+## 1.0.3
+
+### Patch Changes
+
+- cbacf2a: Update semver version > 7.5.2
+
+  resolves https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795
+
+- Updated dependencies [cbacf2a]
+  - @flatfile/listener@0.3.11
+  - @flatfile/utils-debugger@0.0.5
+
 ## 1.0.2
 
 ### Patch Changes

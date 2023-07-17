@@ -1,5 +1,17 @@
 # @flatfile/react
 
+## 7.2.3
+
+### Patch Changes
+
+- cbacf2a: Update semver version > 7.5.2
+
+  resolves https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795
+
+- Updated dependencies [cbacf2a]
+  - @flatfile/cross-env-config@0.0.5
+  - @flatfile/listener@0.3.11
+
 ## 7.2.2
 
 ### Patch Changes

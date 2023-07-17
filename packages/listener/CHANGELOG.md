@@ -1,5 +1,13 @@
 # @flatfile/listener
 
+## 0.3.11
+
+### Patch Changes
+
+- cbacf2a: Update semver version > 7.5.2
+
+  resolves https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795
+
 ## 0.3.10
 
 ### Patch Changes

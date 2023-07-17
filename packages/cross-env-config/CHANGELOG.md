@@ -1,5 +1,13 @@
 # @flatfile/cross-env-config
 
+## 0.0.5
+
+### Patch Changes
+
+- cbacf2a: Update semver version > 7.5.2
+
+  resolves https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795
+
 ## 0.0.4
 
 ### Patch Changes

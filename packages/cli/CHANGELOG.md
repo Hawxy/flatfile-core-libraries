@@ -1,5 +1,18 @@
 # @flatfile/cli
 
+## 3.5.7
+
+### Patch Changes
+
+- cbacf2a: Update semver version > 7.5.2
+
+  resolves https://security.snyk.io/vuln/SNYK-JS-SEMVER-3247795
+
+- Updated dependencies [cbacf2a]
+  - @flatfile/cross-env-config@0.0.5
+  - @flatfile/listener@0.3.11
+  - @flatfile/listener-driver-pubsub@1.0.3
+
 ## 3.5.6
 
 ### Patch Changes
