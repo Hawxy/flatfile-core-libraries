@@ -1,0 +1,18 @@
+{
+  "name": "my-vanilla-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@flatfile/javascript": "*"
+  },
+  "devDependencies": {
+    "parcel": "^2.3.1"
+  }
+}
