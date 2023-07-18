@@ -61,7 +61,6 @@ export async function deployAction(
           return
         }
 
-        // console.log('the package data is', data)
         resolve(0)
       }
     )
@@ -140,7 +139,6 @@ export async function deployAction(
           source: code,
         },
       })
-      // console.log({ map, assets })
 
       deployingSpinner.succeed(
         `Event listener deployed and running on your environment "${
@@ -149,11 +147,11 @@ export async function deployAction(
       )
     } catch (e) {
       deployingSpinner.fail(
-        `Event listener failed deployment ${chalk.dim(e)}\n`
+        `Event listener failed deployment\n${chalk.dim(e.message)}\n`
       )
-      console.error(e)
+      process.exit(1)
     }
   } catch (e) {
-    console.log(e)
+    console.log(`Failed deploy action\n${e}`)
   }
 }
