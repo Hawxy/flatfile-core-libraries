@@ -1,9 +1,8 @@
-import './styles.css'
 import { createIframe } from './createIframe'
 
 interface InitializeFlatfileOptions {
-  publishableKey: string
-  environmentId: string
+  publishableKey?: string
+  environmentId?: string
   displayAsModal?: boolean
   mountElement?: string
   space?: {
@@ -28,7 +27,7 @@ export async function initializeFlatfile({
   exitText = 'Are you sure you would like to close this window? This will end your current data import session.',
 }: InitializeFlatfileOptions): Promise<void> {
   const createSpace = async () => {
-    const createSpaceEndpoint = `${apiUrl}/spaces`
+    const createSpaceEndpoint = `${apiUrl}/v1/spaces`
 
     try {
       const response = await fetch(createSpaceEndpoint, {

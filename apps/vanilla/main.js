@@ -1,28 +1,52 @@
 import { initializeFlatfile } from '@flatfile/javascript'
+import { FlatfileClient } from '@flatfile/api'
 
-const flatfileOptions = {
-  publishableKey: '',
-  environmentId: '',
-  displayAsModal: false, //defaults to true for a modal
-  //passing in a space is optional
-  space: {
-    id: '',
-    accessToken: '',
-  },
-  // Additional parameters...
+// ---Get a space to reuse it, load automatically
+/* const flatfile = new FlatfileClient({
+  token: 'sk_1234',
+  environment: 'https://platform.flatfile.com/api/v1',
+})
+
+function getSpace() {
+  return flatfile.spaces.get('us_sp_b8n0VLxN')
 }
 
-//if it opens on a button click
+getSpace()
+  .then((space) => {
+    const flatfileOptions = {
+      publishableKey: 'pk_1234',
+      environmentId: 'us_env_1234',
+      space: {
+        id: space?.data.id,
+        accessToken: space?.data.accessToken,
+      },
+      // Additional parameters...
+    }
+    // Load automatically
+    initializeFlatfile(flatfileOptions)
+  })
+  .catch((error) => {
+    console.error('Error retrieving space:', error)
+  }) */
+//-- end
 
-// const openIframeButton = document.getElementById('flatfile_openIframeButton')
-// openIframeButton?.addEventListener('click', async () => {
+// ---create a new space each time, load with button click
+window.initializeFlatfile = (publishableKey, environmentId) => {
+  const flatfileOptions = {
+    publishableKey,
+    environmentId,
+    // Additional parameters...
+  }
 
-//end if opens on a button click
+  initializeFlatfile(flatfileOptions)
+}
+//-- end
 
-initializeFlatfile(flatfileOptions)
-
-//for button click
-
-// })
-
-//for button click
+//---load automatically with a new space each time
+/* const flatfileOptions = {
+  publishableKey: 'pk_1234',
+  environmentId: 'us_env_1234',
+  // Additional parameters...
+}
+initializeFlatfile(flatfileOptions) */
+//-- end
