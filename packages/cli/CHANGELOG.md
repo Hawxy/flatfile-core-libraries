@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.5.8
+
+### Patch Changes
+
+- f191fb6: Update CLI dependency
+
 ## 3.5.7
 
 ### Patch Changes
