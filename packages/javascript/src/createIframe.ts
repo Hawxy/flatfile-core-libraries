@@ -6,15 +6,16 @@ export function createIframe(
   displayAsModal: boolean,
   mountElement: string,
   exitTitle: string,
-  exitText: string
+  exitText: string,
+  baseUrl?: string
 ): void {
-  const baseURL = 'https://spaces.flatfile.com/space/'
+  const baseURL = baseUrl ?? 'https://spaces.flatfile.com'
 
   // Construct the URL with the space ID and the token
-  const url = `${baseURL}${spaceId}?token=${encodeURIComponent(token)}`
+  const url = `${baseURL}/space/${spaceId}?token=${encodeURIComponent(token)}`
 
   // Create the close button
-  const closeButton = document.createElement('button')
+  const closeButton = document.createElement('div')
   closeButton.innerHTML =
     '<svg viewBox="0 0 24 24"><path d="M18.364 5.636c-0.781-0.781-2.048-0.781-2.828 0l-5.536 5.536 -5.536-5.536c-0.781-0.781-2.048-0.781-2.828 0s-0.781 2.048 0 2.828l5.536 5.536 -5.536 5.536c-0.781 0.781-0.781 2.048 0 2.828s2.048 0.781 2.828 0l5.536-5.536 5.536 5.536c0.781 0.781 2.048 0.781 2.828 0s0.781-2.048 0-2.828l-5.536-5.536 5.536-5.536c0.781-0.781 0.781-2.048 0-2.828z"></path></svg>'
   closeButton.classList.add('flatfile_close-button')
@@ -42,7 +43,7 @@ export function createIframe(
   // Append the iframe and close button to the wrapper
   if (displayAsModal) {
     wrapper.appendChild(closeButton)
-    wrapper.classList.add('displayAsModal')
+    wrapper.classList.add('flatfile_displayAsModal')
   }
   wrapper.appendChild(iframe)
 

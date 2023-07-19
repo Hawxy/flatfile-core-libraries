@@ -1,8 +1,19 @@
 {
   "name": "@flatfile/javascript",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "Flatfile embedded with vanilla javascript.",
-  "main": "./dist/main.js",
+  "source": "src/index.ts",
+  "main": "dist/main.js",
+  "module": "dist/module.mjs",
+  "types": "dist/types.d.ts",
+  "engines": {
+    "node": ">= 12"
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "not dead"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "git+https://github.com/FlatFilers/platform-sdk-mono/issues"
@@ -12,7 +23,7 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "parcel build ./src/index.ts --dist-dir dist",
+    "build": "parcel build",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },

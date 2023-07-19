@@ -5,12 +5,13 @@ interface InitializeFlatfileOptions {
   publishableKey: string
   environmentId: string
   displayAsModal?: boolean
-  mountElement: string
+  mountElement?: string
   space?: {
     id: string
     accessToken: string
   }
   apiUrl?: string
+  baseUrl?: string
   exitTitle?: string
   exitText?: string
 }
@@ -21,7 +22,8 @@ export async function initializeFlatfile({
   displayAsModal = true,
   mountElement = 'flatfile_iFrameContainer',
   space,
-  apiUrl = 'https://platform.flatfile.com/api/v1',
+  apiUrl = 'https://platform.flatfile.com/api',
+  baseUrl = 'https://spaces.flatfile.com',
   exitTitle = 'Close Window',
   exitText = 'Are you sure you would like to close this window? This will end your current data import session.',
 }: InitializeFlatfileOptions): Promise<void> {
@@ -75,6 +77,7 @@ export async function initializeFlatfile({
     displayAsModal,
     mountElement,
     exitTitle,
-    exitText
+    exitText,
+    baseUrl
   )
 }

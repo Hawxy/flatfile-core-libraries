@@ -31,7 +31,7 @@ export function createModal(
   modalText.textContent = exitText
 
   // 'No, stay' button
-  const noStayButton = document.createElement('button')
+  const noStayButton = document.createElement('div')
   noStayButton.classList.add('flatfile_button', 'flatfile_secondary')
   noStayButton.textContent = 'No, stay'
   noStayButton.addEventListener('click', (e) => {
@@ -40,7 +40,7 @@ export function createModal(
   })
 
   // 'Yes, exit' button
-  const yesExitButton = document.createElement('button')
+  const yesExitButton = document.createElement('div')
   yesExitButton.classList.add('flatfile_button', 'flatfile_primary')
   yesExitButton.textContent = 'Yes, exit'
   yesExitButton.addEventListener('click', (e) => {

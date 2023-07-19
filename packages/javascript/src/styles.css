@@ -1,10 +1,10 @@
 :root {
-  --primary-color: #4c48ef;
-  --secondary-color: #616a7d;
-  --text-color: #090b2b;
-  --dialog-border-radius: 4px;
-  --border-radius: 5px;
-  --bg-fade: rgba(0, 0, 0, 0.2);
+  --ff-primary-color: #4c48ef;
+  --ff-secondary-color: #616a7d;
+  --ff-text-color: #090b2b;
+  --ff-dialog-border-radius: 4px;
+  --ff-border-radius: 5px;
+  --ff-bg-fade: rgba(0, 0, 0, 0.2);
 }
 
 .flatfile_iframe-wrapper {
@@ -18,7 +18,7 @@
   height: 600px;
 }
 
-.flatfile_iframe-wrapper.displayAsModal {
+.flatfile_iframe-wrapper.flatfile_displayAsModal {
   position: fixed;
   top: 0;
   left: 0;
@@ -26,10 +26,11 @@
   max-width: 100vw; /* viewport width */
   height: calc(100vh - 60px); /* 30px padding on the top and bottom */
   padding: 30px;
-  background: var(--bg-fade);
+  background: var(--ff-bg-fade);
+  z-index: 1000;
 }
 
-.displayAsModal .flatfile_close-button {
+.flatfile_displayAsModal .flatfile_close-button {
   position: absolute;
   top: 5px;
   right: 0;
@@ -39,8 +40,8 @@
   border: none;
 }
 
-.displayAsModal .flatfile_close-button svg {
-  fill: var(--secondary-color);
+.flatfile_displayAsModal .flatfile_close-button svg {
+  fill: var(--ff-secondary-color);
   width: 15px;
   height: 15px;
 }
@@ -52,14 +53,14 @@
   position: relative;
 }
 
-.displayAsModal #flatfile_iframe {
-  border-radius: var(--border-radius);
+.flatfile_displayAsModal #flatfile_iframe {
+  border-radius: var(--ff-border-radius);
   background: rgb(255, 255, 255);
 }
 
 .flatfile_outer-shell {
-  background-color: var(--bg-fade);
-  border-radius: var(--border-radius);
+  background-color: var(--ff-bg-fade);
+  border-radius: var(--ff-border-radius);
   top: 0;
   left: 0;
   width: calc(100% - 40px);
@@ -92,7 +93,7 @@
   background: #fff;
   min-width: 500px;
   max-width: 500px;
-  border-radius: var(--dialog-border-radius);
+  border-radius: var(--ff-dialog-border-radius);
 }
 
 .flatfile_button-group {
@@ -110,25 +111,25 @@
 }
 
 .flatfile_primary {
-  border: 1px solid var(--primary-color);
-  background-color: var(--primary-color);
+  border: 1px solid var(--ff-primary-color);
+  background-color: var(--ff-primary-color);
   color: #fff;
 }
 
 .flatfile_secondary {
-  color: var(--secondary-color);
+  color: var(--ff-secondary-color);
 }
 
 .flatfile_modal-heading {
   font-size: 1.225em;
   font-weight: 600;
   margin-bottom: 0.4em;
-  color: var(--text-color);
+  color: var(--ff-text-color);
 }
 
 .flatfile_modal-text {
   font-size: 14px;
   line-height: 1.25em;
   margin-bottom: 2em;
-  color: var(--secondary-color);
+  color: var(--ff-secondary-color);
 }
