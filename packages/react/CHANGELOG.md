@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.4
+
+### Patch Changes
+
+- 713699b: Update dependency degenerator to remove vm2 for a security vulnerability
+
 ## 7.2.3
 
 ### Patch Changes

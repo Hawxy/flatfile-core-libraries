@@ -1,5 +1,11 @@
 # @flatfile/listener-driver-pubsub
 
+## 1.0.4
+
+### Patch Changes
+
+- 713699b: Update dependency degenerator to remove vm2 for a security vulnerability
+
 ## 1.0.3
 
 ### Patch Changes
