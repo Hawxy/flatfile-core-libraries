@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.1
+
+### Patch Changes
+
+- f0b6cda: fix for coalescing
+
 ## 0.1.0
 
 ### Minor Changes
