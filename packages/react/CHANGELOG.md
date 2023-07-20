@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.5
+
+### Patch Changes
+
+- 4eb89b8: readme updates, improvements to the javascript package
+
 ## 7.2.4
 
 ### Patch Changes
