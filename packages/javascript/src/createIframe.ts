@@ -9,7 +9,7 @@ export function createIframe(
   exitText: string,
   baseUrl?: string
 ): void {
-  const baseURL = baseUrl ?? 'https://spaces.flatfile.com'
+  const baseURL = baseUrl || 'https://spaces.flatfile.com'
 
   // Construct the URL with the space ID and the token
   const url = `${baseURL}/space/${spaceId}?token=${encodeURIComponent(token)}`
