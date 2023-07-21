@@ -1,5 +1,12 @@
 # @flatfile/react
 
+## 7.2.6
+
+### Patch Changes
+
+- Updated dependencies [77b6c3a]
+  - @flatfile/configure@0.5.35
+
 ## 7.2.5
 
 ### Patch Changes

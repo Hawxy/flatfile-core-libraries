@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.35
+
+### Patch Changes
+
+- 77b6c3a: fixes test helper builder
+
 ## 0.5.34
 
 ### Patch Changes
