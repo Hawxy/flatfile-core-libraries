@@ -35,9 +35,7 @@ export class SheetTester {
     const { namespace } = this.workbook.options
     const sheetTarget = this.sheetName
     const targets = Object.keys(this.workbook.options.sheets)
-    const foundTarget = targets.find((t) =>
-      sheetTarget.includes(namespace + '/' + t)
-    )
+    const foundTarget = targets.find((t) => sheetTarget === namespace + '/' + t)
 
     if (foundTarget) {
       const sheetFields = Object.keys(
