@@ -58,6 +58,11 @@ export interface ISpace {
   iframeStyles?: React.CSSProperties
   /**
    *
+   * Mount the iframe to a specific element
+   * Optional
+   */
+  mountElement?: string
+  /**
    * Operation to perform when the space is closed
    * Optional
    */

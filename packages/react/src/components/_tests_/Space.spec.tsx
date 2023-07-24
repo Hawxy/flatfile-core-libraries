@@ -7,7 +7,7 @@ import Pubnub from 'pubnub'
 const baseSpaceProps = {
   publishableKey: 'your-publishable-key',
   environmentId: 'your-env-id',
-  workbook: mockWorkbook
+  workbook: mockWorkbook,
 }
 
 describe('Space', () => {
@@ -17,7 +17,7 @@ describe('Space', () => {
     const accessToken = 'accessToken'
     const pubnub = new Pubnub({
       subscribeKey: 'test-subscribe-key',
-      uuid: 'test-uuid'
+      uuid: 'test-uuid',
     })
 
     render(
@@ -40,7 +40,7 @@ describe('Space', () => {
     const accessToken = ''
     const pubnub = new Pubnub({
       subscribeKey: 'test-subscribe-key',
-      uuid: 'test-uuid'
+      uuid: 'test-uuid',
     })
 
     render(
@@ -73,7 +73,7 @@ describe('SpaceContents', () => {
       />
     )
 
-    const iframeElement = screen.getByTestId('flatfile-iframe')
+    const iframeElement = screen.getByTestId('flatfile_iFrameContainer')
     const closeButtonElement = screen.getByTestId('flatfile-close-button')
 
     expect(iframeElement).toBeInTheDocument()

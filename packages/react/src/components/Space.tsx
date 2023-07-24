@@ -44,17 +44,17 @@ export const SpaceContents = (
   props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string }
 ): JSX.Element => {
   const [showExitWarnModal, setShowExitWarnModal] = useState(false)
-  const { 
+  const {
     spaceId,
     spaceUrl,
     listener,
     accessToken,
     closeSpace,
     iframeStyles,
-    exitText = "Are you sure you want to exit? Any unsaved changes will be lost.",
-    exitTitle = "Close Window",
-  } =
-    props
+    mountElement = 'flatfile_iFrameContainer',
+    exitText = 'Are you sure you want to exit? Any unsaved changes will be lost.',
+    exitTitle = 'Close Window',
+  } = props
 
   const { dispatchEvent } = useCreateListener({ listener, accessToken })
 
@@ -62,7 +62,7 @@ export const SpaceContents = (
     [
       Flatfile.EventTopic.JobCreated,
       Flatfile.EventTopic.JobUpdated,
-      Flatfile.EventTopic.JobOutcomeAcknowledged
+      Flatfile.EventTopic.JobOutcomeAcknowledged,
     ],
     (event) => {
       const eventResponse = JSON.parse(event.message) ?? {}
@@ -84,12 +84,12 @@ export const SpaceContents = (
         <ConfirmModal
           onConfirm={() => closeSpace?.onClose({})}
           onCancel={() => setShowExitWarnModal(false)}
-          exitText={ exitText}
+          exitText={exitText}
           exitTitle={exitTitle}
         />
       )}
       <iframe
-        data-testid="flatfile-iframe"
+        data-testid={mountElement}
         style={getIframeStyles(iframeStyles!)}
         src={spaceUrl}
       />
