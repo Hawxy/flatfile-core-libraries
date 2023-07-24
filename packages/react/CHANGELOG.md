@@ -1,5 +1,12 @@
 # @flatfile/react
 
+## 7.2.7
+
+### Patch Changes
+
+- 027bac8: add custom mount element
+- 7f70fc9: allow ability to configure exit text and title prompts
+
 ## 7.2.6
 
 ### Patch Changes

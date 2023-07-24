@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.2
+
+### Patch Changes
+
+- 6b624fd: added spinner while loading
+
 ## 0.1.1
 
 ### Patch Changes
