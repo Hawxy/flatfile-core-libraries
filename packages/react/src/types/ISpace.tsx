@@ -1,8 +1,8 @@
-import React from 'react'
 import { Flatfile } from '@flatfile/api'
+import { FlatfileListener } from '@flatfile/listener'
+import React from 'react'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
-import { FlatfileListener } from '@flatfile/listener'
 
 export interface ISpace {
   /**
@@ -52,17 +52,31 @@ export interface ISpace {
   listener?: FlatfileListener
   /**
    *
-   * style the iframe using CSS Properties
+   * Style the iframe using CSS Properties
+   * Optional
    */
   iframeStyles?: React.CSSProperties
   /**
    *
-   * style the iframe using CSS Properties
+   * Operation to perform when the space is closed
+   * Optional
    */
   closeSpace?: {
     operation: string
     onClose: (data: any) => void
   }
+  /**
+   *
+   * Custom prompt to display when user tries to exit the space
+   * Optional
+   */
+  exitText?: string
+  /**
+   *
+   * Custom header to display when user tries to exit the space
+   * Optional
+   */
+  exitTitle?: string
   /**
    * Error element to override default Error component
    * Optional

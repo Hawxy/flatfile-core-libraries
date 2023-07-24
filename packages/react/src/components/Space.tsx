@@ -44,7 +44,16 @@ export const SpaceContents = (
   props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string }
 ): JSX.Element => {
   const [showExitWarnModal, setShowExitWarnModal] = useState(false)
-  const { spaceId, spaceUrl, listener, accessToken, closeSpace, iframeStyles } =
+  const { 
+    spaceId,
+    spaceUrl,
+    listener,
+    accessToken,
+    closeSpace,
+    iframeStyles,
+    exitText = "Are you sure you want to exit? Any unsaved changes will be lost.",
+    exitTitle = "Close Window",
+  } =
     props
 
   const { dispatchEvent } = useCreateListener({ listener, accessToken })
@@ -75,6 +84,8 @@ export const SpaceContents = (
         <ConfirmModal
           onConfirm={() => closeSpace?.onClose({})}
           onCancel={() => setShowExitWarnModal(false)}
+          exitText={ exitText}
+          exitTitle={exitTitle}
         />
       )}
       <iframe

@@ -122,18 +122,21 @@ export const ModalText = styled.div`
 const ConfirmModal = ({
   onConfirm,
   onCancel,
+  exitText,
+  exitTitle,
 }: {
   onConfirm: () => void
   onCancel: () => void
+  exitText: string
+  exitTitle: string
 }) => {
   return (
     <OuterShell data-testid="close-confirm-modal">
       <InnerShell>
         <Modal>
-          <ModalHeading>Close Window</ModalHeading>
+          <ModalHeading>{exitTitle}</ModalHeading>
           <ModalText>
-            Are you sure you would like to close this window? This will end your
-            current data import session.
+            {exitText}
           </ModalText>
           <ButtonGroup>
             <ButtonSecondary onClick={onCancel}>
