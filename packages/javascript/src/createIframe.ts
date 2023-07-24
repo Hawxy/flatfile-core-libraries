@@ -27,6 +27,7 @@ export function createIframe(
 
   // Add an onload event to handle successful load
   iframe.onload = () => {
+    spinner.style.display = 'none'
     console.log('Flatfile loaded successfully.')
   }
 
@@ -40,11 +41,17 @@ export function createIframe(
   wrapper.classList.add('flatfile_iframe-wrapper')
   wrapper.style.display = 'block'
 
+  const spinner = document.createElement('div')
+  spinner.classList.add('spinner')
+  spinner.style.display = 'block'
+  wrapper.appendChild(spinner)
+
   // Append the iframe and close button to the wrapper
   if (displayAsModal) {
     wrapper.appendChild(closeButton)
     wrapper.classList.add('flatfile_displayAsModal')
   }
+
   wrapper.appendChild(iframe)
 
   // Create the confirmation modal and hide it
@@ -236,7 +243,31 @@ export function createIframe(
   margin-bottom: 2em;
   color: var(--ff-secondary-color);
 }
-  `
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.7);
+  border-top: 4px solid var(--ff-primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+`
 
   const styleElement = document.createElement('style')
   styleElement.innerHTML = styles
