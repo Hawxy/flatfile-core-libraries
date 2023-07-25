@@ -1,5 +1,14 @@
 # @flatfile/react
 
+## 7.2.8
+
+### Patch Changes
+
+- Updated dependencies [5234a66]
+- Updated dependencies [ac21304]
+  - @flatfile/configure@0.5.36
+  - @flatfile/listener@0.3.12
+
 ## 7.2.7
 
 ### Patch Changes

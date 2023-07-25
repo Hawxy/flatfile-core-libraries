@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.12
+
+### Patch Changes
+
+- ac21304: Pass in URL params to enable pagination with event.data()
+
 ## 0.3.11
 
 ### Patch Changes
