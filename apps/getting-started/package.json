@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "develop": "flatfile develop index.ts"
+    "develop": "flatfile develop index.ts",
+    "paginate": "flatfile develop paginate-records.ts"
   },
   "keywords": [],
   "author": "",
