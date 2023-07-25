@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.37
+
+### Patch Changes
+
+- 1db5dc7: Add pagination ability ot @flatfile/configure event
+
 ## 0.5.36
 
 ### Patch Changes

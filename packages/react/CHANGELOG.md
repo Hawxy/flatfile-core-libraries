@@ -1,5 +1,14 @@
 # @flatfile/react
 
+## 7.2.9
+
+### Patch Changes
+
+- Updated dependencies [1db5dc7]
+- Updated dependencies [1db5dc7]
+  - @flatfile/configure@0.5.37
+  - @flatfile/listener@0.3.13
+
 ## 7.2.8
 
 ### Patch Changes

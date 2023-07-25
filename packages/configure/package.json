@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/configure",
-  "version": "0.5.36",
+  "version": "0.5.37",
   "description": "",
   "private": false,
   "main": "dist/index.js",

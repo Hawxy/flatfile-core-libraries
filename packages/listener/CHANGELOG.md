@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.13
+
+### Patch Changes
+
+- 1db5dc7: Remove includeCounts by defaul in event.data
+
 ## 0.3.12
 
 ### Patch Changes
