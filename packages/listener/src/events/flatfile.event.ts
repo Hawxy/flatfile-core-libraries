@@ -82,7 +82,6 @@ export class FlatfileEvent extends AuthenticatedClient {
   private async fetchData(options?: GetDataOptions): Promise<any> {
     const dataUrl = new URLSearchParams(this.src.dataUrl)
     if (options) {
-      dataUrl.set('includeCounts', 'true')
       for (const [key, values] of Object.entries(options)) {
         if (Array.isArray(values)) {
           for (const value of values) {

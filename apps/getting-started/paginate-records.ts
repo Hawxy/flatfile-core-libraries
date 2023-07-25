@@ -19,14 +19,11 @@ export default function (listener: FlatfileListener) {
         const allRecords = []
         let pageNumber = 1
         while (true) {
-          const { counts, records } = await event.data({
+          const { records } = await event.data({
             pageNumber,
           })
-          console.log({
-            total: counts.total,
-            'allRecords.length': allRecords.length,
-          })
-          if (allRecords.length >= counts.total) {
+
+          if (records.length === 0) {
             break
           }
           allRecords.push(...records)
