@@ -2,7 +2,6 @@ import { createIframe } from './createIframe'
 
 interface InitializeFlatfileOptions {
   publishableKey?: string
-  environmentId?: string
   displayAsModal?: boolean
   mountElement?: string
   space?: {
@@ -17,7 +16,6 @@ interface InitializeFlatfileOptions {
 
 export async function initializeFlatfile({
   publishableKey,
-  environmentId,
   displayAsModal = true,
   mountElement = 'flatfile_iFrameContainer',
   space,
@@ -37,7 +35,6 @@ export async function initializeFlatfile({
           Authorization: `Bearer ${publishableKey}`,
         },
         body: JSON.stringify({
-          environmentId,
           autoConfigure: true,
           name: 'Embedded',
         }),

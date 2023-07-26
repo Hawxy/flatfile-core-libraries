@@ -15,7 +15,6 @@ getSpace()
   .then((space) => {
     const flatfileOptions = {
       publishableKey: 'pk_1234',
-      environmentId: 'us_env_1234',
       space: {
         id: space?.data.id,
         accessToken: space?.data.accessToken,
@@ -31,10 +30,9 @@ getSpace()
 //-- end
 
 // ---create a new space each time, load with button click
-window.initializeFlatfile = (publishableKey, environmentId) => {
+window.initializeFlatfile = (publishableKey) => {
   const flatfileOptions = {
     publishableKey,
-    environmentId,
     // Additional parameters...
   }
 
@@ -45,7 +43,6 @@ window.initializeFlatfile = (publishableKey, environmentId) => {
 //---load automatically with a new space each time
 /* const flatfileOptions = {
   publishableKey: 'pk_1234',
-  environmentId: 'us_env_1234',
   // Additional parameters...
 }
 initializeFlatfile(flatfileOptions) */
