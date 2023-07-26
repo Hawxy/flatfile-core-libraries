@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.3
+
+### Patch Changes
+
+- 6d43bbd: envId no longer required
+
 ## 0.1.2
 
 ### Patch Changes
