@@ -17,6 +17,7 @@ interface InitializeFlatfileOptions {
     operation: string
     onClose: (data: any) => void
   }
+  errorTitle?: string
 }
 
 const displayError = (errorTitle: string, errorMessage: string) => {
@@ -62,12 +63,9 @@ export async function initializeFlatfile({
           ...spaceBody,
         }),
       })
-      if (!response.ok) {
-        throw new Error('Failed to create space')
-      }
       const result = await response.json()
-      if (!result.ok) {
-        const errorMessage = result.errors[0].message
+      if (!response.ok) {
+        const errorMessage = result?.errors[0]?.message || 'Failed to create space'
         throw new Error(errorMessage)
       }
       return result.data
@@ -98,5 +96,4 @@ export async function initializeFlatfile({
     const errorMessage = displayError(errorTitle, error)
     wrapper.appendChild(errorMessage)
   }
-
 }
