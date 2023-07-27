@@ -1,22 +1,16 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import { ISpace } from './types/ISpace'
-import { makeTheme } from './utils/makeTheme'
 import { useSpace } from './hooks/useSpace'
-import { listener, config } from './examples/joinFields'
+import { listener } from './examples/joinFields'
 
 const spaceProps: ISpace = {
-  name: 'Embedded Space',
-  // to test locally add your local vars here
-  publishableKey: '',
-  environmentId: '',
-  workbook: config,
-  themeConfig: makeTheme({ primaryColor: '#546a76', textColor: '#fff' }),
-  sidebarConfig: {
-    showDataChecklist: false,
-    showSidebar: false,
-  },
+  environmentId: 'us_env_123',
   listener,
+  space: {
+    id: 'us_sp_123',
+    accessToken: 'sk_1234',
+  },
 }
 
 const ExampleApp = () => {

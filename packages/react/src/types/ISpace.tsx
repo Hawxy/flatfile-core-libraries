@@ -4,22 +4,14 @@ import React from 'react'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
 
-export interface ISpace {
+export type ISpace = NewSpaceFromPublishableKey | ReusedSpaceWithAccessToken
+
+interface NewSpaceFromPublishableKey extends BaseSpace {
   /**
    * Name of space
    * Optional
    */
   name?: string
-  /**
-   * Publishable key accessed via auth/api-keys or Flatfile dashboard > Developer
-   * Required
-   */
-  publishableKey: string
-  /**
-   * Identifier for environment
-   * Required
-   */
-  environmentId: string
   /**
    * Theme values for space, sidebar and data table
    * Optional
@@ -45,6 +37,39 @@ export interface ISpace {
    * Required
    */
   workbook: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
+  /**
+   * Publishable key accessed via auth/api-keys or Flatfile dashboard > Developer
+   * Required
+   */
+  publishableKey: string
+  space?: never
+}
+
+interface ReusedSpaceWithAccessToken extends BaseSpace {
+  /**
+   * Publishable key accessed via auth/api-keys or Flatfile dashboard > Developer
+   * Required
+   */
+
+  space: {
+    id: string
+    accessToken: string
+  }
+  publishableKey?: never
+  name?: never
+  themeConfig?: never
+  sidebarConfig?: never
+  document?: never
+  spaceInfo?: never
+  workbook?: never
+}
+
+interface BaseSpace {
+  /**
+   * Identifier for environment
+   * Required
+   */
+  environmentId: string
   /**
    * Listener for advanced functionality
    * Optional
@@ -94,6 +119,7 @@ export interface ISpace {
 
   loading?: React.ReactElement
 }
+
 export interface ISpaceInfo {
   userId?: string
   name?: string

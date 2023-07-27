@@ -7,6 +7,7 @@ import { SpinnerStyles } from '../components/embeddedStyles'
 import { ISpace } from '../types/ISpace'
 import { initializePubnub } from '../utils/initializePubnub'
 import { initializeSpace } from '../utils/initializeSpace'
+import { getSpace } from '../utils/getSpace'
 
 export interface State {
   pubNub: Pubnub | null
@@ -23,14 +24,16 @@ export const useSpace = (props: ISpace): JSX.Element => {
     pubNub: null,
     localSpaceId: '',
     accessTokenLocal: '',
-    spaceUrl: ''
+    spaceUrl: '',
   })
 
   const { localSpaceId, pubNub, spaceUrl, accessTokenLocal } = state
 
   const initSpace = async () => {
     try {
-      const { data } = await initializeSpace(props)
+      const { data } = props.publishableKey
+        ? await initializeSpace(props)
+        : await getSpace(props)
 
       if (!data) {
         throw new Error('Failed to initialize space')
@@ -49,7 +52,7 @@ export const useSpace = (props: ISpace): JSX.Element => {
       setState((prevState) => ({
         ...prevState,
         localSpaceId: spaceId,
-        spaceUrl: guestLink
+        spaceUrl: guestLink,
       }))
 
       if (!accessToken) {
@@ -58,17 +61,17 @@ export const useSpace = (props: ISpace): JSX.Element => {
 
       setState((prevState) => ({
         ...prevState,
-        accessTokenLocal: accessToken
+        accessTokenLocal: accessToken,
       }))
 
       const initializedPubNub = await initializePubnub({
         spaceId,
-        accessToken
+        accessToken,
       })
 
       setState((prevState) => ({
         ...prevState,
-        pubNub: initializedPubNub
+        pubNub: initializedPubNub,
       }))
     } catch (error: any) {
       setInitError(error)
