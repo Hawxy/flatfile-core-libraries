@@ -15,6 +15,20 @@ interface InitializeFlatfileOptions {
   exitText?: string
 }
 
+const displayError = (errorTitle: string, errorMessage: string) => {
+  const display = document.createElement('div')
+  const title = document.createElement('h1')
+  const error = document.createElement('p')
+
+  title.innerText = errorTitle
+  error.innerText = errorMessage
+
+  display.appendChild(title)
+  display.appendChild(error)
+
+  return display
+}
+
 export async function initializeFlatfile({
   publishableKey,
   displayAsModal = true,
@@ -25,11 +39,12 @@ export async function initializeFlatfile({
   baseUrl = 'https://spaces.flatfile.com',
   exitTitle = 'Close Window',
   exitText = 'Are you sure you would like to close this window? This will end your current data import session.',
+  errorTitle = 'Something went wrong',
 }: InitializeFlatfileOptions): Promise<void> {
-  const createSpace = async () => {
+  try {
     const createSpaceEndpoint = `${apiUrl}/v1/spaces`
 
-    try {
+    const createSpace = async () => {
       const response = await fetch(createSpaceEndpoint, {
         method: 'POST',
         headers: {
@@ -42,40 +57,39 @@ export async function initializeFlatfile({
           ...spaceBody,
         }),
       })
-
       if (!response.ok) {
         throw new Error('Failed to create space')
       }
       const result = await response.json()
+      if (!result.ok) {
+        const errorMessage = result.errors[0].message
+        throw new Error(errorMessage)
+      }
       return result.data
-    } catch (error) {
-      console.error('Error creating new space:', error)
-      throw error
     }
-  }
 
-  const iFrameContainer = document.createElement('div')
-  iFrameContainer.id = mountElement
-  document.body.appendChild(iFrameContainer)
+    const iFrameContainer = document.createElement('div')
+    iFrameContainer.id = mountElement
+    document.body.appendChild(iFrameContainer)
 
-  let spaceData = space || { id: '', accessToken: '' } // Provide default values here
-
-  if (!spaceData.id || !spaceData.accessToken) {
-    try {
-      spaceData = await createSpace()
-    } catch (error) {
-      console.error('Error creating new space:', error)
-      return
+    const spaceData =
+      space?.id && space?.accessToken ? space : await createSpace()
+    if (!spaceData?.id || !spaceData?.accessToken) {
+      throw new Error('Unable to create space, please try again.')
     }
-  }
 
-  createIframe(
-    spaceData.id,
-    spaceData.accessToken,
-    displayAsModal,
-    mountElement,
-    exitTitle,
-    exitText,
-    baseUrl
-  )
+    createIframe(
+      spaceData.id,
+      spaceData.accessToken,
+      displayAsModal,
+      mountElement,
+      exitTitle,
+      exitText,
+      baseUrl
+    )
+  } catch (error) {
+    const wrapper = document.getElementById(mountElement)
+    const errorMessage = displayError(errorTitle, error)
+    wrapper.appendChild(errorMessage)
+  }
 }
