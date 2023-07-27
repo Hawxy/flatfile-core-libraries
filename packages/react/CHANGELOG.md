@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 7.2.10
+
+### Patch Changes
+
+- ecceaf2: Reusable Spaces for Embedded React
+- 0cf8e20: check for success on outcome acknowledged event
+- 1c9a37f: Enable apiUrl configuration
+
 ## 7.2.9
 
 ### Patch Changes
