@@ -1,14 +1,15 @@
 import { FlatfileClient } from '@flatfile/api'
 
-export const authenticate = (key: string) => {
+export const authenticate = (
+  key: string,
+  apiUrl: string = 'https://platform.flatfile.com/api'
+) => {
   /**
    * Instantiating this class with an incorrect key will not throw,
    * it will only throw when trying to access internal methods
    */
   return new FlatfileClient({
     token: key,
-    environment: `${
-      import.meta.env.VITE_API_URL || 'https://platform.flatfile.com/api'
-    }/v1`
+    environment: `${apiUrl}/v1`,
   })
 }

@@ -108,6 +108,12 @@ interface BaseSpace {
    */
   exitTitle?: string
   /**
+   * 
+   * Url to override default flatfile api url
+   * Optional
+   */
+  apiUrl?: string
+  /**
    * Error element to override default Error component
    * Optional
    */

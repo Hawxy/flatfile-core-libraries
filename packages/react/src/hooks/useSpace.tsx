@@ -18,7 +18,7 @@ export interface State {
 }
 
 export const useSpace = (props: ISpace): JSX.Element => {
-  const { error: ErrorElement, loading: LoadingElement } = props
+  const { error: ErrorElement, loading: LoadingElement, apiUrl } = props
   const [initError, setInitError] = useState<Error | string>()
   const [state, setState] = useState<State>({
     pubNub: null,
@@ -67,6 +67,7 @@ export const useSpace = (props: ISpace): JSX.Element => {
       const initializedPubNub = await initializePubnub({
         spaceId,
         accessToken,
+        apiUrl
       })
 
       setState((prevState) => ({

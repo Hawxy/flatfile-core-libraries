@@ -1,11 +1,11 @@
 import { ISpace } from '../types/ISpace'
-import { getErrorMessage } from './getErrorMessage'
 import { addSpaceInfo } from './addSpaceInfo'
 import { authenticate } from './authenticate'
+import { getErrorMessage } from './getErrorMessage'
 
 export const initializeSpace = async (spaceProps: ISpace) => {
   let space
-  const { publishableKey, environmentId, name } = spaceProps
+  const { publishableKey, environmentId, name, apiUrl } = spaceProps
 
   try {
     if (!publishableKey) {
@@ -16,7 +16,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
       throw new Error('Missing required environment id')
     }
 
-    const limitedAccessApi = authenticate(publishableKey)
+    const limitedAccessApi = authenticate(publishableKey, apiUrl)
     try {
       space = await limitedAccessApi.spaces.create({
         environmentId,
@@ -35,7 +35,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
       throw new Error('Failed to retrieve accessToken')
     }
 
-    const fullAccessApi = authenticate(space.data.accessToken)
+    const fullAccessApi = authenticate(space.data.accessToken, apiUrl)
     await addSpaceInfo(spaceProps, space.data.id, fullAccessApi)
     return space
   } catch (error) {

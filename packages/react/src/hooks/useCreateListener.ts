@@ -1,6 +1,6 @@
 import { Browser, FlatfileEvent } from '@flatfile/listener'
-import { ISpace } from '../types/ISpace'
 import { useEffect } from 'react'
+import { ISpace } from '../types/ISpace'
 /**
  * @name useCreateListener
  * @description Listener
@@ -10,10 +10,8 @@ import { useEffect } from 'react'
 export const useCreateListener = ({
   accessToken,
   listener,
-}: Pick<ISpace, 'listener'> & { accessToken: string }) => {
-  const apiUrl =
-    import.meta.env.VITE_API_URL || 'https://platform.flatfile.com/api'
-
+  apiUrl = 'https://platform.flatfile.com/api',
+}: Pick<ISpace, 'listener'> & { accessToken: string; apiUrl: string }) => {
   // set the api key to fully authenticate into Flatfile api
   ;(window as any).CROSSENV_FLATFILE_API_KEY = accessToken
 

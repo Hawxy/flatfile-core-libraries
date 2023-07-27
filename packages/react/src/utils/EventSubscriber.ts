@@ -26,12 +26,14 @@ export const fetchEventToken = async (
 }
 
 export class EventSubscriber {
-  public static async getClient(spaceId: string, accessToken: string) {
+  public static async getClient(
+    spaceId: string,
+    accessToken: string,
+    apiUrl?: string
+  ) {
     const flatfile = new FlatfileClient({
       token: accessToken,
-      environment: `${
-        import.meta.env.VITE_API_URL || 'https://platform.flatfile.com/api'
-      }/v1`
+      environment: `${apiUrl || 'https://platform.flatfile.com/api'}/v1`,
     })
 
     try {
@@ -39,7 +41,7 @@ export class EventSubscriber {
 
       const pubnub = new PubNub({
         subscribeKey: data.subscribeKey!,
-        uuid: data.accountId!
+        uuid: data.accountId!,
       })
       pubnub.setToken(data.token!)
 
@@ -64,7 +66,7 @@ export class EventSubscriber {
 
         pubnub.setToken(data.token)
         pubnub.subscribe({
-          channels: [`space.${spaceId}`]
+          channels: [`space.${spaceId}`],
         })
       }
 
@@ -74,7 +76,7 @@ export class EventSubscriber {
           if (statusEvent.category === 'PNNetworkUpCategory') {
             handleReconnect()
           }
-        }
+        },
       })
 
       // Event listener for authentication
@@ -83,7 +85,7 @@ export class EventSubscriber {
           if (statusEvent.category === 'PNNetworkIssuesCategory') {
             handleAuthentication()
           }
-        }
+        },
       })
 
       return { pubnub, token: data.token }

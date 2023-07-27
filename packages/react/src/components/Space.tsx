@@ -41,7 +41,7 @@ const Space = ({
 }
 
 export const SpaceContents = (
-  props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string }
+  props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string; apiUrl: string }
 ): JSX.Element => {
   const [showExitWarnModal, setShowExitWarnModal] = useState(false)
   const {
@@ -54,9 +54,10 @@ export const SpaceContents = (
     mountElement = 'flatfile_iFrameContainer',
     exitText = 'Are you sure you want to exit? Any unsaved changes will be lost.',
     exitTitle = 'Close Window',
+    apiUrl = 'https://platform.flatfile.com/api'
   } = props
 
-  const { dispatchEvent } = useCreateListener({ listener, accessToken })
+  const { dispatchEvent } = useCreateListener({ listener, accessToken, apiUrl })
 
   useEventSubscriber(
     [
@@ -75,7 +76,7 @@ export const SpaceContents = (
 
       dispatchEvent(eventResponse)
     },
-    spaceId
+    spaceId,
   )
 
   return (

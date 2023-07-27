@@ -4,14 +4,20 @@ import { getErrorMessage } from './getErrorMessage'
 interface InitializePubnub {
   spaceId: string
   accessToken: string
+  apiUrl: string | undefined
 }
 
 export const initializePubnub = async ({
   spaceId,
-  accessToken
+  accessToken,
+  apiUrl = 'https://platform.flatfile.com/api',
 }: InitializePubnub) => {
   try {
-    const response = await EventSubscriber.getClient(spaceId, accessToken)
+    const response = await EventSubscriber.getClient(
+      spaceId,
+      accessToken,
+      apiUrl
+    )
     if (!response) {
       throw new Error('Failed to obtain response from Event Subscriber')
     }
