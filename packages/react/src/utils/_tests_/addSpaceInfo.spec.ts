@@ -70,7 +70,6 @@ describe('addSpaceInfo', () => {
 
     expect(mockApi.spaces.update).toHaveBeenCalledWith(mockSpaceId, {
       environmentId: mockSpaceProps.environmentId,
-      primaryWorkbookId: 'test-workbook-id',
       metadata: {
         theme: {},
         sidebarConfig: {},
