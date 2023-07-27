@@ -8,6 +8,7 @@ interface InitializeFlatfileOptions {
     id: string
     accessToken: string
   }
+  spaceBody?: object
   apiUrl?: string
   baseUrl?: string
   exitTitle?: string
@@ -19,6 +20,7 @@ export async function initializeFlatfile({
   displayAsModal = true,
   mountElement = 'flatfile_iFrameContainer',
   space,
+  spaceBody = null,
   apiUrl = 'https://platform.flatfile.com/api',
   baseUrl = 'https://spaces.flatfile.com',
   exitTitle = 'Close Window',
@@ -37,13 +39,13 @@ export async function initializeFlatfile({
         body: JSON.stringify({
           autoConfigure: true,
           name: 'Embedded',
+          ...spaceBody,
         }),
       })
 
       if (!response.ok) {
         throw new Error('Failed to create space')
       }
-
       const result = await response.json()
       return result.data
     } catch (error) {

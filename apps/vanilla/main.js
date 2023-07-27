@@ -1,8 +1,9 @@
 import { initializeFlatfile } from '@flatfile/javascript'
 import { FlatfileClient } from '@flatfile/api'
 
+/*
 // ---Get a space to reuse it, load automatically
-/* const flatfile = new FlatfileClient({
+const flatfile = new FlatfileClient({
   token: 'sk_1234',
   environment: 'https://platform.flatfile.com/api/v1',
 })
@@ -26,13 +27,15 @@ getSpace()
   })
   .catch((error) => {
     console.error('Error retrieving space:', error)
-  }) */
+  })
 //-- end
+*/
 
 // ---create a new space each time, load with button click
 window.initializeFlatfile = (publishableKey) => {
   const flatfileOptions = {
     publishableKey,
+    spaceBody: { name: 'Hello' },
     // Additional parameters...
   }
 
@@ -40,10 +43,12 @@ window.initializeFlatfile = (publishableKey) => {
 }
 //-- end
 
+/* 
 //---load automatically with a new space each time
-/* const flatfileOptions = {
+const flatfileOptions = {
   publishableKey: 'pk_1234',
   // Additional parameters...
 }
-initializeFlatfile(flatfileOptions) */
+initializeFlatfile(flatfileOptions)
 //-- end
+ */
