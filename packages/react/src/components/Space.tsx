@@ -69,6 +69,7 @@ export const SpaceContents = (
       const eventResponse = JSON.parse(event.message) ?? {}
       if (
         eventResponse.topic === 'job:outcome-acknowledged' &&
+        eventResponse.payload.status === 'complete' &&
         eventResponse.payload.operation === closeSpace?.operation
       ) {
         closeSpace?.onClose({})

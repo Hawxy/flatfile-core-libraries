@@ -13,6 +13,10 @@ interface InitializeFlatfileOptions {
   baseUrl?: string
   exitTitle?: string
   exitText?: string
+  closeSpace?: {
+    operation: string
+    onClose: (data: any) => void
+  }
 }
 
 const displayError = (errorTitle: string, errorMessage: string) => {
@@ -39,6 +43,7 @@ export async function initializeFlatfile({
   baseUrl = 'https://spaces.flatfile.com',
   exitTitle = 'Close Window',
   exitText = 'Are you sure you would like to close this window? This will end your current data import session.',
+  closeSpace,
   errorTitle = 'Something went wrong',
 }: InitializeFlatfileOptions): Promise<void> {
   try {
@@ -85,11 +90,13 @@ export async function initializeFlatfile({
       mountElement,
       exitTitle,
       exitText,
-      baseUrl
+      baseUrl,
+      closeSpace
     )
   } catch (error) {
     const wrapper = document.getElementById(mountElement)
     const errorMessage = displayError(errorTitle, error)
     wrapper.appendChild(errorMessage)
   }
+
 }

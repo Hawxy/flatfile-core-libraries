@@ -7,7 +7,11 @@ export function createIframe(
   mountElement: string,
   exitTitle: string,
   exitText: string,
-  baseUrl?: string
+  baseUrl?: string,
+  closeSpace?: {
+    operation: string
+    onClose: (data: any) => void
+  }
 ): void {
   const baseURL = baseUrl || 'https://spaces.flatfile.com'
 
@@ -98,7 +102,12 @@ export function createIframe(
     'message',
     (event) => {
       console.log('Received message:', event.data)
-      if (event.data && event.data.topic === 'job:outcome-acknowledged') {
+      if (
+        event.data &&
+        event.data.topic === 'job:outcome-acknowledged' &&
+        event.data.payload.status === 'complete' &&
+        event.data.payload.operation === closeSpace?.operation
+      ) {
         wrapper.style.display = 'none'
       }
     },
