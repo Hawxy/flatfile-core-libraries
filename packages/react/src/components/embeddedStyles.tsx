@@ -33,6 +33,30 @@ export const getIframeStyles = (styles: React.CSSProperties) => {
   )
 }
 
+export const getContainerStyles = (isModal: boolean): React.CSSProperties => {
+  if (isModal) {
+    return ({
+      width: 'calc(100% - 60px)',
+      height: 'calc(100vh - 60px)',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      zIndex: 1000,
+      backgroundColor: 'rgba(0,0,0,0.2)',
+      display: 'flex',
+      padding: '30px',
+    })
+  } else {
+    return ({
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    })
+  }
+}
+
 export const SpinnerStyles = styled.div`
   margin: 16px;
 `

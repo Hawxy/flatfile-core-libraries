@@ -124,6 +124,12 @@ interface BaseSpace {
    */
 
   loading?: React.ReactElement
+  /**
+   * 
+   * Displays inline if false
+   * Optional
+   */
+  displayAsModal?: boolean
 }
 
 export interface ISpaceInfo {

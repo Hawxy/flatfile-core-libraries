@@ -6,7 +6,7 @@ import { useCreateListener } from '../hooks/useCreateListener'
 import { useEventSubscriber } from '../hooks/useEventSubscriber'
 import { ISpace } from '../types/ISpace'
 import ConfirmModal from './ConfirmCloseModal'
-import { CloseIframeButton, getIframeStyles } from './embeddedStyles'
+import { CloseIframeButton, getIframeStyles, getContainerStyles } from './embeddedStyles'
 
 /**
  * @name Space
@@ -54,7 +54,8 @@ export const SpaceContents = (
     mountElement = 'flatfile_iFrameContainer',
     exitText = 'Are you sure you want to exit? Any unsaved changes will be lost.',
     exitTitle = 'Close Window',
-    apiUrl = 'https://platform.flatfile.com/api'
+    apiUrl = 'https://platform.flatfile.com/api',
+    displayAsModal = true,
   } = props
 
   const { dispatchEvent } = useCreateListener({ listener, accessToken, apiUrl })
@@ -81,7 +82,7 @@ export const SpaceContents = (
   )
 
   return (
-    <div style={{ display: 'flex' }} data-testid="space-contents">
+    <div style={getContainerStyles(displayAsModal)} data-testid="space-contents">
       {showExitWarnModal && (
         <ConfirmModal
           onConfirm={() => closeSpace?.onClose({})}
@@ -98,6 +99,7 @@ export const SpaceContents = (
       <CloseIframeButton
         onClick={() => setShowExitWarnModal(true)}
         data-testid="flatfile-close-button"
+        style={{ position: 'absolute', margin: '30px', }}
       >
         <svg viewBox="0 0 24 24">
           <path d="M18.364 5.636c-0.781-0.781-2.048-0.781-2.828 0l-5.536 5.536 -5.536-5.536c-0.781-0.781-2.048-0.781-2.828 0s-0.781 2.048 0 2.828l5.536 5.536 -5.536 5.536c-0.781 0.781-0.781 2.048 0 2.828s2.048 0.781 2.828 0l5.536-5.536 5.536 5.536c0.781 0.781 2.048 0.781 2.828 0s0.781-2.048 0-2.828l-5.536-5.536 5.536-5.536c0.781-0.781 0.781-2.048 0-2.828z"></path>
