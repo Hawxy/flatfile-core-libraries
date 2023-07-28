@@ -172,23 +172,17 @@ export class FlatfileRecord<
     return this.metadata
   }
 
-  public getLinks(field: string): any {
+  public getLinks(field: string): TRecordData<TPrimitive>[] | null {
     if (this.verifyField(field)) {
       const fieldValue = this.mutated[field]
-      if (!fieldValue) return null
-
-      if (typeof fieldValue === 'object') {
+      if (fieldValue && typeof fieldValue === 'object') {
         const { links } = fieldValue
-        if (!links) {
-          console.error('Field is has no links.')
-          return null
+        if (links) {
+          return links
         }
-        return links
-      } else if (typeof fieldValue === 'string') {
-        console.error('Field is not a ReferenceField.')
-        return fieldValue
       }
     }
+    console.error('Field has no links.')
 
     return null
   }
