@@ -5,7 +5,11 @@ import { getErrorMessage } from './getErrorMessage'
 
 export const initializeSpace = async (spaceProps: ISpace) => {
   let space
-  const { publishableKey, name, apiUrl } = spaceProps
+  const { 
+    publishableKey,
+    apiUrl,
+    name = 'Embedded Space'
+  } = spaceProps
 
   try {
     if (!publishableKey) {

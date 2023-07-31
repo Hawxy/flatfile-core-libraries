@@ -18,7 +18,7 @@ const example = Client.create((client) => {
   client.use(
     recordHook('TestSheet', (record: FlatfileRecord) => {
       const firstName = record.get('firstName')
-      // Gettign the real types here would be nice but seems tricky
+      // Getting the real types here would be nice but seems tricky
       record.set('middleName', 'TestSheet ' + firstName)
       return record
     })

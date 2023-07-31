@@ -34,9 +34,9 @@ interface NewSpaceFromPublishableKey extends BaseSpace {
   spaceInfo?: Partial<ISpaceInfo>
   /**
    * Shape of data you will be receiving:
-   * Required
+   * Optional
    */
-  workbook: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
+  workbook?: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
   /**
    * Publishable key accessed via auth/api-keys or Flatfile dashboard > Developer
    * Required
