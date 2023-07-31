@@ -66,11 +66,6 @@ interface ReusedSpaceWithAccessToken extends BaseSpace {
 
 interface BaseSpace {
   /**
-   * Identifier for environment
-   * Required
-   */
-  environmentId: string
-  /**
    * Listener for advanced functionality
    * Optional
    */

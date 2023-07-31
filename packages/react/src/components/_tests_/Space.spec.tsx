@@ -6,7 +6,6 @@ import Pubnub from 'pubnub'
 
 const baseSpaceProps = {
   publishableKey: 'your-publishable-key',
-  environmentId: 'your-env-id',
   workbook: mockWorkbook,
 }
 

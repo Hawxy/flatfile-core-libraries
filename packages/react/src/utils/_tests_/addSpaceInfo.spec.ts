@@ -19,7 +19,6 @@ describe('addSpaceInfo', () => {
   }
   const mockSpaceProps = {
     workbook: mockWorkbook,
-    environmentId: 'test-environment-id',
     document: mockDocument,
     themeConfig: {},
     sidebarConfig: {},
@@ -30,7 +29,6 @@ describe('addSpaceInfo', () => {
   const mockSpaceResponse = {
     id: 'test-space-id',
     isCollaborative: true,
-    environmentId: 'test-environment-id',
     createdAt: new Date('01/01/2000'),
     updatedAt: new Date('01/01/2001')
   }
@@ -65,11 +63,9 @@ describe('addSpaceInfo', () => {
       name: mockWorkbook.name,
       actions: mockWorkbook.actions,
       spaceId: mockSpaceId,
-      environmentId: mockSpaceProps.environmentId
     })
 
     expect(mockApi.spaces.update).toHaveBeenCalledWith(mockSpaceId, {
-      environmentId: mockSpaceProps.environmentId,
       metadata: {
         theme: {},
         sidebarConfig: {},

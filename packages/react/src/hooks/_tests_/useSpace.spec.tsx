@@ -22,7 +22,6 @@ vi.mock('@flatfile/api')
 const baseSpaceProps = {
   loading: undefined,
   publishableKey: 'your-publishable-key',
-  environmentId: 'your-env-id',
   workbook: mockWorkbook,
   name: 'Embedded space'
 }

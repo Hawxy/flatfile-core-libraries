@@ -16,7 +16,6 @@ export const mockDocument = {
 
 export const mockSpace = {
   id: 'space-id',
-  environmentId: 'your-environment-id',
   accessToken: 'access-token',
   createdAt: new Date('01/01/2000'),
   updatedAt: new Date('01/01/2001'),

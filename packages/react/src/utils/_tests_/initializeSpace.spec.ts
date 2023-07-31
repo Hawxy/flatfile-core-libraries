@@ -27,7 +27,6 @@ const mockWorkbook = {
 
 const mockSpaceProps: ISpace = {
   publishableKey: 'your-publishable-key',
-  environmentId: 'your-environment-id',
   name: 'your-space-name',
   workbook: mockWorkbook
 }
@@ -54,19 +53,6 @@ describe('initializeSpace', () => {
     expect(addSpaceInfoMock).not.toHaveBeenCalled()
   })
 
-  it('should throw an error when environment id is missing', async () => {
-    const invalidSpaceProps: ISpace = {
-      ...mockSpaceProps,
-      environmentId: ''
-    }
-
-    await expect(initializeSpace(invalidSpaceProps)).rejects.toThrowError(
-      'Missing required environment id'
-    )
-    expect(authenticateMock).not.toHaveBeenCalled()
-    expect(addSpaceInfoMock).not.toHaveBeenCalled()
-  })
-
   it('should throw an error when space creation fails', async () => {
     const mockApi = {}
     const error = new Error('Space creation error')
@@ -86,7 +72,6 @@ describe('initializeSpace', () => {
   it('should initialize a space and return the created space', async () => {
     const mockSpace = {
       id: 'space-id',
-      environmentId: 'your-environment-id',
       accessToken: 'access-token',
       createdAt: new Date('01/01/2000'),
       updatedAt: new Date('01/01/2001'),

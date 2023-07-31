@@ -10,7 +10,6 @@ export const addSpaceInfo = async (
 ) => {
   const {
     workbook,
-    environmentId,
     document,
     themeConfig,
     sidebarConfig,
@@ -23,7 +22,6 @@ export const addSpaceInfo = async (
       name: workbook.name,
       actions: workbook.actions,
       spaceId,
-      environmentId
     })
 
     if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
@@ -31,7 +29,6 @@ export const addSpaceInfo = async (
     }
 
     const updatedSpace = await api.spaces.update(spaceId, {
-      environmentId,
       metadata: {
         theme: themeConfig,
         sidebarConfig,
