@@ -8,7 +8,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
   const { 
     publishableKey,
     apiUrl,
-    name = 'Embedded Space'
+    name = 'Embedded Space',
   } = spaceProps
 
   try {
@@ -18,9 +18,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
 
     const limitedAccessApi = authenticate(publishableKey, apiUrl)
     try {
-      space = await limitedAccessApi.spaces.create({
-        name
-      })
+      space = await limitedAccessApi.spaces.create({ name })
     } catch (error) {
       throw new Error(`Failed to create space: ${getErrorMessage(error)}`)
     }

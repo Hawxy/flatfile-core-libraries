@@ -3,7 +3,7 @@ import { getErrorMessage } from './getErrorMessage'
 import { authenticate } from './authenticate'
 
 export const getSpace = async (spaceProps: ISpace) => {
-  const { space } = spaceProps
+  const { space, apiUrl } = spaceProps
   let spaceResponse
   try {
     if (!space?.id) {
@@ -13,7 +13,7 @@ export const getSpace = async (spaceProps: ISpace) => {
       throw new Error('Missing required accessToken for Space')
     }
 
-    const limitedAccessApi = authenticate(space?.accessToken)
+    const limitedAccessApi = authenticate(space?.accessToken, apiUrl)
     try {
       spaceResponse = await limitedAccessApi.spaces.get(space?.id)
     } catch (error) {

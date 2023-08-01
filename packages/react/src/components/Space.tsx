@@ -41,7 +41,7 @@ const Space = ({
 }
 
 export const SpaceContents = (
-  props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string; apiUrl: string }
+  props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string; }
 ): JSX.Element => {
   const [showExitWarnModal, setShowExitWarnModal] = useState(false)
   const {
