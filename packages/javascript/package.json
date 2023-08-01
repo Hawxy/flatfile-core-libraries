@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/javascript",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Flatfile embedded with vanilla javascript.",
   "source": "src/index.ts",
   "main": "dist/main.js",

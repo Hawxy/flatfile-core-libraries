@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.5
+
+### Patch Changes
+
+- 5048bf9: Fix error display logic
+
 ## 0.1.4
 
 ### Patch Changes

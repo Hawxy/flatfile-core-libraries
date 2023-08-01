@@ -1,5 +1,16 @@
 # @flatfile/react
 
+## 7.2.11
+
+### Patch Changes
+
+- 6f96176: Add configurable url to reusable spaces
+- dc01f53: No environment required
+- 8b2349a: Enable modal/inline functionality for react package
+- Updated dependencies [c631598]
+- Updated dependencies [c631598]
+  - @flatfile/hooks@1.3.2
+
 ## 7.2.10
 
 ### Patch Changes

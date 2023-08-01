@@ -1,5 +1,12 @@
 # @flatfile/hooks
 
+## 1.3.2
+
+### Patch Changes
+
+- c631598: Bug fix in getLinks that returned a string instead of an array in some cases
+- c631598: Add return type to getLinks()
+
 ## 1.3.1
 
 ### Patch Changes
