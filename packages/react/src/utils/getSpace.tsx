@@ -1,9 +1,9 @@
 import { ISpace } from '../types/ISpace'
-import { getErrorMessage } from './getErrorMessage'
 import { authenticate } from './authenticate'
+import { getErrorMessage } from './getErrorMessage'
 
 export const getSpace = async (spaceProps: ISpace) => {
-  const { space, apiUrl } = spaceProps
+  const { space, apiUrl, environmentId } = spaceProps
   let spaceResponse
   try {
     if (!space?.id) {
@@ -11,6 +11,10 @@ export const getSpace = async (spaceProps: ISpace) => {
     }
     if (!space?.accessToken) {
       throw new Error('Missing required accessToken for Space')
+    }
+
+    if (!environmentId) {
+      throw new Error('Missing required environment id')
     }
 
     const limitedAccessApi = authenticate(space?.accessToken, apiUrl)

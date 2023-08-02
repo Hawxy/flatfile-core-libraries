@@ -1,58 +1,64 @@
 import { FlatfileClient } from '@flatfile/api'
-import { ISpace } from '../types/ISpace'
+import { NewSpaceFromPublishableKey } from '../types/ISpace'
 import { getErrorMessage } from './getErrorMessage'
 
 // Given the space is created, add workbook, metadata and document to the space
 export const addSpaceInfo = async (
-  spaceProps: ISpace,
+  spaceProps: NewSpaceFromPublishableKey,
   spaceId: string,
   api: FlatfileClient
 ) => {
-  const { workbook, document, themeConfig, sidebarConfig, spaceInfo } =
-    spaceProps
+  const {
+    workbook,
+    environmentId,
+    document,
+    themeConfig,
+    sidebarConfig,
+    spaceInfo,
+  } = spaceProps
 
-  if (workbook) {
-    try {
-      const localWorkbook = await api.workbooks.create({
-        sheets: workbook.sheets,
-        name: workbook.name,
-        actions: workbook.actions,
-        spaceId,
-      })
+  try {
+    const localWorkbook = await api.workbooks.create({
+      sheets: workbook.sheets,
+      name: workbook.name,
+      actions: workbook.actions,
+      spaceId,
+      environmentId,
+    })
 
-      if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
-        throw new Error('Failed to create workbook')
-      }
-
-      const updatedSpace = await api.spaces.update(spaceId, {
-        metadata: {
-          theme: themeConfig,
-          sidebarConfig,
-          spaceInfo,
-        },
-      })
-
-      if (!updatedSpace) {
-        throw new Error('Failed to update space')
-      }
-
-      if (document) {
-        const createdDocument = await api.documents.create(spaceId, {
-          title: document.title,
-          body: document.body,
-        })
-
-        if (
-          !createdDocument ||
-          !createdDocument.data ||
-          !createdDocument.data.id
-        ) {
-          throw new Error('Failed to create document')
-        }
-      }
-    } catch (error) {
-      const message = getErrorMessage(error)
-      throw new Error(`Error adding workbook to space: ${message}`)
+    if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
+      throw new Error('Failed to create workbook')
     }
+
+    const updatedSpace = await api.spaces.update(spaceId, {
+      environmentId,
+      metadata: {
+        theme: themeConfig,
+        sidebarConfig,
+        spaceInfo,
+      },
+    })
+
+    if (!updatedSpace) {
+      throw new Error('Failed to update space')
+    }
+
+    if (document) {
+      const createdDocument = await api.documents.create(spaceId, {
+        title: document.title,
+        body: document.body,
+      })
+
+      if (
+        !createdDocument ||
+        !createdDocument.data ||
+        !createdDocument.data.id
+      ) {
+        throw new Error('Failed to create document')
+      }
+    }
+  } catch (error) {
+    const message = getErrorMessage(error)
+    throw new Error(`Error adding workbook to space: ${message}`)
   }
 }

@@ -6,7 +6,7 @@ import { IThemeConfig } from './IThemeConfig'
 
 export type ISpace = NewSpaceFromPublishableKey | ReusedSpaceWithAccessToken
 
-interface NewSpaceFromPublishableKey extends BaseSpace {
+export interface NewSpaceFromPublishableKey extends BaseSpace {
   /**
    * Name of space
    * Optional
@@ -34,9 +34,9 @@ interface NewSpaceFromPublishableKey extends BaseSpace {
   spaceInfo?: Partial<ISpaceInfo>
   /**
    * Shape of data you will be receiving:
-   * Optional
+   * Required
    */
-  workbook?: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
+  workbook: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
   /**
    * Publishable key accessed via auth/api-keys or Flatfile dashboard > Developer
    * Required
@@ -45,7 +45,7 @@ interface NewSpaceFromPublishableKey extends BaseSpace {
   space?: never
 }
 
-interface ReusedSpaceWithAccessToken extends BaseSpace {
+export interface ReusedSpaceWithAccessToken extends BaseSpace {
   /**
    * Publishable key accessed via auth/api-keys or Flatfile dashboard > Developer
    * Required
@@ -65,6 +65,11 @@ interface ReusedSpaceWithAccessToken extends BaseSpace {
 }
 
 interface BaseSpace {
+  /**
+   * Identifier for environment
+   * Required
+   */
+  environmentId: string
   /**
    * Listener for advanced functionality
    * Optional

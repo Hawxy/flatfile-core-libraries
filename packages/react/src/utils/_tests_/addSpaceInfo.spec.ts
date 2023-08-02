@@ -1,7 +1,7 @@
-import { vi } from 'vitest'
-import { addSpaceInfo } from '../addSpaceInfo'
 import { FlatfileClient } from '@flatfile/api'
+import { vi } from 'vitest'
 import { mockDocument, mockWorkbook } from '../../test/mocks'
+import { addSpaceInfo } from '../addSpaceInfo'
 
 describe('addSpaceInfo', () => {
   beforeEach(() => {
@@ -15,22 +15,24 @@ describe('addSpaceInfo', () => {
   const innerWorkbook = {
     spaceId: 'test=space-id',
     createdAt: new Date('01/01/2000'),
-    updatedAt: new Date('01/01/2001')
+    updatedAt: new Date('01/01/2001'),
   }
   const mockSpaceProps = {
     workbook: mockWorkbook,
+    environmentId: 'test-environment-id',
     document: mockDocument,
     themeConfig: {},
     sidebarConfig: {},
     spaceInfo: {},
-    publishableKey: 'test-pub-key'
+    publishableKey: 'test-pub-key',
   }
 
   const mockSpaceResponse = {
     id: 'test-space-id',
     isCollaborative: true,
+    environmentId: 'test-environment-id',
     createdAt: new Date('01/01/2000'),
-    updatedAt: new Date('01/01/2001')
+    updatedAt: new Date('01/01/2001'),
   }
 
   const mockSpaceId = 'test-space-id'
@@ -40,20 +42,20 @@ describe('addSpaceInfo', () => {
     vi.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
       data: {
         id: 'test-workbook-id',
-        ...innerWorkbook
-      }
+        ...innerWorkbook,
+      },
     })
 
     vi.spyOn(mockApi.spaces, 'update').mockResolvedValueOnce({
-      data: { ...mockSpaceResponse }
+      data: { ...mockSpaceResponse },
     })
 
     vi.spyOn(mockApi.documents, 'create').mockResolvedValueOnce({
       data: {
         id: 'test-document-id',
         title: 'doc-title',
-        body: 'doc-body'
-      }
+        body: 'doc-body',
+      },
     })
 
     await addSpaceInfo(mockSpaceProps, mockSpaceId, mockApi)
@@ -63,19 +65,21 @@ describe('addSpaceInfo', () => {
       name: mockWorkbook.name,
       actions: mockWorkbook.actions,
       spaceId: mockSpaceId,
+      environmentId: mockSpaceProps.environmentId,
     })
 
     expect(mockApi.spaces.update).toHaveBeenCalledWith(mockSpaceId, {
+      environmentId: mockSpaceProps.environmentId,
       metadata: {
         theme: {},
         sidebarConfig: {},
-        spaceInfo: {}
-      }
+        spaceInfo: {},
+      },
     })
 
     expect(mockApi.documents.create).toHaveBeenCalledWith(mockSpaceId, {
       title: mockDocument.title,
-      body: mockDocument.body
+      body: mockDocument.body,
     })
   })
 
@@ -95,12 +99,12 @@ describe('addSpaceInfo', () => {
     vi.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
       data: {
         id: 'test-workbook-id',
-        ...innerWorkbook
-      }
+        ...innerWorkbook,
+      },
     })
 
     vi.spyOn(mockApi.spaces, 'update').mockResolvedValueOnce({
-      data: { ...mockSpaceResponse }
+      data: { ...mockSpaceResponse },
     })
 
     vi.spyOn(mockApi.documents, 'create').mockRejectedValueOnce(
@@ -118,8 +122,8 @@ describe('addSpaceInfo', () => {
     vi.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
       data: {
         id: 'test-workbook-id',
-        ...innerWorkbook
-      }
+        ...innerWorkbook,
+      },
     })
 
     vi.spyOn(mockApi.spaces, 'update').mockRejectedValueOnce(

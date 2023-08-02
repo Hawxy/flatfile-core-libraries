@@ -6,19 +6,28 @@ import { getErrorMessage } from './getErrorMessage'
 export const initializeSpace = async (spaceProps: ISpace) => {
   let space
   const { 
-    publishableKey,
-    apiUrl,
-    name = 'Embedded Space',
+    publishableKey, 
+    environmentId, 
+    name = 'Embedded Space', 
+    apiUrl 
   } = spaceProps
+  
 
   try {
     if (!publishableKey) {
       throw new Error('Missing required publishable key')
     }
 
+    if (!environmentId) {
+      throw new Error('Missing required environment id')
+    }
+
     const limitedAccessApi = authenticate(publishableKey, apiUrl)
     try {
-      space = await limitedAccessApi.spaces.create({ name })
+      space = await limitedAccessApi.spaces.create({
+        environmentId,
+        name
+      })
     } catch (error) {
       throw new Error(`Failed to create space: ${getErrorMessage(error)}`)
     }
