@@ -5,13 +5,13 @@ import { getErrorMessage } from './getErrorMessage'
 
 export const initializeSpace = async (spaceProps: ISpace) => {
   let space
-  const { 
-    publishableKey, 
-    environmentId, 
-    name = 'Embedded Space', 
-    apiUrl 
+  const {
+    publishableKey,
+    environmentId,
+    name = 'Embedded Space',
+    apiUrl,
+    spaceUrl = 'https://spaces.flatfile.com/',
   } = spaceProps
-  
 
   try {
     if (!publishableKey) {
@@ -26,7 +26,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
     try {
       space = await limitedAccessApi.spaces.create({
         environmentId,
-        name
+        name,
       })
     } catch (error) {
       throw new Error(`Failed to create space: ${getErrorMessage(error)}`)
@@ -39,6 +39,11 @@ export const initializeSpace = async (spaceProps: ISpace) => {
     }
     if (!space.data.accessToken) {
       throw new Error('Failed to retrieve accessToken')
+    }
+
+    if (!space.data.guestLink) {
+      const guestLink = `${spaceUrl}space/${space.data.id}?token=${space.data.accessToken}`
+      space.data.guestLink = guestLink
     }
 
     const fullAccessApi = authenticate(space.data.accessToken, apiUrl)

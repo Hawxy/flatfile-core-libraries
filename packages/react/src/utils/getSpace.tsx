@@ -3,7 +3,12 @@ import { authenticate } from './authenticate'
 import { getErrorMessage } from './getErrorMessage'
 
 export const getSpace = async (spaceProps: ISpace) => {
-  const { space, apiUrl, environmentId } = spaceProps
+  const {
+    space,
+    apiUrl,
+    environmentId,
+    spaceUrl = 'https://spaces.flatfile.com/',
+  } = spaceProps
   let spaceResponse
   try {
     if (!space?.id) {
@@ -26,6 +31,11 @@ export const getSpace = async (spaceProps: ISpace) => {
 
     if (!spaceResponse.data.accessToken) {
       throw new Error('Failed to retrieve accessToken')
+    }
+
+    if (!spaceResponse.data.guestLink) {
+      const guestLink = `${spaceUrl}space/${space?.id}?token=${spaceResponse.data.accessToken}`
+      spaceResponse.data.guestLink = guestLink
     }
 
     return spaceResponse

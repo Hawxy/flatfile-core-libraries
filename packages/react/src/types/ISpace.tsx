@@ -108,7 +108,7 @@ interface BaseSpace {
    */
   exitTitle?: string
   /**
-   * 
+   *
    * Url to override default flatfile api url
    * Optional
    */
@@ -125,11 +125,17 @@ interface BaseSpace {
 
   loading?: React.ReactElement
   /**
-   * 
+   *
    * Displays inline if false
    * Optional
    */
   displayAsModal?: boolean
+  /**
+   *
+   * Url to override default flatfile space url
+   * Optional
+   */
+  spaceUrl?: string
 }
 
 export interface ISpaceInfo {
