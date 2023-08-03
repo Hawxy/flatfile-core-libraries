@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.13
+
+### Patch Changes
+
+- c724639: Add fallback for guestlink
+
 ## 7.2.12
 
 ### Patch Changes
