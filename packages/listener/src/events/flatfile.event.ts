@@ -1,7 +1,7 @@
 import { AuthenticatedClient } from './authenticated.client'
 
+import { Event, RecordsWithLinks } from '@flatfile/api/api'
 import { EventCache } from './cache'
-import { RecordsWithLinks, Event } from '@flatfile/api/api'
 
 type GetDataOptions = { [key: string]: any }
 interface GetData extends Function {
@@ -126,17 +126,35 @@ export class FlatfileEvent extends AuthenticatedClient {
     })
   }
 
+  /**
+   * Fetch the Secrets as indicated by this event context
+   *
+   * @param key - The name of the secret to fetch
+   * @param options - (Optional) environmentId and spaceId to override event context
+   *
+   * @returns The value of the secret (usually a credential or token)
+   */
   async secrets(
     key: string,
     options?: { environmentId?: string; spaceId?: string }
   ) {
-    const environmentId = options?.environmentId || this.context.environmentId
+    // Allow options overrides, then take from context, else are absent
+    const environmentId =
+      options?.environmentId || this.context.environmentId || ''
+    const spaceId = options?.spaceId || this.context.spaceId || ''
+
+    if (!environmentId) {
+      throw new Error('environmentId is required to fetch secrets')
+    }
+
+    let getSecrets = `v1/secrets?environmentId=${environmentId}`
+
+    if (spaceId) {
+      getSecrets += `&spaceId=${spaceId}`
+    }
+
     const secrets = await this.cache.init('secrets', async () => {
-      const secretsResponse = await this.fetch(
-        `v1/secrets?environmentId=${environmentId}${
-          options?.spaceId ? `&spaceId=${options.spaceId}` : ''
-        }`
-      )
+      const secretsResponse = await this.fetch(getSecrets)
       const SecretMap = new Map<string, string>()
       secretsResponse.forEach((secret: { name: string; value: string }) => {
         SecretMap.set(secret.name, secret.value)
