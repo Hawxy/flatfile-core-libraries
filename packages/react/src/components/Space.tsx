@@ -93,13 +93,14 @@ export const SpaceContents = (
       )}
       <iframe
         data-testid={mountElement}
+        className={mountElement}
         style={getIframeStyles(iframeStyles!)}
         src={spaceUrl}
       />
       <CloseIframeButton
         onClick={() => setShowExitWarnModal(true)}
-        data-testid="flatfile-close-button"
-        style={{ position: 'absolute', margin: '30px', }}
+        data-testid="flatfile-close-button" className="flatfile-close-button"
+        style={{ position: 'absolute', margin: '30px' }}
       >
         <svg viewBox="0 0 24 24">
           <path d="M18.364 5.636c-0.781-0.781-2.048-0.781-2.828 0l-5.536 5.536 -5.536-5.536c-0.781-0.781-2.048-0.781-2.828 0s-0.781 2.048 0 2.828l5.536 5.536 -5.536 5.536c-0.781 0.781-0.781 2.048 0 2.828s2.048 0.781 2.828 0l5.536-5.536 5.536 5.536c0.781 0.781 2.048 0.781 2.828 0s0.781-2.048 0-2.828l-5.536-5.536 5.536-5.536c0.781-0.781 0.781-2.048 0-2.828z"></path>
