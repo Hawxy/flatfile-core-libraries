@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 7.2.14
+
+### Patch Changes
+
+- 1102501: make close button and iframe have a proper class name for overrides
+- Updated dependencies [4af28f7]
+  - @flatfile/listener@0.3.14
+
 ## 7.2.13
 
 ### Patch Changes

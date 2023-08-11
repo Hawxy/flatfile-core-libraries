@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.14
+
+### Patch Changes
+
+- 4af28f7: event.secrets now defaults to spaceId, and will throw if no environmentId is available for secrets retrieval
+
 ## 0.3.13
 
 ### Patch Changes
