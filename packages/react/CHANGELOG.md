@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.15
+
+### Patch Changes
+
+- 7afbe80: allow spacebody
+
 ## 7.2.14
 
 ### Patch Changes
