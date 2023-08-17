@@ -47,6 +47,7 @@ export const SpaceContents = (
   const {
     spaceId,
     spaceUrl,
+    spaceBody,
     listener,
     accessToken,
     closeSpace,

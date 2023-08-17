@@ -9,6 +9,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
     publishableKey,
     environmentId,
     name = 'Embedded Space',
+    spaceBody,
     apiUrl,
     spaceUrl = 'https://spaces.flatfile.com/',
   } = spaceProps
@@ -27,6 +28,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
       space = await limitedAccessApi.spaces.create({
         environmentId,
         name,
+        ...spaceBody,
       })
     } catch (error) {
       throw new Error(`Failed to create space: ${getErrorMessage(error)}`)

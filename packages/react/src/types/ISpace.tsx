@@ -28,6 +28,11 @@ export interface NewSpaceFromPublishableKey extends BaseSpace {
    */
   document?: Flatfile.DocumentConfig
   /**
+   * Additional props when creating a Space
+   * Optional
+   */
+  spaceBody?: { [key: string]: any }
+  /**
    * Additional metadata to be passed to the space
    * Optional
    */
@@ -62,6 +67,7 @@ export interface ReusedSpaceWithAccessToken extends BaseSpace {
   document?: never
   spaceInfo?: never
   workbook?: never
+  spaceBody?: never
 }
 
 interface BaseSpace {
