@@ -22,6 +22,9 @@ export class AuthenticatedClient {
     }
     const axiosInstance = axios.create({
       headers,
+      validateStatus: (status) => {
+        return status >= 200 && status <= 399
+      },
     })
     const fetchUrl = this._apiUrl + '/' + url
     const config = {

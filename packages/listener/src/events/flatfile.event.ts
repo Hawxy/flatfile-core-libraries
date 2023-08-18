@@ -156,7 +156,7 @@ export class FlatfileEvent extends AuthenticatedClient {
     const secrets = await this.cache.init('secrets', async () => {
       const secretsResponse = await this.fetch(getSecrets)
       const SecretMap = new Map<string, string>()
-      secretsResponse.forEach((secret: { name: string; value: string }) => {
+      secretsResponse?.forEach((secret: { name: string; value: string }) => {
         SecretMap.set(secret.name, secret.value)
       })
       return SecretMap
