@@ -1,5 +1,14 @@
 # @flatfile/listener
 
+## 0.3.15
+
+### Patch Changes
+
+- 7369c63: Fix spammy 304 errors
+- 4fd707e: Create secrets cache based on environmentId and spaceId
+- 6a5fdea: Adds createdAt to FlatfileEvent
+- cc954c1: Ensures Single Trailing Slash In API URL
+
 ## 0.3.14
 
 ### Patch Changes
