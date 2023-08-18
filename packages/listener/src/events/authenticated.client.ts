@@ -1,5 +1,6 @@
 import { CrossEnvConfig } from '@flatfile/cross-env-config'
 import axios from 'axios'
+import { ensureSingleTrailingSlash } from '../utils/helpers'
 
 export class AuthenticatedClient {
   public _accessToken?: string
@@ -12,7 +13,10 @@ export class AuthenticatedClient {
 
     this._accessToken = accessToken || bearerToken || '...'
 
-    this._apiUrl = apiUrl || FLATFILE_API_URL
+    this._apiUrl =
+      apiUrl || FLATFILE_API_URL
+        ? ensureSingleTrailingSlash(apiUrl || FLATFILE_API_URL)
+        : undefined
   }
 
   async fetch(url: string, options?: any) {
@@ -26,7 +30,7 @@ export class AuthenticatedClient {
         return status >= 200 && status <= 399
       },
     })
-    const fetchUrl = this._apiUrl + '/' + url
+    const fetchUrl = this._apiUrl + url
     const config = {
       url: fetchUrl,
       method: 'GET',
