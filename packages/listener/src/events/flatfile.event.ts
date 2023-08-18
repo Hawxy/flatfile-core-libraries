@@ -37,6 +37,7 @@ export class FlatfileEvent extends AuthenticatedClient {
   public readonly payload: any
   public readonly cache: EventCache
   public readonly namespace: string[]
+  public readonly createdAt?: Date
   /**
    * Fetch record data from Flatfile API via the event's dataUrl
    *
@@ -47,7 +48,7 @@ export class FlatfileEvent extends AuthenticatedClient {
   public data: GetData
 
   constructor(
-    private readonly src: Event,
+    public readonly src: Event,
     accessToken?: string,
     apiUrl?: string
   ) {
@@ -61,6 +62,7 @@ export class FlatfileEvent extends AuthenticatedClient {
     this.origin = src.origin || {}
     this.action = src.context?.actionName || ''
     this.namespace = src.namespaces || []
+    this.createdAt = src.createdAt || undefined
 
     const data = async (options?: GetDataOptions): Promise<any> =>
       this.fetchData(options)
