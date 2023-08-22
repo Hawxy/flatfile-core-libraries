@@ -15,6 +15,7 @@ export const addSpaceInfo = async (
     themeConfig,
     sidebarConfig,
     spaceInfo,
+    userInfo
   } = spaceProps
 
   try {
@@ -35,7 +36,8 @@ export const addSpaceInfo = async (
       metadata: {
         theme: themeConfig,
         sidebarConfig,
-        spaceInfo,
+        userInfo,
+        spaceInfo
       },
     })
 

@@ -33,10 +33,17 @@ export interface NewSpaceFromPublishableKey extends BaseSpace {
    */
   spaceBody?: { [key: string]: any }
   /**
+   * @deprecated should use userInfo instead.
+   * 
    * Additional metadata to be passed to the space
    * Optional
    */
-  spaceInfo?: Partial<ISpaceInfo>
+  spaceInfo?: Partial<IUserInfo>
+  /**
+   * Additional metadata to be passed to the space
+   * Optional
+   */
+  userInfo?: Partial<IUserInfo>
   /**
    * Shape of data you will be receiving:
    * Required
@@ -66,6 +73,7 @@ export interface ReusedSpaceWithAccessToken extends BaseSpace {
   sidebarConfig?: never
   document?: never
   spaceInfo?: never
+  userInfo?: never
   workbook?: never
   spaceBody?: never
 }
@@ -142,6 +150,13 @@ interface BaseSpace {
    * Optional
    */
   spaceUrl?: string
+}
+
+export interface IUserInfo {
+  userId?: string
+  name?: string
+  companyId?: string
+  companyName?: string
 }
 
 export interface ISpaceInfo {
