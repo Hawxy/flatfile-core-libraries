@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.17
+
+### Patch Changes
+
+- 7457f1e: Adding userInfo param on metadata
+
 ## 7.2.16
 
 ### Patch Changes
