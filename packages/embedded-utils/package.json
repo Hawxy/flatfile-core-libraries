@@ -1,5 +1,5 @@
 {
-  "name": "embedded-utils",
+  "name": "@flatfile/embedded-utils",
   "version": "1.0.1",
   "description": "Shared utils for embedded",
   "main": "index.js",
