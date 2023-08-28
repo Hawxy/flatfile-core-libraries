@@ -1,24 +1,5 @@
 import { createIframe } from './createIframe'
-
-interface InitializeFlatfileOptions {
-  publishableKey?: string
-  displayAsModal?: boolean
-  mountElement?: string
-  space?: {
-    id: string
-    accessToken: string
-  }
-  spaceBody?: object
-  apiUrl?: string
-  baseUrl?: string
-  exitTitle?: string
-  exitText?: string
-  closeSpace?: {
-    operation: string
-    onClose: (data: any) => void
-  }
-  errorTitle?: string
-}
+import { ISpace } from '@flatfile/embedded-utils'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
@@ -46,7 +27,7 @@ export async function initializeFlatfile({
   exitText = 'Are you sure you would like to close this window? This will end your current data import session.',
   closeSpace,
   errorTitle = 'Something went wrong',
-}: InitializeFlatfileOptions): Promise<void> {
+}: ISpace): Promise<void> {
   try {
     const createSpaceEndpoint = `${apiUrl}/v1/spaces`
 

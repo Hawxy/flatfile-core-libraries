@@ -1,8 +1,8 @@
 import { Flatfile } from '@flatfile/api'
 import { FlatfileListener } from '@flatfile/listener'
 import React from 'react'
-import { SidebarConfig } from './SidebarConfig'
-import { ThemeConfig } from './ThemeConfig'
+import { ISidebarConfig } from './ISidebarConfig'
+import { IThemeConfig } from './IThemeConfig'
 
 export type ISpace = NewSpaceFromPublishableKey | ReusedSpaceWithAccessToken
 
@@ -16,12 +16,12 @@ export interface NewSpaceFromPublishableKey extends BaseSpace {
    * Theme values for space, sidebar and data table
    * Optional
    */
-  themeConfig?: ThemeConfig
+  themeConfig?: IThemeConfig
   /**
    * Sidebar config values to toggle UI elements
    * Optional
    */
-  sidebarConfig?: SidebarConfig
+  sidebarConfig?: ISidebarConfig
   /**
    * Document to pass to space
    * Optional

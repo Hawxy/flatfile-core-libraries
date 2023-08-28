@@ -2,9 +2,7 @@ import Space from './src/components/Space'
 
 import { makeTheme } from './src/utils/makeTheme'
 import { useSpace } from './src/hooks/useSpace'
-import type { ISpace, IUserInfo, ISpaceInfo } from './src/types/ISpace'
-import type { ISidebarConfig } from './src/types/ISidebarConfig'
-import type { IThemeConfig } from './src/types/IThemeConfig'
+import type { ISpace, IUserInfo, ISpaceInfo, ISidebarConfig, IThemeConfig } from '@flatfile/embedded-utils'
 
 export { makeTheme, useSpace, Space }
 

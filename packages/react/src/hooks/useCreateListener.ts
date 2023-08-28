@@ -1,6 +1,6 @@
 import { Browser, FlatfileEvent } from '@flatfile/listener'
 import { useEffect } from 'react'
-import { ISpace } from '../types/ISpace'
+import { ISpace } from '@flatfile/embedded-utils'
 /**
  * @name useCreateListener
  * @description Listener

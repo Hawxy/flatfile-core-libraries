@@ -1,6 +1,6 @@
 import { FlatfileClient } from '@flatfile/api'
 import { vi } from 'vitest'
-import { ISpace } from '../../types/ISpace'
+import { ISpace } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../initializeSpace'
 
 const authenticateMock = vi.fn()

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import { ISpace } from './types/ISpace'
+import { ISpace } from '@flatfile/embedded-utils'
 import { useSpace } from './hooks/useSpace'
 import { listener } from './examples/joinFields'
 

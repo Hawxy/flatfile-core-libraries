@@ -1,4 +1,4 @@
-import { ISpace } from '../types/ISpace'
+import { ISpace } from '@flatfile/embedded-utils'
 import { authenticate } from './authenticate'
 import { getErrorMessage } from './getErrorMessage'
 

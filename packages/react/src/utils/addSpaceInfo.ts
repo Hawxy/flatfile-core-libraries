@@ -1,5 +1,5 @@
 import { FlatfileClient } from '@flatfile/api'
-import { NewSpaceFromPublishableKey } from '../types/ISpace'
+import { NewSpaceFromPublishableKey } from '@flatfile/embedded-utils'
 import { getErrorMessage } from './getErrorMessage'
 
 // Given the space is created, add workbook, metadata and document to the space

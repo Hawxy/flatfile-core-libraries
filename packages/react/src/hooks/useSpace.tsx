@@ -1,21 +1,13 @@
-import Pubnub from 'pubnub'
 import React, { JSX, useEffect, useState } from 'react'
 import DefaultError from '../components/Error'
 import Space from '../components/Space'
 import Spinner from '../components/Spinner'
 import { SpinnerStyles } from '../components/embeddedStyles'
-import { ISpace } from '../types/ISpace'
+import { ISpace, State } from '@flatfile/embedded-utils'
 import { initializePubnub } from '../utils/initializePubnub'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
 
-export interface State {
-  pubNub: Pubnub | null
-  error?: Error | string
-  localSpaceId: string
-  accessTokenLocal: string
-  spaceUrl: string
-}
 
 export const useSpace = (props: ISpace): JSX.Element => {
   const { error: ErrorElement, loading: LoadingElement, apiUrl } = props

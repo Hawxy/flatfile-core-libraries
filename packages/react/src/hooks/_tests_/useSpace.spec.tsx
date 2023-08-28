@@ -7,7 +7,7 @@ import { vi } from 'vitest'
 import DefaultError from '../../components/Error'
 import Space from '../../components/Space'
 import { mockDocument, mockSpace, mockWorkbook } from '../../test/mocks'
-import { ISpace } from '../../types/ISpace'
+import { ISpace } from '@flatfile/embedded-utils'
 import { EventSubscriber } from '../../utils/EventSubscriber'
 import useSpace from '../useSpace'
 

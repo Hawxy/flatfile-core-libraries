@@ -1,10 +1,9 @@
 import { Flatfile } from '@flatfile/api'
-import Pubnub from 'pubnub'
 import { PubNubProvider } from 'pubnub-react'
 import React, { JSX, useState } from 'react'
 import { useCreateListener } from '../hooks/useCreateListener'
 import { useEventSubscriber } from '../hooks/useEventSubscriber'
-import { ISpace } from '../types/ISpace'
+import { ISpace, SpaceComponent } from '@flatfile/embedded-utils'
 import ConfirmModal from './ConfirmCloseModal'
 import { CloseIframeButton, getIframeStyles, getContainerStyles } from './embeddedStyles'
 
@@ -13,13 +12,6 @@ import { CloseIframeButton, getIframeStyles, getContainerStyles } from './embedd
  * @description Flatfile Embedded Space component
  * @param props
  */
-
-interface SpaceComponent {
-  spaceId: string
-  spaceUrl: string
-  accessToken: string
-  pubNub: Pubnub
-}
 
 const Space = ({
   spaceId,

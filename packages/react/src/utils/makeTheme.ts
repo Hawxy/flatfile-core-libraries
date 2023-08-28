@@ -1,19 +1,13 @@
 import tinycolor from 'tinycolor2'
-import { IThemeConfig } from '../types/IThemeConfig'
+import { IThemeGenerator, IThemeConfig } from '@flatfile/embedded-utils'
 
 /**
  * @name makeTheme
  * @description Helper func to generate theme config to be passed to a workbook component
  *
  * @param { IThemeGenerator }
- * @returns { IThemeConfig }
+ * @returns { ThemeConfig }
  */
-
-interface IThemeGenerator {
-  primaryColor?: string
-  textColor?: string
-  logo?: string
-}
 
 export const makeTheme = (props: IThemeGenerator): IThemeConfig => {
   const { primaryColor, textColor, logo } = props

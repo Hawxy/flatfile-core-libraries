@@ -1,11 +1,6 @@
 import { EventSubscriber } from './EventSubscriber'
 import { getErrorMessage } from './getErrorMessage'
-
-interface InitializePubnub {
-  spaceId: string
-  accessToken: string
-  apiUrl: string | undefined
-}
+import { InitializePubnub } from '@flatfile/embedded-utils'
 
 export const initializePubnub = async ({
   spaceId,
