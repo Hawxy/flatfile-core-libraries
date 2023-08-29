@@ -135,16 +135,27 @@ const ConfirmModal = ({
   return (
     <>
       <FontStyles />
-      <OuterShell data-testid="close-confirm-modal">
-        <InnerShell>
-          <Modal>
-            <ModalHeading>{exitTitle}</ModalHeading>
-            <ModalText>{exitText}</ModalText>
-            <ButtonGroup>
-              <ButtonSecondary onClick={onCancel}>
+      <OuterShell
+        data-testid="close-confirm-modal"
+        className="flatfile_outer-shell"
+      >
+        <InnerShell className="close-confirm-modal-inner">
+          <Modal className="flatfile_inner-shell">
+            <ModalHeading className="flatfile_modal-heading">
+              {exitTitle}
+            </ModalHeading>
+            <ModalText className="flatfile_modal-text">{exitText}</ModalText>
+            <ButtonGroup className="flatfile_button-group">
+              <ButtonSecondary
+                onClick={onCancel}
+                className="flatfile_button flatfile_secondary"
+              >
                 <div>No, stay</div>
               </ButtonSecondary>
-              <ButtonPrimary onClick={onConfirm}>
+              <ButtonPrimary
+                onClick={onConfirm}
+                className="flatfile_button flatfile_primary"
+              >
                 <div>Yes, exit</div>
               </ButtonPrimary>
             </ButtonGroup>
