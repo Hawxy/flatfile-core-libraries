@@ -1,15 +1,16 @@
 import { FlatfileClient } from '@flatfile/api'
-import { vi } from 'vitest'
 import { mockDocument, mockWorkbook } from '../../test/mocks'
 import { addSpaceInfo } from '../addSpaceInfo'
+import { CreateWorkbookConfig, Workbook } from '@flatfile/api/api'
+import { Space } from '@flatfile/api/api/resources/spaces'
 
 describe('addSpaceInfo', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   afterAll(() => {
-    vi.resetAllMocks()
+    jest.resetAllMocks()
   })
 
   const innerWorkbook = {
@@ -18,7 +19,10 @@ describe('addSpaceInfo', () => {
     updatedAt: new Date('01/01/2001'),
   }
   const mockSpaceProps = {
-    workbook: mockWorkbook,
+    workbook: mockWorkbook as Pick<
+      CreateWorkbookConfig,
+      'name' | 'sheets' | 'actions'
+    >,
     environmentId: 'test-environment-id',
     document: mockDocument,
     themeConfig: {},
@@ -39,18 +43,18 @@ describe('addSpaceInfo', () => {
   const mockApi = new FlatfileClient()
 
   it('should add space information successfully', async () => {
-    vi.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
+    jest.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
       data: {
         id: 'test-workbook-id',
         ...innerWorkbook,
-      },
+      } as Workbook,
     })
 
-    vi.spyOn(mockApi.spaces, 'update').mockResolvedValueOnce({
-      data: { ...mockSpaceResponse },
+    jest.spyOn(mockApi.spaces, 'update').mockResolvedValueOnce({
+      data: { ...mockSpaceResponse } as Space,
     })
 
-    vi.spyOn(mockApi.documents, 'create').mockResolvedValueOnce({
+    jest.spyOn(mockApi.documents, 'create').mockResolvedValueOnce({
       data: {
         id: 'test-document-id',
         title: 'doc-title',
@@ -84,9 +88,9 @@ describe('addSpaceInfo', () => {
   })
 
   it('should throw an error if creating workbook fails', async () => {
-    vi.spyOn(mockApi.workbooks, 'create').mockRejectedValueOnce(
-      new Error('Failed to create workbook')
-    )
+    jest
+      .spyOn(mockApi.workbooks, 'create')
+      .mockRejectedValueOnce(new Error('Failed to create workbook'))
 
     await expect(
       addSpaceInfo(mockSpaceProps, mockSpaceId, mockApi)
@@ -96,20 +100,20 @@ describe('addSpaceInfo', () => {
   })
 
   it('should throw an error if creating document fails', async () => {
-    vi.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
+    jest.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
       data: {
         id: 'test-workbook-id',
         ...innerWorkbook,
-      },
+      } as Workbook,
     })
 
-    vi.spyOn(mockApi.spaces, 'update').mockResolvedValueOnce({
-      data: { ...mockSpaceResponse },
+    jest.spyOn(mockApi.spaces, 'update').mockResolvedValueOnce({
+      data: { ...mockSpaceResponse } as Space,
     })
 
-    vi.spyOn(mockApi.documents, 'create').mockRejectedValueOnce(
-      new Error('Failed to create document')
-    )
+    jest
+      .spyOn(mockApi.documents, 'create')
+      .mockRejectedValueOnce(new Error('Failed to create document'))
 
     await expect(
       addSpaceInfo(mockSpaceProps, mockSpaceId, mockApi)
@@ -119,16 +123,16 @@ describe('addSpaceInfo', () => {
   })
 
   it('should throw an error if updating space fails', async () => {
-    vi.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
+    jest.spyOn(mockApi.workbooks, 'create').mockResolvedValueOnce({
       data: {
         id: 'test-workbook-id',
         ...innerWorkbook,
-      },
+      } as Workbook,
     })
 
-    vi.spyOn(mockApi.spaces, 'update').mockRejectedValueOnce(
-      new Error('Failed to update space')
-    )
+    jest
+      .spyOn(mockApi.spaces, 'update')
+      .mockRejectedValueOnce(new Error('Failed to update space'))
 
     await expect(
       addSpaceInfo(mockSpaceProps, mockSpaceId, mockApi)

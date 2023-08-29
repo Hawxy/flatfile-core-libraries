@@ -1,11 +1,10 @@
 import PubNub from 'pubnub'
-import { vi } from 'vitest'
 import { EventSubscriber } from '../EventSubscriber'
 import { initializePubnub } from '../initializePubnub'
 
-vi.mock('./EventSubscriber', () => ({
+jest.mock('../EventSubscriber', () => ({
   EventSubscriber: {
-    getClient: vi.fn(),
+    getClient: jest.fn(),
   },
 }))
 
@@ -15,11 +14,11 @@ const apiUrl = 'http://localhost:3000'
 
 describe('initializePubnub', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   afterAll(() => {
-    vi.resetAllMocks()
+    jest.resetAllMocks()
   })
 
   it('should return pubnub when initialization is successful', async () => {
@@ -28,7 +27,7 @@ describe('initializePubnub', () => {
       uuid: 'test-uuid',
     })
 
-    vi.spyOn(EventSubscriber, 'getClient').mockResolvedValueOnce({
+    jest.spyOn(EventSubscriber, 'getClient').mockResolvedValueOnce({
       pubnub,
       token: accessToken,
     })
@@ -48,7 +47,7 @@ describe('initializePubnub', () => {
       'Failed to obtain pubnub object from Event Subscriber response'
     )
 
-    vi.spyOn(EventSubscriber, 'getClient').mockRejectedValue(error)
+    jest.spyOn(EventSubscriber, 'getClient').mockRejectedValue(error)
 
     await expect(
       initializePubnub({ spaceId, accessToken, apiUrl })

@@ -1,30 +1,34 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { FlatfileClient } from '@flatfile/api'
 import { render } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
 import Pubnub from 'pubnub'
 import React from 'react'
-import { vi } from 'vitest'
 import DefaultError from '../../components/Error'
 import Space from '../../components/Space'
 import { mockDocument, mockSpace, mockWorkbook } from '../../test/mocks'
 import { ISpace } from '@flatfile/embedded-utils'
 import { EventSubscriber } from '../../utils/EventSubscriber'
 import useSpace from '../useSpace'
+import '@testing-library/jest-dom'
 
-vi.mock('../utils/EventSubscriber', () => ({
+jest.mock('../../utils/EventSubscriber', () => ({
   EventSubscriber: {
-    getClient: vi.fn()
-  }
+    getClient: jest.fn(),
+  },
 }))
 
-vi.mock('@flatfile/api')
+// jest.mock('@flatfile/api')
 
 const baseSpaceProps = {
   loading: undefined,
   publishableKey: 'your-publishable-key',
   environmentId: 'your-env-id',
   workbook: mockWorkbook,
-  name: 'Embedded space'
+  name: 'Embedded space',
 }
 
 const TestComponent: React.FC<ISpace> = (props) => {
@@ -40,27 +44,27 @@ const renderUseSpaceHookWithHookResult = (props: ISpace) =>
 
 describe('useSpace', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   afterAll(() => {
-    vi.resetAllMocks()
+    jest.resetAllMocks()
   })
 
   it('renders the loading element when pubNub is not yet available', () => {
     const { getByTestId } = renderUseSpaceHook({
-      ...baseSpaceProps
-    })
+      ...baseSpaceProps,
+    } as ISpace)
 
     expect(getByTestId('spinner-icon')).toBeInTheDocument()
   })
   it('renders the error element when there is an error', async () => {
-    vi.spyOn(FlatfileClient.prototype.spaces, 'create').mockRejectedValue(
-      'There has been an error my friend'
-    )
+    jest
+      .spyOn(FlatfileClient.prototype.spaces, 'create')
+      .mockRejectedValue('There has been an error my friend')
     const { result, waitForNextUpdate } = renderUseSpaceHookWithHookResult({
-      ...baseSpaceProps
-    })
+      ...baseSpaceProps,
+    } as ISpace)
 
     await waitForNextUpdate()
 
@@ -71,37 +75,37 @@ describe('useSpace', () => {
     expect(error).toBeDefined()
   })
   it('renders the Space component when pubNub is present', async () => {
-    vi.spyOn(FlatfileClient.prototype.spaces, 'create').mockResolvedValue({
-      data: mockSpace
+    jest.spyOn(FlatfileClient.prototype.spaces, 'create').mockResolvedValue({
+      data: mockSpace,
     })
 
-    vi.spyOn(FlatfileClient.prototype.workbooks, 'create').mockResolvedValue({
-      data: mockWorkbook
+    jest.spyOn(FlatfileClient.prototype.workbooks, 'create').mockResolvedValue({
+      data: mockWorkbook,
     })
 
-    vi.spyOn(FlatfileClient.prototype.spaces, 'update').mockResolvedValue({
-      data: mockSpace
+    jest.spyOn(FlatfileClient.prototype.spaces, 'update').mockResolvedValue({
+      data: mockSpace,
     })
 
-    vi.spyOn(FlatfileClient.prototype.documents, 'create').mockResolvedValue({
-      data: mockDocument
+    jest.spyOn(FlatfileClient.prototype.documents, 'create').mockResolvedValue({
+      data: mockDocument,
     })
 
     const pubnub = new Pubnub({
       subscribeKey: 'test-subscribe-key',
-      uuid: 'test-uuid'
+      uuid: 'test-uuid',
     })
 
     const accessToken = 'your-access-token'
 
-    vi.spyOn(EventSubscriber, 'getClient').mockResolvedValueOnce({
+    jest.spyOn(EventSubscriber, 'getClient').mockResolvedValueOnce({
       pubnub,
-      token: accessToken
+      token: accessToken,
     })
 
     const { result, waitForNextUpdate } = renderUseSpaceHookWithHookResult({
-      ...baseSpaceProps
-    })
+      ...baseSpaceProps,
+    } as ISpace)
 
     await waitForNextUpdate()
     await waitForNextUpdate()

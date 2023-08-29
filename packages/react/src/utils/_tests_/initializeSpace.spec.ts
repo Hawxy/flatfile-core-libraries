@@ -1,23 +1,15 @@
 import { FlatfileClient } from '@flatfile/api'
-import { vi } from 'vitest'
 import { ISpace } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../initializeSpace'
+import { Space } from '@flatfile/api/api/resources/spaces'
 
-const authenticateMock = vi.fn()
-const addSpaceInfoMock = vi.fn()
-
-vi.mock('./authenticate', () => ({
-  authenticate: authenticateMock,
-}))
-vi.mock('./addSpaceInfo', () => ({
-  addSpaceInfo: addSpaceInfoMock,
-}))
-
-vi.mock('@flatfile/api')
+var authenticateMock: jest.Mock = jest.fn()
+var addSpaceInfoMock: jest.Mock = jest.fn()
 
 const mockWorkbook = {
   id: 'wb-id',
   sheets: [],
+  environmentId: 'your-environment-id',
   name: 'Test Workbook',
   actions: [],
   spaceId: 'test-space-id',
@@ -34,11 +26,11 @@ const mockSpaceProps: ISpace = {
 
 describe('initializeSpace', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   afterAll(() => {
-    vi.resetAllMocks()
+    jest.resetAllMocks()
   })
 
   it('should throw an error when publishable key is missing', async () => {
@@ -68,14 +60,11 @@ describe('initializeSpace', () => {
   })
 
   it('should throw an error when space creation fails', async () => {
-    const mockApi = {}
     const error = new Error('Space creation error')
 
-    authenticateMock.mockImplementation(() => {
-      return mockApi
-    })
-
-    vi.spyOn(FlatfileClient.prototype.spaces, 'create').mockRejectedValue(error)
+    jest
+      .spyOn(FlatfileClient.prototype.spaces, 'create')
+      .mockRejectedValue(error)
 
     await expect(initializeSpace(mockSpaceProps)).rejects.toThrowError(
       'Failed to create space'
@@ -84,7 +73,9 @@ describe('initializeSpace', () => {
   })
 
   it('should initialize a space and return the created space', async () => {
-    const mockSpace = {
+    const mockSpace: Space = {
+      name: 'your-space-name',
+      guestAuthentication: ['shared_link', 'magic_link'],
       id: 'space-id',
       environmentId: 'your-environment-id',
       accessToken: 'access-token',
@@ -99,19 +90,19 @@ describe('initializeSpace', () => {
       body: 'Example-body',
     }
 
-    vi.spyOn(FlatfileClient.prototype.spaces, 'create').mockResolvedValue({
-      data: mockSpace,
+    jest.spyOn(FlatfileClient.prototype.spaces, 'create').mockResolvedValue({
+      data: mockSpace as Space,
     })
 
-    vi.spyOn(FlatfileClient.prototype.workbooks, 'create').mockResolvedValue({
+    jest.spyOn(FlatfileClient.prototype.workbooks, 'create').mockResolvedValue({
       data: mockWorkbook,
     })
 
-    vi.spyOn(FlatfileClient.prototype.spaces, 'update').mockResolvedValue({
-      data: mockSpace,
+    jest.spyOn(FlatfileClient.prototype.spaces, 'update').mockResolvedValue({
+      data: mockSpace as Space,
     })
 
-    vi.spyOn(FlatfileClient.prototype.documents, 'create').mockResolvedValue({
+    jest.spyOn(FlatfileClient.prototype.documents, 'create').mockResolvedValue({
       data: mockDocument,
     })
 

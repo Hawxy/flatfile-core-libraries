@@ -1,12 +1,22 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { render, screen } from '@testing-library/react'
 import React from 'react'
 import Space, { SpaceContents } from '../Space'
 import { mockWorkbook } from '../../test/mocks'
 import Pubnub from 'pubnub'
+import { CreateWorkbookConfig } from '@flatfile/api/api'
+import '@testing-library/jest-dom'
 
 const baseSpaceProps = {
+  name: 'Embedded space',
   publishableKey: 'your-publishable-key',
-  workbook: mockWorkbook,
+  workbook: mockWorkbook as Pick<
+    CreateWorkbookConfig,
+    'name' | 'sheets' | 'actions'
+  >,
 }
 
 describe('Space', () => {
@@ -22,6 +32,7 @@ describe('Space', () => {
     render(
       <Space
         spaceId={spaceId}
+        environmentId="environmentId"
         spaceUrl={spaceUrl}
         accessToken={accessToken}
         pubNub={pubnub}
@@ -46,6 +57,7 @@ describe('Space', () => {
       <Space
         spaceId={spaceId}
         spaceUrl={spaceUrl}
+        environmentId="environmentId"
         accessToken={accessToken}
         pubNub={pubnub}
         {...baseSpaceProps}
@@ -67,6 +79,7 @@ describe('SpaceContents', () => {
       <SpaceContents
         spaceId={spaceId}
         spaceUrl={spaceUrl}
+        environmentId="environmentId"
         accessToken={accessToken}
         {...baseSpaceProps}
       />
@@ -88,6 +101,7 @@ describe('SpaceContents', () => {
       <SpaceContents
         spaceId={spaceId}
         spaceUrl={spaceUrl}
+        environmentId="environmentId"
         accessToken={accessToken}
         {...baseSpaceProps}
       />

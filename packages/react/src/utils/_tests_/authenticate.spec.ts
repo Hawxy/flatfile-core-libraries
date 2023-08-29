@@ -1,23 +1,22 @@
 import { FlatfileClient } from '@flatfile/api'
-import { vi } from 'vitest'
 import { authenticate } from '../authenticate'
 
 describe('authenticate', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   afterAll(() => {
-    vi.resetAllMocks()
+    jest.resetAllMocks()
   })
 
   it('should return the instantiated FlatfileClient instance', () => {
     const key = 'your-publishable-key'
     const flatfileClientInstance = new FlatfileClient({
       token: key,
-      environment: 'https://platform.flatfile.com/api/v1'
+      environment: 'https://platform.flatfile.com/api/v1',
     })
-    const mockFlatfileClient = vi
+    const mockFlatfileClient = jest
       .spyOn(FlatfileClient.prototype as any, 'constructor')
       .mockReturnValue(flatfileClientInstance)
 

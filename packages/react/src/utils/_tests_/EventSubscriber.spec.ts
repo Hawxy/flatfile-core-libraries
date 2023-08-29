@@ -1,33 +1,10 @@
-import { vi } from 'vitest'
 import { FlatfileClient } from '@flatfile/api'
 import { EventSubscriber, fetchEventToken } from '../EventSubscriber'
 import Pubnub from 'pubnub'
 
-vi.mock('@flatfile/api', () => ({
-  FlatfileClient: {
-    events: {
-      getEventToken: vi.fn()
-    }
-  }
-}))
-
-const fetchEventTokenMock = vi.fn()
-vi.mock('./EventSubscriber', () => ({
-  fetchEventToken: fetchEventTokenMock
-}))
-
-const setToken = vi.fn()
-vi.mock('pubnub', () => ({
-  default: vi.fn().mockImplementation(() => {
-    return {
-      setToken
-    }
-  })
-}))
-
 const mockClient = new FlatfileClient({
   token: 'test-token',
-  environment: 'https://platform.flatfile.com/api/v1'
+  environment: 'https://platform.flatfile.com/api/v1',
 })
 
 describe('fetchEventToken', () => {
@@ -35,24 +12,23 @@ describe('fetchEventToken', () => {
   const mockData = {
     subscribeKey: 'your-subscribe-key',
     accountId: 'your-account-id',
-    token: 'your-token'
+    token: 'your-token',
   }
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   afterAll(() => {
-    vi.resetAllMocks()
+    jest.resetAllMocks()
   })
 
   it('should fetch the token when all required fields are present', async () => {
-    vi.spyOn(
-      FlatfileClient.prototype.events,
-      'getEventToken'
-    ).mockResolvedValueOnce({
-      data: mockData
-    })
+    jest
+      .spyOn(FlatfileClient.prototype.events, 'getEventToken')
+      .mockResolvedValueOnce({
+        data: mockData,
+      })
 
     const result = await fetchEventToken(mockClient, spaceId)
 
@@ -60,12 +36,11 @@ describe('fetchEventToken', () => {
   })
 
   it('should throw an error when subscribeKey is missing', async () => {
-    vi.spyOn(
-      FlatfileClient.prototype.events,
-      'getEventToken'
-    ).mockResolvedValueOnce({
-      data: {}
-    })
+    jest
+      .spyOn(FlatfileClient.prototype.events, 'getEventToken')
+      .mockResolvedValueOnce({
+        data: {},
+      })
 
     await expect(fetchEventToken(mockClient, spaceId)).rejects.toThrow(
       `Missing subscribe key in event token response`
@@ -73,12 +48,11 @@ describe('fetchEventToken', () => {
   })
 
   it('should throw an error when accountId is missing', async () => {
-    vi.spyOn(
-      FlatfileClient.prototype.events,
-      'getEventToken'
-    ).mockResolvedValueOnce({
-      data: { subscribeKey: 'your-subscribe-key' }
-    })
+    jest
+      .spyOn(FlatfileClient.prototype.events, 'getEventToken')
+      .mockResolvedValueOnce({
+        data: { subscribeKey: 'your-subscribe-key' },
+      })
 
     await expect(fetchEventToken(mockClient, spaceId)).rejects.toThrow(
       'Missing account ID in event token response'
@@ -86,15 +60,14 @@ describe('fetchEventToken', () => {
   })
 
   it('should throw an error when token is missing', async () => {
-    vi.spyOn(
-      FlatfileClient.prototype.events,
-      'getEventToken'
-    ).mockResolvedValueOnce({
-      data: {
-        subscribeKey: 'your-subscribe-key',
-        accountId: 'your-account-id'
-      }
-    })
+    jest
+      .spyOn(FlatfileClient.prototype.events, 'getEventToken')
+      .mockResolvedValueOnce({
+        data: {
+          subscribeKey: 'your-subscribe-key',
+          accountId: 'your-account-id',
+        },
+      })
 
     await expect(fetchEventToken(mockClient, spaceId)).rejects.toThrow(
       'Missing token in event token response'
@@ -105,7 +78,7 @@ describe('fetchEventToken', () => {
 describe('EventSubscriber', () => {
   describe('getClient', () => {
     beforeEach(() => {
-      vi.clearAllMocks()
+      jest.clearAllMocks()
     })
 
     it('should create a PubNub instance and set the token', async () => {
@@ -116,26 +89,25 @@ describe('EventSubscriber', () => {
       const token = 'token'
 
       // Mock the PubNub class and its methods
-      const setTokenMock = vi.fn()
-      const addListenerMock = vi.fn()
+      const setTokenMock = jest.fn()
+      const addListenerMock = jest.fn()
       const pubnubInstanceMock = {
         setToken: setTokenMock,
-        addListener: addListenerMock
+        addListener: addListenerMock,
       }
-      vi.spyOn(
-        FlatfileClient.prototype.events,
-        'getEventToken'
-      ).mockResolvedValue({
-        data: {
-          subscribeKey,
-          accountId,
-          token
-        }
-      })
+      jest
+        .spyOn(FlatfileClient.prototype.events, 'getEventToken')
+        .mockResolvedValue({
+          data: {
+            subscribeKey,
+            accountId,
+            token,
+          },
+        })
 
-      vi.spyOn(Pubnub.prototype as any, 'constructor').mockReturnValueOnce(
-        pubnubInstanceMock
-      )
+      jest
+        .spyOn(Pubnub.prototype as any, 'constructor')
+        .mockReturnValueOnce(pubnubInstanceMock)
       const result = await EventSubscriber.getClient(spaceId, accessToken)
 
       expect(result.token).toEqual(token)

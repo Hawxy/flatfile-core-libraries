@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import FontStyles from '../fonts/Fonts'
+
 import '../index.css'
 
 const OuterShell = styled.div`
@@ -131,24 +133,25 @@ const ConfirmModal = ({
   exitTitle: string
 }) => {
   return (
-    <OuterShell data-testid="close-confirm-modal">
-      <InnerShell>
-        <Modal>
-          <ModalHeading>{exitTitle}</ModalHeading>
-          <ModalText>
-            {exitText}
-          </ModalText>
-          <ButtonGroup>
-            <ButtonSecondary onClick={onCancel}>
-              <div>No, stay</div>
-            </ButtonSecondary>
-            <ButtonPrimary onClick={onConfirm}>
-              <div>Yes, exit</div>
-            </ButtonPrimary>
-          </ButtonGroup>
-        </Modal>
-      </InnerShell>
-    </OuterShell>
+    <>
+      <FontStyles />
+      <OuterShell data-testid="close-confirm-modal">
+        <InnerShell>
+          <Modal>
+            <ModalHeading>{exitTitle}</ModalHeading>
+            <ModalText>{exitText}</ModalText>
+            <ButtonGroup>
+              <ButtonSecondary onClick={onCancel}>
+                <div>No, stay</div>
+              </ButtonSecondary>
+              <ButtonPrimary onClick={onConfirm}>
+                <div>Yes, exit</div>
+              </ButtonPrimary>
+            </ButtonGroup>
+          </Modal>
+        </InnerShell>
+      </OuterShell>
+    </>
   )
 }
 

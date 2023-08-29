@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
+
 import '../index.css'
+import FontStyles from '../fonts/Fonts'
 
 type SpinnerProps = {
   size?: number
@@ -30,11 +32,15 @@ const StyledSpinner = styled.div<SpinnerProps>`
 `
 
 const Spinner = () => {
-  return <StyledSpinner 
-    className="spinner"
-    data-testid="spinner-icon"
-  >
-  </StyledSpinner>
+  return (
+    <>
+      <FontStyles />
+      <StyledSpinner
+        className="spinner"
+        data-testid="spinner-icon"
+      ></StyledSpinner>
+    </>
+  )
 }
 
 export default Spinner
