@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.38
+
+### Patch Changes
+
+- b0a6b63: Update dependencies
+
 ## 0.5.37
 
 ### Patch Changes

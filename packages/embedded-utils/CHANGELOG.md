@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.0.3
+
+### Patch Changes
+
+- b0a6b63: Update exports to use dist instead of src
+
 ## 1.0.2
 
 ### Patch Changes

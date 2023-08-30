@@ -1,5 +1,14 @@
 # @flatfile/react
 
+## 7.2.18
+
+### Patch Changes
+
+- 7c1c0df: add class names on the dialog
+- b0a6b63: Move examples into apps/react and cleanup
+- Updated dependencies [b0a6b63]
+  - @flatfile/embedded-utils@1.0.3
+
 ## 7.2.17
 
 ### Patch Changes
