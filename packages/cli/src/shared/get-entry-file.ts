@@ -1,7 +1,7 @@
-import { config } from '../config'
-import { AUTODETECT_FILE_PATHS } from './constants'
 import fs from 'fs'
 import path from 'path'
+import { config } from '../config'
+import { AUTODETECT_FILE_PATHS } from './constants'
 
 /**
  * Get the entry file to use for the CLI command
@@ -13,6 +13,9 @@ export function getEntryFile(
   file: string | null | undefined,
   cmd: string
 ): string | null {
+  if (file && !fs.existsSync(file)) {
+    return null
+  }
   file ??= config().entry
 
   if (!file) {

@@ -1,17 +1,13 @@
-import fs from 'fs'
-import path from 'path'
 import { Client } from '@flatfile/listener'
-import ora from 'ora'
-// TODO: Can we do better with these types?
-// @ts-expect-error
-import readJson from 'read-package-json'
-// @ts-expect-error
+import { PubSubDriver } from '@flatfile/listener-driver-pubsub'
 import ncc from '@vercel/ncc'
+import { program } from 'commander'
+import fs from 'fs'
+import ora from 'ora'
+import path from 'path'
 import { getAuth } from '../../shared/get-auth'
 import { getEntryFile } from '../../shared/get-entry-file'
-import { PubSubDriver } from '@flatfile/listener-driver-pubsub'
-import { DefaultApi, Configuration } from '@flatfile/api'
-import fetch from 'node-fetch'
+import { messages } from '../../shared/messages'
 import { apiKeyClient } from './auth.action'
 
 export async function developAction(
@@ -31,8 +27,7 @@ export async function developAction(
   try {
     authRes = await getAuth(options)
   } catch (e) {
-    console.log(e)
-    return
+    return program.error(messages.error(e))
   }
   const { apiKey, apiUrl, environment } = authRes
 
@@ -43,7 +38,7 @@ export async function developAction(
   file = getEntryFile(file, 'develop')
 
   if (!file) {
-    return
+    return program.error(messages.noEntryFile)
   }
 
   process.env.AGENT_INTERNAL_URL = apiUrl
@@ -58,9 +53,7 @@ export async function developAction(
 
     const agents = await apiClient.getAgents({ environmentId: environment.id })
     if (agents?.data && agents?.data?.length > 0) {
-      console.log(
-        'Looks like you already have deployed agents, please be aware of potentially unintended conflicts with your local development environment. Read more here: https://flatfile.com/docs/developer-tools/developing/running-local#shared-environments'
-      )
+      console.error(messages.warnDeployedAgents)
     }
 
     const driver = new PubSubDriver(environment.id)
@@ -71,10 +64,9 @@ export async function developAction(
 
     watcher.handler(async ({ err, code }: { err: any; code: any }) => {
       if (err) {
-        console.error(err)
+        return program.error(messages.error(err))
       } else {
         try {
-          // const listener = vm.run(code)
           Object.keys(require.cache).forEach(function (id) {
             if (id.includes('develop.js')) {
               delete require.cache[id]
@@ -90,15 +82,15 @@ export async function developAction(
           })
 
           devClient.mount(driver)
-          console.log('\n File change detected. 🚀 ')
+          console.log('\nFile change detected. 🚀')
         } catch (e) {
-          console.error(e)
+          return program.error(messages.error(e))
         }
       }
     })
 
     await driver.start()
   } catch (e) {
-    console.error(e)
+    return program.error(messages.error(e))
   }
 }

@@ -1,18 +1,20 @@
 #!/usr/bin/env node
-import './config'
 import { program } from 'commander'
 import dotenv from 'dotenv'
-import packageJSON from '../package.json'
+import ora from 'ora'
 
+import packageJSON from '../package.json'
+import './config'
 import { publishAction as legacyPublishAction } from './legacy/actions/publish'
-import { publishAction as publishAction } from './x/actions/publish.action'
-import { quickstartAction } from './x/actions/quickstart.action'
+import { writeErrorToFile } from './shared/utils/error'
+import { switchInit } from './switch.init'
 import { switchVersion } from './switch.version'
 import { createEnvironmentAction } from './x/actions/create.environment.action'
-import { switchInit } from './switch.init'
-import { publishPubSub } from './x/actions/publish.pubsub'
 import { deployAction } from './x/actions/deploy.action'
 import { developAction } from './x/actions/develop.action'
+import { publishAction } from './x/actions/publish.action'
+import { publishPubSub } from './x/actions/publish.pubsub'
+import { quickstartAction } from './x/actions/quickstart.action'
 
 dotenv.config()
 
@@ -20,6 +22,14 @@ program
   .name('flatfile')
   .description('Flatfile CLI')
   .version(`${packageJSON.version}`)
+  .configureOutput({
+    outputError: async (errorMessage: string) => {
+      ora({
+        text: errorMessage,
+      }).fail()
+    },
+  })
+  .exitOverride(writeErrorToFile)
 
 program
   .command('publish <file>')

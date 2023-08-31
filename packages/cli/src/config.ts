@@ -1,5 +1,5 @@
-import rc from 'rc'
 import dotenv from 'dotenv'
+import rc from 'rc'
 import { z } from 'zod'
 
 const interpolation = require('interpolate-json').interpolation
@@ -86,6 +86,9 @@ const rawConfig = rc('flatfile', {
   // platform configs
   entry: null,
   api_url: 'https://platform.flatfile.com/api', // configuration property used for x
+
+  // internal configs
+  local: 'en_us',
 })
 
 const ConfigValidation = z.object({
@@ -103,6 +106,7 @@ const ConfigValidation = z.object({
 
   entry: z.string().min(4).nullable().optional(),
   api_url: z.string().min(4).nullable().optional(),
+  local: z.string().min(1).optional(),
 })
 
 export type Config = z.infer<typeof ConfigValidation>

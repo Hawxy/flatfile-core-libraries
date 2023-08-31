@@ -1,10 +1,11 @@
-import { config } from '../config'
-import chalk from 'chalk'
-import prompt from 'prompts'
 import { Configuration, DefaultApi } from '@flatfile/api'
+import { program } from 'commander'
 import fetch from 'node-fetch'
 import ora from 'ora'
+import prompt from 'prompts'
+import { config } from '../config'
 import { apiKeyClient } from '../x/actions/auth.action'
+import { docUrls, messages } from './messages'
 
 export async function getAuth(options: any): Promise<{
   apiKey: string
@@ -15,14 +16,7 @@ export async function getAuth(options: any): Promise<{
     options?.apiUrl || process.env.FLATFILE_API_URL || config().api_url
 
   if (!apiUrl) {
-    console.log(
-      `You must provide a API Endpoint URL. Either set the ${chalk.bold(
-        'FLATFILE_API_URL'
-      )} environment variable, 'endpoint' in your .flatfilerc or pass the ID in as an option to this command with ${chalk.bold(
-        '--api-url'
-      )}`
-    )
-    process.exit(1)
+    return program.error(messages.noApiUrl)
   }
 
   let apiKey =
@@ -77,7 +71,7 @@ export async function getAuth(options: any): Promise<{
         const api = new DefaultApi(
           new Configuration({
             fetchApi: fetch,
-            basePath: `${apiUrl ?? 'https://platform.flatfile.com/api'}/v1`,
+            basePath: `${apiUrl ?? docUrls.api}/v1`,
           })
         )
         try {
@@ -89,17 +83,14 @@ export async function getAuth(options: any): Promise<{
           })
           apiKey = res.data?.accessToken
         } catch (e) {
-          throw 'Invalid username or password'
+          return program.error(messages.invalidCredentials)
         }
 
         break
       case 'env':
-        throw `Set up an environment variable for FLATFILE_API_KEY using your preferred approach. If you're
-  developing in a cloud environment like repl.it or codesandbox, look for the SECRETS feature
-  and add a secret named FLATFILE_API_KEY. Locally consider using a .env file that is not committed
-  to your git repository.`
+        console.log(messages.setVariablesHelp)
+        process.exit(0)
     }
-
   }
   const environment = await getEnvironment(options, apiUrl, apiKey)
   return { apiKey, apiUrl, environment }
@@ -115,24 +106,21 @@ async function getEnvironment(options: any, apiUrl: string, apiKey: string) {
     const apiClient = apiKeyClient({ apiUrl, apiKey: apiKey! })
     environments = await apiClient.getEnvironments({ pageSize: 100 })
   } catch (e: any) {
-    if (e.response.status === 401) {
-      envSpinner.fail(`You must provide a valid API Key. Either set the ${chalk.bold('FLATFILE_API_KEY')} or ${chalk.bold('FLATFILE_BEARER_TOKEN')} environment variable.
-  Please reference our authentication documentation for further information:
-  ${chalk.underline.blue('https://flatfile.com/docs/developer-tools/security/authentication')}`)
-      process.exit(1)
+    envSpinner.stop()
+    if (!e.response) {
+      return program.error(messages.apiResponse(e))
+    }
+    if (e.response?.status === 401) {
+      return program.error(messages.noApiKey)
     } else {
-      console.log(`
-  An error occurred while attempting to retrieve your environments.
-  ${e.response.status}:${e.response.statusText}`)
-      process.exit(1)
+      return program.error(
+        messages.error(`${e.response.status}:${e.response.statusText}`)
+      )
     }
   }
 
   if (environments.data?.length === 0) {
-    envSpinner.fail(`No Environments found.
-  Please reference our environments documentation for further information:
-  ${chalk.underline.blue('https://flatfile.com/docs/developer-tools/environment')}`)
-    process.exit(1)
+    return program.error(messages.noEnvironments)
   }
 
   envSpinner.succeed(
@@ -169,9 +157,7 @@ async function getEnvironment(options: any, apiUrl: string, apiKey: string) {
   }
 
   if (!environment) {
-    throw `No Environments found.
-Please reference our environments documentation for further information:
-${chalk.underline.blue('https://flatfile.com/docs/developer-tools/environment')}`
+    return program.error(messages.noEnvironments)
   }
 
   return environment

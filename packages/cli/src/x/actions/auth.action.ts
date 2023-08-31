@@ -1,7 +1,10 @@
 import { Configuration, DefaultApi } from '@flatfile/api'
+import chalk from 'chalk'
+import { program } from 'commander'
 import fetch from 'node-fetch'
 import ora from 'ora'
 import { config } from '../../config'
+import { docUrls, messages } from '../../shared/messages'
 
 export function apiKeyClient({
   apiUrl,
@@ -34,7 +37,7 @@ export async function authAction({
     text: `Creating authenticated client`,
   }).start()
   const auth = config().auth
-  const DEFAULT_API_URL = apiUrl ?? 'https://platform.flatfile.com/api/v1'
+  const DEFAULT_API_URL = apiUrl ?? `${docUrls.api}/v1`
   const ClientConfig = (accessToken: string) => {
     return new Configuration({
       basePath: DEFAULT_API_URL,
@@ -64,21 +67,21 @@ export async function authAction({
           },
         })
       } catch (e) {
-        authSpinner.fail(`Failed to create access token`)
-        console.log(e)
-        process.exit(1)
+        authSpinner.stop()
+        return program.error(messages.error(`Failed to create access token`))
       }
 
       if (!authResponse?.data?.accessToken) {
-        authSpinner.fail(`Response did not contain access token`)
-        process.exit(1)
+        return program.error(
+          messages.error(`Response did not contain access token`)
+        )
       }
       const { accessToken } = authResponse.data
       const apiClient = new DefaultApi(ClientConfig(String(accessToken)))
       authSpinner.succeed(`Access token created`)
       return apiClient
     } catch (e) {
-      console.log(e)
+      return program.error(messages.error(e))
     }
   } else {
     try {
@@ -87,7 +90,7 @@ export async function authAction({
       authSpinner.succeed(`Client created without auth enabled`)
       return apiClient
     } catch (e) {
-      console.log(e)
+      return program.error(messages.error(e))
     }
   }
 }

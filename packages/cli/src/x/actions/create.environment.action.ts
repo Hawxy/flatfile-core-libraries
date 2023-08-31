@@ -4,6 +4,9 @@ import ora from 'ora'
 import { config } from '../../config'
 import { authAction } from './auth.action'
 
+import { program } from 'commander'
+import { messages } from '../../shared/messages'
+
 export async function createEnvironmentAction(
   options: Partial<{
     endpoint: string
@@ -15,36 +18,24 @@ export async function createEnvironmentAction(
     options.endpoint || config().endpoint || process.env.FLATFILE_API_URL
 
   if (!apiUrl) {
-    console.log(
-      `You must provide a API Endpoint URL. Either set the ${chalk.bold(
-        'FLATFILE_API_URL'
-      )} environment variable, 'endpoint' in your .flatfilerc or pass the ID in as an option to this command with ${chalk.bold(
-        '--endpoint'
-      )}`
-    )
-    process.exit(1)
+    return program.error(messages.noApiUrl)
   }
 
   const clientId = config().clientId
   if (!clientId) {
-    console.log(`You must provide a secret. Set 'clientId' in your .flatfilerc`)
-    process.exit(1)
+    return program.error(messages.flatfilercConfig('clientId'))
   }
 
   const secret = config().secret
 
   if (!secret) {
-    console.log(`You must provide a secret. Set 'secret' in your .flatfilerc`)
-    process.exit(1)
+    return program.error(messages.flatfilercConfig('secret'))
   }
 
   const name = options.name
 
   if (!name) {
-    console.log(
-      `You must provide a environment name. Set the -n flag to provide an environment name`
-    )
-    process.exit(1)
+    return program.error(messages.noEnvironmentName)
   }
 
   try {
@@ -52,8 +43,9 @@ export async function createEnvironmentAction(
     const apiClient = await authAction({ apiUrl, clientId, secret })
 
     if (!apiClient) {
-      console.log('Failed to create API Client')
-      process.exit(1)
+      return program.error(
+        messages.failedToCreateEnvironment(name, `API client failure`)
+      )
     }
 
     // Find or Create Environment
@@ -70,10 +62,9 @@ export async function createEnvironmentAction(
       const environmentId = newEnvironmentCreated?.data?.id ?? ''
       envSpinner.succeed(`Environment created:  ${chalk.dim(environmentId)}`)
     } catch (e) {
-      envSpinner.fail(`Failed to create environment: ${chalk.dim(name)}`)
-      console.log({ e })
+      return program.error(messages.failedToCreateEnvironment(name, e))
     }
   } catch (e) {
-    console.log({ e })
+    return program.error(messages.error(e))
   }
 }

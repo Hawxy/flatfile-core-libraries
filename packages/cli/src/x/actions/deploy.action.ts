@@ -1,16 +1,21 @@
 import chalk from 'chalk'
+import { program } from 'commander'
 import fs from 'fs'
-import path from 'path'
-import { apiKeyClient } from './auth.action'
 import ora from 'ora'
+import path from 'path'
+import util from 'util'
+import { apiKeyClient } from './auth.action'
 // TODO: Can we do better with these types?
 // @ts-expect-error
 import readJson from 'read-package-json'
+const readPackageJson = util.promisify(require('read-package-json'))
+
 // @ts-expect-error
 import ncc from '@vercel/ncc'
 import { deployTopics } from '../../shared/constants'
 import { getAuth } from '../../shared/get-auth'
 import { getEntryFile } from '../../shared/get-entry-file'
+import { messages } from '../../shared/messages'
 
 export async function deployAction(
   file?: string | null | undefined,
@@ -28,49 +33,26 @@ export async function deployAction(
   try {
     authRes = await getAuth(options)
   } catch (e) {
-    console.log(e)
-    return
+    return program.error(messages.error(e))
   }
   const { apiKey, apiUrl, environment } = authRes
 
   file = getEntryFile(file, 'deploy')
 
   if (!file) {
-    return
+    return program.error(messages.noEntryFile)
   }
 
-  const hasListener = await new Promise((resolve, reject) => {
-    readJson(
-      path.join(process.cwd(), 'package.json'),
-      () => {},
-      false,
-      function (er: any, data: any) {
-        if (er) {
-          console.log(
-            'Could not find package.json in the current directory. Deploy flatfile from the root of your project.'
-          )
-          resolve(-1)
-          return
-        }
-
-        if (
-          data.dependencies?.['@flatfile/listener'] ||
-          data.devDependencies?.['@flatfile/listener']
-        ) {
-          resolve(1)
-          return
-        }
-
-        resolve(0)
-      }
-    )
-  })
-
-  if (hasListener === 0) {
-    console.log(
-      `You must install the @flatfile/listener package to use the deploy command.`
-    )
-    process.exit(1)
+  try {
+    const data = await readPackageJson(path.join(process.cwd(), 'package.json'))
+    if (
+      !data.dependencies?.['@flatfile/listener'] &&
+      !data.devDependencies?.['@flatfile/listener']
+    ) {
+      return program.error(messages.listenerNotInstalled)
+    }
+  } catch (e) {
+    return program.error(messages.noPackageJSON)
   }
 
   const liteMode = process.env.FLATFILE_COMPILE_MODE === 'no-minify'
@@ -98,7 +80,7 @@ export async function deployAction(
 
     buildingSpinner.succeed('Code package compiled to .flatfile/build.js')
   } catch (e) {
-    console.error(e)
+    return program.error(messages.error(e))
   }
 
   // Create and authenticated API client
@@ -125,10 +107,7 @@ export async function deployAction(
         cache: false,
       })
       if (err) {
-        deployingSpinner.fail(
-          `Event listener failed to build ${chalk.dim(err)}\n`
-        )
-        process.exit(1)
+        return program.error(messages.error(err))
       }
 
       const agent = await apiClient.createAgent({
@@ -146,12 +125,9 @@ export async function deployAction(
         }". ${chalk.dim(agent?.data?.id)}\n`
       )
     } catch (e) {
-      deployingSpinner.fail(
-        `Event listener failed deployment\n${chalk.dim(e.message)}\n`
-      )
-      process.exit(1)
+      return program.error(messages.error(e))
     }
   } catch (e) {
-    console.log(`Failed deploy action\n${e}`)
+    return program.error(messages.error(e))
   }
 }
