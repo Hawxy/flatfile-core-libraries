@@ -62,8 +62,14 @@ export function createIframe(
   const confirmModal = createModal(
     () => {
       // If user chooses to exit
-      wrapper.style.display = 'none'
-      confirmModal.style.display = 'none'
+      
+      const wrappers = [].slice.call(document.getElementsByClassName('flatfile_iframe-wrapper'))
+      const modals = [].slice.call(document.getElementsByClassName('flatfile_outer-shell'))
+      const elements = [...wrappers, ...modals]
+
+      for (let item of elements) {
+        item.style.display = 'none'
+      }
     },
     () => {
       // If user chooses to stay, we simply hide the confirm modal
