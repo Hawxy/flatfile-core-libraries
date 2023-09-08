@@ -1,7 +1,6 @@
 'use client'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { ISpace, makeTheme, useSpace } from '@flatfile/react'
-import { config } from './config'
+import { useSpace } from '@flatfile/react'
 import { listener } from './listener'
 import styles from './page.module.css'
 
@@ -21,6 +20,8 @@ const spaceProps = {
   listener: listener,
 }
 
+const LoadingComponent = () => <label>Loading data....</label>
+
 const Space = ({
   setShowSpace,
   accessToken,
@@ -35,6 +36,9 @@ const Space = ({
       id: SPACE_ID,
       accessToken,
     },
+    loading: <LoadingComponent />,
+    exitPrimaryButtonText: 'CLOSE!',
+    exitSecondaryButtonText: 'KEEP IT!',
     closeSpace: {
       operation: 'contacts:submit',
       onClose: () => setShowSpace(false),

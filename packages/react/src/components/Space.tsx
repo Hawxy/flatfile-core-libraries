@@ -47,6 +47,8 @@ export const SpaceContents = (
     mountElement = 'flatfile_iFrameContainer',
     exitText = 'Are you sure you want to exit? Any unsaved changes will be lost.',
     exitTitle = 'Close Window',
+    exitPrimaryButtonText = 'Yes, exit',
+    exitSecondaryButtonText = 'No, stay',
     apiUrl = 'https://platform.flatfile.com/api',
     displayAsModal = true,
   } = props
@@ -75,13 +77,19 @@ export const SpaceContents = (
   )
 
   return (
-    <div style={getContainerStyles(displayAsModal)} data-testid="space-contents">
+    <div 
+      className={`flatfile_iframe-wrapper ${displayAsModal ? 'flatfile_displayAsModal' : ''}`} 
+      style={getContainerStyles(displayAsModal)} 
+      data-testid="space-contents"
+    >
       {showExitWarnModal && (
         <ConfirmModal
           onConfirm={() => closeSpace?.onClose({})}
           onCancel={() => setShowExitWarnModal(false)}
           exitText={exitText}
           exitTitle={exitTitle}
+          exitPrimaryButtonText={exitPrimaryButtonText}
+          exitSecondaryButtonText={exitSecondaryButtonText}
         />
       )}
       <iframe

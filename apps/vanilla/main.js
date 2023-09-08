@@ -1,5 +1,5 @@
 import { initializeFlatfile } from '@flatfile/javascript'
-import { FlatfileClient } from '@flatfile/api'
+import { config } from './config'
 
 /*
 // ---Get a space to reuse it, load automatically
@@ -36,7 +36,43 @@ window.initializeFlatfile = (publishableKey) => {
   const flatfileOptions = {
     publishableKey,
     spaceBody: { name: 'Hello' },
+    environmentId: "us_env_3f4Kgm7f",
     // Additional parameters...
+    workbook: config,
+    exitPrimaryButtonText: 'CLOSE!',
+    exitSecondaryButtonText: 'KEEP IT!',
+    document: {
+      title: 'my title',
+      body: 'my body'
+    },
+    themeConfig: {
+      root: {
+        primaryColor: '#090B2B',
+        dangerColor: '#F44336',
+        warningColor: '#FF9800',
+      },
+      document: {
+        borderColor: '#CAD0DC',
+      },
+      sidebar: {
+        logo: 'https://images.ctfassets.net/hjneo4qi4goj/5DNClD4reUBKoF7u01OgKF/2aa12c49c5ea97bac013a7546e453738/flatfile-white.svg',
+        textColor: '#ECEEFF',
+        titleColor: '#C4C9FF',
+        focusBgColor: '#6673FF',
+        focusTextColor: '#FFF',
+        backgroundColor: '#090B2B',
+        footerTextColor: '#C4C9FF',
+        textUltralightColor: '#B9DDFF',
+        borderColor: '#2E3168',
+        activeTextColor: '#FFF',
+      },
+      table: {},
+    },
+    sidebarConfig: {
+      showGuestInvite: true,
+      showDataChecklist: true,
+      showSidebar: true,
+    }
   }
 
   initializeFlatfile(flatfileOptions)

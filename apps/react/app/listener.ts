@@ -1,5 +1,4 @@
 import { FlatfileListener } from '@flatfile/listener'
-import api, { Flatfile } from '@flatfile/api'
 import { recordHook } from '@flatfile/plugin-record-hook'
 
 /**

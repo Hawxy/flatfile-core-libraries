@@ -10,7 +10,7 @@ import { getSpace } from '../utils/getSpace'
 
 
 export const useSpace = (props: ISpace): JSX.Element => {
-  const { error: ErrorElement, loading: LoadingElement, apiUrl } = props
+  const { error: ErrorElement, errorTitle, loading: LoadingElement, apiUrl } = props
   const [initError, setInitError] = useState<Error | string>()
   const [state, setState] = useState<State>({
     pubNub: null,
@@ -79,7 +79,7 @@ export const useSpace = (props: ISpace): JSX.Element => {
     // Adding non-null assertion because this will never be hit if error is falsy, ts is unhappy.
     ErrorElement(initError!)
   ) : (
-    <DefaultError error={initError!} />
+    <DefaultError error={errorTitle || initError!} />
   )
 
   const loadingElement = LoadingElement ?? (

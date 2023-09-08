@@ -122,12 +122,23 @@ interface BaseSpace {
    */
   exitTitle?: string
   /**
+   * Custom text to update the primary button to exit
+   * Optional
+   */
+  exitPrimaryButtonText?: string;
+  /**
+   * Custom text to update the secondary button to exit
+   * Optional
+   */
+  exitSecondaryButtonText?: string;
+  /**
    *
    * Url to override default flatfile api url
    * Optional
    */
   apiUrl?: string
   /**
+   * @deprecated use errorTitle instead
    * Error element to override default Error component
    * Optional
    */
@@ -150,8 +161,14 @@ interface BaseSpace {
    * Optional
    */
   spaceUrl?: string
-
+  /**
+   * @deprecated use spacesUrl instead
+   */
   baseUrl?: string
+  /**
+   * Error text override the feedback error
+   * Optional
+   */
   errorTitle?: string
 }
 

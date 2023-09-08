@@ -126,11 +126,15 @@ const ConfirmModal = ({
   onCancel,
   exitText,
   exitTitle,
+  exitPrimaryButtonText,
+  exitSecondaryButtonText
 }: {
   onConfirm: () => void
   onCancel: () => void
   exitText: string
   exitTitle: string
+  exitPrimaryButtonText: string
+  exitSecondaryButtonText: string
 }) => {
   return (
     <>
@@ -150,13 +154,13 @@ const ConfirmModal = ({
                 onClick={onCancel}
                 className="flatfile_button flatfile_secondary"
               >
-                <div>No, stay</div>
+                <div>{exitSecondaryButtonText}</div>
               </ButtonSecondary>
               <ButtonPrimary
                 onClick={onConfirm}
                 className="flatfile_button flatfile_primary"
               >
-                <div>Yes, exit</div>
+                <div>{exitPrimaryButtonText}</div>
               </ButtonPrimary>
             </ButtonGroup>
           </Modal>

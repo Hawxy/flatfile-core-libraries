@@ -2,7 +2,9 @@ export function createModal(
   onConfirm: () => void,
   onCancel: () => void,
   exitTitle: string,
-  exitText: string
+  exitText: string,
+  exitPrimaryButtonText: string,
+  exitSecondaryButtonText: string
 ): HTMLElement {
   // Outer Shell
   const outerShell = document.createElement('div')
@@ -33,7 +35,7 @@ export function createModal(
   // 'No, stay' button
   const noStayButton = document.createElement('div')
   noStayButton.classList.add('flatfile_button', 'flatfile_secondary')
-  noStayButton.textContent = 'No, stay'
+  noStayButton.textContent = exitSecondaryButtonText
   noStayButton.addEventListener('click', (e) => {
     e.stopPropagation()
     onCancel()
@@ -42,7 +44,7 @@ export function createModal(
   // 'Yes, exit' button
   const yesExitButton = document.createElement('div')
   yesExitButton.classList.add('flatfile_button', 'flatfile_primary')
-  yesExitButton.textContent = 'Yes, exit'
+  yesExitButton.textContent = exitPrimaryButtonText
   yesExitButton.addEventListener('click', (e) => {
     e.stopPropagation()
     onConfirm()

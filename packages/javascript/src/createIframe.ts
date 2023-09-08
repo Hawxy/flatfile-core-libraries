@@ -7,22 +7,24 @@ export function createIframe(
   mountElement: string,
   exitTitle: string,
   exitText: string,
-  baseUrl?: string,
+  exitPrimaryButtonText: string,
+  exitSecondaryButtonText: string,
+  spacesUrl?: string,
   closeSpace?: {
     operation: string
     onClose: (data: any) => void
   }
 ): void {
-  const baseURL = baseUrl || 'https://spaces.flatfile.com'
+  const spacesURL = spacesUrl || 'https://spaces.flatfile.com'
 
   // Construct the URL with the space ID and the token
-  const url = `${baseURL}/space/${spaceId}?token=${encodeURIComponent(token)}`
+  const url = `${spacesURL}/space/${spaceId}?token=${encodeURIComponent(token)}`
 
   // Create the close button
   const closeButton = document.createElement('div')
   closeButton.innerHTML =
     '<svg viewBox="0 0 24 24"><path d="M18.364 5.636c-0.781-0.781-2.048-0.781-2.828 0l-5.536 5.536 -5.536-5.536c-0.781-0.781-2.048-0.781-2.828 0s-0.781 2.048 0 2.828l5.536 5.536 -5.536 5.536c-0.781 0.781-0.781 2.048 0 2.828s2.048 0.781 2.828 0l5.536-5.536 5.536 5.536c0.781 0.781 2.048 0.781 2.828 0s0.781-2.048 0-2.828l-5.536-5.536 5.536-5.536c0.781-0.781 0.781-2.048 0-2.828z"></path></svg>'
-  closeButton.classList.add('flatfile_close-button')
+  closeButton.classList.add('flatfile-close-button')
 
   // Create the iframe
   const iframe = document.createElement('iframe')
@@ -76,7 +78,9 @@ export function createIframe(
       confirmModal.style.display = 'none'
     },
     exitTitle, // pass exitTitle here
-    exitText // pass exitText here
+    exitText, // pass exitText here,
+    exitPrimaryButtonText,
+    exitSecondaryButtonText
   )
   confirmModal.style.display = 'none'
   document.body.appendChild(confirmModal)
@@ -155,7 +159,7 @@ export function createIframe(
   z-index: 1000;
 }
 
-.flatfile_displayAsModal .flatfile_close-button {
+.flatfile_displayAsModal .flatfile-close-button {
   position: absolute;
   top: 35px;
   right: 34px;
@@ -165,7 +169,7 @@ export function createIframe(
   border: none;
 }
 
-.flatfile_displayAsModal .flatfile_close-button svg {
+.flatfile_displayAsModal .flatfile-close-button svg {
   fill: var(--ff-secondary-color);
   width: 15px;
   height: 15px;

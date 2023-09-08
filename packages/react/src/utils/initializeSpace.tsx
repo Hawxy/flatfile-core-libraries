@@ -3,7 +3,7 @@ import { authenticate } from './authenticate'
 import { getErrorMessage } from './getErrorMessage'
 import { ISpace } from '@flatfile/embedded-utils'
 
-export const initializeSpace = async (spaceProps: ISpace) => {
+export const initializeSpace = async (flatfileOptions: ISpace) => {
   let space
   const {
     publishableKey,
@@ -12,7 +12,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
     spaceBody,
     apiUrl,
     spaceUrl = 'https://spaces.flatfile.com/',
-  } = spaceProps
+  } = flatfileOptions
 
   try {
     if (!publishableKey) {
@@ -49,7 +49,7 @@ export const initializeSpace = async (spaceProps: ISpace) => {
     }
 
     const fullAccessApi = authenticate(space.data.accessToken, apiUrl)
-    await addSpaceInfo(spaceProps, space.data.id, fullAccessApi)
+    await addSpaceInfo(flatfileOptions, space.data.id, fullAccessApi)
     return space
   } catch (error) {
     const message = getErrorMessage(error)
