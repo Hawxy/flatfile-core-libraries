@@ -1,4 +1,4 @@
-import { UpdateSpaceInfo } from ".."
+import { UpdateSpaceInfo } from '..'
 
 export const createWorkbook = async (data: UpdateSpaceInfo) => {
   const { apiUrl, accessToken, workbook, spaceId, environmentId } = data
@@ -19,13 +19,15 @@ export const createWorkbook = async (data: UpdateSpaceInfo) => {
     }),
   })
   const localWorkbook = await response.json()
-
   if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
     throw new Error('Failed to create workbook')
   }
 
   if (!response.ok) {
-    const errorMessage = localWorkbook?.errors[0]?.message || 'Failed to create workbook'
+    const errorMessage =
+      localWorkbook?.errors[0]?.message || 'Failed to create workbook'
     throw new Error(errorMessage)
   }
+
+  return localWorkbook.data
 }

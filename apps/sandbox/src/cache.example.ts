@@ -1,16 +1,12 @@
+import { Client, FlatfileVirtualMachine } from '@flatfile/listener'
 import {
-  Client,
-  FlatfileVirtualMachine,
-  FlatfileEvent,
-} from '@flatfile/listener'
-import {
-  RecordHook,
   RecordTranslater,
   createBlueprintFromConfigure,
 } from '@flatfile/configure'
 import { FlatfileRecord, FlatfileRecords } from '@flatfile/hooks'
-import { RecordWithLinks, RecordsWithLinks } from '@flatfile/api'
+import api from '@flatfile/api'
 import xdk from './xdk-simple-deploy'
+import { RecordWithLinks } from '@flatfile/api/api'
 
 const prepareXRecords = async (records: any): Promise<FlatfileRecords<any>> => {
   const clearedMessages: RecordWithLinks[] = records.map(
@@ -22,7 +18,7 @@ const prepareXRecords = async (records: any): Promise<FlatfileRecords<any>> => {
       return record
     }
   )
-  const fromX = new RecordTranslater<RecordWithLinks>(clearedMessages)
+  const fromX = new RecordTranslater<any>(clearedMessages)
   return fromX.toFlatFileRecords()
 }
 
@@ -37,7 +33,7 @@ const recordHook = (
       async (event) => {
         const { sheetId } = event.context
         try {
-          const records = await event.cache.init<RecordsWithLinks>(
+          const records = await event.cache.init(
             'records',
             async () => (await event.data).records
           )
@@ -57,20 +53,15 @@ const recordHook = (
 
           event.afterAll(() => {
             const records = event.cache.get('records')
-            const clearedMessages = (records as RecordsWithLinks).map(
-              (record) => {
-                // clear existing cell validation messages
-                Object.keys(record.values).forEach((k) => {
-                  record.values[k].messages = []
-                })
-                return record
-              }
-            )
-            try {
-              return event.api.updateRecords({
-                sheetId,
-                recordsUpdates: clearedMessages,
+            const clearedMessages = (records as any).map((record) => {
+              // clear existing cell validation messages
+              Object.keys(record.values).forEach((k) => {
+                record.values[k].messages = []
               })
+              return record
+            })
+            try {
+              return api.records.update(sheetId, clearedMessages)
             } catch (e) {
               console.log(`Error putting records: ${e}`)
             }
@@ -127,34 +118,27 @@ const example = Client.create((client) => {
         const environmentId = event.context.environmentId
 
         // Create Space
-        const space = await client.api.addSpace({
-          spaceConfig: {
-            name: 'Test Space 3',
-            environmentId,
-          },
+        const space = await api.spaces.create({
+          name: 'Test Space 3',
+          environmentId,
         })
 
         if (!space.data) return
 
         // Create Workbook
-        const workbook = await client.api.addWorkbook({
-          workbookConfig: {
-            name: 'Test Workbook',
-            spaceId: space.data.id,
-            environmentId,
-            sheets: blueprint.blueprints[0].sheets,
-          },
+        const workbook = await api.workbooks.create({
+          name: 'Test Workbook',
+          spaceId: space.data.id,
+          environmentId,
+          sheets: blueprint.blueprints[0].sheets as any,
         })
 
         if (!workbook.data) return
 
         // Update Space with Workbook
-        await client.api.updateSpaceById({
-          spaceId: space.data.id,
-          spaceConfig: {
-            primaryWorkbookId: workbook.data.id,
-            environmentId,
-          },
+        await api.spaces.update(space.data.id, {
+          primaryWorkbookId: workbook.data.id,
+          environmentId,
         })
       } catch (e) {
         console.log(`error creating Space or Workbook: ${e}`)

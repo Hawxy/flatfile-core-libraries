@@ -1,6 +1,8 @@
 import { FlatfileClient } from '@flatfile/api'
-import { NewSpaceFromPublishableKey } from '@flatfile/embedded-utils'
-import { getErrorMessage } from './getErrorMessage'
+import {
+  NewSpaceFromPublishableKey,
+  getErrorMessage,
+} from '@flatfile/embedded-utils'
 
 // Given the space is created, add workbook, metadata and document to the space
 export const addSpaceInfo = async (
@@ -15,7 +17,7 @@ export const addSpaceInfo = async (
     themeConfig,
     sidebarConfig,
     spaceInfo,
-    userInfo
+    userInfo,
   } = spaceProps
 
   try {
@@ -37,7 +39,7 @@ export const addSpaceInfo = async (
         theme: themeConfig,
         sidebarConfig,
         userInfo,
-        spaceInfo
+        spaceInfo,
       },
     })
 

@@ -29,4 +29,6 @@ export const updateSpace = async (data: UpdateSpaceInfo) => {
     const errorMessage = updatedSpace?.errors[0]?.message || 'Failed to update space'
     throw new Error(errorMessage)
   }
+
+  return updatedSpace.data
 }

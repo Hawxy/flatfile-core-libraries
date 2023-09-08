@@ -1,5 +1,5 @@
 import { FlatfileClient } from '@flatfile/api'
-import { EventSubscriber, fetchEventToken } from '../EventSubscriber'
+import { EventSubscriber, fetchEventToken } from '../utils/EventSubscriber'
 import Pubnub from 'pubnub'
 
 const mockClient = new FlatfileClient({

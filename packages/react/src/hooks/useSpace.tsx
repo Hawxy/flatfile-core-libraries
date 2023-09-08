@@ -3,11 +3,9 @@ import DefaultError from '../components/Error'
 import Space from '../components/Space'
 import Spinner from '../components/Spinner'
 import { SpinnerStyles } from '../components/embeddedStyles'
-import { ISpace, State } from '@flatfile/embedded-utils'
-import { initializePubnub } from '../utils/initializePubnub'
+import { ISpace, State, initializePubnub } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
-
 
 export const useSpace = (props: ISpace): JSX.Element => {
   const { error: ErrorElement, errorTitle, loading: LoadingElement, apiUrl } = props
@@ -59,7 +57,7 @@ export const useSpace = (props: ISpace): JSX.Element => {
       const initializedPubNub = await initializePubnub({
         spaceId,
         accessToken,
-        apiUrl
+        apiUrl,
       })
 
       setState((prevState) => ({

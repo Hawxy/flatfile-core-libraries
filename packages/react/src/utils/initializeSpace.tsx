@@ -1,7 +1,6 @@
 import { addSpaceInfo } from './addSpaceInfo'
 import { authenticate } from './authenticate'
-import { getErrorMessage } from './getErrorMessage'
-import { ISpace } from '@flatfile/embedded-utils'
+import { ISpace, getErrorMessage } from '@flatfile/embedded-utils'
 
 export const initializeSpace = async (flatfileOptions: ISpace) => {
   let space

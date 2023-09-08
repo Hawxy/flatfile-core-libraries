@@ -10,18 +10,9 @@ import React from 'react'
 import DefaultError from '../../components/Error'
 import Space from '../../components/Space'
 import { mockDocument, mockSpace, mockWorkbook } from '../../test/mocks'
-import { ISpace } from '@flatfile/embedded-utils'
-import { EventSubscriber } from '../../utils/EventSubscriber'
+import { ISpace, EventSubscriber } from '@flatfile/embedded-utils'
 import useSpace from '../useSpace'
 import '@testing-library/jest-dom'
-
-jest.mock('../../utils/EventSubscriber', () => ({
-  EventSubscriber: {
-    getClient: jest.fn(),
-  },
-}))
-
-// jest.mock('@flatfile/api')
 
 const baseSpaceProps = {
   loading: undefined,

@@ -18,3 +18,7 @@ export type {
   ISpaceInfo,
   ISidebarConfig,
 }
+
+export { initializePubnub } from './utils/initializePubnub'
+export { fetchEventToken, EventSubscriber } from './utils/EventSubscriber'
+export { getErrorMessage } from './utils/getErrorMessage'

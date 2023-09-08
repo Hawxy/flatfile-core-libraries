@@ -1,9 +1,18 @@
 import { createIframe } from './createIframe'
-import { ISidebarConfig, ISpace, IThemeConfig, IUserInfo } from '@flatfile/embedded-utils'
+import {
+  ISidebarConfig,
+  ISpace,
+  IThemeConfig,
+  IUserInfo,
+  NewSpaceFromPublishableKey,
+  initializePubnub,
+} from '@flatfile/embedded-utils'
 import { createWorkbook } from './services/workbook'
 import { updateSpace } from './services/space'
 import { createDocument } from './services/document'
-import { Flatfile } from '@flatfile/api';
+import { Browser, FlatfileListener, FlatfileEvent } from '@flatfile/listener'
+import { Flatfile } from '@flatfile/api'
+import Pubnub from 'pubnub'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
@@ -19,24 +28,75 @@ const displayError = (errorTitle: string, errorMessage: string) => {
   return display
 }
 
-export interface UpdateSpaceInfo {
+async function createlistener(
+  spaceId: string,
+  accessToken: string,
   apiUrl: string,
-  publishableKey: string, 
-  workbook: Pick<Flatfile.CreateWorkbookConfig, "name" | "sheets" | "actions">, 
-  spaceId: string, 
-  environmentId: string,
-  mountElement: string,
-  errorTitle: string,
-  themeConfig: IThemeConfig,
-  document: Flatfile.DocumentConfig,
-  sidebarConfig: ISidebarConfig, 
-  userInfo?: Partial<IUserInfo>;
-  spaceInfo?: Partial<IUserInfo>;
-  accessToken: string;
+  listener: FlatfileListener,
+  closeSpace: NewSpaceFromPublishableKey['closeSpace']
+): Promise<Pubnub> {
+  const pubnub = await initializePubnub({
+    spaceId,
+    accessToken,
+    apiUrl,
+  })
+
+  const channel = [`space.${spaceId}`]
+  pubnub.subscribe({ channels: channel })
+
+  listener.mount(
+    new Browser({
+      apiUrl,
+      accessToken,
+      fetchApi: fetch,
+    })
+  )
+  const dispatchEvent = (event: any) => {
+    if (!event) return
+
+    const eventPayload = event.src ? event.src : event
+    const eventInstance = new FlatfileEvent(eventPayload, accessToken, apiUrl)
+
+    return listener?.dispatchEvent(eventInstance)
+  }
+
+  pubnub.addListener({
+    message: (event) => {
+      const eventResponse = JSON.parse(event.message) ?? {}
+      if (
+        eventResponse.topic === 'job:outcome-acknowledged' &&
+        eventResponse.payload.status === 'complete' &&
+        eventResponse.payload.operation === closeSpace?.operation
+      ) {
+        closeSpace?.onClose({})
+      }
+
+      dispatchEvent(eventResponse)
+    },
+  })
+
+  return pubnub
+}
+
+export interface UpdateSpaceInfo {
+  apiUrl: string
+  publishableKey: string
+  workbook: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
+  spaceId: string
+  environmentId: string
+  mountElement: string
+  errorTitle: string
+  themeConfig: IThemeConfig
+  document: Flatfile.DocumentConfig
+  sidebarConfig: ISidebarConfig
+  userInfo?: Partial<IUserInfo>
+  spaceInfo?: Partial<IUserInfo>
+  accessToken: string
 }
 
 const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
   const { mountElement, errorTitle, document: documentConfig } = data
+
   try {
     await createWorkbook(data)
     await updateSpace(data)
@@ -44,7 +104,6 @@ const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
     if (documentConfig) {
       await createDocument(data)
     }
-
   } catch (error) {
     const wrapper = document.getElementById(mountElement)
     const errorMessage = displayError(errorTitle, error)
@@ -52,7 +111,9 @@ const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
   }
 }
 
-export async function initializeFlatfile(flatfileOptions: ISpace): Promise<void> {
+export async function initializeFlatfile(
+  flatfileOptions: ISpace
+): Promise<void> {
   const {
     publishableKey,
     displayAsModal = true,
@@ -73,9 +134,10 @@ export async function initializeFlatfile(flatfileOptions: ISpace): Promise<void>
     workbook,
     themeConfig,
     document: documentConfig,
-    sidebarConfig, 
-    userInfo, 
-    spaceInfo
+    sidebarConfig,
+    userInfo,
+    spaceInfo,
+    listener,
   } = flatfileOptions
   const spacesUrl = spaceUrl || baseUrl
 
@@ -90,31 +152,31 @@ export async function initializeFlatfile(flatfileOptions: ISpace): Promise<void>
           Authorization: `Bearer ${publishableKey}`,
         },
         body: JSON.stringify({
-          autoConfigure: true,
           name: name || 'Embedded',
           ...spaceBody,
         }),
       })
       const result = await response.json()
       if (!response.ok) {
-        const errorMessage = result?.errors[0]?.message || 'Failed to create space'
+        const errorMessage =
+          result?.errors[0]?.message || 'Failed to create space'
         throw new Error(errorMessage)
       }
 
-      updateSpaceInfo({
+      await updateSpaceInfo({
         apiUrl,
-        publishableKey, 
-        workbook, 
-        spaceId: result.data.id, 
+        publishableKey,
+        workbook,
+        spaceId: result.data.id,
         accessToken: result.data.accessToken,
         environmentId,
         mountElement,
         errorTitle,
         themeConfig,
         document: documentConfig,
-        sidebarConfig, 
-        userInfo, 
-        spaceInfo
+        sidebarConfig,
+        userInfo,
+        spaceInfo,
       })
 
       return result.data
@@ -129,6 +191,16 @@ export async function initializeFlatfile(flatfileOptions: ISpace): Promise<void>
     if (!spaceData?.id || !spaceData?.accessToken) {
       throw new Error('Unable to create space, please try again.')
     }
+    let pubnubClient: Pubnub | undefined
+    if (listener) {
+      pubnubClient = await createlistener(
+        spaceData.id,
+        spaceData.accessToken,
+        apiUrl,
+        listener,
+        closeSpace
+      )
+    }
 
     createIframe(
       spaceData.id,
@@ -140,11 +212,12 @@ export async function initializeFlatfile(flatfileOptions: ISpace): Promise<void>
       exitPrimaryButtonText,
       exitSecondaryButtonText,
       spacesUrl,
-      closeSpace
+      closeSpace,
+      pubnubClient
     )
   } catch (error) {
     const wrapper = document.getElementById(mountElement)
     const errorMessage = displayError(errorTitle, error)
-    wrapper.appendChild(errorMessage)
+    wrapper?.appendChild(errorMessage)
   }
 }

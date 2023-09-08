@@ -31,8 +31,8 @@
   },
   "devDependencies": {
     "@babel/core": "7.2.0",
-    "typescript": "4.4.4",
-    "@flatfile/embedded-utils": "*"
+    "@flatfile/embedded-utils": "*",
+    "typescript": "4.4.4"
   },
   "resolutions": {
     "@babel/preset-env": "7.13.8"
@@ -40,5 +40,8 @@
   "keywords": [
     "javascript",
     "starter"
-  ]
+  ],
+  "dependencies": {
+    "pubnub": "^7.3.1"
+  }
 }

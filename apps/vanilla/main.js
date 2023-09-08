@@ -1,6 +1,7 @@
 import { initializeFlatfile } from '@flatfile/javascript'
-import { config } from './config'
 
+import { config } from './config'
+import { listener } from './listener'
 /*
 // ---Get a space to reuse it, load automatically
 const flatfile = new FlatfileClient({
@@ -36,14 +37,15 @@ window.initializeFlatfile = (publishableKey) => {
   const flatfileOptions = {
     publishableKey,
     spaceBody: { name: 'Hello' },
-    environmentId: "us_env_3f4Kgm7f",
+    environmentId: 'us_env_6fXBNCpi',
+    // listener,
     // Additional parameters...
     workbook: config,
     exitPrimaryButtonText: 'CLOSE!',
     exitSecondaryButtonText: 'KEEP IT!',
     document: {
       title: 'my title',
-      body: 'my body'
+      body: 'my body',
     },
     themeConfig: {
       root: {
@@ -72,7 +74,8 @@ window.initializeFlatfile = (publishableKey) => {
       showGuestInvite: true,
       showDataChecklist: true,
       showSidebar: true,
-    }
+    },
+    listener
   }
 
   initializeFlatfile(flatfileOptions)

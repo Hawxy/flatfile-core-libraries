@@ -1,8 +1,8 @@
 import PubNub from 'pubnub'
-import { EventSubscriber } from '../EventSubscriber'
-import { initializePubnub } from '../initializePubnub'
+import { EventSubscriber } from '../utils/EventSubscriber'
+import { initializePubnub } from '../utils/initializePubnub'
 
-jest.mock('../EventSubscriber', () => ({
+jest.mock('../utils/EventSubscriber', () => ({
   EventSubscriber: {
     getClient: jest.fn(),
   },

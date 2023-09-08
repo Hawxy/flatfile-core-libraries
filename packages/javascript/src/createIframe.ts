@@ -1,3 +1,4 @@
+import Pubnub from 'pubnub'
 import { createModal } from './createModal'
 
 export function createIframe(
@@ -13,7 +14,8 @@ export function createIframe(
   closeSpace?: {
     operation: string
     onClose: (data: any) => void
-  }
+  },
+  listenerPubnubClient?: Pubnub
 ): void {
   const spacesURL = spacesUrl || 'https://spaces.flatfile.com'
 
@@ -64,14 +66,19 @@ export function createIframe(
   const confirmModal = createModal(
     () => {
       // If user chooses to exit
-      
-      const wrappers = [].slice.call(document.getElementsByClassName('flatfile_iframe-wrapper'))
-      const modals = [].slice.call(document.getElementsByClassName('flatfile_outer-shell'))
+
+      const wrappers = [].slice.call(
+        document.getElementsByClassName('flatfile_iframe-wrapper')
+      )
+      const modals = [].slice.call(
+        document.getElementsByClassName('flatfile_outer-shell')
+      )
       const elements = [...wrappers, ...modals]
 
       for (let item of elements) {
         item.style.display = 'none'
       }
+      listenerPubnubClient?.unsubscribeAll()
     },
     () => {
       // If user chooses to stay, we simply hide the confirm modal
@@ -96,6 +103,7 @@ export function createIframe(
       // Show the confirm modal instead of creating a new one
       confirmModal.style.display = 'block'
     }
+    listenerPubnubClient?.unsubscribeAll()
   }
 
   // Append the wrapper to the container
