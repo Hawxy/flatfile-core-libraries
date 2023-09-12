@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.8
+
+### Patch Changes
+
+- 5b09d7b: adding class names to error container
+
 ## 0.1.7
 
 ### Patch Changes

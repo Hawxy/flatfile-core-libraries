@@ -1,5 +1,12 @@
 # @flatfile/react
 
+## 7.2.20
+
+### Patch Changes
+
+- 39af196: upgrade embedded-utils version
+- 5b09d7b: adding class names to error container
+
 ## 7.2.19
 
 ### Patch Changes
