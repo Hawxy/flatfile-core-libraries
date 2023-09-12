@@ -21,16 +21,18 @@ export const addSpaceInfo = async (
   } = spaceProps
 
   try {
-    const localWorkbook = await api.workbooks.create({
-      sheets: workbook.sheets,
-      name: workbook.name,
-      actions: workbook.actions,
-      spaceId,
-      environmentId,
-    })
-
-    if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
-      throw new Error('Failed to create workbook')
+    if (workbook) {
+      const localWorkbook = await api.workbooks.create({
+        sheets: workbook.sheets,
+        name: workbook.name,
+        actions: workbook.actions,
+        spaceId,
+        environmentId,
+      })
+  
+      if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
+        throw new Error('Failed to create workbook')
+      }
     }
 
     const updatedSpace = await api.spaces.update(spaceId, {

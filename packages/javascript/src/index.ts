@@ -95,10 +95,12 @@ export interface UpdateSpaceInfo {
 }
 
 const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
-  const { mountElement, errorTitle, document: documentConfig } = data
-
+  const { mountElement, errorTitle, document: documentConfig, workbook } = data
+  
   try {
-    await createWorkbook(data)
+    if (workbook) {
+      await createWorkbook(data)
+    }
     await updateSpace(data)
 
     if (documentConfig) {
