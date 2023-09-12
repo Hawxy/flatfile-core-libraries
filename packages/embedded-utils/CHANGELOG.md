@@ -1,5 +1,12 @@
 # embedded-utils
 
+## 1.0.4
+
+### Patch Changes
+
+- e6dcd63: Sync sdk with docs, add parameters for exit buttons text
+- 148ed7a: workbook optional on interfaces
+
 ## 1.0.3
 
 ### Patch Changes

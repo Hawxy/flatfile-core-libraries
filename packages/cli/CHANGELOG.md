@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.5.9
+
+### Patch Changes
+
+- 3436070: Updates error handling messages
+
 ## 3.5.8
 
 ### Patch Changes

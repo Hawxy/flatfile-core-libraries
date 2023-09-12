@@ -1,5 +1,12 @@
 # @flatfile/javascript
 
+## 0.1.7
+
+### Patch Changes
+
+- e6dcd63: Sync sdk with docs, add parameters for exit buttons text
+- 148ed7a: workbook optional on interfaces
+
 ## 0.1.6
 
 ### Patch Changes

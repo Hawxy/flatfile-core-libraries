@@ -1,5 +1,15 @@
 # @flatfile/react
 
+## 7.2.19
+
+### Patch Changes
+
+- e6dcd63: Sync sdk with docs, add parameters for exit buttons text
+- 148ed7a: workbook optional on interfaces
+- Updated dependencies [e6dcd63]
+- Updated dependencies [148ed7a]
+  - @flatfile/embedded-utils@1.0.4
+
 ## 7.2.18
 
 ### Patch Changes
