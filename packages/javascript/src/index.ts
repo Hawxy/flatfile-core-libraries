@@ -16,8 +16,11 @@ import Pubnub from 'pubnub'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
+  display.classList.add('ff_error_container')
   const title = document.createElement('h1')
+  title.classList.add('ff_error_heading')
   const error = document.createElement('p')
+  error.classList.add('ff_error_text')
 
   title.innerText = errorTitle
   error.innerText = errorMessage
@@ -96,7 +99,7 @@ export interface UpdateSpaceInfo {
 
 const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
   const { mountElement, errorTitle, document: documentConfig, workbook } = data
-  
+
   try {
     if (workbook) {
       await createWorkbook(data)

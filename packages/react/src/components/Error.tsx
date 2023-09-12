@@ -16,9 +16,9 @@ const DefaultError = ({ error }: { error: string | Error }) => {
   const errorMessage = typeof error === 'string' ? error : error.message
 
   return (
-    <Container>
-      <Header>Something went wrong</Header>
-      <p>{errorMessage}</p>
+    <Container className="ff_error_container">
+      <Header className="ff_error_heading">Something went wrong</Header>
+      <p className="ff_error_text">{errorMessage}</p>
     </Container>
   )
 }
