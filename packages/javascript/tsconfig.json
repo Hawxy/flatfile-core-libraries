@@ -1,8 +1,14 @@
 {
   "compilerOptions": {
+    "module": "umd",
     "target": "ES5",
-    "lib": ["ES2015", "dom"],
-    "types": ["jest"],
+    "lib": [
+      "ES2015",
+      "dom"
+    ],
+    "types": [
+      "jest"
+    ],
     "esModuleInterop": true,
     "moduleResolution": "node",
   }
