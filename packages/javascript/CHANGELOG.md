@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.10
+
+### Patch Changes
+
+- 0b65086: Add needed dependencies
+
 ## 0.1.9
 
 ### Patch Changes
