@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.9
+
+### Patch Changes
+
+- bd5c297: Bundle ts for umd
+
 ## 0.1.8
 
 ### Patch Changes
