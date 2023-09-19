@@ -11,6 +11,7 @@ export const initializeSpace = async (flatfileOptions: ISpace) => {
     spaceBody,
     apiUrl,
     spaceUrl = 'https://spaces.flatfile.com/',
+    workbook
   } = flatfileOptions
 
   try {
@@ -23,11 +24,19 @@ export const initializeSpace = async (flatfileOptions: ISpace) => {
     }
 
     const limitedAccessApi = authenticate(publishableKey, apiUrl)
+    const spaceRequestBody = {
+      name,
+      autoConfigure: false,
+      ...spaceBody,
+    }
+
+    if (!workbook) {
+      spaceRequestBody.autoConfigure = true
+    }
     try {
       space = await limitedAccessApi.spaces.create({
         environmentId,
-        name,
-        ...spaceBody,
+        ...spaceRequestBody,
       })
     } catch (error) {
       throw new Error(`Failed to create space: ${getErrorMessage(error)}`)

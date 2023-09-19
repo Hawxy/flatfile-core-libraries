@@ -150,17 +150,25 @@ export async function initializeFlatfile(
     const createSpaceEndpoint = `${apiUrl}/v1/spaces`
 
     const createSpace = async () => {
+      const spaceRequestBody = {
+        name: name || 'Embedded',
+        autoConfigure: false,
+        ...spaceBody,
+      }
+
+      if (!workbook) {
+        spaceRequestBody.autoConfigure = true
+      }
+
       const response = await fetch(createSpaceEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${publishableKey}`,
         },
-        body: JSON.stringify({
-          name: name || 'Embedded',
-          ...spaceBody,
-        }),
+        body: JSON.stringify(spaceRequestBody),
       })
+
       const result = await response.json()
       if (!response.ok) {
         const errorMessage =
