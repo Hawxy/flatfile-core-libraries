@@ -39,7 +39,7 @@ export const addSpaceInfo = async (
       environmentId,
       metadata: {
         theme: themeConfig,
-        sidebarConfig,
+        sidebarConfig: sidebarConfig ? sidebarConfig : { showSidebar: false },
         userInfo,
         spaceInfo,
       },
