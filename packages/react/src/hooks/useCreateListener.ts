@@ -12,7 +12,9 @@ export const useCreateListener = ({
   listener,
   apiUrl = 'https://platform.flatfile.com/api',
 }: Pick<ISpace, 'listener'> & { accessToken: string; apiUrl: string }) => {
+  
   // set the api key to fully authenticate into Flatfile api
+  // todo: should we use CrossEnvConfig here?
   ;(window as any).CROSSENV_FLATFILE_API_KEY = accessToken
 
   useEffect(() => {

@@ -1,3 +1,9 @@
+import dotenv from 'dotenv'
+import { Flatfile } from '@flatfile/api'
+import { CrossEnvConfig } from '@flatfile/cross-env-config'
+import { Browser, FlatfileListener, FlatfileEvent } from '@flatfile/listener'
+import Pubnub from 'pubnub'
+
 import { createIframe } from './createIframe'
 import {
   ISidebarConfig,
@@ -10,9 +16,6 @@ import {
 import { createWorkbook } from './services/workbook'
 import { updateSpace } from './services/space'
 import { createDocument } from './services/document'
-import { Browser, FlatfileListener, FlatfileEvent } from '@flatfile/listener'
-import { Flatfile } from '@flatfile/api'
-import Pubnub from 'pubnub'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
@@ -43,6 +46,10 @@ async function createlistener(
     accessToken,
     apiUrl,
   })
+
+  // todo: should we use CrossEnvConfig here?
+  // CrossEnvConfig.set('FLATFILE_API_KEY', accessToken)
+  ;(window as any).CROSSENV_FLATFILE_API_KEY = accessToken
 
   const channel = [`space.${spaceId}`]
   pubnub.subscribe({ channels: channel })
@@ -145,6 +152,9 @@ export async function initializeFlatfile(
     listener,
   } = flatfileOptions
   const spacesUrl = spaceUrl || baseUrl
+
+  dotenv.config()
+  CrossEnvConfig.set('FLATFILE_API_KEY', process.env.FLATFILE_API_KEY)
 
   try {
     const createSpaceEndpoint = `${apiUrl}/v1/spaces`
