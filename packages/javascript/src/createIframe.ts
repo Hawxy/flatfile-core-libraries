@@ -24,8 +24,15 @@ export function createIframe(
 
   // Create the close button
   const closeButton = document.createElement('div')
-  closeButton.innerHTML =
-    '<svg viewBox="0 0 24 24"><path d="M18.364 5.636c-0.781-0.781-2.048-0.781-2.828 0l-5.536 5.536 -5.536-5.536c-0.781-0.781-2.048-0.781-2.828 0s-0.781 2.048 0 2.828l5.536 5.536 -5.536 5.536c-0.781 0.781-0.781 2.048 0 2.828s2.048 0.781 2.828 0l5.536-5.536 5.536 5.536c0.781 0.781 2.048 0.781 2.828 0s0.781-2.048 0-2.828l-5.536-5.536 5.536-5.536c0.781-0.781 0.781-2.048 0-2.828z"></path></svg>'
+  closeButton.innerHTML = `<svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 100 100"
+    >
+      <line x1="10" y1="10" x2="90" y2="90" stroke="white" stroke-width="10" />
+      <line x1="10" y1="90" x2="90" y2="10" stroke="white" stroke-width="10" />
+    </svg>`
   closeButton.classList.add('flatfile-close-button')
 
   // Create the iframe
@@ -164,23 +171,35 @@ export function createIframe(
   height: calc(100vh - 60px); /* 30px padding on the top and bottom */
   padding: 30px;
   background: var(--ff-bg-fade);
-  z-index: 1000;
+  z-index: 1000; 
 }
 
 .flatfile_displayAsModal .flatfile-close-button {
   position: absolute;
-  top: 35px;
-  right: 34px;
   z-index: 10;
+  top: 20px;
+  right: 5px;
+  display: flex;
+  justify-content: center;
+  width: 25px;
+  align-items: center;
+  border-radius: 100%;
   cursor: pointer;
-  background: transparent;
   border: none;
+  background: #000;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+  animation: glow 1.5s linear infinite alternate;
+  transition: box-shadow 0.3s ease;
+  height: 25px;
+}
+
+.flatfile_displayAsModal .flatfile-close-button:hover {
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.8);
 }
 
 .flatfile_displayAsModal .flatfile-close-button svg {
   fill: var(--ff-secondary-color);
-  width: 15px;
-  height: 15px;
+  width: 10px;
 }
 
 #flatfile_iframe {

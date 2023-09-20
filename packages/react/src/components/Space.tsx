@@ -5,7 +5,11 @@ import { useCreateListener } from '../hooks/useCreateListener'
 import { useEventSubscriber } from '../hooks/useEventSubscriber'
 import { ISpace, SpaceComponent } from '@flatfile/embedded-utils'
 import ConfirmModal from './ConfirmCloseModal'
-import { CloseIframeButton, getIframeStyles, getContainerStyles } from './embeddedStyles'
+import {
+  CloseIframeButton,
+  getIframeStyles,
+  getContainerStyles,
+} from './embeddedStyles'
 
 /**
  * @name Space
@@ -33,7 +37,7 @@ const Space = ({
 }
 
 export const SpaceContents = (
-  props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string; }
+  props: ISpace & { spaceId: string; spaceUrl: string; accessToken: string }
 ): JSX.Element => {
   const [showExitWarnModal, setShowExitWarnModal] = useState(false)
   const {
@@ -73,13 +77,15 @@ export const SpaceContents = (
 
       dispatchEvent(eventResponse)
     },
-    spaceId,
+    spaceId
   )
 
   return (
-    <div 
-      className={`flatfile_iframe-wrapper ${displayAsModal ? 'flatfile_displayAsModal' : ''}`} 
-      style={getContainerStyles(displayAsModal)} 
+    <div
+      className={`flatfile_iframe-wrapper ${
+        displayAsModal ? 'flatfile_displayAsModal' : ''
+      }`}
+      style={getContainerStyles(displayAsModal)}
       data-testid="space-contents"
     >
       {showExitWarnModal && (
@@ -100,11 +106,32 @@ export const SpaceContents = (
       />
       <CloseIframeButton
         onClick={() => setShowExitWarnModal(true)}
-        data-testid="flatfile-close-button" className="flatfile-close-button"
+        data-testid="flatfile-close-button"
+        className="flatfile-close-button"
         style={{ position: 'absolute', margin: '30px' }}
       >
-        <svg viewBox="0 0 24 24">
-          <path d="M18.364 5.636c-0.781-0.781-2.048-0.781-2.828 0l-5.536 5.536 -5.536-5.536c-0.781-0.781-2.048-0.781-2.828 0s-0.781 2.048 0 2.828l5.536 5.536 -5.536 5.536c-0.781 0.781-0.781 2.048 0 2.828s2.048 0.781 2.828 0l5.536-5.536 5.536 5.536c0.781 0.781 2.048 0.781 2.828 0s0.781-2.048 0-2.828l-5.536-5.536 5.536-5.536c0.781-0.781 0.781-2.048 0-2.828z"></path>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 100 100"
+        >
+          <line
+            x1="10"
+            y1="10"
+            x2="90"
+            y2="90"
+            stroke="white"
+            stroke-width="10"
+          />
+          <line
+            x1="10"
+            y1="90"
+            x2="90"
+            y2="10"
+            stroke="white"
+            stroke-width="10"
+          />
         </svg>
       </CloseIframeButton>
     </div>
