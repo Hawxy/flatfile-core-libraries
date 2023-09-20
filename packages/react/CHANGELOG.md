@@ -1,5 +1,12 @@
 # @flatfile/react
 
+## 7.2.21
+
+### Patch Changes
+
+- c772615: set sidebarConfig hiding sidebar by default
+- 7a6a5ae: autoConfigure as true when no workbook set
+
 ## 7.2.20
 
 ### Patch Changes

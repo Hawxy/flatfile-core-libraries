@@ -1,5 +1,12 @@
 # @flatfile/javascript
 
+## 0.1.11
+
+### Patch Changes
+
+- c772615: set sidebarConfig hiding sidebar by default
+- 7a6a5ae: autoConfigure as true when no workbook set
+
 ## 0.1.10
 
 ### Patch Changes
