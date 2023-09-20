@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.12
+
+### Patch Changes
+
+- 13cddf9: Update to pull env vars and update accessToken
+
 ## 0.1.11
 
 ### Patch Changes
