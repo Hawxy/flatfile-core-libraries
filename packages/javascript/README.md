@@ -6,4 +6,4 @@ By utilizing embedded Flatfile, you can empower your users with a self-serve dat
 
 ### Get started
 
-Follow [this guide](https://flatfile.com/docs/core-paths/embedding) to configure a Flatfile embedded import experience.
+Follow [this guide](https://flatfile.com/docs/guides/use-cases/embedding/javascript/guide) to configure a Flatfile embedded import experience.
