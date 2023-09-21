@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.14
+
+### Patch Changes
+
+- ebd148e: Close button style improvements
+
 ## 0.1.13
 
 ### Patch Changes

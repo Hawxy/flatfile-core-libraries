@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.22
+
+### Patch Changes
+
+- ebd148e: Close button style improvements
+
 ## 7.2.21
 
 ### Patch Changes
