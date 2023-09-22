@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.15
+
+### Patch Changes
+
+- 7d5b16a: readme update
+
 ## 0.1.14
 
 ### Patch Changes
