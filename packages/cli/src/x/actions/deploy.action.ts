@@ -73,7 +73,8 @@ export async function deployAction(
       )
     )
 
-    fs.writeFileSync(path.join(outDir, '_entry.js'), result, 'utf8')
+    const entry = result.split(path.sep).join(path.posix.sep)
+    fs.writeFileSync(path.join(outDir, '_entry.js'), entry, 'utf8')
     const buildingSpinner = ora({
       text: `Building deployable code package`,
     }).start()
