@@ -102,6 +102,7 @@ export interface UpdateSpaceInfo {
   userInfo?: Partial<IUserInfo>
   spaceInfo?: Partial<IUserInfo>
   accessToken: string
+  spaceBody?: any
 }
 
 const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
@@ -200,6 +201,7 @@ export async function initializeFlatfile(
         sidebarConfig,
         userInfo,
         spaceInfo,
+        spaceBody
       })
 
       return result.data

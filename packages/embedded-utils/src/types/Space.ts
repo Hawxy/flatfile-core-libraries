@@ -31,7 +31,13 @@ export interface NewSpaceFromPublishableKey extends BaseSpace {
    * Additional props when creating a Space
    * Optional
    */
-  spaceBody?: { [key: string]: any }
+  spaceBody?: { 
+    [key: string]: any;
+    themeConfig?: never;
+    sidebarConfig?: never;
+    userInfo?: never;
+    spaceInfo?: never;
+  }
   /**
    * @deprecated should use userInfo instead.
    * 

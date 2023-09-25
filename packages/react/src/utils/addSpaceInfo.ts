@@ -18,6 +18,7 @@ export const addSpaceInfo = async (
     sidebarConfig,
     spaceInfo,
     userInfo,
+    spaceBody
   } = spaceProps
 
   try {
@@ -42,6 +43,7 @@ export const addSpaceInfo = async (
         sidebarConfig: sidebarConfig ? sidebarConfig : { showSidebar: false },
         userInfo,
         spaceInfo,
+        ...(spaceBody?.metadata || {})
       },
     })
 

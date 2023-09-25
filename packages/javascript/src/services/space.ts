@@ -1,7 +1,7 @@
 import { UpdateSpaceInfo } from ".."
 
 export const updateSpace = async (data: UpdateSpaceInfo) => {
-  const { apiUrl, accessToken, themeConfig, sidebarConfig, userInfo, spaceInfo, spaceId, environmentId } = data
+  const { apiUrl, accessToken, themeConfig, sidebarConfig, userInfo, spaceInfo, spaceId, environmentId, spaceBody } = data
   const updateSpaceEndpoint = `${apiUrl}/v1/spaces/${spaceId}`
   const response = await fetch(updateSpaceEndpoint, {
     method: 'PATCH',
@@ -15,7 +15,8 @@ export const updateSpace = async (data: UpdateSpaceInfo) => {
         theme: themeConfig,
         sidebarConfig: sidebarConfig ? sidebarConfig : { showSidebar: false },
         userInfo,
-        spaceInfo
+        spaceInfo,
+        ...(spaceBody?.metadata || {})
       },
     }),
   })
