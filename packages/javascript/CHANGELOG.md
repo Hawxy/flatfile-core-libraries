@@ -1,5 +1,13 @@
 # @flatfile/javascript
 
+## 0.1.16
+
+### Patch Changes
+
+- 087ac36: fix metadata not being set by spaceBody
+- Updated dependencies [087ac36]
+  - @flatfile/embedded-utils@1.0.5
+
 ## 0.1.15
 
 ### Patch Changes

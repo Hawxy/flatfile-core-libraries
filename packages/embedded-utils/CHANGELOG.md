@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.0.5
+
+### Patch Changes
+
+- 087ac36: fix metadata not being set by spaceBody
+
 ## 1.0.4
 
 ### Patch Changes
