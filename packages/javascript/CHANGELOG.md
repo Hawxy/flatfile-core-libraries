@@ -1,5 +1,12 @@
 # @flatfile/javascript
 
+## 0.1.17
+
+### Patch Changes
+
+- 72d84bb: Add label for embeedded spaces
+- 647bb69: Create listener before workbook creation
+
 ## 0.1.16
 
 ### Patch Changes

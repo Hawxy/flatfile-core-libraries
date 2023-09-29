@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 7.2.24
+
+### Patch Changes
+
+- 72d84bb: Add label for embeedded spaces
+- 647bb69: Create listener before workbook creation
+- 87ce5b1: updated api version
+
 ## 7.2.23
 
 ### Patch Changes
