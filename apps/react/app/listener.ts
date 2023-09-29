@@ -6,11 +6,11 @@ import { recordHook } from '@flatfile/plugin-record-hook'
  */
 export const listener = FlatfileListener.create((client) => {
   client.use(
-    recordHook('contacts', (record) => {
-      const firstName = record.get('firstName')
+    recordHook('TestSheet', (record) => {
+      const firstName = record.get('first_name')
       console.log({ firstName })
       // Gettign the real types here would be nice but seems tricky
-      record.set('lastName', 'Rock')
+      record.set('last_name', 'Rock')
       return record
     })
   )

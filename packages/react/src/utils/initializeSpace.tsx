@@ -1,4 +1,3 @@
-import { addSpaceInfo } from './addSpaceInfo'
 import { authenticate } from './authenticate'
 import { ISpace, getErrorMessage } from '@flatfile/embedded-utils'
 
@@ -11,7 +10,7 @@ export const initializeSpace = async (flatfileOptions: ISpace) => {
     spaceBody,
     apiUrl,
     spaceUrl = 'https://spaces.flatfile.com/',
-    workbook
+    workbook,
   } = flatfileOptions
 
   try {
@@ -56,8 +55,6 @@ export const initializeSpace = async (flatfileOptions: ISpace) => {
       space.data.guestLink = guestLink
     }
 
-    const fullAccessApi = authenticate(space.data.accessToken, apiUrl)
-    await addSpaceInfo(flatfileOptions, space.data.id, fullAccessApi)
     return space
   } catch (error) {
     const message = getErrorMessage(error)

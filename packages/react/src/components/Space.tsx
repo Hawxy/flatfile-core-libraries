@@ -10,6 +10,9 @@ import {
   getIframeStyles,
   getContainerStyles,
 } from './embeddedStyles'
+import { addSpaceInfo } from '../utils/addSpaceInfo'
+import { authenticate } from '../utils/authenticate'
+import { useEffect } from 'react'
 
 /**
  * @name Space
@@ -43,7 +46,6 @@ export const SpaceContents = (
   const {
     spaceId,
     spaceUrl,
-    spaceBody,
     listener,
     accessToken,
     closeSpace,
@@ -79,6 +81,17 @@ export const SpaceContents = (
     },
     spaceId
   )
+
+  const buildWorkbook = async () => {
+    if (props.publishableKey) {
+      const fullAccessApi = authenticate(accessToken, apiUrl)
+      await addSpaceInfo(props, spaceId, fullAccessApi)
+    }
+  }
+
+  useEffect(() => {
+    buildWorkbook()
+  }, [])
 
   return (
     <div
@@ -137,5 +150,7 @@ export const SpaceContents = (
     </div>
   )
 }
+
+// const ListenerWrapper
 
 export default Space

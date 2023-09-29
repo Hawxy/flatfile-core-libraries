@@ -20,17 +20,18 @@ export const addSpaceInfo = async (
     userInfo,
     spaceBody
   } = spaceProps
+  let localWorkbook
 
   try {
     if (workbook) {
-      const localWorkbook = await api.workbooks.create({
+      localWorkbook = await api.workbooks.create({
         sheets: workbook.sheets,
         name: workbook.name,
         actions: workbook.actions,
         spaceId,
         environmentId,
       })
-  
+
       if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
         throw new Error('Failed to create workbook')
       }
@@ -64,6 +65,10 @@ export const addSpaceInfo = async (
       ) {
         throw new Error('Failed to create document')
       }
+    }
+    return {
+      space: updatedSpace,
+      workbook: localWorkbook,
     }
   } catch (error) {
     const message = getErrorMessage(error)

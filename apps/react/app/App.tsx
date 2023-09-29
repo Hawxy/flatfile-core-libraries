@@ -3,9 +3,10 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useSpace } from '@flatfile/react'
 import { listener } from './listener'
 import styles from './page.module.css'
+import { config } from './config'
 
 const SPACE_ID = 'us_sp_123456'
-const ENVIRONMENT_ID = 'us_env_123456'
+const ENVIRONMENT_ID = 'us_env_O60vqdol'
 
 const spaceProps = {
   environmentId: ENVIRONMENT_ID,
@@ -18,6 +19,8 @@ const spaceProps = {
     padding: '16px',
   },
   listener: listener,
+  publishableKey: "pk_3626978e5f52480085a37844166d347a",
+  workbook: config
 }
 
 const LoadingComponent = () => <label>Loading data....</label>
@@ -27,15 +30,15 @@ const Space = ({
   accessToken,
 }: {
   setShowSpace: Dispatch<SetStateAction<boolean>>
-  accessToken: string
+  accessToken?: string
 }) => {
   const space = useSpace({
     ...spaceProps,
-    space: {
-      // PUT SPACE ID TO REUSE HERE
-      id: SPACE_ID,
-      accessToken,
-    },
+    // space: {
+    //   // PUT SPACE ID TO REUSE HERE
+    //   id: SPACE_ID,
+    //   accessToken,
+    // },
     loading: <LoadingComponent />,
     exitPrimaryButtonText: 'CLOSE!',
     exitSecondaryButtonText: 'KEEP IT!',
@@ -50,16 +53,16 @@ const Space = ({
 function App() {
   const [showSpace, setShowSpace] = useState(false)
   const [data, setData] = useState<any>()
-  useEffect(() => {
-    const fetchData = async () => {
-      const spaceId = SPACE_ID
-      const response = await fetch(`api/spaces/${spaceId}`)
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const spaceId = SPACE_ID
+  //     const response = await fetch(`api/spaces/${spaceId}`)
 
-      const json = await response.json()
-      setData(json)
-    }
-    fetchData().catch(console.error)
-  }, [])
+  //     const json = await response.json()
+  //     setData(json)
+  //   }
+  //   fetchData().catch(console.error)
+  // }, [])
 
   return (
     <div className={styles.main}>
@@ -76,7 +79,7 @@ function App() {
         <div className={styles.spaceWrapper}>
           <Space
             setShowSpace={setShowSpace}
-            accessToken={data.space.data.accessToken}
+            // accessToken={data.space.data.accessToken}
           />
         </div>
       )}

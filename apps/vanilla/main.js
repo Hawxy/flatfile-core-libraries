@@ -37,7 +37,7 @@ window.initializeFlatfile = (publishableKey) => {
   const flatfileOptions = {
     publishableKey,
     spaceBody: { name: 'Hello' },
-    environmentId: 'us_env_6fXBNCpi',
+    environmentId: 'us_env_O60vqdol',
     // listener,
     // Additional parameters...
     workbook: config,

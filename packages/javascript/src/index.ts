@@ -187,23 +187,6 @@ export async function initializeFlatfile(
         throw new Error(errorMessage)
       }
 
-      await updateSpaceInfo({
-        apiUrl,
-        publishableKey,
-        workbook,
-        spaceId: result.data.id,
-        accessToken: result.data.accessToken,
-        environmentId,
-        mountElement,
-        errorTitle,
-        themeConfig,
-        document: documentConfig,
-        sidebarConfig,
-        userInfo,
-        spaceInfo,
-        spaceBody
-      })
-
       return result.data
     }
 
@@ -216,6 +199,7 @@ export async function initializeFlatfile(
     if (!spaceData?.id || !spaceData?.accessToken) {
       throw new Error('Unable to create space, please try again.')
     }
+    
     let pubnubClient: Pubnub | undefined
     if (listener) {
       pubnubClient = await createlistener(
@@ -226,6 +210,22 @@ export async function initializeFlatfile(
         closeSpace
       )
     }
+
+    await updateSpaceInfo({
+      apiUrl,
+      publishableKey,
+      workbook,
+      spaceId: spaceData.id,
+      accessToken: spaceData.accessToken,
+      environmentId,
+      mountElement,
+      errorTitle,
+      themeConfig,
+      document: documentConfig,
+      sidebarConfig,
+      userInfo,
+      spaceInfo,
+    })
 
     createIframe(
       spaceData.id,

@@ -8,7 +8,12 @@ import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
 
 export const useSpace = (props: ISpace): JSX.Element => {
-  const { error: ErrorElement, errorTitle, loading: LoadingElement, apiUrl } = props
+  const {
+    error: ErrorElement,
+    errorTitle,
+    loading: LoadingElement,
+    apiUrl,
+  } = props
   const [initError, setInitError] = useState<Error | string>()
   const [state, setState] = useState<State>({
     pubNub: null,
@@ -93,6 +98,7 @@ export const useSpace = (props: ISpace): JSX.Element => {
   if (pubNub) {
     return (
       <Space
+        key={localSpaceId}
         spaceId={localSpaceId}
         spaceUrl={spaceUrl}
         accessToken={accessTokenLocal}
