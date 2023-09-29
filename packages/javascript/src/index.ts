@@ -162,8 +162,9 @@ export async function initializeFlatfile(
 
     const createSpace = async () => {
       const spaceRequestBody = {
-        name: name || 'Embedded',
+        name: name || 'Embedded Space',
         autoConfigure: false,
+        labels: ['embedded'],
         ...spaceBody,
       }
 

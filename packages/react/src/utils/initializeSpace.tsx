@@ -26,6 +26,7 @@ export const initializeSpace = async (flatfileOptions: ISpace) => {
     const spaceRequestBody = {
       name,
       autoConfigure: false,
+      labels: ['embedded'],
       ...spaceBody,
     }
 
