@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/v2-shims",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A collection of helpers for migrating from v2 to platform",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
