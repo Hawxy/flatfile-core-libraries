@@ -1,5 +1,11 @@
 # @flatfile/v2-shims
 
+## 0.0.2
+
+### Patch Changes
+
+- 422594b: Add sessionStorage for sheetConfig
+
 ## 0.0.1
 
 ### Patch Changes
