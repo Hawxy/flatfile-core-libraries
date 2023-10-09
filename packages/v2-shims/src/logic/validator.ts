@@ -4,11 +4,9 @@ import type {
   Nullable,
   Scalar,
   ScalarDictionary,
-} from './types/general.interface'
-import type { IValidator } from './types/settings.interface'
-import { memo } from './utils/memo'
-import { isEmpty } from './utils/misc'
-import { getRegexFlags, testRegex } from './utils/regex.flags'
+} from '../types/general.interface'
+import type { IValidator } from '../types/settings.interface'
+import { getRegexFlags, isEmpty, memo, testRegex } from './util'
 import type { SheetConfig } from '@flatfile/api/api'
 
 const getRegexFlagsMemo = memo(getRegexFlags)
@@ -43,9 +41,7 @@ export class Validator {
    *
    * @param row
    */
-  public async validateRow(
-    row: ScalarDictionary
-  ): Promise<IValidationResponse[]> {
+  public validateRow(row: ScalarDictionary): IValidationResponse[] {
     const validations = Object.keys(row).map((key) => {
       const errors = this.validateCell(row, key)
 

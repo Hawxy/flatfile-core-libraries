@@ -68,3 +68,5 @@ export interface IHeaderMatched {
 }
 
 export type Scalar = Nullable<IPrimitive>
+
+export type MaybePromise<T> = T | Promise<T>
