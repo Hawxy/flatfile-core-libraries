@@ -1,5 +1,11 @@
 # @flatfile/v2-shims
 
+## 0.0.4
+
+### Patch Changes
+
+- 08aeb72: Adds e2e test and exports data hook logic
+
 ## 0.0.3
 
 ### Patch Changes
