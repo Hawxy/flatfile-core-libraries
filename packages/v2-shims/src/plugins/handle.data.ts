@@ -3,6 +3,7 @@ import api, { Flatfile } from '@flatfile/api'
 import RecordObject from '../types/record.object'
 import FlatfileResults from '../legacy/results'
 import { Meta } from '../legacy/meta'
+import { getAllRecords } from '../logic/get.all.records'
 
 /**
  * A plugin for handling data
@@ -33,9 +34,9 @@ export const handleData = (
 export const getResultsForContextSheet = async (event: FlatfileEvent) => {
   const sheet = await getSheet(event.context.workbookId)
 
-  const { data } = await api.records.get(sheet.id)
+  const records = await getAllRecords(sheet.id)
 
-  return new FlatfileResults(data.records.map(convertRecord), new Meta())
+  return new FlatfileResults(records.map(convertRecord), new Meta())
 }
 
 /**
