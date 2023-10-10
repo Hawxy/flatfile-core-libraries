@@ -135,7 +135,7 @@ export const SpaceContents = (
             x2="90"
             y2="90"
             stroke="white"
-            stroke-width="10"
+            strokeWidth="10"
           />
           <line
             x1="10"
@@ -143,7 +143,7 @@ export const SpaceContents = (
             x2="90"
             y2="10"
             stroke="white"
-            stroke-width="10"
+            strokeWidth="10"
           />
         </svg>
       </CloseIframeButton>
