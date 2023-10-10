@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.25
+
+### Patch Changes
+
+- 3f65a7f: fix to stroke-width
+
 ## 7.2.24
 
 ### Patch Changes

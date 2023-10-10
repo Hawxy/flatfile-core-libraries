@@ -1,5 +1,11 @@
 # @flatfile/v2-shims
 
+## 0.0.5
+
+### Patch Changes
+
+- fa6eb89: Adds slug to created sheet
+
 ## 0.0.4
 
 ### Patch Changes
