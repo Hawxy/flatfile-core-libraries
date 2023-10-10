@@ -14,12 +14,13 @@ describe('v2ConfigToBlueprint', () => {
     }
 
     const result = await configToBlueprint(input)
-
+    
     expect(result).toEqual({
       name: 'Sample',
       sheets: [
         {
           name: 'Sample',
+          slug: 'Sample',
           fields: [
             {
               key: 'sampleKey',

@@ -52,6 +52,7 @@ export const configToBlueprint = (schema: ISettings): BlueprintOutput => {
     sheets: [
       {
         name: schema?.type || 'No sheet name',
+        slug: schema?.type || 'sheetSlug',
         fields: fields,
       },
     ],
@@ -97,6 +98,7 @@ type INewField = {
 
 type SheetOutput = {
   name: string
+  slug: string
   fields: INewField[]
 }
 
