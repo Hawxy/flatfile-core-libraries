@@ -126,7 +126,7 @@ const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
 
 export async function initializeFlatfile(
   flatfileOptions: ISpace
-): Promise<void> {
+): Promise<{ spaceId: string; }> {
   const {
     publishableKey,
     displayAsModal = true,
@@ -241,6 +241,8 @@ export async function initializeFlatfile(
       closeSpace,
       pubnubClient
     )
+
+    return { spaceId: spaceData.id }
   } catch (error) {
     const wrapper = document.getElementById(mountElement)
     const errorMessage = displayError(errorTitle, error)

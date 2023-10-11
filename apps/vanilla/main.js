@@ -33,7 +33,7 @@ getSpace()
 */
 
 // ---create a new space each time, load with button click
-window.initializeFlatfile = (publishableKey) => {
+window.initializeFlatfile = async (publishableKey) => {
   const flatfileOptions = {
     publishableKey,
     spaceBody: { name: 'Hello' },
@@ -78,7 +78,8 @@ window.initializeFlatfile = (publishableKey) => {
     listener
   }
 
-  initializeFlatfile(flatfileOptions)
+  const space = await initializeFlatfile(flatfileOptions)
+  console.log('Space data:', { space })
 }
 //-- end
 
