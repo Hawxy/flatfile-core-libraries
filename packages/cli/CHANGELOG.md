@@ -1,10 +1,16 @@
 # @flatfile/cli
 
+## 3.5.11
+
+### Patch Changes
+
+- 1fc04c4: Update Dependencies
+
 ## 3.5.10
 
 ### Patch Changes
 
-- bf44352: Update path sep to posix 
+- bf44352: Update path sep to posix
 
 ## 3.5.9
 

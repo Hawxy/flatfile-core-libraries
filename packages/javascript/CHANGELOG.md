@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.18
+
+### Patch Changes
+
+- 81d1511: return spaceId on js wrapper
+
 ## 0.1.17
 
 ### Patch Changes
