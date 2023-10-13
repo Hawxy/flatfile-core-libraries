@@ -86,20 +86,20 @@ const ButtonGroup = styled.div`
 `
 
 const ButtonPrimary = styled.div`
-  background-color: var(--color-electric-700);
+  background-color: var(--color-electric-700, #4c48ef);
   color: #fff;
 
   &:hover {
-    background-color: var(--color-electric-800);
+    background-color: var(--color-electric-800, #3b2fc9);
   }
 `
 
 const ButtonSecondary = styled.div`
-  border: 1px solid var(--color-pigeon-300);
-  color: var(--color-text);
+  border: 1px solid var(--color-pigeon-300, #d7dee8);
+  color: var(--color-text, #404857);
 
   &:hover {
-    background-color: var(--color-pigeon-200);
+    background-color: var(--color-pigeon-200, #e8edf4);
   }
 `
 
