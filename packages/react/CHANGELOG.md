@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.26
+
+### Patch Changes
+
+- 23fbbc0: add default colors on close modal
+
 ## 7.2.25
 
 ### Patch Changes
