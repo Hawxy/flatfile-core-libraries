@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.19
+
+### Patch Changes
+
+- eea092c: upgrade deps version
+
 ## 0.1.18
 
 ### Patch Changes

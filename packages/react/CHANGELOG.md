@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.27
+
+### Patch Changes
+
+- eea092c: upgrade deps version
+
 ## 7.2.26
 
 ### Patch Changes
