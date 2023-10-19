@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/javascript",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "description": "Flatfile embedded with vanilla javascript.",
   "source": "src/index.ts",
   "exports": {
@@ -54,7 +54,7 @@
     "starter"
   ],
   "dependencies": {
-    "@flatfile/embedded-utils": "^1.0.5",
+    "@flatfile/embedded-utils": "^1.0.6",
     "@flatfile/listener": "^0.3.15",
     "pubnub": "^7.3.1"
   }

@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.0.6
+
+### Patch Changes
+
+- 8d381a7: upgrade api version
+
 ## 1.0.5
 
 ### Patch Changes
