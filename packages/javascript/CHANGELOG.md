@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.20
+
+### Patch Changes
+
+- ce8e954: remove env setup
+
 ## 0.1.19
 
 ### Patch Changes
