@@ -1,6 +1,4 @@
-import dotenv from 'dotenv'
 import { Flatfile } from '@flatfile/api'
-import { CrossEnvConfig } from '@flatfile/cross-env-config'
 import { Browser, FlatfileListener, FlatfileEvent } from '@flatfile/listener'
 import Pubnub from 'pubnub'
 
@@ -126,7 +124,7 @@ const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
 
 export async function initializeFlatfile(
   flatfileOptions: ISpace
-): Promise<{ spaceId: string; }> {
+): Promise<{ spaceId: string }> {
   const {
     publishableKey,
     displayAsModal = true,
@@ -153,9 +151,6 @@ export async function initializeFlatfile(
     listener,
   } = flatfileOptions
   const spacesUrl = spaceUrl || baseUrl
-
-  dotenv.config()
-  CrossEnvConfig.set('FLATFILE_API_KEY', process.env.FLATFILE_API_KEY)
 
   try {
     const createSpaceEndpoint = `${apiUrl}/v1/spaces`
@@ -200,7 +195,7 @@ export async function initializeFlatfile(
     if (!spaceData?.id || !spaceData?.accessToken) {
       throw new Error('Unable to create space, please try again.')
     }
-    
+
     let pubnubClient: Pubnub | undefined
     if (listener) {
       pubnubClient = await createlistener(
