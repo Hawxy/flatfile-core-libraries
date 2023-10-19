@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/react",
-  "version": "7.2.27",
+  "version": "7.2.28",
   "description": "Flatfile React components",
   "main": "./dist/index.mjs",
   "module": "./dist/index.js",

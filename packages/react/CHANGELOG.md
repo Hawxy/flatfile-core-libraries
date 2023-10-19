@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.28
+
+### Patch Changes
+
+- d1028fe: Updated deps
+
 ## 7.2.27
 
 ### Patch Changes
