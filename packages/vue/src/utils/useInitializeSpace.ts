@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref } from '@vue/runtime-dom';
 import { ISpace, getErrorMessage } from '@flatfile/embedded-utils';
 import authenticate from './authenticate';
 import addSpaceInfo from './addSpaceInfo';

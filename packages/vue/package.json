@@ -2,12 +2,12 @@
   "name": "@flatfile/vue",
   "private": false,
   "version": "0.0.1",
-  "type": "module",
   "files": [
     "dist/**"
   ],
   "main": "./dist/vue.umd.js",
   "module": "./dist/vue.es.js",
+  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/vue.es.js",
@@ -25,16 +25,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@flatfile/api": "^1.5.20",
     "@flatfile/embedded-utils": "^1.0.4",
+    "@vue/runtime-dom": "^3.3.4",
     "vue": "^3.3.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue": "^4.3.0",
     "path": "^0.12.7",
     "rollup-plugin-typescript2": "^0.36.0",
     "sass": "^1.69.0",
-    "typescript": "^5.0.2",
+    "typescript": "^4.9.3",
     "vite": "^4.4.5",
     "vite-plugin-dts": "^3.6.0",
     "vite-plugin-libcss": "^1.1.1",

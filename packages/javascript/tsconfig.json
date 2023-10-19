@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
-    "module": "umd",
-    "target": "ES5",
+    "module": "ESNext",
+    "target": "ES6",
     "lib": [
-      "ES2015",
-      "dom"
+      "ESNext",
+      "DOM"
     ],
     "types": [
       "jest"
     ],
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "noEmit": true
   }
 }

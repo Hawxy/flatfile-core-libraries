@@ -15,7 +15,7 @@
   "dependencies": {
     "pubnub": "^7.2.2",
     "@flatfile/listener": "*",
-    "@flatfile/api": "1.5.20"
+    "@flatfile/api": "^1.5.31"
   },
   "devDependencies": {
     "@types/jest": "^28.1.4",

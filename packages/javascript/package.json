@@ -54,7 +54,6 @@
     "starter"
   ],
   "dependencies": {
-    "@flatfile/api": "^1.5.31",
     "@flatfile/embedded-utils": "^1.0.5",
     "@flatfile/listener": "^0.3.15",
     "pubnub": "^7.3.1"
