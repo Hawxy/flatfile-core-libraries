@@ -51,7 +51,6 @@
     "ts-jest": "^28.0.5"
   },
   "dependencies": {
-    "@flatfile/api": "^1.5.31",
     "@flatfile/cross-env-config": "^0.0.5",
     "@flatfile/hooks": "^1.3.2",
     "@flatfile/listener": "^0.3.15",
