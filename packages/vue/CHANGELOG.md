@@ -1,5 +1,11 @@
 # @flatfile/vue
 
+## 0.0.3
+
+### Patch Changes
+
+- 0b8f1ec: client side listener
+
 ## 0.0.2
 
 ### Patch Changes
