@@ -12,7 +12,8 @@
 <script>
 import { ref } from 'vue';
 import { UseSpace } from '@flatfile/vue';
-import { config } from "./config";
+import { workbook } from "./config";
+import { listener } from './listener'
 
 const SPACE_ID = 'us_sp_1234';
 const ENVIRONMENT_ID = 'us_env_1234';
@@ -27,10 +28,11 @@ export default {
       environmentId,
       publishableKey,
       closeSpace: {
-        operation: 'contacts:submit',
+        operation: 'submitActionFg',
         onClose: () => { showSpace.value = false; },
       },
-      workbook: config,
+      workbook,
+      listener,
       themeConfig: { primaryColor: "#546a76", textColor: "#fff" },
       userInfo: {
         name: 'my space name'

@@ -1,7 +1,6 @@
 import { ref } from '@vue/runtime-dom';
 import { ISpace, getErrorMessage } from '@flatfile/embedded-utils';
 import authenticate from './authenticate';
-import addSpaceInfo from './addSpaceInfo';
 
 const useInitializeSpace = (flatfileOptions: ISpace) => {
   const space = ref();
@@ -61,8 +60,6 @@ const useInitializeSpace = (flatfileOptions: ISpace) => {
         space.value.data.guestLink = guestLink;
       }
 
-      const fullAccessApi = authenticate(space.value.data.accessToken, apiUrl);
-      await addSpaceInfo(flatfileOptions, space.value.data.id, fullAccessApi);
       return space.value;
     } catch (error) {
       const message = getErrorMessage(error);

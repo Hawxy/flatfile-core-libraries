@@ -37,9 +37,12 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { Flatfile } from '@flatfile/api';
 import ConfirmModal from './ConfirmCloseModal.vue';
+import authenticate from '../utils/authenticate';
+import { Browser, FlatfileEvent } from '@flatfile/listener';
+import addSpaceInfo from '../utils/addSpaceInfo';
 import {
   getIframeStyles,
   getContainerStyles,
@@ -48,27 +51,82 @@ import {
 export default {
   props: {
     spaceId: String,
+    environmentId: String,
     spaceUrl: String,
+    listener: Object,
     accessToken: String,
     spaceBody: Object,
     closeSpace: Object,
+    pubNub: Object,
+    document: Object,
     iframeStyles: Object,
     mountElement: String,
     exitText: String,
     exitTitle: String,
+    workbook: Object,
     exitPrimaryButtonText: String,
     exitSecondaryButtonText: String,
     apiUrl: String,
+    themeConfig: Object,
     displayAsModal: Boolean,
+    sidebarConfig: Object,
+    spaceInfo: Object,
+    userInfo: Object,
   },
   components: {
     ConfirmModal,
   },
+  async created() {
+    const {
+      pubNub, spaceId, listener, apiUrl, accessToken, closeSpace
+    } = this;
+
+    if (listener)
+      listener.mount(
+        new Browser({
+          apiUrl,
+          accessToken,
+          fetchApi: fetch,
+        })
+      )
+
+    const dispatchEvent = (event) => {
+      if (!event) return
+
+      const eventPayload = event.src ? event.src : event
+      const eventInstance = new FlatfileEvent(eventPayload, accessToken, apiUrl)
+
+      return listener?.dispatchEvent(eventInstance)
+    }
+
+    const callback = (event) => {
+      const eventResponse = JSON.parse(event.message) ?? {}
+      if (
+        eventResponse.topic === 'job:outcome-acknowledged' &&
+        eventResponse.payload.status === 'complete' &&
+        eventResponse.payload.operation === closeSpace?.operation
+      ) {
+        closeSpace?.onClose({})
+      }
+
+      dispatchEvent(eventResponse)
+    }
+    
+    const channel = [`space.${spaceId}`]
+    const pubNubListener = { message: callback }
+    pubNub.addListener(pubNubListener)
+    pubNub.subscribe({
+      channels: channel,
+    });
+  },
   setup(props) {
     const showExitWarnModal = ref(false);
     const {
-      spaceId, spaceUrl, accessToken, closeSpace, apiUrl,
+      spaceId, spaceUrl, accessToken, closeSpace, apiUrl, pubNub, 
+      listener, workbook, environmentId, document, themeConfig, sidebarConfig, 
+      spaceInfo, userInfo
     } = props;
+    const channel = `space.${spaceId}`;
     
     const handleConfirm = () => {
       closeSpace?.onClose({});
@@ -78,6 +136,25 @@ export default {
       showExitWarnModal.value = false;
     };
 
+    window.CROSSENV_FLATFILE_API_KEY = accessToken;
+
+    onMounted(async () => {
+      const fullAccessApi = authenticate(accessToken, apiUrl);
+      await addSpaceInfo({
+        workbook, 
+        environmentId, 
+        document, 
+        themeConfig, 
+        sidebarConfig, 
+        spaceInfo, 
+        userInfo
+      }, spaceId, fullAccessApi);
+
+      onUnmounted(() => {
+        pubNub.unsubscribe([channel]);
+      });
+    });
+
     return {
       showExitWarnModal,
       handleConfirm,
@@ -85,7 +162,7 @@ export default {
       getIframeStyles,
       getContainerStyles,
     };
-  },
+  }
 };
 </script>
 
