@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.29
+
+### Patch Changes
+
+- 42f7ff9: Use rollup.js for bundling
+
 ## 7.2.28
 
 ### Patch Changes

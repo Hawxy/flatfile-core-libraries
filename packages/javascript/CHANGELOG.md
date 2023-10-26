@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.22
+
+### Patch Changes
+
+- 42f7ff9: Use rollup.js for bundling
+
 ## 0.1.21
 
 ### Patch Changes
