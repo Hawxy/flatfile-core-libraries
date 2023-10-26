@@ -1,4 +1,4 @@
-import { UpdateSpaceInfo } from '..'
+import { UpdateSpaceInfo } from '../..'
 
 export const createWorkbook = async (data: UpdateSpaceInfo) => {
   const { apiUrl, accessToken, workbook, spaceId, environmentId } = data
@@ -11,9 +11,9 @@ export const createWorkbook = async (data: UpdateSpaceInfo) => {
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      sheets: workbook.sheets,
-      name: workbook.name,
-      actions: workbook.actions,
+      sheets: workbook?.sheets,
+      name: workbook?.name,
+      actions: workbook?.actions,
       spaceId,
       environmentId,
     }),

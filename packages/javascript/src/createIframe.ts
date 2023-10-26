@@ -73,13 +73,13 @@ export function createIframe(
   const confirmModal = createModal(
     () => {
       // If user chooses to exit
-
-      const wrappers = [].slice.call(
+      const wrappers = Array.from(
         document.getElementsByClassName('flatfile_iframe-wrapper')
-      )
-      const modals = [].slice.call(
+      ) as HTMLElement[]
+      const modals = Array.from(
         document.getElementsByClassName('flatfile_outer-shell')
-      )
+      ) as HTMLElement[]
+
       const elements = [...wrappers, ...modals]
 
       for (let item of elements) {

@@ -2,7 +2,7 @@ import { Flatfile } from '@flatfile/api'
 import { Browser, FlatfileListener, FlatfileEvent } from '@flatfile/listener'
 import Pubnub from 'pubnub'
 
-import { createIframe } from './createIframe'
+import { createIframe } from './src/createIframe'
 import {
   ISidebarConfig,
   ISpace,
@@ -11,9 +11,9 @@ import {
   NewSpaceFromPublishableKey,
   initializePubnub,
 } from '@flatfile/embedded-utils'
-import { createWorkbook } from './services/workbook'
-import { updateSpace } from './services/space'
-import { createDocument } from './services/document'
+import { createWorkbook } from './src/services/workbook'
+import { updateSpace } from './src/services/space'
+import { createDocument } from './src/services/document'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
@@ -88,15 +88,15 @@ async function createlistener(
 
 export interface UpdateSpaceInfo {
   apiUrl: string
-  publishableKey: string
-  workbook: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
+  publishableKey?: string
+  workbook?: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
   spaceId: string
   environmentId: string
   mountElement: string
   errorTitle: string
-  themeConfig: IThemeConfig
-  document: Flatfile.DocumentConfig
-  sidebarConfig: ISidebarConfig
+  themeConfig?: IThemeConfig
+  document?: Flatfile.DocumentConfig
+  sidebarConfig?: ISidebarConfig
   userInfo?: Partial<IUserInfo>
   spaceInfo?: Partial<IUserInfo>
   accessToken: string
@@ -117,14 +117,14 @@ const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
     }
   } catch (error) {
     const wrapper = document.getElementById(mountElement)
-    const errorMessage = displayError(errorTitle, error)
-    wrapper.appendChild(errorMessage)
+    const errorMessage = displayError(errorTitle, error as string)
+    wrapper?.appendChild(errorMessage)
   }
 }
 
 export async function initializeFlatfile(
   flatfileOptions: ISpace
-): Promise<{ spaceId: string }> {
+): Promise<{ spaceId: string } | void> {
   const {
     publishableKey,
     displayAsModal = true,
@@ -240,7 +240,7 @@ export async function initializeFlatfile(
     return { spaceId: spaceData.id }
   } catch (error) {
     const wrapper = document.getElementById(mountElement)
-    const errorMessage = displayError(errorTitle, error)
+    const errorMessage = displayError(errorTitle, error as string)
     wrapper?.appendChild(errorMessage)
   }
 }

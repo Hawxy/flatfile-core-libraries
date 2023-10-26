@@ -1,16 +1,22 @@
 {
+  "extends": "@flatfile/ts-config-platform-sdk/base.json",
+  "include": [
+    "./src",
+    "index.ts"
+  ],
+  "exclude": [
+    "dist",
+    "build",
+    "node_modules"
+  ],
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "ES6",
     "lib": [
       "ESNext",
       "DOM"
     ],
-    "types": [
-      "jest"
-    ],
-    "esModuleInterop": true,
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ES6",
+    "jsx": "react",
     "noEmit": true
-  }
+  },
 }

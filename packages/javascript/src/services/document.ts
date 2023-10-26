@@ -1,4 +1,4 @@
-import { UpdateSpaceInfo } from ".."
+import { UpdateSpaceInfo } from "../.."
 
 export const createDocument = async (data: UpdateSpaceInfo) => {
   const { apiUrl, accessToken, document, spaceId } = data
@@ -10,8 +10,8 @@ export const createDocument = async (data: UpdateSpaceInfo) => {
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      title: document.title,
-      body: document.body,
+      title: document?.title,
+      body: document?.body,
     }),
   })
   const createdDocument = await response.json()

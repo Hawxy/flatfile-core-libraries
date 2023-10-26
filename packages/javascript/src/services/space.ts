@@ -1,4 +1,4 @@
-import { UpdateSpaceInfo } from ".."
+import { UpdateSpaceInfo } from "../.."
 
 export const updateSpace = async (data: UpdateSpaceInfo) => {
   const { apiUrl, accessToken, themeConfig, sidebarConfig, userInfo, spaceInfo, spaceId, environmentId, spaceBody } = data
