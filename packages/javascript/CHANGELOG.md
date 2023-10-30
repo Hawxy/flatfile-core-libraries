@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.23
+
+### Patch Changes
+
+- 7510f2e: Remove unneeded dependency
+
 ## 0.1.22
 
 ### Patch Changes

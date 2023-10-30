@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.30
+
+### Patch Changes
+
+- 7510f2e: Remove unneeded dependency
+
 ## 7.2.29
 
 ### Patch Changes
