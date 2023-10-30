@@ -2,7 +2,6 @@
 import css from 'rollup-plugin-import-css'
 import typescript from '@rollup/plugin-typescript'
 import url from '@rollup/plugin-url'
-import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 
 const config = [
@@ -33,7 +32,7 @@ const config = [
         limit: Infinity,
         fileName: '[dirname][name][extname]',
       }),
-      resolve({ browser: true }),
+      // resolve({ browser: true }),
     ],
   },
 ]
