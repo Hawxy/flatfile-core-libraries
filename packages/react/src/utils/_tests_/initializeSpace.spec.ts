@@ -1,7 +1,7 @@
 import { FlatfileClient } from '@flatfile/api'
+import { Space } from '@flatfile/api/api/resources/spaces'
 import { ISpace } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../initializeSpace'
-import { Space } from '@flatfile/api/api/resources/spaces'
 
 var authenticateMock: jest.Mock = jest.fn()
 var addSpaceInfoMock: jest.Mock = jest.fn()
@@ -88,6 +88,8 @@ describe('initializeSpace', () => {
       id: 'doc-id',
       title: 'Example-title',
       body: 'Example-body',
+      createdAt: new Date('01/01/2000'),
+      updatedAt: new Date('01/01/2001'),
     }
 
     jest.spyOn(FlatfileClient.prototype.spaces, 'create').mockResolvedValue({

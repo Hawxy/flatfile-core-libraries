@@ -1,8 +1,8 @@
 import { FlatfileClient } from '@flatfile/api'
-import { mockDocument, mockWorkbook } from '../../test/mocks'
-import { addSpaceInfo } from '../addSpaceInfo'
 import { CreateWorkbookConfig, Workbook } from '@flatfile/api/api'
 import { Space } from '@flatfile/api/api/resources/spaces'
+import { mockDocument, mockWorkbook } from '../../test/mocks'
+import { addSpaceInfo } from '../addSpaceInfo'
 
 describe('addSpaceInfo', () => {
   beforeEach(() => {
@@ -59,6 +59,8 @@ describe('addSpaceInfo', () => {
         id: 'test-document-id',
         title: 'doc-title',
         body: 'doc-body',
+        createdAt: new Date('01/01/2000'),
+        updatedAt: new Date('01/01/2001'),
       },
     })
 
