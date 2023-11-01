@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 7.2.31
+
+### Patch Changes
+
+- ca7ad43: updating versions, and removing unused packages
+- Updated dependencies [ca7ad43]
+  - @flatfile/embedded-utils@1.0.7
+
 ## 7.2.30
 
 ### Patch Changes

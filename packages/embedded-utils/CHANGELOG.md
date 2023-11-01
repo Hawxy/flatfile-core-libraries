@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.0.7
+
+### Patch Changes
+
+- ca7ad43: updating versions, and removing unused packages
+
 ## 1.0.6
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @flatfile/javascript
 
+## 0.1.24
+
+### Patch Changes
+
+- 2961b32: Update embedded-utils
+- Updated dependencies [ca7ad43]
+  - @flatfile/embedded-utils@1.0.7
+
 ## 0.1.23
 
 ### Patch Changes

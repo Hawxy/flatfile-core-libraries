@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/javascript",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "description": "Flatfile embedded with vanilla javascript.",
   "source": "src/index.ts",
   "type": "module",
@@ -55,7 +55,7 @@
     "starter"
   ],
   "dependencies": {
-    "@flatfile/embedded-utils": "^1.0.6",
+    "@flatfile/embedded-utils": "^1.0.7",
     "@flatfile/listener": "^0.3.15",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.5",
