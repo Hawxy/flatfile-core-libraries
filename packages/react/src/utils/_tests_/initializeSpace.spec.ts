@@ -2,6 +2,7 @@ import { FlatfileClient } from '@flatfile/api'
 import { Space } from '@flatfile/api/api/resources/spaces'
 import { ISpace } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../initializeSpace'
+import { mockDocument, mockSpace } from '../../test/mocks'
 
 var authenticateMock: jest.Mock = jest.fn()
 var addSpaceInfoMock: jest.Mock = jest.fn()
@@ -73,27 +74,8 @@ describe('initializeSpace', () => {
   })
 
   it('should initialize a space and return the created space', async () => {
-    const mockSpace: Space = {
-      name: 'your-space-name',
-      guestAuthentication: ['shared_link', 'magic_link'],
-      id: 'space-id',
-      environmentId: 'your-environment-id',
-      accessToken: 'access-token',
-      createdAt: new Date('01/01/2000'),
-      updatedAt: new Date('01/01/2001'),
-      isCollaborative: true,
-    }
-
-    const mockDocument = {
-      id: 'doc-id',
-      title: 'Example-title',
-      body: 'Example-body',
-      createdAt: new Date('01/01/2000'),
-      updatedAt: new Date('01/01/2001'),
-    }
-
     jest.spyOn(FlatfileClient.prototype.spaces, 'create').mockResolvedValue({
-      data: mockSpace as Space,
+      data: mockSpace,
     })
 
     jest.spyOn(FlatfileClient.prototype.workbooks, 'create').mockResolvedValue({
@@ -101,7 +83,7 @@ describe('initializeSpace', () => {
     })
 
     jest.spyOn(FlatfileClient.prototype.spaces, 'update').mockResolvedValue({
-      data: mockSpace as Space,
+      data: mockSpace,
     })
 
     jest.spyOn(FlatfileClient.prototype.documents, 'create').mockResolvedValue({
