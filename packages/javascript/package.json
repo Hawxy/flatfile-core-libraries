@@ -58,6 +58,7 @@
     "@flatfile/embedded-utils": "^1.0.7",
     "@flatfile/listener": "^0.3.15",
     "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-typescript": "^11.1.5",
     "@rollup/plugin-url": "^8.0.2",
     "pubnub": "^7.3.1",

@@ -7,3 +7,5 @@ export * from './events'
  * Backwards compatibility
  */
 export class Client extends FlatfileListener {}
+
+export default FlatfileListener
