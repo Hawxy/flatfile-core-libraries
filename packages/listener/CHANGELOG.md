@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.16
+
+### Patch Changes
+
+- 6f39196: Adds umd build type for working with CDNs
+
 ## 0.3.15
 
 ### Patch Changes

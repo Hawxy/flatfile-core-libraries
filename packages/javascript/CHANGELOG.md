@@ -1,5 +1,13 @@
 # @flatfile/javascript
 
+## 0.1.25
+
+### Patch Changes
+
+- 6f39196: Adds umd build type for working with CDNs
+- Updated dependencies [6f39196]
+  - @flatfile/listener@0.3.16
+
 ## 0.1.24
 
 ### Patch Changes

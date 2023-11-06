@@ -1,5 +1,13 @@
 # @flatfile/v2-shims
 
+## 0.0.6
+
+### Patch Changes
+
+- 6f39196: Adds umd build type for working with CDNs
+- Updated dependencies [6f39196]
+  - @flatfile/listener@0.3.16
+
 ## 0.0.5
 
 ### Patch Changes
