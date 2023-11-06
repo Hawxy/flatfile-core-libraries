@@ -21,7 +21,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss">
 .ff_error_container {
   display: flex;
   flex-direction: column;

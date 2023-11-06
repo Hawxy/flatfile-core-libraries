@@ -1,5 +1,5 @@
 import type { App } from '@vue/runtime-dom'
-import { UseSpace } from '@/components'
+import { UseSpace } from './'
 
 export default {
   install: (app: App) => {

@@ -37,7 +37,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .flatfile_outer-shell {
   background-color: var(--ff-bg-fade);
   border-radius: var(--ff-border-radius);
