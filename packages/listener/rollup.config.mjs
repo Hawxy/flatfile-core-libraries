@@ -27,6 +27,7 @@ export default {
       name: 'FlatFileListener',
     },
   ],
+  external: ['axios'],
   plugins: [
     json(),
     commonjs({ include: '../../node_modules/**' }),
