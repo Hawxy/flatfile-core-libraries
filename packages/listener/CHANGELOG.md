@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.17
+
+### Patch Changes
+
+- c8379f0: Fixes an issue where axios and its http method are not available
+
 ## 0.3.16
 
 ### Patch Changes
