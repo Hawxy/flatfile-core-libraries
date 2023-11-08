@@ -126,7 +126,6 @@ export function createIframe(
   window.addEventListener(
     'message',
     (event) => {
-      console.log('Received message:', event.data)
       if (
         event.data &&
         event.data.topic === 'job:outcome-acknowledged' &&
