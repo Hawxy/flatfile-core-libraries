@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.33
+
+### Patch Changes
+
+- e280f69: fix dependency issue
+
 ## 7.2.32
 
 ### Patch Changes
