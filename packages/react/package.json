@@ -51,7 +51,6 @@
     "react-hooks-testing-library": "^0.6.0",
     "react-router-dom": "^6.7.0",
     "rollup-plugin-iife": "^0.7.0",
-    "styled-components": "^5.3.6",
     "ts-jest": "^28.0.5"
   },
   "dependencies": {
@@ -63,7 +62,8 @@
     "pubnub-react": "^3.0.2",
     "react-test-renderer": "^18.2.0",
     "rollup-plugin-import-css": "^3.3.5",
-    "tinycolor2": "^1.6.0"
+    "tinycolor2": "^1.6.0",
+    "styled-components": "^5.3.6"
   },
   "peerDependencies": {
     "react": "^16.0.0 || ^17.0.0 || ^18.0.0"
