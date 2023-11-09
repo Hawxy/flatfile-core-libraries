@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.32
+
+### Patch Changes
+
+- 775c6d2: remove styled-components from peer deps
+
 ## 7.2.31
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.26
+
+### Patch Changes
+
+- 585d15f: Remove console.log()
+
 ## 0.1.25
 
 ### Patch Changes
