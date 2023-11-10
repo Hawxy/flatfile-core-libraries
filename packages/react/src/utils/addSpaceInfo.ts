@@ -18,18 +18,16 @@ export const addSpaceInfo = async (
     sidebarConfig,
     spaceInfo,
     userInfo,
-    spaceBody
+    spaceBody,
   } = spaceProps
   let localWorkbook
 
   try {
     if (workbook) {
       localWorkbook = await api.workbooks.create({
-        sheets: workbook.sheets,
-        name: workbook.name,
-        actions: workbook.actions,
         spaceId,
         environmentId,
+        ...workbook,
       })
 
       if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
@@ -44,7 +42,7 @@ export const addSpaceInfo = async (
         sidebarConfig: sidebarConfig ? sidebarConfig : { showSidebar: false },
         userInfo,
         spaceInfo,
-        ...(spaceBody?.metadata || {})
+        ...(spaceBody?.metadata || {}),
       },
     })
 

@@ -67,11 +67,8 @@ describe('addSpaceInfo', () => {
     await addSpaceInfo(mockSpaceProps, mockSpaceId, mockApi)
 
     expect(mockApi.workbooks.create).toHaveBeenCalledWith({
-      sheets: mockWorkbook.sheets,
-      name: mockWorkbook.name,
-      actions: mockWorkbook.actions,
+      ...mockWorkbook,
       spaceId: mockSpaceId,
-      environmentId: mockSpaceProps.environmentId,
     })
 
     expect(mockApi.spaces.update).toHaveBeenCalledWith(mockSpaceId, {

@@ -11,11 +11,9 @@ export const createWorkbook = async (data: UpdateSpaceInfo) => {
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({
-      sheets: workbook?.sheets,
-      name: workbook?.name,
-      actions: workbook?.actions,
       spaceId,
       environmentId,
+      ...workbook,
     }),
   })
   const localWorkbook = await response.json()
