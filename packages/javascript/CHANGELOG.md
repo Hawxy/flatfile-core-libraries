@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.1.27
+
+### Patch Changes
+
+- dea361d: Include all Workbook Params in Creation
+
 ## 0.1.26
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.2.34
+
+### Patch Changes
+
+- dea361d: Include all Workbook Params in Creation
+
 ## 7.2.33
 
 ### Patch Changes
