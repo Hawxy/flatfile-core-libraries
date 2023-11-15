@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.3.0
+
+### Minor Changes
+
+- 6149ffa: create useSpaceTrigger to control when consume flatfile
+
 ## 7.2.34
 
 ### Patch Changes
