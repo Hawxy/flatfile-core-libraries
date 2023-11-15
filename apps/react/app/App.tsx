@@ -1,6 +1,6 @@
 'use client'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { useSpace } from '@flatfile/react'
+import React, { useState } from 'react'
+import { useSpaceTrigger } from '@flatfile/react'
 import { listener } from './listener'
 import styles from './page.module.css'
 import { config } from './config'
@@ -25,20 +25,11 @@ const spaceProps = {
 
 const LoadingComponent = () => <label>Loading data....</label>
 
-const Space = ({
-  setShowSpace,
-  accessToken,
-}: {
-  setShowSpace: Dispatch<SetStateAction<boolean>>
-  accessToken?: string
-}) => {
-  const space = useSpace({
+function App() {
+  const [showSpace, setShowSpace] = useState(false)
+  
+  const { Space, createOrUseSpace } = useSpaceTrigger({
     ...spaceProps,
-    // space: {
-    //   // PUT SPACE ID TO REUSE HERE
-    //   id: SPACE_ID,
-    //   accessToken,
-    // },
     loading: <LoadingComponent />,
     exitPrimaryButtonText: 'CLOSE!',
     exitSecondaryButtonText: 'KEEP IT!',
@@ -47,29 +38,14 @@ const Space = ({
       onClose: () => setShowSpace(false),
     },
   })
-  return space
-}
-
-function App() {
-  const [showSpace, setShowSpace] = useState(false)
-  const [data, setData] = useState<any>()
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const spaceId = SPACE_ID
-  //     const response = await fetch(`api/spaces/${spaceId}`)
-
-  //     const json = await response.json()
-  //     setData(json)
-  //   }
-  //   fetchData().catch(console.error)
-  // }, [])
 
   return (
     <div className={styles.main}>
       <div className={styles.description}>
         <button
-          onClick={() => {
+          onClick={async () => {
             setShowSpace(!showSpace)
+            await createOrUseSpace()
           }}
         >
           {showSpace === true ? 'Close' : 'Open'} space
@@ -77,10 +53,7 @@ function App() {
       </div>
       {showSpace && (
         <div className={styles.spaceWrapper}>
-          <Space
-            setShowSpace={setShowSpace}
-            // accessToken={data.space.data.accessToken}
-          />
+          <Space />
         </div>
       )}
     </div>
