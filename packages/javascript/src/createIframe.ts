@@ -15,7 +15,8 @@ export function createIframe(
     operation: string
     onClose: (data: any) => void
   },
-  listenerPubnubClient?: Pubnub
+  listenerPubnubClient?: Pubnub,
+  onCancel?: () => void
 ): void {
   const spacesURL = spacesUrl || 'https://spaces.flatfile.com'
 
@@ -84,6 +85,9 @@ export function createIframe(
 
       for (let item of elements) {
         item.style.display = 'none'
+      }
+      if (onCancel) {
+        onCancel()
       }
       listenerPubnubClient?.unsubscribeAll()
     },

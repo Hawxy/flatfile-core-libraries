@@ -1,4 +1,6 @@
 import { UpdateSpaceInfo } from '../..'
+import { SheetConfig } from '@flatfile/api/api/resources/sheets/types/SheetConfig'
+import { Flatfile } from '@flatfile/api'
 
 export const createWorkbook = async (data: UpdateSpaceInfo) => {
   const { apiUrl, accessToken, workbook, spaceId, environmentId } = data
@@ -28,4 +30,28 @@ export const createWorkbook = async (data: UpdateSpaceInfo) => {
   }
 
   return localWorkbook.data
+}
+
+export const createWorkbookFromSheet = (
+  sheet: SheetConfig,
+  onSubmit?: boolean
+): Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'> => {
+  const blueprint = {
+    name: sheet?.name || 'Embedded Importer',
+    sheets: [sheet],
+  }
+  return onSubmit
+    ? {
+        ...blueprint,
+        actions: [
+          {
+            operation: 'simpleSubmitAction',
+            mode: 'foreground',
+            label: 'Submit data',
+            description: 'Action for handling data inside of onSubmit',
+            primary: true,
+          },
+        ],
+      }
+    : blueprint
 }

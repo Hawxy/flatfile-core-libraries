@@ -1,19 +1,31 @@
-import { Flatfile } from '@flatfile/api'
+import api, { Flatfile } from '@flatfile/api'
 import { Browser, FlatfileListener, FlatfileEvent } from '@flatfile/listener'
 import Pubnub from 'pubnub'
 
 import { createIframe } from './src/createIframe'
 import {
   ISidebarConfig,
-  ISpace,
   IThemeConfig,
   IUserInfo,
   NewSpaceFromPublishableKey,
   initializePubnub,
+  SimpleOnboarding,
+  JobHandler,
+  SheetHandler,
 } from '@flatfile/embedded-utils'
-import { createWorkbook } from './src/services/workbook'
+import {
+  createWorkbook,
+  createWorkbookFromSheet,
+} from './src/services/workbook'
 import { updateSpace } from './src/services/space'
 import { createDocument } from './src/services/document'
+
+import { recordHook } from '@flatfile/plugin-record-hook'
+import {
+  FlatfileRecord,
+  TPrimitive,
+  TRecordDataWithLinks,
+} from '@flatfile/hooks'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
@@ -122,14 +134,71 @@ const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
   }
 }
 
-export async function initializeFlatfile(
-  flatfileOptions: ISpace
-): Promise<{ spaceId: string } | void> {
+interface SimpleListenerType
+  extends Pick<SimpleOnboarding, 'onRecordHook' | 'onSubmit'> {
+  slug: string
+}
+
+const createSimpleListener = ({
+  onRecordHook,
+  onSubmit,
+  slug,
+}: SimpleListenerType) =>
+  FlatfileListener.create((client: FlatfileListener) => {
+    if (onRecordHook) {
+      client.use(
+        recordHook(
+          slug,
+          async (record: FlatfileRecord, event: FlatfileEvent | undefined) =>
+            // @ts-ignore - something weird with the `data` prop and the types upstream in the packages being declared in different places, but overall this is fine
+            onRecordHook(record, event)
+        )
+      )
+    }
+    if (onSubmit) {
+      client.filter({ job: 'workbook:simpleSubmitAction' }, (configure) => {
+        configure.on('job:ready', async (event) => {
+          const { jobId, spaceId, workbookId } = event.context
+          try {
+            await api.jobs.ack(jobId, { info: 'Starting job', progress: 10 })
+
+            const job = new JobHandler(jobId)
+            const { data: workbookSheets } = await api.sheets.list({
+              workbookId,
+            })
+
+            // this assumes we are only allowing 1 sheet here (which we've talked about doing initially)
+            const sheet = new SheetHandler(workbookSheets[0].id)
+
+            await onSubmit({ job, sheet })
+
+            await api.jobs.complete(jobId, {
+              outcome: {
+                message: 'complete',
+              },
+            })
+            await api.spaces.delete(spaceId)
+          } catch (error: any) {
+            if (jobId) {
+              await api.jobs.cancel(jobId)
+            }
+            if (spaceId) {
+              await api.spaces.delete(spaceId)
+            }
+            console.error('Error:', error.stack)
+          }
+        })
+      })
+    }
+  })
+
+export async function startFlatfile(options: SimpleOnboarding) {
   const {
     publishableKey,
     displayAsModal = true,
     mountElement = 'flatfile_iFrameContainer',
     space,
+    sheet,
     spaceBody = null,
     apiUrl = 'https://platform.flatfile.com/api',
     baseUrl = 'https://spaces.flatfile.com',
@@ -149,12 +218,14 @@ export async function initializeFlatfile(
     userInfo,
     spaceInfo,
     listener,
-  } = flatfileOptions
+    onRecordHook,
+    onSubmit,
+    onCancel,
+  } = options
   const spacesUrl = spaceUrl || baseUrl
-
   try {
     const createSpaceEndpoint = `${apiUrl}/v1/spaces`
-
+    let createdWorkbook = workbook
     const createSpace = async () => {
       const spaceRequestBody = {
         name: name || 'Embedded Space',
@@ -163,8 +234,12 @@ export async function initializeFlatfile(
         ...spaceBody,
       }
 
-      if (!workbook) {
+      if (!createdWorkbook && !sheet) {
         spaceRequestBody.autoConfigure = true
+      }
+
+      if (!createdWorkbook && sheet) {
+        createdWorkbook = createWorkbookFromSheet(sheet)
       }
 
       const response = await fetch(createSpaceEndpoint, {
@@ -190,13 +265,16 @@ export async function initializeFlatfile(
     iFrameContainer.id = mountElement
     document.body.appendChild(iFrameContainer)
 
-    const spaceData =
-      space?.id && space?.accessToken ? space : await createSpace()
+    const spaceData = await createSpace()
     if (!spaceData?.id || !spaceData?.accessToken) {
       throw new Error('Unable to create space, please try again.')
     }
 
     let pubnubClient: Pubnub | undefined
+
+    const simpleListenerSlug: string =
+      createdWorkbook?.sheets?.[0].slug || 'slug'
+
     if (listener) {
       pubnubClient = await createlistener(
         spaceData.id,
@@ -205,12 +283,24 @@ export async function initializeFlatfile(
         listener,
         closeSpace
       )
+    } else {
+      pubnubClient = await createlistener(
+        spaceData.id,
+        spaceData.accessToken,
+        apiUrl,
+        createSimpleListener({
+          onRecordHook,
+          onSubmit,
+          slug: simpleListenerSlug,
+        }),
+        closeSpace
+      )
     }
 
     await updateSpaceInfo({
       apiUrl,
       publishableKey,
-      workbook,
+      workbook: createdWorkbook,
       spaceId: spaceData.id,
       accessToken: spaceData.accessToken,
       environmentId,
@@ -234,7 +324,8 @@ export async function initializeFlatfile(
       exitSecondaryButtonText,
       spacesUrl,
       closeSpace,
-      pubnubClient
+      pubnubClient,
+      onCancel
     )
 
     return { spaceId: spaceData.id }

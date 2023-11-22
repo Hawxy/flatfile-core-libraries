@@ -1,8 +1,11 @@
 import { Flatfile } from '@flatfile/api'
-import { FlatfileListener } from '@flatfile/listener'
+import { FlatfileEvent, FlatfileListener } from '@flatfile/listener'
 import React from 'react'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
+import { FlatfileRecord } from '@flatfile/hooks/src'
+import { SheetConfig } from '@flatfile/api/api/resources/sheets/types/SheetConfig'
+import { TPrimitive, TRecordDataWithLinks } from '@flatfile/hooks'
 
 export type ISpace = NewSpaceFromPublishableKey | ReusedSpaceWithAccessToken
 
@@ -31,16 +34,16 @@ export interface NewSpaceFromPublishableKey extends BaseSpace {
    * Additional props when creating a Space
    * Optional
    */
-  spaceBody?: { 
-    [key: string]: any;
-    themeConfig?: never;
-    sidebarConfig?: never;
-    userInfo?: never;
-    spaceInfo?: never;
+  spaceBody?: {
+    [key: string]: any
+    themeConfig?: never
+    sidebarConfig?: never
+    userInfo?: never
+    spaceInfo?: never
   }
   /**
    * @deprecated should use userInfo instead.
-   * 
+   *
    * Additional metadata to be passed to the space
    * Optional
    */
@@ -82,6 +85,25 @@ export interface ReusedSpaceWithAccessToken extends BaseSpace {
   userInfo?: never
   workbook?: never
   spaceBody?: never
+}
+
+export interface SimpleOnboarding extends NewSpaceFromPublishableKey {
+  publishableKey: string
+  sheet?: SheetConfig
+  onSubmit?: ({
+    data,
+    sheet,
+    job,
+  }: {
+    data?: any
+    sheet?: any
+    job?: any
+  }) => void
+  onRecordHook?: (
+    record: FlatfileRecord<TRecordDataWithLinks<TPrimitive>>,
+    event?: FlatfileEvent
+  ) => FlatfileRecord
+  onCancel?: () => void
 }
 
 interface BaseSpace {
@@ -131,12 +153,12 @@ interface BaseSpace {
    * Custom text to update the primary button to exit
    * Optional
    */
-  exitPrimaryButtonText?: string;
+  exitPrimaryButtonText?: string
   /**
    * Custom text to update the secondary button to exit
    * Optional
    */
-  exitSecondaryButtonText?: string;
+  exitSecondaryButtonText?: string
   /**
    *
    * Url to override default flatfile api url
