@@ -1,5 +1,16 @@
 # @flatfile/javascript
 
+## 0.2.0
+
+### Minor Changes
+
+- de13f8d: Simplified implementation flow
+
+### Patch Changes
+
+- Updated dependencies [de13f8d]
+  - @flatfile/embedded-utils@1.0.8
+
 ## 0.1.27
 
 ### Patch Changes

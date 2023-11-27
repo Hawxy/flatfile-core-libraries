@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.0.8
+
+### Patch Changes
+
+- de13f8d: Simplified implementation flow
+
 ## 1.0.7
 
 ### Patch Changes
