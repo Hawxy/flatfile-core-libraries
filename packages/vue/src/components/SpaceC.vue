@@ -73,9 +73,11 @@ export default {
     spaceInfo: Object,
     userInfo: Object,
   },
+
   components: {
     ConfirmModal,
   },
+
   async created() {
     const {
       pubNub, spaceId, listener, apiUrl, accessToken, closeSpace
@@ -119,6 +121,7 @@ export default {
       channels: channel,
     });
   },
+  
   setup(props) {
     const showExitWarnModal = ref(false);
     const {

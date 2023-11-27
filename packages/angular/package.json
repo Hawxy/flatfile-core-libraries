@@ -1,0 +1,59 @@
+{
+  "name": "@flatfile/angular",
+  "version": "0.0.1",
+  "description": "Flatfile Angular Components",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlatFilers/platform-sdk-mono.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "git+https://github.com/FlatFilers/platform-sdk-mono/issues"
+  },
+  "homepage": "https://github.com/FlatFilers/platform-sdk-mono#readme",
+  "scripts": {
+    "build": "ng build --configuration production",
+    "mbuild": "ts-node --esm --project tsconfig.json",
+    "tbuild": "turbo build",
+    "ng:dev": "ng serve --open",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
+    "lint": "TIMING=1 eslint \"projects/**/*.{ts,tsx,js,jsx}\" --fix",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "dependencies": {
+    "@angular/animations": "^16.2.0",
+    "@angular/common": "^16.2.0",
+    "@angular/compiler": "^16.2.0",
+    "@angular/core": "^16.2.0",
+    "@angular/forms": "^16.2.0",
+    "@angular/platform-browser": "^16.2.0",
+    "@angular/platform-browser-dynamic": "^16.2.0",
+    "@angular/router": "^16.2.0",
+    "@flatfile/api": "^1.5.33",
+    "@flatfile/embedded-utils": "^1.0.6",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^16.2.8",
+    "@angular/cli": "^16.2.8",
+    "@angular/compiler-cli": "^16.2.0",
+    "@flatfile/eslint-config-platform-sdk": "*",
+    "@flatfile/ts-config-platform-sdk": "*",
+    "@types/node": "^20.8.9",
+    "eslint": "^8.19.0",
+    "ng-packagr": "^16.2.0",
+    "typescript": "~5.1.3"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}
