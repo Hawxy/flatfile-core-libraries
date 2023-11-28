@@ -40,7 +40,7 @@
           publishableKey,
           environmentId,
           sheet,
-          onSubmit: async (job, sheet) => {
+          onSubmit: async ({job, sheet}) => {
             const data = await sheet.allData()
             output.value = JSON.stringify(data, " ", 2)
             console.log('onSubmit', data)
@@ -68,7 +68,7 @@
     <div class="container">
       <button
               id="flatfileButton"
-              onclick="openFlatfile({ publishableKey: 'pk_c7ea3ee12a4f4636b99dcf48429b541b', environmentId: 'us_env_HuwLrKpB'})"
+              onclick="openFlatfile({ publishableKey: 'YOUR_PUBLISHABLE_KEY', environmentId: 'YOUR_ENV_ID'})"
       >
         Import stuff
       </button>

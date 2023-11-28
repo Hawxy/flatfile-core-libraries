@@ -239,7 +239,7 @@ export async function startFlatfile(options: SimpleOnboarding) {
       }
 
       if (!createdWorkbook && sheet) {
-        createdWorkbook = createWorkbookFromSheet(sheet)
+        createdWorkbook = createWorkbookFromSheet(sheet, !!onSubmit)
       }
 
       const response = await fetch(createSpaceEndpoint, {
@@ -335,3 +335,5 @@ export async function startFlatfile(options: SimpleOnboarding) {
     wrapper?.appendChild(errorMessage)
   }
 }
+
+export const initializeFlatfile = startFlatfile
