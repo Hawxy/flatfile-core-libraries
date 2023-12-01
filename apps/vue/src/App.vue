@@ -1,24 +1,14 @@
-<template>
-  <div class="main">
-    <div class="description">
-      <button @click="toggleSpace">{{ showSpace ? 'Close' : 'Open' }} space</button>
-    </div>
-    <div v-if="showSpace" class="space-wrapper">
-      <UseSpace v-bind="spaceProps" />
-    </div>
-  </div>
-</template>
 
-<script>
-import { ref } from 'vue';
-import { UseSpace } from '@flatfile/vue';
+<script lang="jsx">
+import { ref, onMounted, h, defineComponent } from 'vue';
+import { initializeFlatfile } from '../../../packages/vue';
 import { workbook } from "./config";
 import { listener } from './listener'
 
-const SPACE_ID = 'us_sp_1234';
+const SPACE_ID = 'us_sp_12314';
 const ENVIRONMENT_ID = 'us_env_1234';
 
-export default {
+export default defineComponent({
   setup() {
     const showSpace = ref(false);
     const publishableKey = 'your_key';
@@ -48,18 +38,34 @@ export default {
       }
     });
 
+
+    const { Space, OpenEmbed } = initializeFlatfile(spaceProps.value);
+
     const toggleSpace = () => {
       showSpace.value = !showSpace.value;
+      OpenEmbed()
     };
 
     return {
-      showSpace,
       toggleSpace,
-      spaceProps,
-    };
+      showSpace,
+      Space
+    }
   },
-  components: {
-    UseSpace
+  render(props, ctx) {
+    const Space = props.Space
+
+    return (
+      <div>
+        <div class="description">
+          <button onClick={props.toggleSpace}>{ props.showSpace ? 'Close' : 'Open' } space</button>
+        </div>
+
+        {props.showSpace && <div class="space-wrapper">
+          <Space />
+        </div>}
+      </div>
+    )
   },
-};
+});
 </script>

@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      class="spinner"
-      data-testid="spinner-icon"
-    ></div>
+    <div class="spinner" data-testid="spinner-icon" />
   </div>
 </template>
 
