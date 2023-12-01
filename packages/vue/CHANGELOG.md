@@ -1,5 +1,11 @@
 # @flatfile/vue
 
+## 0.0.4
+
+### Patch Changes
+
+- f5026ce: Adding trigger hook
+
 ## 0.0.3
 
 ### Patch Changes

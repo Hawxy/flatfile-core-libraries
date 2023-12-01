@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.3.1
+
+### Patch Changes
+
+- 15fe469: improve nomenclature
+
 ## 7.3.0
 
 ### Minor Changes

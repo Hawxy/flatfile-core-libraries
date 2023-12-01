@@ -1,5 +1,11 @@
 # @flatfile/cli
 
+## 3.5.12
+
+### Patch Changes
+
+- a2c7953: Update Link to API Key article
+
 ## 3.5.11
 
 ### Patch Changes
