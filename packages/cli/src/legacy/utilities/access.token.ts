@@ -2,6 +2,8 @@ import fetch from 'node-fetch'
 import ora from 'ora'
 import chalk from 'chalk'
 
+const API_KEY_DOCS_URL =
+  'https://support.flatfile.com/en/articles/7873661-how-do-i-configure-new-api-keys-in-the-flatfile-data-exchange-platform'
 interface AccessToken {
   /**
    * Access key exchange base URL
@@ -37,9 +39,7 @@ const generateAccessToken = async ({
         'FLATFILE_ACCESS_KEY_ID'
       )} environment variable must be provided.`
     )
-    console.log(
-      `See https://support.flatfile.com/hc/en-us/articles/4406299638932-How-can-I-create-API-Keys-`
-    )
+    console.log(`See ${API_KEY_DOCS_URL}`)
 
     process.exit(1)
   }
@@ -50,9 +50,7 @@ const generateAccessToken = async ({
         'FLATFILE_SECRET'
       )} environment variable must be provided.`
     )
-    console.log(
-      `See https://support.flatfile.com/hc/en-us/articles/4406299638932-How-can-I-create-API-Keys-`
-    )
+    console.log(`See ${API_KEY_DOCS_URL}`)
 
     process.exit(1)
   }
