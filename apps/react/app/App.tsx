@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { useSpaceTrigger } from '@flatfile/react'
+import { initializeFlatfile } from '@flatfile/react'
 import { listener } from './listener'
 import styles from './page.module.css'
 import { config } from './config'
@@ -28,7 +28,7 @@ const LoadingComponent = () => <label>Loading data....</label>
 function App() {
   const [showSpace, setShowSpace] = useState(false)
   
-  const { Space, createOrUseSpace } = useSpaceTrigger({
+  const { Space, OpenEmbed } = initializeFlatfile({
     ...spaceProps,
     loading: <LoadingComponent />,
     exitPrimaryButtonText: 'CLOSE!',
@@ -45,7 +45,7 @@ function App() {
         <button
           onClick={async () => {
             setShowSpace(!showSpace)
-            await createOrUseSpace()
+            await OpenEmbed()
           }}
         >
           {showSpace === true ? 'Close' : 'Open'} space

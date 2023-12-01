@@ -7,9 +7,9 @@ import { ISpace, State, initializePubnub } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
 
-type IUseSpace = { createOrUseSpace: () => Promise<void>; Space: () => JSX.Element; }
+type IUseSpace = { OpenEmbed: () => Promise<void>; Space: () => JSX.Element; }
 
-export const useSpaceTrigger = (props: ISpace): IUseSpace => {
+export const initializeFlatfile = (props: ISpace): IUseSpace => {
   const {
     error: ErrorElement,
     errorTitle,
@@ -90,7 +90,7 @@ export const useSpaceTrigger = (props: ISpace): IUseSpace => {
   )
 
   return {
-    createOrUseSpace: initSpace,
+    OpenEmbed: initSpace,
     Space: () => pubNub ? initError ? errorElement : <Space
       key={localSpaceId}
       spaceId={localSpaceId}
@@ -102,4 +102,4 @@ export const useSpaceTrigger = (props: ISpace): IUseSpace => {
   }
 }
 
-export default useSpaceTrigger
+export default initializeFlatfile
