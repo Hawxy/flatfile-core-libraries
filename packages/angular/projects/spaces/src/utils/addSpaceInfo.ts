@@ -21,7 +21,6 @@ const addSpaceInfo = async (
 
   try {
     if (workbook) {
-      
       const localWorkbook = await api.workbooks.create({
         sheets: workbook.sheets,
         name: workbook.name,

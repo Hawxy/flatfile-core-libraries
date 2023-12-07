@@ -1,5 +1,9 @@
+$ff-secondary-color: #616a7d;
+$ff-border-radius: 5px;
+$ff-bg-fade: rgba(0, 0, 0, 0.2);
+
 .flatfile_displayAsModal #flatfile_iframe {
-  border-radius: var(--ff-border-radius);
+  border-radius: $ff-border-radius;
   background: rgb(255, 255, 255);
 }
 .flatfile_displayAsModal .flatfile-close-button {
@@ -24,7 +28,7 @@
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.8);
 }
 .flatfile_displayAsModal .flatfile-close-button svg {
-  fill: var(--ff-secondary-color);
+  fill: $ff-secondary-color;
   width: 10px;
 }
 .flatfile_iframe-wrapper {
@@ -42,7 +46,7 @@
   max-width: 100vw; /* viewport width */
   height: calc(100vh - 60px); /* 30px padding on the top and bottom */
   padding: 30px;
-  background: var(--ff-bg-fade);
+  background: $ff-bg-fade;
   z-index: 1000;
 }
 

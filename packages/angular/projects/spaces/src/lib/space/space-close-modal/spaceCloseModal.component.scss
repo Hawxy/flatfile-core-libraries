@@ -1,6 +1,13 @@
+$ff-primary-color: #4c48ef;
+$ff-secondary-color: #616a7d;
+$ff-text-color: #090b2b;
+$ff-dialog-border-radius: 4px;
+$ff-border-radius: 5px;
+$ff-bg-fade: rgba(0, 0, 0, 0.2);
+
 .flatfile_outer-shell {
-  background-color: var(--ff-bg-fade);
-  border-radius: var(--ff-border-radius);
+  background-color: $ff-bg-fade;
+  border-radius: $ff-border-radius;
   top: 0;
   left: 0;
   width: calc(100% - 40px);
@@ -31,19 +38,19 @@
   background: #fff;
   min-width: 500px;
   max-width: 500px;
-  border-radius: var(--ff-dialog-border-radius);
+  border-radius: $ff-dialog-border-radius;
 }
 .flatfile_modal-heading {
   font-size: 1.225em;
   font-weight: 600;
   margin-bottom: 0.4em;
-  color: var(--ff-text-color);
+  color: $ff-text-color;
 }
 .flatfile_modal-text {
   font-size: 14px;
   line-height: 1.25em;
   margin-bottom: 2em;
-  color: var(--ff-secondary-color);
+  color: $ff-secondary-color;
 }
 .flatfile_button-group {
   display: flex;
@@ -58,10 +65,10 @@
   cursor: pointer;
 }
 .flatfile_primary {
-  border: 1px solid var(--ff-primary-color);
-  background-color: var(--ff-primary-color);
+  border: 1px solid $ff-primary-color;
+  background-color: $ff-primary-color;
   color: #fff;
 }
 .flatfile_secondary {
-  color: var(--ff-secondary-color);
+  color: $ff-secondary-color;
 }

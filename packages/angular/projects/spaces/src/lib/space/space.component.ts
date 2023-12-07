@@ -14,12 +14,12 @@ import type { SpaceFramePropsType } from './space-frame/spaceFrame.component';
 })
 
 export class Space implements OnInit{
-  @Input({required: true}) spaceProps: ISpace
+  @Input({required: true}) spaceProps: ISpace = {} as ISpace
 
   title = 'Space';
   localSpaceData: Record<string, any> | undefined
-  spaceFrameProps: SpaceFramePropsType
-  error: {message: string}
+  spaceFrameProps: SpaceFramePropsType | undefined
+  error: {message: string} | undefined
   loading: boolean = true;
   
   // constructor(private cd: ChangeDetectorRef){}
@@ -62,8 +62,9 @@ export class Space implements OnInit{
         ...this.spaceProps,
         ...this.localSpaceData,
       } as SpaceFramePropsType;
+
       
-    }catch (error) {
+    } catch (error) {
       this.loading = false;
       throw new Error(`An error has occurred: ${error}`)
     }

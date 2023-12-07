@@ -5,6 +5,7 @@ import { Browser, FlatfileEvent } from '@flatfile/listener';
 import addSpaceInfo from '../../../utils/addSpaceInfo';
 import authenticate from "../../../utils/authenticate";
 import { SpaceCloseModal, SpaceCloseModalPropsType } from "../space-close-modal/spaceCloseModal.component";
+import { getContainerStyles, getIframeStyles } from "./embeddedStyles";
 
 
 export type SpaceFramePropsType = ISpace & {spaceId: string, spaceUrl: string, localAccessToken: string, pubNub: any}
@@ -12,23 +13,23 @@ export type SpaceFramePropsType = ISpace & {spaceId: string, spaceUrl: string, l
 
 @Component({
   selector: 'space-frame',
-  // imports: [SpaceCloseModal],
   templateUrl: './spaceFrame.component.html',
   styleUrls: ['./spaceFrame.component.scss']
 })
 export class SpaceFrame implements OnInit{
   title='space-frame'
   showExitWarnModal = false
-  spaceCloseModalProps: SpaceCloseModalPropsType
+  spaceCloseModalProps: SpaceCloseModalPropsType = {} as SpaceCloseModalPropsType
+  iframeWrapperStyle = {}
+  iframeStyle = {}
 
-  @Input({required: true}) spaceFrameProps: SpaceFramePropsType
-  @Input({required: true}) loading: boolean
+  @Input({required: true}) spaceFrameProps: SpaceFramePropsType = {} as SpaceFramePropsType
+  @Input({required: true}) loading: boolean = false
 
   async created() {
     const {
       pubNub, spaceId, listener, apiUrl, closeSpace
     } = this.spaceFrameProps;
-
     const accessToken = this.spaceFrameProps.localAccessToken
 
     if (listener && typeof apiUrl === 'string')
@@ -71,6 +72,7 @@ export class SpaceFrame implements OnInit{
   }
 
   async initializeSpace(){
+    await this.created();
     const {
       publishableKey,
       workbook, 
@@ -80,14 +82,14 @@ export class SpaceFrame implements OnInit{
       sidebarConfig, 
       userInfo,
       spaceId,
-      apiUrl = "https://platform.flatfile.com",
+      apiUrl = "https://platform.flatfile.com/api",
     } = this.spaceFrameProps;
-    console.log('initializing')
+    
     const accessToken = this.spaceFrameProps.localAccessToken;
     
     if(typeof publishableKey !== 'string') throw new Error('please enter a valid publishable key');
     
-    const fullAccessApi = await authenticate(accessToken, apiUrl);
+    const fullAccessApi = authenticate(accessToken, apiUrl);
     await addSpaceInfo({
       publishableKey,
       workbook, 
@@ -104,9 +106,8 @@ export class SpaceFrame implements OnInit{
     const channel = `space.${spaceId}`;
     pubNub.unsubScripbe([channel])
   }
-
-  openCloseModalDialog(){
-    console.log('opening')
+  
+  openCloseModalDialog() {
     this.showExitWarnModal = true;
   }
 
@@ -115,27 +116,24 @@ export class SpaceFrame implements OnInit{
     closeSpace?.onClose({});
   }
 
-  handleCancel(){
-    console.log('closing')
+  handleCancel() {
     this.showExitWarnModal = false;
   }
 
   ngOnInit(): void {
     const {
-      spaceId, spaceUrl, closeSpace, apiUrl, pubNub, 
-      listener, workbook, environmentId, document, themeConfig, sidebarConfig, 
-      spaceInfo, userInfo, exitText, exitTitle, exitPrimaryButtonText, exitSecondaryButtonText
+      spaceId, exitText, exitTitle, exitPrimaryButtonText, exitSecondaryButtonText
     } = this.spaceFrameProps;
 
-    const channel = `space.${spaceId}`;
-    
-    // const handleConfirm = () => {
-    //   closeSpace?.onClose({});
-    // };
+    this.iframeWrapperStyle = getContainerStyles(this.spaceFrameProps.displayAsModal || false)
+    this.iframeStyle = getIframeStyles(this.spaceFrameProps.iframeStyles)
 
-    // const handleCancel = () => {
-    //   this.showExitWarnModal = false;
-    // };
+    if(!this.spaceFrameProps.localAccessToken) throw new Error('please wait until access token is recieved')
+    const accessToken = this.spaceFrameProps.localAccessToken
+
+    window.CROSSENV_FLATFILE_API_KEY = accessToken;
+    
+    this.initializeSpace();
 
     this.spaceCloseModalProps = {
       onConfirm: this.handleConfirm.bind(this),
@@ -145,14 +143,6 @@ export class SpaceFrame implements OnInit{
       exitPrimaryButtonText, 
       exitSecondaryButtonText
     }
-  }
-
-  ngOnChanges(){
-    if(!this.spaceFrameProps.localAccessToken) throw new Error('please wait until access token is recieved')
-    const accessToken = this.spaceFrameProps.localAccessToken
-
-    window.CROSSENV_FLATFILE_API_KEY = accessToken;
-    this.initializeSpace();
   }
 
   ngOnDestroy(): void{

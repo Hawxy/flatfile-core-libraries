@@ -1,40 +1,39 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-      "baseUrl": "./",
-      "outDir": "./dist/out-tsc",
-      "forceConsistentCasingInFileNames": true,
-      "strict": true,
-      "strictPropertyInitialization": false,
-      "noImplicitOverride": true,
-      "noUncheckedIndexedAccess": true,
-      "noPropertyAccessFromIndexSignature": false,
-      "noImplicitReturns": true,
-      "noFallthroughCasesInSwitch": true,
-      "sourceMap": true,
-      "downlevelIteration": true,
-      "experimentalDecorators": true,
-      "moduleResolution": "node",
-      "importHelpers": true,
-      "target": "ES2015",
-      "module": "ESNext",
-      "useDefineForClassFields": false,
-      "lib": [
-        "ESNext",
-        "ES2022",
-        "dom"
-      ],
+  "compileOnSave": false,
+  "compilerOptions": {
+    "paths": {
+      "@flatfile/angular": [
+        "dist/spaces"
+      ]
     },
-    "angularCompilerOptions": {
-      "enableI18nLegacyMessageIdFormat": false,
-      "experimentalDecorators": "false",
-      "strictInjectionParameters": true,
-      "strictInputAccessModifiers": true,
-      "strictTemplates": true
-    },
-    "include": ["./projects/**/*.ts", "projects/spaces/src/lib/space/space-frame/index.d.ts"],
-    "exclude": ["dist", "build", "node_modules"],
-    "extends": "@flatfile/ts-config-platform-sdk/base.json",
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
+    "lib": [
+      "ES2022",
+      "dom"
+    ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
-  
+}
