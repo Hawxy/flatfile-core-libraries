@@ -47,7 +47,7 @@ export const createWorkbookFromSheet = (
           {
             operation: 'simpleSubmitAction',
             mode: 'foreground',
-            label: 'Submit data',
+            label: 'Submit',
             description: 'Action for handling data inside of onSubmit',
             primary: true,
           },
