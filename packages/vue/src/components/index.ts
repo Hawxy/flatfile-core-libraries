@@ -1,2 +1,5 @@
-export { default as UseSpace } from './UseSpace.vue';
-export { default as initializeFlatfile } from './initializeFlatfile';
+import Spinner from "./Spinner.vue";
+import UseSpace from "./UseSpace.vue";
+import initializeFlatfile from "./initializeFlatfile";
+
+export { Spinner, UseSpace, initializeFlatfile };

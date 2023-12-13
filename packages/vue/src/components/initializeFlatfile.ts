@@ -1,12 +1,19 @@
 import { ref, reactive, toRefs, h } from 'vue';
 import {initializeSpace} from '../utils/initializeSpace';
 import getSpace from '../utils/getSpace';
-import { initializePubnub } from '@flatfile/embedded-utils'
+import { initializePubnub, ISpace } from '@flatfile/embedded-utils'
 import SpaceC from './SpaceC.vue';
 import SpinnerC from './Spinner.vue';
+import Pubnub from 'pubnub';
 import DefaultError from './DefaultError.vue';
 
-export const initializeFlatfile = (props) => {
+interface State {
+  pubNub: Pubnub | null,
+  localSpaceId: string
+  accessTokenLocal: string
+  spaceUrl: string
+}
+export const initializeFlatfile = (props: ISpace) => {
   const {
     error: ErrorElement,
     errorTitle,
@@ -14,8 +21,8 @@ export const initializeFlatfile = (props) => {
     apiUrl,
   } = props;
 
-  const initError = ref(null);
-  const state = reactive({
+  const initError = ref<Error | null>(null);
+  const state = reactive<State>({
     pubNub: null,
     localSpaceId: '',
     accessTokenLocal: '',
@@ -61,15 +68,15 @@ export const initializeFlatfile = (props) => {
 
       state.pubNub = initializedPubNub;
     } catch (error) {
-      initError.value = error;
+      initError.value = error as Error;
     }
   };
 
-  const errorElement = ErrorElement ? (
+  const errorElement = ErrorElement && initError.value ? (
     ErrorElement(initError.value)
   ) : h(DefaultError, {error:errorTitle || initError.value});;
 
-  const loadingElement = LoadingElement ?? h(SpinnerC);
+  const loadingElement = LoadingElement || h(SpinnerC);
 
   return {
     OpenEmbed: initSpace,

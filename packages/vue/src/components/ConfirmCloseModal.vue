@@ -29,10 +29,22 @@ export default {
   props: {
     onConfirm: Function,
     onCancel: Function,
-    exitText: String,
-    exitTitle: String,
-    exitPrimaryButtonText: String,
-    exitSecondaryButtonText: String,
+    exitText: {
+      type: String,
+      default: 'Are you sure you want to exit? Any unsaved changes will be lost.',
+    },
+    exitTitle: {
+      type: String,
+      default: 'Close Window',
+    },
+    exitPrimaryButtonText: {
+      type: String,
+      default: 'Yes, exit',
+    },
+    exitSecondaryButtonText: {
+      type: String,
+      default: 'No, stay',
+    },
   },
 };
 </script>

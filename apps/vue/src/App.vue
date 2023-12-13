@@ -1,7 +1,7 @@
 
 <script lang="jsx">
 import { ref, onMounted, h, defineComponent } from 'vue';
-import { initializeFlatfile } from '../../../packages/vue';
+import { initializeFlatfile } from '@flatfile/vue';
 import { workbook } from "./config";
 import { listener } from './listener'
 
