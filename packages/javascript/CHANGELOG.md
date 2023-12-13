@@ -1,5 +1,16 @@
 # @flatfile/javascript
 
+## 0.2.2
+
+### Patch Changes
+
+- 546e5b2: Update dependencies and add the Simplified React Flow
+- 546e5b2: Remove unneeded dependency
+- 61ef469: Update default submit label
+- Updated dependencies [546e5b2]
+- Updated dependencies [546e5b2]
+  - @flatfile/embedded-utils@1.0.9
+
 ## 0.2.1
 
 ### Patch Changes

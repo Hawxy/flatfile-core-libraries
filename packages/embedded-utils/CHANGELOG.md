@@ -1,5 +1,12 @@
 # embedded-utils
 
+## 1.0.9
+
+### Patch Changes
+
+- 546e5b2: Update dependencies and add the Simplified React Flow
+- 546e5b2: Remove unneeded dependency
+
 ## 1.0.8
 
 ### Patch Changes

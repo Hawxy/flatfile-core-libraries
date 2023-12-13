@@ -1,5 +1,18 @@
 # @flatfile/react
 
+## 7.4.0
+
+### Minor Changes
+
+- 546e5b2: Update dependencies and add the Simplified React Flow
+
+### Patch Changes
+
+- 546e5b2: Remove unneeded dependency
+- Updated dependencies [546e5b2]
+- Updated dependencies [546e5b2]
+  - @flatfile/embedded-utils@1.0.9
+
 ## 7.3.1
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @flatfile/vue
 
+## 0.0.5
+
+### Patch Changes
+
+- 6574fcc: fix css build in rollup
+- Updated dependencies [546e5b2]
+- Updated dependencies [546e5b2]
+  - @flatfile/embedded-utils@1.0.9
+
 ## 0.0.4
 
 ### Patch Changes
