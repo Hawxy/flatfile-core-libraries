@@ -1,7 +1,8 @@
-import { ISpace, getErrorMessage } from '@flatfile/embedded-utils'
+import { getErrorMessage } from '@flatfile/embedded-utils'
 import { authenticate } from './authenticate'
+import { IReactSpaceProps } from '../types'
 
-export const getSpace = async (spaceProps: ISpace) => {
+export const getSpace = async (spaceProps: IReactSpaceProps) => {
   const {
     space,
     apiUrl,

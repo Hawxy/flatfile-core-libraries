@@ -57,7 +57,7 @@
   "dependencies": {
     "@flatfile/embedded-utils": "^1.0.8",
     "@flatfile/listener": "^0.3.16",
-    "@flatfile/plugin-record-hook": "^1.1.11",
+    "@flatfile/plugin-record-hook": "^1.2.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-typescript": "^11.1.5",

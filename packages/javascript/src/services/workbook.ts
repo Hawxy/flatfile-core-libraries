@@ -1,5 +1,4 @@
 import { UpdateSpaceInfo } from '../..'
-import { SheetConfig } from '@flatfile/api/api/resources/sheets/types/SheetConfig'
 import { Flatfile } from '@flatfile/api'
 
 export const createWorkbook = async (data: UpdateSpaceInfo) => {
@@ -33,7 +32,7 @@ export const createWorkbook = async (data: UpdateSpaceInfo) => {
 }
 
 export const createWorkbookFromSheet = (
-  sheet: SheetConfig,
+  sheet: Flatfile.SheetConfig,
   onSubmit?: boolean
 ): Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'> => {
   const blueprint = {

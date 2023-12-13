@@ -1,6 +1,6 @@
 import { Browser, FlatfileEvent } from '@flatfile/listener'
 import { useEffect } from 'react'
-import { ISpace } from '@flatfile/embedded-utils'
+import { IReactSpaceProps } from '../types'
 /**
  * @name useCreateListener
  * @description Listener
@@ -11,8 +11,10 @@ export const useCreateListener = ({
   accessToken,
   listener,
   apiUrl = 'https://platform.flatfile.com/api',
-}: Pick<ISpace, 'listener'> & { accessToken: string; apiUrl: string }) => {
-  
+}: Pick<IReactSpaceProps, 'listener'> & {
+  accessToken: string
+  apiUrl: string
+}) => {
   // set the api key to fully authenticate into Flatfile api
   // todo: should we use CrossEnvConfig here?
   ;(window as any).CROSSENV_FLATFILE_API_KEY = accessToken

@@ -1,14 +1,12 @@
-// Contents of the file /rollup.config.js
 import css from 'rollup-plugin-import-css'
 import json from '@rollup/plugin-json'
 import typescript from '@rollup/plugin-typescript'
-import url from '@rollup/plugin-url'
 import commonjs from '@rollup/plugin-commonjs'
 import nodeResolve from '@rollup/plugin-node-resolve'
 
 const config = [
   {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: [
       {
         format: 'commonjs',
@@ -25,7 +23,6 @@ const config = [
     ],
     plugins: [
       json(),
-      // esModuleInterop(),
       commonjs({
         requireReturnsDefault: 'auto',
       }),
@@ -34,16 +31,10 @@ const config = [
         outDir: 'dist',
       }),
       nodeResolve({ browser: true }),
-      url({
-        include: ['**/*.otf'],
-        limit: Infinity,
-        fileName: '[dirname][name][extname]',
-      }),
     ],
-    external: ["react", "react-dom"],
   },
   {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: [
       {
         exports: 'auto',
@@ -63,20 +54,13 @@ const config = [
         requireReturnsDefault: 'auto',
       }),
       css(),
-      // esModuleInterop(),
       nodeResolve({ browser: true }),
       typescript({
         tsconfig: 'tsconfig.json',
         declaration: true,
         declarationDir: './dist',
       }),
-      url({
-        include: ['**/*.otf'],
-        limit: Infinity,
-        fileName: '[dirname][name][extname]',
-      }),
     ],
-    external: ["react", "react-dom"],
   },
 ]
 export default config

@@ -1,7 +1,8 @@
+import { IReactSpaceProps } from '../types'
 import { authenticate } from './authenticate'
-import { ISpace, getErrorMessage } from '@flatfile/embedded-utils'
+import { getErrorMessage } from '@flatfile/embedded-utils'
 
-export const initializeSpace = async (flatfileOptions: ISpace) => {
+export const initializeSpace = async (flatfileOptions: IReactSpaceProps) => {
   let space
   const {
     publishableKey,

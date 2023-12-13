@@ -21,8 +21,6 @@
   "devDependencies": {
     "@changesets/cli": "^2.23.0",
     "@flatfile/eslint-config-platform-sdk": "*",
-    "@parcel/packager-ts": "^2.9.1",
-    "@parcel/transformer-typescript-types": "^2.9.1",
     "@types/jest": "^28.1.4",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.9",
@@ -40,6 +38,7 @@
   },
   "dependencies": {
     "@flatfile/cross-env-config": "<1.0.0",
+    "@flatfile/api": "^1.5.44",
     "esbuild-loader": "^2.20.0",
     "rollup": "^2.79.1"
   },

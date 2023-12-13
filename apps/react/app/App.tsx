@@ -1,12 +1,14 @@
 'use client'
-import React, { useState } from 'react'
-import { initializeFlatfile } from '@flatfile/react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { initializeFlatfile, usePortal } from '@flatfile/react'
 import { listener } from './listener'
 import styles from './page.module.css'
 import { config } from './config'
+import { sheet } from '@/utils/sheet'
 
 const SPACE_ID = 'us_sp_123456'
 const ENVIRONMENT_ID = 'us_env_O60vqdol'
+const PUBLISHABLE_KEY = 'pk_3626978e5f52480085a37844166d347a'
 
 const spaceProps = {
   environmentId: ENVIRONMENT_ID,
@@ -19,15 +21,22 @@ const spaceProps = {
     padding: '16px',
   },
   listener: listener,
-  publishableKey: "pk_3626978e5f52480085a37844166d347a",
-  workbook: config
+  publishableKey: PUBLISHABLE_KEY,
+  workbook: config,
+}
+
+const simplifiedProps = {
+  environmentId: ENVIRONMENT_ID,
+  publishableKey: PUBLISHABLE_KEY,
+  sheet: sheet,
 }
 
 const LoadingComponent = () => <label>Loading data....</label>
 
 function App() {
   const [showSpace, setShowSpace] = useState(false)
-  
+  const [showSimplified, setShowSimplified] = useState(false)
+
   const { Space, OpenEmbed } = initializeFlatfile({
     ...spaceProps,
     loading: <LoadingComponent />,
@@ -38,6 +47,40 @@ function App() {
       onClose: () => setShowSpace(false),
     },
   })
+
+  const SimpleSpace = ({
+    setShowSpace,
+  }: {
+    setShowSpace: Dispatch<SetStateAction<boolean>>
+  }) => {
+    const portal = usePortal({
+      ...simplifiedProps,
+      onSubmit: async ({
+        job,
+        sheet,
+      }: {
+        job?: any
+        sheet?: any
+      }): Promise<any> => {
+        const data = await sheet.allData()
+        console.log('onSubmit', data)
+      },
+      onRecordHook: (record: any, event: any) => {
+        const firstName = record.get('firstName')
+        const lastName = record.get('lastName')
+        if (firstName && !lastName) {
+          record.set('lastName', 'Rock')
+          record.addInfo('lastName', 'Welcome to the Rock fam')
+        }
+        return record
+      },
+      closeSpace: {
+        operation: 'simpleSubmitAction',
+        onClose: () => setShowSpace(false),
+      },
+    })
+    return portal
+  }
 
   return (
     <div className={styles.main}>
@@ -51,9 +94,23 @@ function App() {
           {showSpace === true ? 'Close' : 'Open'} space
         </button>
       </div>
+      <div className={styles.description}>
+        <button
+          onClick={() => {
+            setShowSimplified(!showSimplified)
+          }}
+        >
+          {showSimplified === true ? 'Close' : 'Open'} Simplified
+        </button>
+      </div>
       {showSpace && (
         <div className={styles.spaceWrapper}>
           <Space />
+        </div>
+      )}
+      {showSimplified && (
+        <div>
+          <SimpleSpace setShowSpace={setShowSimplified} />
         </div>
       )}
     </div>

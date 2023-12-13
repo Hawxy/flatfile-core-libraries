@@ -3,11 +3,12 @@ import DefaultError from '../components/Error'
 import Space from '../components/Space'
 import Spinner from '../components/Spinner'
 import { SpinnerStyles } from '../components/embeddedStyles'
-import { ISpace, State, initializePubnub } from '@flatfile/embedded-utils'
+import { State, initializePubnub } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
+import { IReactSpaceProps } from '../types'
 
-export const useSpace = (props: ISpace): JSX.Element => {
+export const useSpace = (props: IReactSpaceProps): JSX.Element => {
   const {
     error: ErrorElement,
     errorTitle,

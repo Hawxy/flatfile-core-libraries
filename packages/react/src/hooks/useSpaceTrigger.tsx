@@ -3,13 +3,14 @@ import DefaultError from '../components/Error'
 import Space from '../components/Space'
 import Spinner from '../components/Spinner'
 import { SpinnerStyles } from '../components/embeddedStyles'
-import { ISpace, State, initializePubnub } from '@flatfile/embedded-utils'
+import { State, initializePubnub } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
+import { IReactSpaceProps } from '../types'
 
-type IUseSpace = { OpenEmbed: () => Promise<void>; Space: () => JSX.Element; }
+type IUseSpace = { OpenEmbed: () => Promise<void>; Space: () => JSX.Element }
 
-export const initializeFlatfile = (props: ISpace): IUseSpace => {
+export const initializeFlatfile = (props: IReactSpaceProps): IUseSpace => {
   const {
     error: ErrorElement,
     errorTitle,
@@ -91,14 +92,23 @@ export const initializeFlatfile = (props: ISpace): IUseSpace => {
 
   return {
     OpenEmbed: initSpace,
-    Space: () => pubNub ? initError ? errorElement : <Space
-      key={localSpaceId}
-      spaceId={localSpaceId}
-      spaceUrl={spaceUrl}
-      accessToken={accessTokenLocal}
-      pubNub={pubNub}
-      {...props}
-    /> : loadingElement
+    Space: () =>
+      pubNub ? (
+        initError ? (
+          errorElement
+        ) : (
+          <Space
+            key={localSpaceId}
+            spaceId={localSpaceId}
+            spaceUrl={spaceUrl}
+            accessToken={accessTokenLocal}
+            pubNub={pubNub}
+            {...props}
+          />
+        )
+      ) : (
+        loadingElement
+      ),
   }
 }
 

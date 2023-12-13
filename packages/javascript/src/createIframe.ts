@@ -90,6 +90,7 @@ export function createIframe(
         onCancel()
       }
       listenerPubnubClient?.unsubscribeAll()
+      closeSpace?.onClose({})
     },
     () => {
       // If user chooses to stay, we simply hide the confirm modal

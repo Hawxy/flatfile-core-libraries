@@ -12,20 +12,14 @@ import {
   SimpleOnboarding,
   JobHandler,
   SheetHandler,
-} from '@flatfile/embedded-utils'
-import {
-  createWorkbook,
   createWorkbookFromSheet,
-} from './src/services/workbook'
+} from '@flatfile/embedded-utils'
+import { createWorkbook } from './src/services/workbook'
 import { updateSpace } from './src/services/space'
 import { createDocument } from './src/services/document'
 
 import { recordHook } from '@flatfile/plugin-record-hook'
-import {
-  FlatfileRecord,
-  TPrimitive,
-  TRecordDataWithLinks,
-} from '@flatfile/hooks'
+import { FlatfileRecord } from '@flatfile/hooks'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
@@ -81,7 +75,7 @@ async function createlistener(
   }
 
   pubnub.addListener({
-    message: (event) => {
+    message: (event: { message: string }) => {
       const eventResponse = JSON.parse(event.message) ?? {}
       if (
         eventResponse.topic === 'job:outcome-acknowledged' &&

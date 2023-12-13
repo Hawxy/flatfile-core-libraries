@@ -1,17 +1,19 @@
 import { FlatfileClient } from '@flatfile/api'
 import {
-  NewSpaceFromPublishableKey,
   getErrorMessage,
+  createWorkbookFromSheet,
 } from '@flatfile/embedded-utils'
+import { IReactSimpleOnboarding } from '../types/IReactSimpleOnboarding'
 
 // Given the space is created, add workbook, metadata and document to the space
 export const addSpaceInfo = async (
-  spaceProps: NewSpaceFromPublishableKey,
+  spaceProps: IReactSimpleOnboarding,
   spaceId: string,
   api: FlatfileClient
 ) => {
   const {
     workbook,
+    sheet,
     environmentId,
     document,
     themeConfig,
@@ -23,6 +25,18 @@ export const addSpaceInfo = async (
   let localWorkbook
 
   try {
+    if (!workbook && sheet) {
+      const createdWorkbook = createWorkbookFromSheet(sheet)
+      localWorkbook = await api.workbooks.create({
+        spaceId,
+        environmentId,
+        ...createdWorkbook,
+      })
+
+      if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
+        throw new Error('Failed to create workbook')
+      }
+    }
     if (workbook) {
       localWorkbook = await api.workbooks.create({
         spaceId,

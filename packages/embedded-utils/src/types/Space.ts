@@ -1,6 +1,6 @@
 import { Flatfile } from '@flatfile/api'
 import { FlatfileEvent, FlatfileListener } from '@flatfile/listener'
-import React from 'react'
+import * as CSS from 'csstype'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
 import { FlatfileRecord } from '@flatfile/hooks/src'
@@ -122,7 +122,7 @@ interface BaseSpace {
    * Style the iframe using CSS Properties
    * Optional
    */
-  iframeStyles?: React.CSSProperties
+  iframeStyles?: CSS.Properties<string | number>
   /**
    *
    * Mount the iframe to a specific element
@@ -170,13 +170,13 @@ interface BaseSpace {
    * Error element to override default Error component
    * Optional
    */
-  error?: (error: Error | string) => React.ReactElement
+  error?: (error: Error | string) => any
   /**
    * Loading element to override default Loading component
    * Optional
    */
 
-  loading?: React.ReactElement
+  loading?: any
   /**
    *
    * Displays inline if false

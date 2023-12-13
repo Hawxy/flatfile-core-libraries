@@ -28,6 +28,7 @@ const TestComponent: React.FC<ISpace> = (props) => {
 }
 
 const renderUseSpaceHook = (props: ISpace) =>
+  // @ts-ignore
   render(<TestComponent {...props} />)
 
 const renderUseSpaceHookWithHookResult = (props: ISpace) =>
@@ -99,10 +100,8 @@ describe('useSpace', () => {
     } as ISpace)
 
     await waitForNextUpdate()
-    await waitForNextUpdate()
 
     const { current } = result
-
     const spaceComponent = current.type === Space ? current : undefined
 
     expect(spaceComponent).toBeDefined()
