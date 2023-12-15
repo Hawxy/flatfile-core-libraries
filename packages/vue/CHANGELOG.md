@@ -1,5 +1,13 @@
 # @flatfile/vue
 
+## 0.0.6
+
+### Patch Changes
+
+- e256d85: Enable simplified onboard
+- Updated dependencies [6010857]
+  - @flatfile/embedded-utils@1.0.10
+
 ## 0.0.5
 
 ### Patch Changes
