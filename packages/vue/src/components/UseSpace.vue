@@ -11,7 +11,7 @@
       :displayAsModal="displayAsModal"
       :exitText="exitText"
       :exitTitle="exitTitle"
-      :workbook="workbook"
+      :workbook="createdWorkbook"
       :exitPrimaryButtonText="exitPrimaryButtonText"
       :exitSecondaryButtonText="exitSecondaryButtonText"
       :closeSpace="closeSpace"
@@ -23,6 +23,8 @@
       :themeConfig="themeConfig"
       :environmentId="environmentId"
       :iframeStyles="iframeStyles"
+      :onSubmit="onSubmit"
+      :onRecordHook="onRecordHook"
     />
     <SpinnerC v-else></SpinnerC>
   </div>
@@ -48,10 +50,13 @@ export default {
     listener: Object,
     sidebarConfig: Object,
     document: Object,
+    sheet: Object,
     spaceBody: Object,
     spaceInfo: Object,
     userInfo: Object,
     workbook: Object,
+    onRecordHook: Function, 
+    onSubmit: Function,
     displayAsModal: Boolean,
     iframeStyles: Object,
     mountElement: {
@@ -80,7 +85,7 @@ export default {
     },
   },
   setup(props) {
-    const { space, initializeSpace } = useInitializeSpace(props);
+    const { space, initializeSpace, createdWorkbook } = useInitializeSpace(props);
     const initError = ref(null);
     const localSpaceId = ref(null);
     const pubNub = ref(null);
@@ -137,6 +142,7 @@ export default {
       spaceUrl,
       pubNub,
       accessTokenLocal,
+      createdWorkbook
     };
   },
   components: {

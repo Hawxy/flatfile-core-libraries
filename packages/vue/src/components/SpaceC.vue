@@ -47,6 +47,7 @@ import {
   getIframeStyles,
   getContainerStyles,
 } from './embeddedStyles';
+import { createSimpleListener } from '../utils/createSimpleListener';
 
 export default {
   props: {
@@ -57,6 +58,8 @@ export default {
     accessToken: String,
     spaceBody: Object,
     closeSpace: Object,
+    onRecordHook: Function, 
+    onSubmit: Function,
     pubNub: Object,
     document: Object,
     iframeStyles: Object,
@@ -80,17 +83,26 @@ export default {
 
   async created() {
     const {
-      pubNub, spaceId, listener, apiUrl, accessToken, closeSpace
+      pubNub, spaceId, listener, apiUrl, accessToken, closeSpace, onRecordHook, onSubmit, workbook
     } = this;
 
-    if (listener)
-      listener.mount(
+    const simpleListenerSlug = workbook?.sheets?.[0].slug || workbook?.sheets?.[0].config.slug || 'slug'
+
+    const listenerInstance = listener || createSimpleListener({
+      onRecordHook,
+      onSubmit,
+      slug: simpleListenerSlug,
+    })
+
+    if (listenerInstance) {
+      listenerInstance.mount(
         new Browser({
           apiUrl,
           accessToken,
           fetchApi: fetch,
         })
       )
+    }
 
     const dispatchEvent = (event) => {
       if (!event) return
@@ -98,7 +110,7 @@ export default {
       const eventPayload = event.src ? event.src : event
       const eventInstance = new FlatfileEvent(eventPayload, accessToken, apiUrl)
 
-      return listener?.dispatchEvent(eventInstance)
+      return listenerInstance?.dispatchEvent(eventInstance)
     }
 
     const callback = (event) => {
@@ -126,7 +138,7 @@ export default {
     const showExitWarnModal = ref(false);
     const {
       spaceId, spaceUrl, accessToken, closeSpace, apiUrl, pubNub, 
-      listener, workbook, environmentId, document, themeConfig, sidebarConfig, 
+      workbook, environmentId, document, themeConfig, sidebarConfig, 
       spaceInfo, userInfo
     } = props;
     const channel = `space.${spaceId}`;

@@ -1,7 +1,12 @@
 import authenticate from './authenticate'
-import { ISpace, getErrorMessage } from '@flatfile/embedded-utils'
+import { getErrorMessage, SimpleOnboarding, createWorkbookFromSheet } from '@flatfile/embedded-utils'
+import { Flatfile } from '@flatfile/api'
 
-export const initializeSpace = async (flatfileOptions: ISpace) => {
+
+export const initializeSpace = async (flatfileOptions: SimpleOnboarding): Promise<{
+  space: any;
+  workbook?: Pick<Flatfile.CreateWorkbookConfig, "name" | "sheets" | "actions">
+}> => {
   let space
   const {
     publishableKey,
@@ -11,6 +16,8 @@ export const initializeSpace = async (flatfileOptions: ISpace) => {
     apiUrl,
     spaceUrl = 'https://spaces.flatfile.com/',
     workbook,
+    sheet,
+    onSubmit
   } = flatfileOptions
 
   try {
@@ -30,9 +37,15 @@ export const initializeSpace = async (flatfileOptions: ISpace) => {
       ...spaceBody,
     }
 
-    if (!workbook) {
+    let createdWorkbook = workbook
+    if (!createdWorkbook && !sheet) {
       spaceRequestBody.autoConfigure = true
     }
+
+    if (!createdWorkbook && sheet) {
+      createdWorkbook = createWorkbookFromSheet(sheet, !!onSubmit)
+    }
+
     try {
       space = await limitedAccessApi.spaces.create({
         environmentId,
@@ -56,7 +69,7 @@ export const initializeSpace = async (flatfileOptions: ISpace) => {
       space.data.guestLink = guestLink
     }
 
-    return space
+    return { space, workbook: createdWorkbook }
   } catch (error) {
     const message = getErrorMessage(error)
     console.error(`Failed to initialize space: ${message}`)

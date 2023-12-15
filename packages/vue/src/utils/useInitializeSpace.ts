@@ -1,9 +1,10 @@
 import { ref } from '@vue/runtime-dom';
-import { ISpace, getErrorMessage } from '@flatfile/embedded-utils';
+import { SimpleOnboarding, getErrorMessage, createWorkbookFromSheet } from '@flatfile/embedded-utils';
 import authenticate from './authenticate';
 
-const useInitializeSpace = (flatfileOptions: ISpace) => {
+const useInitializeSpace = (flatfileOptions: SimpleOnboarding) => {
   const space = ref();
+  const createdWorkbook = ref();
 
   const initializeSpace = async () => {
     try {
@@ -15,6 +16,8 @@ const useInitializeSpace = (flatfileOptions: ISpace) => {
         apiUrl,
         spaceUrl = 'https://spaces.flatfile.com/',
         workbook,
+        sheet,
+        onSubmit
       } = flatfileOptions;
 
       if (!publishableKey) {
@@ -32,8 +35,13 @@ const useInitializeSpace = (flatfileOptions: ISpace) => {
         ...spaceBody,
       };
 
-      if (!workbook) {
-        spaceRequestBody.autoConfigure = true;
+      createdWorkbook.value = workbook
+      if (!createdWorkbook.value && !sheet) {
+        spaceRequestBody.autoConfigure = true
+      }
+
+      if (!createdWorkbook.value && sheet) {
+        createdWorkbook.value = createWorkbookFromSheet(sheet, !!onSubmit)
       }
 
       try {
@@ -68,7 +76,7 @@ const useInitializeSpace = (flatfileOptions: ISpace) => {
     }
   };
 
-  return { space, initializeSpace };
+  return { space, initializeSpace, createdWorkbook };
 };
 
 export default useInitializeSpace;

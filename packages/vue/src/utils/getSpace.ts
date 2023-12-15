@@ -1,7 +1,12 @@
 import { ISpace, getErrorMessage } from '@flatfile/embedded-utils';
 import authenticate from './authenticate';
+import { Flatfile } from '@flatfile/api'
 
-const getSpace = async (spaceProps: ISpace) => {
+type IWorkbook = Pick<Flatfile.CreateWorkbookConfig, "name" | "sheets" | "actions">
+const getSpace = async (spaceProps: ISpace): Promise<{
+  space: any;
+  workbook?: IWorkbook;
+}> => {
   const {
     space,
     apiUrl,
@@ -9,6 +14,7 @@ const getSpace = async (spaceProps: ISpace) => {
     spaceUrl = 'https://spaces.flatfile.com/',
   } = spaceProps;
   let spaceResponse;
+  let workbookResponse;
   try {
     if (!space?.id) {
       throw new Error('Missing required ID for Space');
@@ -24,6 +30,7 @@ const getSpace = async (spaceProps: ISpace) => {
     const limitedAccessApi = authenticate(space?.accessToken, apiUrl);
     try {
       spaceResponse = await limitedAccessApi.spaces.get(space?.id);
+      workbookResponse = await limitedAccessApi.workbooks.list({ spaceId: space?.id });
     } catch (error) {
       throw new Error(`Failed to get space: ${getErrorMessage(error)}`);
     }
@@ -37,7 +44,13 @@ const getSpace = async (spaceProps: ISpace) => {
       spaceResponse.data.guestLink = guestLink;
     }
 
-    return spaceResponse;
+    const workbook = workbookResponse.data.length ? {
+      name: workbookResponse.data[0].name,
+      sheets: workbookResponse.data[0].sheets,
+      actions: workbookResponse.data[0].actions
+    } as IWorkbook : undefined;
+
+    return { space: spaceResponse, workbook };
   } catch (error) {
     const message = getErrorMessage(error);
     console.error(`Failed to initialize space: ${message}`);

@@ -12,13 +12,14 @@ interface State {
   localSpaceId: string
   accessTokenLocal: string
   spaceUrl: string
+  workbook: any
 }
 export const initializeFlatfile = (props: ISpace) => {
   const {
     error: ErrorElement,
     errorTitle,
     loading: LoadingElement,
-    apiUrl,
+    apiUrl = 'https://platform.flatfile.com/api',
   } = props;
 
   const initError = ref<Error | null>(null);
@@ -27,15 +28,19 @@ export const initializeFlatfile = (props: ISpace) => {
     localSpaceId: '',
     accessTokenLocal: '',
     spaceUrl: '',
+    workbook: null
   });
 
-  const { localSpaceId, pubNub, spaceUrl, accessTokenLocal } = toRefs(state);
+  const { localSpaceId, pubNub, spaceUrl, accessTokenLocal, workbook } = toRefs(state);
 
   const initSpace = async () => {
     try {
-      const { data } = props.publishableKey
+      const result = (props.publishableKey && !props?.space)
         ? await initializeSpace(props)
         : await getSpace(props);
+
+      const data = result?.space?.data
+      const workbook = result?.workbook
 
       if (!data) {
         throw new Error('Failed to initialize space');
@@ -67,6 +72,7 @@ export const initializeFlatfile = (props: ISpace) => {
       });
 
       state.pubNub = initializedPubNub;
+      state.workbook = workbook
     } catch (error) {
       initError.value = error as Error;
     }
@@ -90,6 +96,8 @@ export const initializeFlatfile = (props: ISpace) => {
             spaceUrl: spaceUrl.value,
             accessToken: accessTokenLocal.value,
             pubNub: pubNub.value,
+            workbook: workbook.value,
+            apiUrl,
             ...props
           })
       ) : (
