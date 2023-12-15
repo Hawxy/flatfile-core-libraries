@@ -2,6 +2,7 @@ import { State } from './State'
 import {
   ISpace,
   NewSpaceFromPublishableKey,
+  ReusedSpaceWithAccessToken,
   IUserInfo,
   ISpaceInfo,
   SimpleOnboarding,
@@ -16,6 +17,7 @@ export type {
   State,
   ISpace,
   NewSpaceFromPublishableKey,
+  ReusedSpaceWithAccessToken,
   InitializePubnub,
   IThemeConfig,
   IThemeGenerator,
