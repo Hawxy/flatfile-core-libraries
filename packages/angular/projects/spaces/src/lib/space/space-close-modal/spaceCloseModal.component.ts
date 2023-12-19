@@ -1,25 +1,23 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from '@angular/core'
 
 export type SpaceCloseModalPropsType = {
-  onConfirm: ()=>void,
-  onCancel: ()=>void,
-  exitText: string | undefined,
-  exitTitle: string | undefined,
-  exitPrimaryButtonText: string | undefined,
-  exitSecondaryButtonText: string | undefined,
+  onConfirm: () => void
+  onCancel: () => void
+  exitText: string | undefined
+  exitTitle: string | undefined
+  exitPrimaryButtonText: string | undefined
+  exitSecondaryButtonText: string | undefined
 }
-
 
 @Component({
   selector: 'space-close-modal',
   templateUrl: './spaceCloseModal.component.html',
-  styleUrls: ['./spaceCloseModal.component.scss']
+  styleUrls: ['./spaceCloseModal.component.scss'],
 })
-export class SpaceCloseModal implements OnInit{
-  title='space-close-modal'
+export class SpaceCloseModal implements OnInit {
+  title = 'space-close-modal'
 
-  @Input({required: true}) spaceCloseModalProps: SpaceCloseModalPropsType = {} as SpaceCloseModalPropsType
-  ngOnInit(): void {
-      
-  }
+  @Input({ required: true }) spaceCloseModalProps: SpaceCloseModalPropsType =
+    {} as SpaceCloseModalPropsType
+  ngOnInit(): void {}
 }

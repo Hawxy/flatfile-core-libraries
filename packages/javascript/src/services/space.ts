@@ -1,7 +1,17 @@
-import { UpdateSpaceInfo } from "../.."
+import { UpdateSpaceInfo } from '../..'
 
 export const updateSpace = async (data: UpdateSpaceInfo) => {
-  const { apiUrl, accessToken, themeConfig, sidebarConfig, userInfo, spaceInfo, spaceId, environmentId, spaceBody } = data
+  const {
+    apiUrl,
+    accessToken,
+    themeConfig,
+    sidebarConfig,
+    userInfo,
+    spaceInfo,
+    spaceId,
+    environmentId,
+    spaceBody,
+  } = data
   const updateSpaceEndpoint = `${apiUrl}/v1/spaces/${spaceId}`
   const response = await fetch(updateSpaceEndpoint, {
     method: 'PATCH',
@@ -16,7 +26,7 @@ export const updateSpace = async (data: UpdateSpaceInfo) => {
         sidebarConfig: sidebarConfig ? sidebarConfig : { showSidebar: false },
         userInfo,
         spaceInfo,
-        ...(spaceBody?.metadata || {})
+        ...(spaceBody?.metadata || {}),
       },
     }),
   })
@@ -27,7 +37,8 @@ export const updateSpace = async (data: UpdateSpaceInfo) => {
   }
 
   if (!response.ok) {
-    const errorMessage = updatedSpace?.errors[0]?.message || 'Failed to update space'
+    const errorMessage =
+      updatedSpace?.errors[0]?.message || 'Failed to update space'
     throw new Error(errorMessage)
   }
 

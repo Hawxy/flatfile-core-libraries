@@ -127,7 +127,7 @@ const ConfirmModal = ({
   exitText,
   exitTitle,
   exitPrimaryButtonText,
-  exitSecondaryButtonText
+  exitSecondaryButtonText,
 }: {
   onConfirm: () => void
   onCancel: () => void

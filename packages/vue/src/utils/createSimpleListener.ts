@@ -2,11 +2,9 @@ import api from '@flatfile/api'
 import {
   JobHandler,
   SheetHandler,
-  SimpleOnboarding
+  SimpleOnboarding,
 } from '@flatfile/embedded-utils'
-import {
-  FlatfileRecord
-} from '@flatfile/hooks'
+import { FlatfileRecord } from '@flatfile/hooks'
 import { FlatfileEvent, FlatfileListener } from '@flatfile/listener'
 import { recordHook } from '@flatfile/plugin-record-hook'
 

@@ -1,8 +1,8 @@
-import { ISpace, getErrorMessage } from '@flatfile/embedded-utils';
-import authenticate from './authenticate';
+import { ISpace, getErrorMessage } from '@flatfile/embedded-utils'
+import authenticate from './authenticate'
 
 const useInitializeSpace = (flatfileOptions: ISpace) => {
-  let space;
+  let space
 
   const initializeSpace = async () => {
     try {
@@ -14,61 +14,60 @@ const useInitializeSpace = (flatfileOptions: ISpace) => {
         apiUrl,
         spaceUrl = 'https://spaces.flatfile.com/',
         workbook,
-      } = flatfileOptions;
+      } = flatfileOptions
 
       if (!publishableKey) {
-        throw new Error('Missing required publishable key');
+        throw new Error('Missing required publishable key')
       }
 
       if (!environmentId) {
-        throw new Error('Missing required environment id');
+        throw new Error('Missing required environment id')
       }
 
-      const limitedAccessApi = authenticate(publishableKey, apiUrl);
+      const limitedAccessApi = authenticate(publishableKey, apiUrl)
       const spaceRequestBody = {
         name,
         autoConfigure: false,
         ...spaceBody,
-      };
+      }
 
-      
       if (!workbook) {
-        spaceRequestBody.autoConfigure = true;
+        spaceRequestBody.autoConfigure = true
       }
 
       try {
         space = await limitedAccessApi.spaces.create({
           environmentId,
           ...spaceRequestBody,
-        });
+        })
       } catch (error) {
-        throw new Error(`Failed to create space: ${getErrorMessage(error)}`);
+        throw new Error(`Failed to create space: ${getErrorMessage(error)}`)
       }
 
       if (!space) {
         throw new Error(
-          `Failed to create space: Error parsing token: ${publishableKey}`,
-        );
+          `Failed to create space: Error parsing token: ${publishableKey}`
+        )
       }
 
       if (!space.data.accessToken) {
-        throw new Error('Failed to retrieve accessToken');
+        throw new Error('Failed to retrieve accessToken')
       }
 
       if (!space.data.guestLink) {
-        const guestLink = `${spaceUrl}space/${space.data.id}?token=${space.data.accessToken}`;
-        space.data.guestLink = guestLink;
+        const guestLink = `${spaceUrl}space/${space.data.id}?token=${space.data.accessToken}`
+        space.data.guestLink = guestLink
       }
 
-      return space;
+      return space
     } catch (error) {
-      const message = getErrorMessage(error);
-      console.error(`Failed to initialize space: ${message}`);
-      throw error;
+      const message = getErrorMessage(error)
+      console.error(`Failed to initialize space: ${message}`)
+      throw error
     }
-  };
+  }
 
-  return { space, initializeSpace };
-};
+  return { space, initializeSpace }
+}
 
-export default useInitializeSpace;
+export default useInitializeSpace

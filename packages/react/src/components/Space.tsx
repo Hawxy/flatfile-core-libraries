@@ -1,6 +1,6 @@
 import { Flatfile } from '@flatfile/api'
 import { PubNubProvider } from 'pubnub-react'
-import React, { JSX, useState } from 'react'
+import React, { JSX, useState, useEffect } from 'react'
 import { useCreateListener } from '../hooks/useCreateListener'
 import { useEventSubscriber } from '../hooks/useEventSubscriber'
 import { ISpace, SpaceComponent } from '@flatfile/embedded-utils'
@@ -12,7 +12,6 @@ import {
 } from './embeddedStyles'
 import { addSpaceInfo } from '../utils/addSpaceInfo'
 import { authenticate } from '../utils/authenticate'
-import { useEffect } from 'react'
 
 /**
  * @name Space

@@ -1,4 +1,4 @@
-import { UpdateSpaceInfo } from "../.."
+import { UpdateSpaceInfo } from '../..'
 
 export const createDocument = async (data: UpdateSpaceInfo) => {
   const { apiUrl, accessToken, document, spaceId } = data
@@ -21,7 +21,8 @@ export const createDocument = async (data: UpdateSpaceInfo) => {
   }
 
   if (!response.ok) {
-    const errorMessage = createdDocument?.errors[0]?.message || 'Failed to create document'
+    const errorMessage =
+      createdDocument?.errors[0]?.message || 'Failed to create document'
     throw new Error(errorMessage)
   }
 }

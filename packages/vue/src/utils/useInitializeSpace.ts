@@ -1,10 +1,14 @@
-import { ref } from '@vue/runtime-dom';
-import { SimpleOnboarding, getErrorMessage, createWorkbookFromSheet } from '@flatfile/embedded-utils';
-import authenticate from './authenticate';
+import { ref } from '@vue/runtime-dom'
+import {
+  SimpleOnboarding,
+  getErrorMessage,
+  createWorkbookFromSheet,
+} from '@flatfile/embedded-utils'
+import authenticate from './authenticate'
 
 const useInitializeSpace = (flatfileOptions: SimpleOnboarding) => {
-  const space = ref();
-  const createdWorkbook = ref();
+  const space = ref()
+  const createdWorkbook = ref()
 
   const initializeSpace = async () => {
     try {
@@ -17,23 +21,23 @@ const useInitializeSpace = (flatfileOptions: SimpleOnboarding) => {
         spaceUrl = 'https://spaces.flatfile.com/',
         workbook,
         sheet,
-        onSubmit
-      } = flatfileOptions;
+        onSubmit,
+      } = flatfileOptions
 
       if (!publishableKey) {
-        throw new Error('Missing required publishable key');
+        throw new Error('Missing required publishable key')
       }
 
       if (!environmentId) {
-        throw new Error('Missing required environment id');
+        throw new Error('Missing required environment id')
       }
 
-      const limitedAccessApi = authenticate(publishableKey, apiUrl);
+      const limitedAccessApi = authenticate(publishableKey, apiUrl)
       const spaceRequestBody = {
         name,
         autoConfigure: false,
         ...spaceBody,
-      };
+      }
 
       createdWorkbook.value = workbook
       if (!createdWorkbook.value && !sheet) {
@@ -48,35 +52,35 @@ const useInitializeSpace = (flatfileOptions: SimpleOnboarding) => {
         space.value = await limitedAccessApi.spaces.create({
           environmentId,
           ...spaceRequestBody,
-        });
+        })
       } catch (error) {
-        throw new Error(`Failed to create space: ${getErrorMessage(error)}`);
+        throw new Error(`Failed to create space: ${getErrorMessage(error)}`)
       }
 
       if (!space.value) {
         throw new Error(
-          `Failed to create space: Error parsing token: ${publishableKey}`,
-        );
+          `Failed to create space: Error parsing token: ${publishableKey}`
+        )
       }
 
       if (!space.value.data.accessToken) {
-        throw new Error('Failed to retrieve accessToken');
+        throw new Error('Failed to retrieve accessToken')
       }
 
       if (!space.value.data.guestLink) {
-        const guestLink = `${spaceUrl}space/${space.value.data.id}?token=${space.value.data.accessToken}`;
-        space.value.data.guestLink = guestLink;
+        const guestLink = `${spaceUrl}space/${space.value.data.id}?token=${space.value.data.accessToken}`
+        space.value.data.guestLink = guestLink
       }
 
-      return space.value;
+      return space.value
     } catch (error) {
-      const message = getErrorMessage(error);
-      console.error(`Failed to initialize space: ${message}`);
-      throw error;
+      const message = getErrorMessage(error)
+      console.error(`Failed to initialize space: ${message}`)
+      throw error
     }
-  };
+  }
 
-  return { space, initializeSpace, createdWorkbook };
-};
+  return { space, initializeSpace, createdWorkbook }
+}
 
-export default useInitializeSpace;
+export default useInitializeSpace

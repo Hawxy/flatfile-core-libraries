@@ -1,1 +1,1 @@
-declare var sessionStorage: Storage;
+declare var sessionStorage: Storage

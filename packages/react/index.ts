@@ -4,7 +4,13 @@ import { makeTheme } from './src/utils/makeTheme'
 import { usePortal } from './src/hooks/usePortal'
 import { useSpace } from './src/hooks/useSpace'
 import { initializeFlatfile } from './src/hooks/useSpaceTrigger'
-import type { ISpace, IUserInfo, ISpaceInfo, ISidebarConfig, IThemeConfig } from '@flatfile/embedded-utils'
+import type {
+  ISpace,
+  IUserInfo,
+  ISpaceInfo,
+  ISidebarConfig,
+  IThemeConfig,
+} from '@flatfile/embedded-utils'
 
 export { makeTheme, usePortal, useSpace, initializeFlatfile, Space }
 

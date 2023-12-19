@@ -1,11 +1,16 @@
 import authenticate from './authenticate'
-import { getErrorMessage, SimpleOnboarding, createWorkbookFromSheet } from '@flatfile/embedded-utils'
+import {
+  getErrorMessage,
+  SimpleOnboarding,
+  createWorkbookFromSheet,
+} from '@flatfile/embedded-utils'
 import { Flatfile } from '@flatfile/api'
 
-
-export const initializeSpace = async (flatfileOptions: SimpleOnboarding): Promise<{
-  space: any;
-  workbook?: Pick<Flatfile.CreateWorkbookConfig, "name" | "sheets" | "actions">
+export const initializeSpace = async (
+  flatfileOptions: SimpleOnboarding
+): Promise<{
+  space: any
+  workbook?: Pick<Flatfile.CreateWorkbookConfig, 'name' | 'sheets' | 'actions'>
 }> => {
   let space
   const {
@@ -17,7 +22,7 @@ export const initializeSpace = async (flatfileOptions: SimpleOnboarding): Promis
     spaceUrl = 'https://spaces.flatfile.com/',
     workbook,
     sheet,
-    onSubmit
+    onSubmit,
   } = flatfileOptions
 
   try {

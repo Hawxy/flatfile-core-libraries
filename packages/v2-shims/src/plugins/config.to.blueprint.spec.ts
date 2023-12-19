@@ -14,7 +14,7 @@ describe('v2ConfigToBlueprint', () => {
     }
 
     const result = await configToBlueprint(input)
-    
+
     expect(result).toEqual({
       name: 'Sample',
       sheets: [
@@ -33,10 +33,10 @@ describe('v2ConfigToBlueprint', () => {
       ],
       actions: [
         {
-          description: "Submit action for data egress",
-          label: "Submit",
-          mode: "foreground",
-          operation: "submitAction",
+          description: 'Submit action for data egress',
+          label: 'Submit',
+          mode: 'foreground',
+          operation: 'submitAction',
           primary: true,
         },
       ],

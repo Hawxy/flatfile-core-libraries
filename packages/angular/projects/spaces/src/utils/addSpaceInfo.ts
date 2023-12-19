@@ -1,13 +1,13 @@
-import { FlatfileClient } from '@flatfile/api';
+import { FlatfileClient } from '@flatfile/api'
 import {
   NewSpaceFromPublishableKey,
   getErrorMessage,
-} from '@flatfile/embedded-utils';
+} from '@flatfile/embedded-utils'
 
 const addSpaceInfo = async (
   spaceProps: NewSpaceFromPublishableKey,
   spaceId: string,
-  api: FlatfileClient,
+  api: FlatfileClient
 ) => {
   const {
     workbook,
@@ -17,7 +17,7 @@ const addSpaceInfo = async (
     sidebarConfig,
     spaceInfo,
     userInfo,
-  } = spaceProps;
+  } = spaceProps
 
   try {
     if (workbook) {
@@ -27,12 +27,12 @@ const addSpaceInfo = async (
         actions: workbook.actions,
         spaceId,
         environmentId,
-      });
+      })
       if (!localWorkbook || !localWorkbook.data || !localWorkbook.data.id) {
-        throw new Error('Failed to create workbook');
+        throw new Error('Failed to create workbook')
       }
     }
-    
+
     const updatedSpace = await api.spaces.update(spaceId, {
       environmentId,
       metadata: {
@@ -41,30 +41,30 @@ const addSpaceInfo = async (
         userInfo,
         spaceInfo,
       },
-    });
+    })
 
     if (!updatedSpace) {
-      throw new Error('Failed to update space');
+      throw new Error('Failed to update space')
     }
 
     if (document) {
       const createdDocument = await api.documents.create(spaceId, {
         title: document.title,
         body: document.body,
-      });
+      })
 
       if (
-        !createdDocument
-        || !createdDocument.data
-        || !createdDocument.data.id
+        !createdDocument ||
+        !createdDocument.data ||
+        !createdDocument.data.id
       ) {
-        throw new Error('Failed to create document');
+        throw new Error('Failed to create document')
       }
     }
   } catch (error) {
-    const message = getErrorMessage(error);
-    throw new Error(`Error adding workbook to space: ${message}`);
+    const message = getErrorMessage(error)
+    throw new Error(`Error adding workbook to space: ${message}`)
   }
-};
+}
 
-export default addSpaceInfo;
+export default addSpaceInfo

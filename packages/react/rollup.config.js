@@ -1,12 +1,46 @@
-// Contents of the file /rollup.config.js
 import css from 'rollup-plugin-import-css'
 import json from '@rollup/plugin-json'
 import typescript from '@rollup/plugin-typescript'
 import url from '@rollup/plugin-url'
 import commonjs from '@rollup/plugin-commonjs'
-import nodeResolve from '@rollup/plugin-node-resolve'
+import resolve from '@rollup/plugin-node-resolve'
+import terser from '@rollup/plugin-terser'
+
+const external = [
+  'react',
+  'react-dom',
+  '@flatfile/api',
+  '@flatfile/embedded-utils',
+  '@flatfile/listener',
+  '@flatfile/plugin-record-hook',
+  'pubnub',
+  'pubnub-react',
+  'styled-components',
+  'tinycolor2',
+]
+
+function commonPlugins(browser) {
+  return [
+    json(),
+    css(),
+    resolve({ browser, preferBuiltins: !browser }),
+    commonjs({ requireReturnsDefault: 'auto' }),
+    typescript({
+      outDir: 'dist',
+      declaration: browser,
+      declarationDir: './dist',
+    }),
+    url({
+      include: ['**/*.otf'],
+      limit: Infinity,
+      fileName: '[dirname][name][extname]',
+    }),
+    terser(),
+  ]
+}
 
 const config = [
+  // Non-browser build
   {
     input: 'index.ts',
     output: [
@@ -23,60 +57,37 @@ const config = [
         sourcemap: false,
       },
     ],
-    plugins: [
-      json(),
-      // esModuleInterop(),
-      commonjs({
-        requireReturnsDefault: 'auto',
-      }),
-      css(),
-      typescript({
-        outDir: 'dist',
-      }),
-      nodeResolve({ browser: true }),
-      url({
-        include: ['**/*.otf'],
-        limit: Infinity,
-        fileName: '[dirname][name][extname]',
-      }),
-    ],
-    external: ["react", "react-dom"],
+    plugins: commonPlugins(false),
+    external,
   },
+  // Browser build
   {
     input: 'index.ts',
     output: [
+      { format: 'cjs', exports: 'auto', file: 'dist/index.browser.cjs' },
       {
-        exports: 'auto',
-        file: 'dist/index.browser.cjs',
-        format: 'cjs',
-      },
-      {
+        format: 'es',
         exports: 'auto',
         file: 'dist/index.browser.mjs',
         sourcemap: false,
-        format: 'es',
       },
     ],
-    plugins: [
-      json(),
-      commonjs({
-        requireReturnsDefault: 'auto',
-      }),
-      css(),
-      // esModuleInterop(),
-      nodeResolve({ browser: true }),
-      typescript({
-        tsconfig: 'tsconfig.json',
-        declaration: true,
-        declarationDir: './dist',
-      }),
-      url({
-        include: ['**/*.otf'],
-        limit: Infinity,
-        fileName: '[dirname][name][extname]',
-      }),
-    ],
-    external: ["react", "react-dom"],
+    plugins: commonPlugins(true),
+    external,
+  },
+  // UMD build
+  {
+    input: 'index.ts',
+    output: {
+      format: 'umd',
+      name: 'FlatFileReact',
+      file: 'dist/index.browser.umd.js',
+      exports: 'auto',
+      sourcemap: false,
+      strict: true,
+    },
+    plugins: commonPlugins(true),
   },
 ]
+
 export default config

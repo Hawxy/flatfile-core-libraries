@@ -1,8 +1,7 @@
-
 import type { App } from 'vue'
-import Spinner from "./components/Spinner.vue";
-import UseSpace from "./components/UseSpace.vue";
-import initializeFlatfile from "./components/initializeFlatfile";
+import Spinner from './components/Spinner.vue'
+import UseSpace from './components/UseSpace.vue'
+import initializeFlatfile from './components/initializeFlatfile'
 
 export default {
   install: (app: App) => {

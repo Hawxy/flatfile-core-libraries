@@ -1,30 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 import { ISpace } from '@flatfile/angular'
-import { workbook } from "./workbook";
-import { listener } from "./listener";
+import { workbook } from './workbook'
+import { listener } from './listener'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  showSpace: boolean = false;
-  data: any;
+  showSpace: boolean = false
+  data: any
 
   constructor() {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
-  title = 'angular';
-
+  title = 'angular'
 
   toggleSpace() {
-    this.showSpace = !this.showSpace;
+    this.showSpace = !this.showSpace
   }
 
   closeSpace() {
-    this.showSpace = false;
+    this.showSpace = false
   }
 
   spaceProps: ISpace = {
@@ -38,16 +37,16 @@ export class AppComponent implements OnInit {
       onClose: this.closeSpace.bind(this),
     },
     userInfo: {
-      name: 'my space name'
+      name: 'my space name',
     },
     spaceInfo: {
-      name: 'my space name'
+      name: 'my space name',
     },
     displayAsModal: false,
     spaceBody: {
       metadata: {
-        random: 'param'
-      }
-    }
+        random: 'param',
+      },
+    },
   }
 }

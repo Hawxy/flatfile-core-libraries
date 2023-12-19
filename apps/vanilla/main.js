@@ -75,7 +75,7 @@ window.initializeFlatfile = async (publishableKey) => {
       showDataChecklist: true,
       showSidebar: true,
     },
-    listener
+    listener,
   }
 
   const space = await initializeFlatfile(flatfileOptions)
