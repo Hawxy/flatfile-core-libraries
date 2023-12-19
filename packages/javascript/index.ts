@@ -13,6 +13,7 @@ import {
   JobHandler,
   SheetHandler,
   createWorkbookFromSheet,
+  DefaultSubmitSettings,
 } from '@flatfile/embedded-utils'
 import { createWorkbook } from './src/services/workbook'
 import { updateSpace } from './src/services/space'
@@ -129,7 +130,10 @@ const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
 }
 
 interface SimpleListenerType
-  extends Pick<SimpleOnboarding, 'onRecordHook' | 'onSubmit'> {
+  extends Pick<
+    SimpleOnboarding,
+    'onRecordHook' | 'onSubmit' | 'submitSettings'
+  > {
   slug: string
 }
 
@@ -137,6 +141,7 @@ const createSimpleListener = ({
   onRecordHook,
   onSubmit,
   slug,
+  submitSettings,
 }: SimpleListenerType) =>
   FlatfileListener.create((client: FlatfileListener) => {
     if (onRecordHook) {
@@ -150,6 +155,7 @@ const createSimpleListener = ({
       )
     }
     if (onSubmit) {
+      const onSubmitSettings = { ...DefaultSubmitSettings, ...submitSettings }
       client.filter({ job: 'workbook:simpleSubmitAction' }, (configure) => {
         configure.on('job:ready', async (event) => {
           const { jobId, spaceId, workbookId } = event.context
@@ -171,13 +177,12 @@ const createSimpleListener = ({
                 message: 'complete',
               },
             })
-            await api.spaces.delete(spaceId)
+            if (onSubmitSettings.deleteSpaceAfterSubmit) {
+              await api.spaces.archiveSpace(spaceId)
+            }
           } catch (error: any) {
             if (jobId) {
               await api.jobs.cancel(jobId)
-            }
-            if (spaceId) {
-              await api.spaces.delete(spaceId)
             }
             console.error('Error:', error.stack)
           }

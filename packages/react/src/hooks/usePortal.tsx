@@ -9,6 +9,7 @@ import {
   JobHandler,
   SheetHandler,
   createWorkbookFromSheet,
+  DefaultSubmitSettings,
 } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
@@ -30,7 +31,7 @@ export const usePortal = (props: IReactSimpleOnboarding): JSX.Element => {
   const [flatfileOptions, setFlatfileOptions] = useState(props)
 
   const { localSpaceId, pubNub, spaceUrl, accessTokenLocal } = state
-
+  const onSubmitSettings = { ...DefaultSubmitSettings, ...props.submitSettings }
   const initSpace = async () => {
     let config = props
     try {
@@ -85,14 +86,13 @@ export const usePortal = (props: IReactSimpleOnboarding): JSX.Element => {
                             message: 'complete',
                           },
                         })
-                        await api.spaces.delete(spaceId)
+                        if (onSubmitSettings.deleteSpaceAfterSubmit) {
+                          await api.spaces.archiveSpace(spaceId)
+                        }
                       } catch (error: any) {
                         console.error('Error:', error.stack)
                         if (jobId) {
                           await api.jobs.cancel(jobId)
-                        }
-                        if (spaceId) {
-                          await api.spaces.delete(spaceId)
                         }
                         console.error('Error:', error.stack)
                       }

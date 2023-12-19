@@ -1,29 +1,33 @@
 import { State } from './State'
 import {
+  DefaultSubmitSettings,
   ISpace,
+  ISpaceInfo,
+  IUserInfo,
   NewSpaceFromPublishableKey,
   ReusedSpaceWithAccessToken,
-  IUserInfo,
-  ISpaceInfo,
   SimpleOnboarding,
 } from './Space'
+
 import { InitializePubnub } from './InitializePubnub'
+import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
 import { IThemeGenerator } from './ThemeGenerator'
 import { SpaceComponent } from './SpaceComponent'
-import { ISidebarConfig } from './ISidebarConfig'
 
 export type {
-  State,
-  ISpace,
-  NewSpaceFromPublishableKey,
-  ReusedSpaceWithAccessToken,
   InitializePubnub,
+  ISidebarConfig,
+  ISpace,
+  ISpaceInfo,
   IThemeConfig,
   IThemeGenerator,
-  SpaceComponent,
   IUserInfo,
-  ISpaceInfo,
-  ISidebarConfig,
+  NewSpaceFromPublishableKey,
+  ReusedSpaceWithAccessToken,
   SimpleOnboarding,
+  SpaceComponent,
+  State,
 }
+
+export { DefaultSubmitSettings }

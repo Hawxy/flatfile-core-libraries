@@ -87,6 +87,13 @@ export interface ReusedSpaceWithAccessToken extends BaseSpace {
   spaceBody?: never
 }
 
+type SubmitSettings = {
+  deleteSpaceAfterSubmit?: boolean
+}
+export const DefaultSubmitSettings = {
+  deleteSpaceAfterSubmit: false,
+} satisfies SubmitSettings
+
 export interface SimpleOnboarding extends NewSpaceFromPublishableKey {
   publishableKey: string
   sheet?: SheetConfig
@@ -104,6 +111,7 @@ export interface SimpleOnboarding extends NewSpaceFromPublishableKey {
     event?: FlatfileEvent
   ) => FlatfileRecord
   onCancel?: () => void
+  submitSettings?: SubmitSettings
 }
 
 interface BaseSpace {

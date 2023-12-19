@@ -1,5 +1,6 @@
 import api from '@flatfile/api'
 import {
+  DefaultSubmitSettings,
   JobHandler,
   SheetHandler,
   SimpleOnboarding,
@@ -9,7 +10,10 @@ import { FlatfileEvent, FlatfileListener } from '@flatfile/listener'
 import { recordHook } from '@flatfile/plugin-record-hook'
 
 interface SimpleListenerType
-  extends Pick<SimpleOnboarding, 'onRecordHook' | 'onSubmit'> {
+  extends Pick<
+    SimpleOnboarding,
+    'onRecordHook' | 'onSubmit' | 'submitSettings'
+  > {
   slug: string
 }
 
@@ -17,6 +21,7 @@ export const createSimpleListener = ({
   onRecordHook,
   onSubmit,
   slug,
+  submitSettings,
 }: SimpleListenerType) =>
   FlatfileListener.create((client: FlatfileListener) => {
     if (onRecordHook) {
@@ -30,6 +35,7 @@ export const createSimpleListener = ({
       )
     }
     if (onSubmit) {
+      const onSubmitSettings = { ...DefaultSubmitSettings, ...submitSettings }
       client.filter({ job: 'workbook:simpleSubmitAction' }, (configure) => {
         configure.on('job:ready', async (event) => {
           const { jobId, spaceId, workbookId } = event.context
@@ -51,13 +57,12 @@ export const createSimpleListener = ({
                 message: 'complete',
               },
             })
-            await api.spaces.delete(spaceId)
+            if (onSubmitSettings.deleteSpaceAfterSubmit) {
+              await api.spaces.archiveSpace(spaceId)
+            }
           } catch (error: any) {
             if (jobId) {
               await api.jobs.cancel(jobId)
-            }
-            if (spaceId) {
-              await api.spaces.delete(spaceId)
             }
             console.error('Error:', error.stack)
           }
