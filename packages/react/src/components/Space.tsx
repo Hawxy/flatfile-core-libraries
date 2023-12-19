@@ -119,6 +119,7 @@ export const SpaceContents = (
       <CloseIframeButton
         onClick={() => setShowExitWarnModal(true)}
         data-testid="flatfile-close-button"
+        type="button"
         className="flatfile-close-button"
         style={{ position: 'absolute', margin: '30px' }}
       >
