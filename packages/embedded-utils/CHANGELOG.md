@@ -1,5 +1,15 @@
 # embedded-utils
 
+## 1.1.0
+
+### Minor Changes
+
+- dcfee6a: Optimize bundles
+
+### Patch Changes
+
+- 1507df1: Add option to keep space after submit
+
 ## 1.0.10
 
 ### Patch Changes

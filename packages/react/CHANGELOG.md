@@ -1,5 +1,19 @@
 # @flatfile/react
 
+## 7.5.0
+
+### Minor Changes
+
+- dcfee6a: Optimize bundles
+
+### Patch Changes
+
+- 1507df1: Add option to keep space after submit
+- dfd3b5b: Adds type=button to the close button
+- Updated dependencies [dcfee6a]
+- Updated dependencies [1507df1]
+  - @flatfile/embedded-utils@1.1.0
+
 ## 7.4.0
 
 ### Minor Changes
