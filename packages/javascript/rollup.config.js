@@ -58,7 +58,7 @@ const config = [
       exports: 'auto',
       sourcemap: false,
       strict: true,
-      file: 'dist/index.umd.js',
+      file: 'dist/index.js',
       format: 'umd',
       name: 'FlatFileJavaScript',
     },

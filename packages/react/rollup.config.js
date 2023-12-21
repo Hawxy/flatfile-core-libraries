@@ -81,7 +81,7 @@ const config = [
     output: {
       format: 'umd',
       name: 'FlatFileReact',
-      file: 'dist/index.browser.umd.js',
+      file: 'dist/index.js',
       exports: 'auto',
       sourcemap: false,
       strict: true,
