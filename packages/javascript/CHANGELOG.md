@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 0.3.1
+
+### Patch Changes
+
+- 2429f55: Update umd build file
+
 ## 0.3.0
 
 ### Minor Changes

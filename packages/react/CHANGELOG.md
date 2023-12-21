@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.5.1
+
+### Patch Changes
+
+- 2429f55: Update UMD file name
+
 ## 7.5.0
 
 ### Minor Changes
