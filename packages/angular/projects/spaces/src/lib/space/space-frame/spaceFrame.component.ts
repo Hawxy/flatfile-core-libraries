@@ -113,10 +113,10 @@ export class SpaceFrame implements OnInit {
     )
   }
 
-  async unInitializeSpace() {
-    const { pubNub, spaceId } = this.spaceFrameProps
-    const channel = `space.${spaceId}`
-    pubNub.unsubScripbe([channel])
+  async unInitializeSpace(){
+    const {pubNub, spaceId} = this.spaceFrameProps;
+    const channel = `space.${spaceId}`;
+    pubNub?.unsubScripbe?.([channel])
   }
 
   openCloseModalDialog() {

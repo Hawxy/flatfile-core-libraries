@@ -1,25 +1,21 @@
-import { Component, OnInit } from '@angular/core'
-import { ISpace } from '@flatfile/angular'
-import { workbook } from './workbook'
-import { listener } from './listener'
+import { Component } from '@angular/core';
+import { ISpace, SpaceService } from '@flatfile/angular'
+import { workbook } from "./workbook";
+import { listener } from "./listener";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  showSpace: boolean = false
-  data: any
+export class AppComponent {
+  showSpace: boolean = false;
 
-  constructor() {}
-
-  ngOnInit() {}
-
-  title = 'angular'
+  constructor(private spaceService: SpaceService) {}
 
   toggleSpace() {
-    this.showSpace = !this.showSpace
+    this.spaceService.OpenEmbed()
+    this.showSpace = !this.showSpace;
   }
 
   closeSpace() {
