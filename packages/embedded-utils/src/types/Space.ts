@@ -3,9 +3,11 @@ import { FlatfileEvent, FlatfileListener } from '@flatfile/listener'
 import * as CSS from 'csstype'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
-import { FlatfileRecord } from '@flatfile/hooks/src'
-import { SheetConfig } from '@flatfile/api/api/resources/sheets/types/SheetConfig'
-import { TPrimitive, TRecordDataWithLinks } from '@flatfile/hooks'
+import {
+  TPrimitive,
+  TRecordDataWithLinks,
+  FlatfileRecord,
+} from '@flatfile/hooks'
 
 export type ISpace = NewSpaceFromPublishableKey | ReusedSpaceWithAccessToken
 
@@ -96,7 +98,7 @@ export const DefaultSubmitSettings = {
 
 export interface SimpleOnboarding extends NewSpaceFromPublishableKey {
   publishableKey: string
-  sheet?: SheetConfig
+  sheet?: Flatfile.SheetConfig
   onSubmit?: ({
     data,
     sheet,
