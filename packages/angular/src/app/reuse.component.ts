@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ISpace, SpaceService } from '@flatfile/angular'
-import { workbook } from "./workbook";
 import { listener } from "./listener";
 
 @Component({
@@ -23,26 +22,15 @@ export class AppComponent {
   }
 
   spaceProps: ISpace = {
-    name: 'Trste!',
+    space: {
+      id: 'us_sp_123',
+      accessToken: 'sk_1234'
+    },
     environmentId: 'us_env_1234',
-    publishableKey: 'sk_1234',
-    workbook,
     listener,
     closeSpace: {
       operation: 'submitActionFg',
       onClose: this.closeSpace.bind(this),
-    },
-    userInfo: {
-      name: 'my space name',
-    },
-    spaceInfo: {
-      name: 'my space name',
-    },
-    displayAsModal: false,
-    spaceBody: {
-      metadata: {
-        random: 'param',
-      },
     },
   }
 }

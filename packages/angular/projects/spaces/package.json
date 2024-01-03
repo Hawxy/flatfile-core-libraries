@@ -1,6 +1,6 @@
 {
   "name": "@flatfile/angular-sdk",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "homepage": "https://flatfile.com/",
   "description": "Angular flatfile sdk",
   "license": "MIT",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@flatfile/embedded-utils": "^1.0.6"
+    "@flatfile/embedded-utils": "^1.0.10"
   },
   "sideEffects": false
 }

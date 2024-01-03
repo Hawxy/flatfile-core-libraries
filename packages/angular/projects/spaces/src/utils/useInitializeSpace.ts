@@ -1,8 +1,8 @@
-import { ISpace, getErrorMessage } from '@flatfile/embedded-utils'
-import authenticate from './authenticate'
+import { ISpace, getErrorMessage, SimpleOnboarding, createWorkbookFromSheet } from '@flatfile/embedded-utils';
+import authenticate from './authenticate';
 
-const useInitializeSpace = (flatfileOptions: ISpace) => {
-  let space
+const useInitializeSpace = (flatfileOptions: SimpleOnboarding) => {
+  let space;
 
   const initializeSpace = async () => {
     try {
@@ -14,7 +14,10 @@ const useInitializeSpace = (flatfileOptions: ISpace) => {
         apiUrl,
         spaceUrl = 'https://spaces.flatfile.com/',
         workbook,
-      } = flatfileOptions
+        sheet,
+        onSubmit
+      } = flatfileOptions;
+
 
       if (!publishableKey) {
         throw new Error('Missing required publishable key')
@@ -31,8 +34,13 @@ const useInitializeSpace = (flatfileOptions: ISpace) => {
         ...spaceBody,
       }
 
-      if (!workbook) {
+      let createdWorkbook = workbook
+      if (!createdWorkbook && !sheet) {
         spaceRequestBody.autoConfigure = true
+      }
+  
+      if (!createdWorkbook && sheet) {
+        createdWorkbook = createWorkbookFromSheet(sheet, !!onSubmit)
       }
 
       try {
@@ -59,7 +67,7 @@ const useInitializeSpace = (flatfileOptions: ISpace) => {
         space.data.guestLink = guestLink
       }
 
-      return space
+      return { space, workbook: createdWorkbook };
     } catch (error) {
       const message = getErrorMessage(error)
       console.error(`Failed to initialize space: ${message}`)

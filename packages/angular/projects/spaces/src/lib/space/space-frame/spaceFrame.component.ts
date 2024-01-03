@@ -1,21 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core'
-import { ISpace } from '@flatfile/embedded-utils'
-import { Browser, FlatfileEvent } from '@flatfile/listener'
+import { Component, Input, OnInit } from "@angular/core";
+import { ISpace, SimpleOnboarding } from "@flatfile/embedded-utils";
+import { Browser, FlatfileEvent } from '@flatfile/listener';
 
-import addSpaceInfo from '../../../utils/addSpaceInfo'
-import authenticate from '../../../utils/authenticate'
-import {
-  SpaceCloseModal,
-  SpaceCloseModalPropsType,
-} from '../space-close-modal/spaceCloseModal.component'
-import { getContainerStyles, getIframeStyles } from './embeddedStyles'
+import addSpaceInfo from '../../../utils/addSpaceInfo';
+import authenticate from "../../../utils/authenticate";
+import createSimpleListener from "../../../utils/createSimpleListener";
+import { SpaceCloseModalPropsType } from "../space-close-modal/spaceCloseModal.component";
+import { getContainerStyles, getIframeStyles } from "./embeddedStyles";
 
-export type SpaceFramePropsType = ISpace & {
-  spaceId: string
-  spaceUrl: string
-  localAccessToken: string
-  pubNub: any
-}
+export type SpaceFramePropsType = ISpace & {spaceId: string, spaceUrl: string, localAccessToken: string, pubNub: any}
 
 @Component({
   selector: 'space-frame',
@@ -30,23 +23,31 @@ export class SpaceFrame implements OnInit {
   iframeWrapperStyle = {}
   iframeStyle = {}
 
-  @Input({ required: true }) spaceFrameProps: SpaceFramePropsType =
-    {} as SpaceFramePropsType
-  @Input({ required: true }) loading: boolean = false
+  @Input({required: true}) spaceFrameProps: SpaceFramePropsType  = {} as SpaceFramePropsType
+  @Input({required: true}) loading: boolean = false
 
   async created() {
-    const { pubNub, spaceId, listener, apiUrl, closeSpace } =
-      this.spaceFrameProps
+    const {
+      pubNub, spaceId, listener, apiUrl, closeSpace, workbook
+    } = this.spaceFrameProps;
     const accessToken = this.spaceFrameProps.localAccessToken
 
-    if (listener && typeof apiUrl === 'string')
-      listener.mount(
+    const simpleListenerSlug = workbook?.sheets?.[0].slug || 'slug'
+    const listenerInstance = listener || createSimpleListener({
+      onRecordHook: (this.spaceFrameProps as SimpleOnboarding).onRecordHook,
+      onSubmit: (this.spaceFrameProps as SimpleOnboarding).onSubmit,
+      slug: simpleListenerSlug,
+    })
+
+    if (listenerInstance && typeof apiUrl === 'string') {
+      listenerInstance.mount(
         new Browser({
           apiUrl,
           accessToken,
           fetchApi: fetch,
         })
       )
+    }
 
     const dispatchEvent = (event: any) => {
       if (!event) return
@@ -54,7 +55,7 @@ export class SpaceFrame implements OnInit {
       const eventPayload = event.src ? event.src : event
       const eventInstance = new FlatfileEvent(eventPayload, accessToken, apiUrl)
 
-      return listener?.dispatchEvent(eventInstance)
+      return listenerInstance?.dispatchEvent(eventInstance)
     }
 
     const callback = (event: any) => {
@@ -89,28 +90,24 @@ export class SpaceFrame implements OnInit {
       sidebarConfig,
       userInfo,
       spaceId,
-      apiUrl = 'https://platform.flatfile.com/api',
-    } = this.spaceFrameProps
-
-    const accessToken = this.spaceFrameProps.localAccessToken
-
-    if (typeof publishableKey !== 'string')
-      throw new Error('please enter a valid publishable key')
-
-    const fullAccessApi = authenticate(accessToken, apiUrl)
-    await addSpaceInfo(
-      {
+      apiUrl = "https://platform.flatfile.com/api",
+    } = this.spaceFrameProps;
+    
+    const accessToken = this.spaceFrameProps.localAccessToken;
+    
+    if(publishableKey) {
+      const fullAccessApi = authenticate(accessToken, apiUrl);
+      await addSpaceInfo({
         publishableKey,
-        workbook,
-        environmentId,
-        document,
-        themeConfig,
-        sidebarConfig,
-        userInfo,
-      },
-      spaceId,
-      fullAccessApi
-    )
+        workbook, 
+        environmentId, 
+        document, 
+        themeConfig, 
+        sidebarConfig, 
+        userInfo
+      }, spaceId, fullAccessApi);
+    }
+    
   }
 
   async unInitializeSpace(){

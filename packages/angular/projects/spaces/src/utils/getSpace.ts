@@ -7,8 +7,10 @@ const getSpace = async (spaceProps: ISpace) => {
     apiUrl,
     environmentId,
     spaceUrl = 'https://spaces.flatfile.com/',
-  } = spaceProps
-  let spaceResponse
+  } = spaceProps;
+  let spaceResponse;
+  let workbookResponse;
+
   try {
     if (!space?.id) {
       throw new Error('Missing required ID for Space')
@@ -23,7 +25,8 @@ const getSpace = async (spaceProps: ISpace) => {
 
     const limitedAccessApi = authenticate(space?.accessToken, apiUrl)
     try {
-      spaceResponse = await limitedAccessApi.spaces.get(space?.id)
+      spaceResponse = await limitedAccessApi.spaces.get(space?.id);
+      workbookResponse = await limitedAccessApi.workbooks.list({ spaceId: space?.id });
     } catch (error) {
       throw new Error(`Failed to get space: ${getErrorMessage(error)}`)
     }
@@ -37,7 +40,7 @@ const getSpace = async (spaceProps: ISpace) => {
       spaceResponse.data.guestLink = guestLink
     }
 
-    return spaceResponse
+    return { space: spaceResponse, workbook: workbookResponse.data };
   } catch (error) {
     const message = getErrorMessage(error)
     console.error(`Failed to initialize space: ${message}`)
