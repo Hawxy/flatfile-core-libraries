@@ -174,4 +174,4 @@ export class FlatfileEvent extends AuthenticatedClient {
   }
 }
 
-export type EventCallback = (evt: FlatfileEvent) => void
+export type EventCallback = (evt: FlatfileEvent) => void | Promise<void>
