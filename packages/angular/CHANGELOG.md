@@ -1,5 +1,11 @@
 # angular
 
+## 0.1.1
+
+### Patch Changes
+
+- ad55584: enable simplified onboarding
+
 ## 0.1.0
 
 ### Minor Changes
