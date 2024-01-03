@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.18
+
+### Patch Changes
+
+- 703b6b6: Resolved issue with the EventCallback type not expecting a promise
+
 ## 0.3.17
 
 ### Patch Changes
