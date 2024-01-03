@@ -3,6 +3,8 @@ import { AuthenticatedClient } from './authenticated.client'
 import { Event, RecordsWithLinks } from '@flatfile/api/api'
 import { EventCache } from './cache'
 
+import pako from 'pako'
+
 type GetDataOptions = { [key: string]: any }
 interface GetData extends Function {
   (options?: GetDataOptions): Promise<any>
@@ -110,7 +112,7 @@ export class FlatfileEvent extends AuthenticatedClient {
     }
   }
 
-  async update(records: RecordsWithLinks) {
+  async update(records: RecordsWithLinks, compressRequestBody = true) {
     if (!this.src.dataUrl) {
       throw new Error('Cannot set data on an event without a dataUrl')
     }
@@ -122,9 +124,18 @@ export class FlatfileEvent extends AuthenticatedClient {
       })
     })
 
+    const data = compressRequestBody
+      ? pako.gzip(JSON.stringify(records))
+      : records
+
+    const gzipHeaders = compressRequestBody
+      ? { 'Content-Encoding': 'gzip', 'Content-Length': data.length.toString() }
+      : {}
+
     await this.fetch(this.src.dataUrl, {
       method: 'PUT',
-      data: records,
+      ...gzipHeaders,
+      data,
     })
   }
 
