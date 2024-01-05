@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.3.19
+
+### Patch Changes
+
+- 8823223: Add pako compression to the event.update() by default
+
 ## 0.3.18
 
 ### Patch Changes
