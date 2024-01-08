@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 0.5.39
+
+### Patch Changes
+
+- 768e022: Add Settings to Workbook
+
 ## 0.5.38
 
 ### Patch Changes
