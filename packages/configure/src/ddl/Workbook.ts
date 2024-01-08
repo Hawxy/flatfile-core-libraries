@@ -122,5 +122,6 @@ interface IWorkbookOptions {
   ref?: string
   labels?: Array<string>
   options?: {}
+  settings?: {}
   portals?: Portal[]
 }
