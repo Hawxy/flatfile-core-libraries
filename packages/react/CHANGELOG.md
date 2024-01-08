@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.5.2
+
+### Patch Changes
+
+- c91e356: Update to remove styled-components
+
 ## 7.5.1
 
 ### Patch Changes
