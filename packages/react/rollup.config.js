@@ -5,6 +5,8 @@ import url from '@rollup/plugin-url'
 import commonjs from '@rollup/plugin-commonjs'
 import resolve from '@rollup/plugin-node-resolve'
 import terser from '@rollup/plugin-terser'
+import postcss from "rollup-plugin-postcss";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
 const external = [
   'react',
@@ -21,6 +23,7 @@ const external = [
 
 function commonPlugins(browser) {
   return [
+    peerDepsExternal(),
     json(),
     css(),
     resolve({ browser, preferBuiltins: !browser }),
@@ -36,6 +39,7 @@ function commonPlugins(browser) {
       fileName: '[dirname][name][extname]',
     }),
     terser(),
+    postcss()
   ]
 }
 

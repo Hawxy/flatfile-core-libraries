@@ -2,7 +2,6 @@ import React, { JSX, useEffect, useState } from 'react'
 import DefaultError from '../components/Error'
 import Space from '../components/Space'
 import Spinner from '../components/Spinner'
-import { SpinnerStyles } from '../components/embeddedStyles'
 import {
   State,
   initializePubnub,
@@ -160,9 +159,9 @@ export const usePortal = (props: IReactSimpleOnboarding): JSX.Element => {
   const errorElement = <DefaultError error={errorTitle || initError!} />
 
   const loadingElement = LoadingElement ?? (
-    <SpinnerStyles>
+    <div style={{ margin: '16px' }}>
       <Spinner />
-    </SpinnerStyles>
+    </div>
   )
 
   if (initError) {

@@ -2,7 +2,6 @@ import React, { JSX, useEffect, useState } from 'react'
 import DefaultError from '../components/Error'
 import Space from '../components/Space'
 import Spinner from '../components/Spinner'
-import { SpinnerStyles } from '../components/embeddedStyles'
 import { State, initializePubnub } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
@@ -87,9 +86,9 @@ export const useSpace = (props: IReactSpaceProps): JSX.Element => {
   )
 
   const loadingElement = LoadingElement ?? (
-    <SpinnerStyles>
+    <div style={{ margin: '16px' }}>
       <Spinner />
-    </SpinnerStyles>
+    </div>
   )
 
   if (initError) {

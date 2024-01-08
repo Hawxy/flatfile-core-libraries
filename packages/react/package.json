@@ -51,12 +51,13 @@
     "@types/pubnub": "^7.2.1",
     "@types/react": ">=16.9.0 <19.0.0",
     "@types/react-dom": ">=16.9.0 <19.0.0",
-    "@types/styled-components": "^5.1.26",
     "@types/tinycolor2": "^1.4.3",
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^29.6.4",
     "jsdom": "^21.1.0",
     "rollup-plugin-import-css": "^3.3.5",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
     "ts-jest": "^28.0.5"
   },
   "dependencies": {
@@ -66,7 +67,6 @@
     "@flatfile/plugin-record-hook": "^1.2.0",
     "pubnub": "^7.2.2",
     "pubnub-react": "^3.0.2",
-    "styled-components": "^5.3.6",
     "tinycolor2": "^1.6.0"
   },
   "peerDependencies": {

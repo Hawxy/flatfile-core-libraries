@@ -1,28 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
-
-export const CloseIframeButton = styled.button`
-  svg {
-    fill: lightgray;
-    width: 10px;
-  }
-  position: relative;
-  top: 20px;
-  right: -20px;
-  width: 25px;
-  height: 25px;
-  border-radius: 100%;
-  cursor: pointer;
-  border: none;
-  background: #000;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
-  animation: glow 1.5s linear infinite alternate;
-  transition: box-shadow 0.3s ease;
-
-  &:hover {
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.8);
-  }
-`
 
 export const getIframeStyles = (styles: React.CSSProperties) => {
   return (
@@ -61,6 +37,3 @@ export const getContainerStyles = (isModal: boolean): React.CSSProperties => {
   }
 }
 
-export const SpinnerStyles = styled.div`
-  margin: 16px;
-`

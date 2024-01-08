@@ -6,12 +6,12 @@ import { useEventSubscriber } from '../hooks/useEventSubscriber'
 import { ISpace, SpaceComponent } from '@flatfile/embedded-utils'
 import ConfirmModal from './ConfirmCloseModal'
 import {
-  CloseIframeButton,
   getIframeStyles,
   getContainerStyles,
 } from './embeddedStyles'
 import { addSpaceInfo } from '../utils/addSpaceInfo'
 import { authenticate } from '../utils/authenticate'
+import './style.scss'
 
 /**
  * @name Space
@@ -116,7 +116,7 @@ export const SpaceContents = (
         style={getIframeStyles(iframeStyles!)}
         src={spaceUrl}
       />
-      <CloseIframeButton
+      <button
         onClick={() => setShowExitWarnModal(true)}
         data-testid="flatfile-close-button"
         type="button"
@@ -146,11 +146,9 @@ export const SpaceContents = (
             strokeWidth="10"
           />
         </svg>
-      </CloseIframeButton>
+      </button>
     </div>
   )
 }
-
-// const ListenerWrapper
 
 export default Space
