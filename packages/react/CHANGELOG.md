@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 7.5.3
+
+### Patch Changes
+
+- Updated dependencies [1eedc59]
+  - @flatfile/listener@0.4.0
+  - @flatfile/embedded-utils@1.1.2
+
 ## 7.5.2
 
 ### Patch Changes

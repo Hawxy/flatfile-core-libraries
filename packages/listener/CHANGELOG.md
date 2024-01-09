@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.4.0
+
+### Minor Changes
+
+- 1eedc59: Replace axios with fetch
+
 ## 0.3.19
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @flatfile/listener-driver-pubsub
 
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [1eedc59]
+  - @flatfile/listener@0.4.0
+
 ## 1.0.12
 
 ### Patch Changes

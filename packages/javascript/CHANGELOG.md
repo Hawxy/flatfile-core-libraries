@@ -1,5 +1,13 @@
 # @flatfile/javascript
 
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies [1eedc59]
+  - @flatfile/listener@0.4.0
+  - @flatfile/embedded-utils@1.1.2
+
 ## 0.3.1
 
 ### Patch Changes

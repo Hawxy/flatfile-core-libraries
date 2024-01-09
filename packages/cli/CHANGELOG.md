@@ -1,5 +1,13 @@
 # @flatfile/cli
 
+## 3.5.13
+
+### Patch Changes
+
+- Updated dependencies [1eedc59]
+  - @flatfile/listener@0.4.0
+  - @flatfile/listener-driver-pubsub@2.0.0
+
 ## 3.5.12
 
 ### Patch Changes
