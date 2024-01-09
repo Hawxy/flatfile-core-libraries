@@ -1,5 +1,5 @@
 import { CrossEnvConfig } from '@flatfile/cross-env-config'
-import axios from 'axios'
+import fetch from 'cross-fetch'
 import { ensureSingleTrailingSlash } from '../utils/helpers'
 
 export class AuthenticatedClient {
@@ -23,26 +23,38 @@ export class AuthenticatedClient {
     const headers = {
       Authorization: `Bearer ${this._accessToken}`,
       'x-disable-hooks': 'true',
+      'Content-Type': 'application/json',
+      ...options?.headers,
     }
-    const axiosInstance = axios.create({
-      headers,
-      validateStatus: (status) => {
-        return status >= 200 && status <= 399
-      },
-    })
+
     const fetchUrl = this._apiUrl + url
-    const config = {
-      url: fetchUrl,
-      method: 'GET',
-      ...options,
+
+    const fetchOptions = {
+      method: options?.method || 'GET',
+      headers,
+      body: options?.data,
     }
+
     try {
-      const resp = await axiosInstance(config)
-      return resp.data.data
+      const response = await fetch(fetchUrl, fetchOptions)
+
+      if (response.status >= 200 && response.status <= 399) {
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const responseData = (await response.json()) as { data: any }
+          return responseData.data
+        } else {
+          const responseData = await response.text()
+          return responseData
+        }
+      } else {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
     } catch (err) {
       console.log('event.fetch error: ', err)
     }
   }
+
   /**
    *
    * @deprecated use @flatfile/cross-env-config instead

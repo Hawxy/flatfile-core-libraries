@@ -128,13 +128,13 @@ export class FlatfileEvent extends AuthenticatedClient {
       ? pako.gzip(JSON.stringify(records))
       : records
 
-    const gzipHeaders = compressRequestBody
+    const headers = compressRequestBody
       ? { 'Content-Encoding': 'gzip', 'Content-Length': data.length.toString() }
       : {}
 
     await this.fetch(this.src.dataUrl, {
       method: 'PUT',
-      ...gzipHeaders,
+      headers: headers,
       data,
     })
   }

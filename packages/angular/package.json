@@ -19,7 +19,7 @@
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
     "@flatfile/api": "^1.5.34",
-    "@flatfile/listener": "^0.3.17",
+    "@flatfile/listener": "0.3.17",
     "@flatfile/plugin-record-hook": "^1.1.11",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

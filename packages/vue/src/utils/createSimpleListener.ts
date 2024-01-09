@@ -36,8 +36,8 @@ export const createSimpleListener = ({
     }
     if (onSubmit) {
       const onSubmitSettings = { ...DefaultSubmitSettings, ...submitSettings }
-      client.filter({ job: 'workbook:simpleSubmitAction' }, (configure) => {
-        configure.on('job:ready', async (event) => {
+      client.filter({ job: 'workbook:simpleSubmitAction' }, (configure: FlatfileListener) => {
+        configure.on('job:ready', async (event: FlatfileEvent) => {
           const { jobId, spaceId, workbookId } = event.context
           try {
             await api.jobs.ack(jobId, { info: 'Starting job', progress: 10 })
