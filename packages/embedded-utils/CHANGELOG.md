@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.1.4
+
+### Patch Changes
+
+- 8d6cf2f: Remove Pubnub from @flatfile/react
+
 ## 1.1.3
 
 ### Patch Changes

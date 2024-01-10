@@ -1,5 +1,16 @@
 # @flatfile/react
 
+## 7.6.0
+
+### Minor Changes
+
+- 8d6cf2f: Remove Pubnub from @flatfile/react
+
+### Patch Changes
+
+- Updated dependencies [8d6cf2f]
+  - @flatfile/embedded-utils@1.1.4
+
 ## 7.5.4
 
 ### Patch Changes
