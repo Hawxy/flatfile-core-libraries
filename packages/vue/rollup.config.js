@@ -91,7 +91,7 @@ const baseConfig = {
 }
 
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
-const external = ['vue']
+const external = ['vue', '@flatfile/plugin-record-hook']
 
 // Refer to https://rollupjs.org/guide/en#output-globals for details
 const globals = { vue: 'Vue' }
@@ -114,7 +114,7 @@ if (!argv.format || argv.format === 'es') {
       json(),
       typescript(),
       replace(baseConfig.plugins.replace),
-      resolve({ preferBuiltins: false }),,
+      resolve({ preferBuiltins: false }),
       ...baseConfig.plugins.preVue,
       vue(baseConfig.plugins.vue),
       ...baseConfig.plugins.postVue,
@@ -170,7 +170,7 @@ if (!argv.format || argv.format === 'cjs') {
       json(),
       typescript(),
       replace(baseConfig.plugins.replace),
-      resolve({ preferBuiltins: false }),,
+      resolve({ preferBuiltins: false }),
       ...baseConfig.plugins.preVue,
       vue({
         ...baseConfig.plugins.vue,

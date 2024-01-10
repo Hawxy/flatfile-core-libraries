@@ -11,7 +11,9 @@ import peerDepsExternal from "rollup-plugin-peer-deps-external";
 const external = [
   'react',
   'react-dom',
-  '@flatfile/api',
+  // TODO:  this feels like a hack, but it's a temp fix for now 
+  //        to get the onSubmit @flatfile/api to link properly
+  // '@flatfile/api',
   '@flatfile/embedded-utils',
   '@flatfile/listener',
   '@flatfile/plugin-record-hook',

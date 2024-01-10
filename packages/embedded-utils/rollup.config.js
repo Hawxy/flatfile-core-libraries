@@ -7,7 +7,9 @@ import terser from '@rollup/plugin-terser'
 
 // Consolidated external dependencies
 const external = [
-  '@flatfile/api',
+  // TODO:  this feels like a hack, but it's a temp fix for now 
+  //        to get the SheetHandler @flatfile/api to link properly
+  // '@flatfile/api',
   '@flatfile/listener',
   '@flatfile/util-common',
   'pubnub',
