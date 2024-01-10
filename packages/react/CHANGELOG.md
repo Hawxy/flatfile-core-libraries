@@ -1,5 +1,13 @@
 # @flatfile/react
 
+## 7.5.4
+
+### Patch Changes
+
+- f3a9f69: Bundle @flatfile/api for the react package
+- Updated dependencies [f3a9f69]
+  - @flatfile/embedded-utils@1.1.3
+
 ## 7.5.3
 
 ### Patch Changes

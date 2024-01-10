@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.1.3
+
+### Patch Changes
+
+- f3a9f69: Bundle @flatfile/api for the react package
+
 ## 1.1.2
 
 ### Patch Changes
