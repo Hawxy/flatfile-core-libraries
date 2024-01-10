@@ -1,16 +1,13 @@
-import { Flatfile } from '@flatfile/api'
+import React, { JSX, useState, useEffect } from 'react'
 import { ISpace, SpaceComponent } from '@flatfile/embedded-utils'
-import { PubNubProvider } from 'pubnub-react'
-import React, { JSX, useEffect, useState } from 'react'
+
 import { useCreateListener } from '../hooks/useCreateListener'
-import { useEventSubscriber } from '../hooks/useEventSubscriber'
+
 import { addSpaceInfo } from '../utils/addSpaceInfo'
 import { authenticate } from '../utils/authenticate'
+
 import ConfirmModal from './ConfirmCloseModal'
-import {
-  getContainerStyles,
-  getIframeStyles,
-} from './embeddedStyles'
+import { getContainerStyles, getIframeStyles } from './embeddedStyles'
 import './style.scss'
 
 /**
@@ -23,19 +20,19 @@ const Space = ({
   spaceId,
   spaceUrl,
   accessToken,
-  pubNub,
   ...props
 }: SpaceComponent & ISpace): JSX.Element | null => {
-  return spaceId && spaceUrl && accessToken && pubNub ? (
-    <PubNubProvider client={pubNub}>
+  if (spaceId && spaceUrl && accessToken) {
+    return (
       <SpaceContents
         spaceId={spaceId}
         spaceUrl={spaceUrl}
         accessToken={accessToken}
         {...props}
       />
-    </PubNubProvider>
-  ) : null
+    )
+  }
+  return null
 }
 
 export const SpaceContents = (
@@ -60,26 +57,25 @@ export const SpaceContents = (
 
   const { dispatchEvent } = useCreateListener({ listener, accessToken, apiUrl })
 
-  useEventSubscriber(
-    [
-      Flatfile.EventTopic.JobCreated,
-      Flatfile.EventTopic.JobUpdated,
-      Flatfile.EventTopic.JobOutcomeAcknowledged,
-    ],
-    (event) => {
-      const eventResponse = JSON.parse(event.message) ?? {}
-      if (
-        eventResponse.topic === 'job:outcome-acknowledged' &&
-        eventResponse.payload.status === 'complete' &&
-        eventResponse.payload.operation === closeSpace?.operation
-      ) {
-        closeSpace?.onClose({})
-      }
+  const handlePostMessage = (event: any) => {
+    const { flatfileEvent } = event.data
+    if (!flatfileEvent) return
+    if (
+      flatfileEvent.topic === 'job:outcome-acknowledged' &&
+      flatfileEvent.payload.status === 'complete' &&
+      flatfileEvent.payload.operation === closeSpace?.operation
+    ) {
+      closeSpace?.onClose({})
+    }
+    dispatchEvent(flatfileEvent)
+  }
 
-      dispatchEvent(eventResponse)
-    },
-    spaceId
-  )
+  useEffect(() => {
+    window.addEventListener('message', handlePostMessage, false)
+    return () => {
+      window.removeEventListener('message', handlePostMessage)
+    }
+  }, [listener])
 
   const buildWorkbook = async () => {
     if (props.publishableKey) {
@@ -121,14 +117,19 @@ export const SpaceContents = (
         data-testid="flatfile-close-button"
         type="button"
         className="flatfile-close-button"
-        style={{ position: 'absolute', margin: '30px', top: '30px', right: '30px' }}
+        style={{
+          position: 'absolute',
+          margin: '30px',
+          top: '30px',
+          right: '30px',
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
           viewBox="0 0 100 100"
-          style={{margin: 'auto'}}
+          style={{ margin: 'auto' }}
         >
           <line
             x1="10"

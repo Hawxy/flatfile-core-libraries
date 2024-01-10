@@ -5,12 +5,11 @@
 import { FlatfileClient } from '@flatfile/api'
 import { render } from '@testing-library/react'
 import { renderHook } from '@testing-library/react-hooks'
-import Pubnub from 'pubnub'
 import React from 'react'
 import DefaultError from '../../components/Error'
 import Space from '../../components/Space'
 import { mockDocument, mockSpace, mockWorkbook } from '../../test/mocks'
-import { ISpace, EventSubscriber } from '@flatfile/embedded-utils'
+import { ISpace } from '@flatfile/embedded-utils'
 import useSpace from '../useSpace'
 import '@testing-library/jest-dom'
 
@@ -66,7 +65,7 @@ describe('useSpace', () => {
 
     expect(error).toBeDefined()
   })
-  it('renders the Space component when pubNub is present', async () => {
+  it('renders the Space component when authenticated', async () => {
     jest.spyOn(FlatfileClient.prototype.spaces, 'create').mockResolvedValue({
       data: mockSpace,
     })
@@ -81,18 +80,6 @@ describe('useSpace', () => {
 
     jest.spyOn(FlatfileClient.prototype.documents, 'create').mockResolvedValue({
       data: mockDocument,
-    })
-
-    const pubnub = new Pubnub({
-      subscribeKey: 'test-subscribe-key',
-      uuid: 'test-uuid',
-    })
-
-    const accessToken = 'your-access-token'
-
-    jest.spyOn(EventSubscriber, 'getClient').mockResolvedValueOnce({
-      pubnub,
-      token: accessToken,
     })
 
     const { result, waitForNextUpdate } = renderUseSpaceHookWithHookResult({

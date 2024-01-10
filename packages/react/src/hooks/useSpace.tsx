@@ -2,7 +2,7 @@ import React, { JSX, useEffect, useState } from 'react'
 import DefaultError from '../components/Error'
 import Space from '../components/Space'
 import Spinner from '../components/Spinner'
-import { State, initializePubnub } from '@flatfile/embedded-utils'
+import { State } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
 import { IReactSpaceProps } from '../types'
@@ -16,13 +16,12 @@ export const useSpace = (props: IReactSpaceProps): JSX.Element => {
   } = props
   const [initError, setInitError] = useState<Error | string>()
   const [state, setState] = useState<State>({
-    pubNub: null,
     localSpaceId: '',
     accessTokenLocal: '',
     spaceUrl: '',
   })
 
-  const { localSpaceId, pubNub, spaceUrl, accessTokenLocal } = state
+  const { localSpaceId, spaceUrl, accessTokenLocal } = state
 
   const initSpace = async () => {
     try {
@@ -58,17 +57,6 @@ export const useSpace = (props: IReactSpaceProps): JSX.Element => {
         ...prevState,
         accessTokenLocal: accessToken,
       }))
-
-      const initializedPubNub = await initializePubnub({
-        spaceId,
-        accessToken,
-        apiUrl,
-      })
-
-      setState((prevState) => ({
-        ...prevState,
-        pubNub: initializedPubNub,
-      }))
     } catch (error: any) {
       setInitError(error)
     }
@@ -95,14 +83,13 @@ export const useSpace = (props: IReactSpaceProps): JSX.Element => {
     return errorElement
   }
 
-  if (pubNub) {
+  if (localSpaceId && spaceUrl && accessTokenLocal) {
     return (
       <Space
         key={localSpaceId}
         spaceId={localSpaceId}
         spaceUrl={spaceUrl}
         accessToken={accessTokenLocal}
-        pubNub={pubNub}
         {...props}
       />
     )

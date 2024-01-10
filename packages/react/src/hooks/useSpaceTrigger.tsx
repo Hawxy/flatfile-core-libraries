@@ -1,8 +1,8 @@
-import React, { JSX, useState } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import DefaultError from '../components/Error'
 import Space from '../components/Space'
 import Spinner from '../components/Spinner'
-import { State, initializePubnub } from '@flatfile/embedded-utils'
+import { State } from '@flatfile/embedded-utils'
 import { initializeSpace } from '../utils/initializeSpace'
 import { getSpace } from '../utils/getSpace'
 import { IReactSpaceProps } from '../types'
@@ -10,24 +10,20 @@ import { IReactSpaceProps } from '../types'
 type IUseSpace = { OpenEmbed: () => Promise<void>; Space: () => JSX.Element }
 
 export const initializeFlatfile = (props: IReactSpaceProps): IUseSpace => {
-  const {
-    error: ErrorElement,
-    errorTitle,
-    loading: LoadingElement,
-    apiUrl,
-  } = props
+  const { error: ErrorElement, errorTitle, loading: LoadingElement } = props
   const [initError, setInitError] = useState<Error | string>()
+  const [loading, setLoading] = useState<boolean>(false)
   const [state, setState] = useState<State>({
-    pubNub: null,
     localSpaceId: '',
     accessTokenLocal: '',
     spaceUrl: '',
   })
 
-  const { localSpaceId, pubNub, spaceUrl, accessTokenLocal } = state
+  const { localSpaceId, spaceUrl, accessTokenLocal } = state
 
   const initSpace = async () => {
     try {
+      setLoading(true)
       const { data } = props.publishableKey
         ? await initializeSpace(props)
         : await getSpace(props)
@@ -60,17 +56,7 @@ export const initializeFlatfile = (props: IReactSpaceProps): IUseSpace => {
         ...prevState,
         accessTokenLocal: accessToken,
       }))
-
-      const initializedPubNub = await initializePubnub({
-        spaceId,
-        accessToken,
-        apiUrl,
-      })
-
-      setState((prevState) => ({
-        ...prevState,
-        pubNub: initializedPubNub,
-      }))
+      setLoading(false)
     } catch (error: any) {
       setInitError(error)
     }
@@ -92,21 +78,18 @@ export const initializeFlatfile = (props: IReactSpaceProps): IUseSpace => {
   return {
     OpenEmbed: initSpace,
     Space: () =>
-      pubNub ? (
-        initError ? (
-          errorElement
-        ) : (
-          <Space
-            key={localSpaceId}
-            spaceId={localSpaceId}
-            spaceUrl={spaceUrl}
-            accessToken={accessTokenLocal}
-            pubNub={pubNub}
-            {...props}
-          />
-        )
-      ) : (
+      loading ? (
         loadingElement
+      ) : initError ? (
+        errorElement
+      ) : (
+        <Space
+          key={localSpaceId}
+          spaceId={localSpaceId}
+          spaceUrl={spaceUrl}
+          accessToken={accessTokenLocal}
+          {...props}
+        />
       ),
   }
 }

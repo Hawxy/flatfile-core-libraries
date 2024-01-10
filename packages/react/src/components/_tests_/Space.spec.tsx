@@ -6,7 +6,6 @@ import { render, screen } from '@testing-library/react'
 import React from 'react'
 import Space, { SpaceContents } from '../Space'
 import { mockWorkbook } from '../../test/mocks'
-import Pubnub from 'pubnub'
 import { CreateWorkbookConfig } from '@flatfile/api/api'
 import '@testing-library/jest-dom'
 
@@ -24,18 +23,12 @@ describe('Space', () => {
     const spaceId = 'spaceId'
     const spaceUrl = 'spaceUrl'
     const accessToken = 'accessToken'
-    const pubnub = new Pubnub({
-      subscribeKey: 'test-subscribe-key',
-      uuid: 'test-uuid',
-    })
-
     render(
       <Space
         spaceId={spaceId}
         environmentId="environmentId"
         spaceUrl={spaceUrl}
         accessToken={accessToken}
-        pubNub={pubnub}
         {...baseSpaceProps}
       />
     )
@@ -48,10 +41,6 @@ describe('Space', () => {
     const spaceId = 'spaceId'
     const spaceUrl = 'spaceUrl'
     const accessToken = ''
-    const pubnub = new Pubnub({
-      subscribeKey: 'test-subscribe-key',
-      uuid: 'test-uuid',
-    })
 
     render(
       <Space
@@ -59,7 +48,6 @@ describe('Space', () => {
         spaceUrl={spaceUrl}
         environmentId="environmentId"
         accessToken={accessToken}
-        pubNub={pubnub}
         {...baseSpaceProps}
       />
     )

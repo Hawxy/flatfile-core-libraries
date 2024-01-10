@@ -4,7 +4,6 @@ import Space from '../components/Space'
 import Spinner from '../components/Spinner'
 import {
   State,
-  initializePubnub,
   JobHandler,
   SheetHandler,
   createWorkbookFromSheet,
@@ -22,14 +21,13 @@ export const usePortal = (props: IReactSimpleOnboarding): JSX.Element => {
   const { errorTitle, loading: LoadingElement, apiUrl } = props
   const [initError, setInitError] = useState<string>()
   const [state, setState] = useState<State>({
-    pubNub: null,
     localSpaceId: '',
     accessTokenLocal: '',
     spaceUrl: '',
   })
   const [flatfileOptions, setFlatfileOptions] = useState(props)
 
-  const { localSpaceId, pubNub, spaceUrl, accessTokenLocal } = state
+  const { localSpaceId, spaceUrl, accessTokenLocal } = state
   const onSubmitSettings = { ...DefaultSubmitSettings, ...props.submitSettings }
   const initSpace = async () => {
     let config = props
@@ -135,17 +133,6 @@ export const usePortal = (props: IReactSimpleOnboarding): JSX.Element => {
         ...prevState,
         accessTokenLocal: accessToken,
       }))
-
-      const initializedPubNub = await initializePubnub({
-        spaceId,
-        accessToken,
-        apiUrl,
-      })
-
-      setState((prevState) => ({
-        ...prevState,
-        pubNub: initializedPubNub,
-      }))
       setFlatfileOptions(config)
     } catch (error: any) {
       setInitError(error)
@@ -168,14 +155,13 @@ export const usePortal = (props: IReactSimpleOnboarding): JSX.Element => {
     return errorElement
   }
 
-  if (pubNub) {
+  if (localSpaceId && spaceUrl && accessTokenLocal) {
     return (
       <Space
         key={localSpaceId}
         spaceId={localSpaceId}
         spaceUrl={spaceUrl}
         accessToken={accessTokenLocal}
-        pubNub={pubNub}
         {...flatfileOptions}
       />
     )
