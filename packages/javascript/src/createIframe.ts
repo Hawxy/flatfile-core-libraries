@@ -181,8 +181,8 @@ export function createIframe(
 .flatfile_displayAsModal .flatfile-close-button {
   position: absolute;
   z-index: 10;
-  top: 20px;
-  right: 5px;
+  top: 35px;
+  right: 35px;
   display: flex;
   justify-content: center;
   width: 25px;
@@ -210,6 +210,7 @@ export function createIframe(
   border-width: 0px;
   width: 100%;
   height: 100%;
+  padding: 16px 0;
   position: relative;
 }
 

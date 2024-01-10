@@ -1,16 +1,16 @@
 import { Flatfile } from '@flatfile/api'
+import { ISpace, SpaceComponent } from '@flatfile/embedded-utils'
 import { PubNubProvider } from 'pubnub-react'
-import React, { JSX, useState, useEffect } from 'react'
+import React, { JSX, useEffect, useState } from 'react'
 import { useCreateListener } from '../hooks/useCreateListener'
 import { useEventSubscriber } from '../hooks/useEventSubscriber'
-import { ISpace, SpaceComponent } from '@flatfile/embedded-utils'
-import ConfirmModal from './ConfirmCloseModal'
-import {
-  getIframeStyles,
-  getContainerStyles,
-} from './embeddedStyles'
 import { addSpaceInfo } from '../utils/addSpaceInfo'
 import { authenticate } from '../utils/authenticate'
+import ConfirmModal from './ConfirmCloseModal'
+import {
+  getContainerStyles,
+  getIframeStyles,
+} from './embeddedStyles'
 import './style.scss'
 
 /**
@@ -121,13 +121,14 @@ export const SpaceContents = (
         data-testid="flatfile-close-button"
         type="button"
         className="flatfile-close-button"
-        style={{ position: 'absolute', margin: '30px' }}
+        style={{ position: 'absolute', margin: '30px', top: '30px', right: '30px' }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
           viewBox="0 0 100 100"
+          style={{margin: 'auto'}}
         >
           <line
             x1="10"

@@ -189,8 +189,8 @@ export default {
 .flatfile_displayAsModal .flatfile-close-button {
   position: absolute;
   z-index: 10;
-  top: 20px;
-  right: 5px;
+  top: 35px;
+  right: 35px;
   display: flex;
   justify-content: center;
   width: 25px;
