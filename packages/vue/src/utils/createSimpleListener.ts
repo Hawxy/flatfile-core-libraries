@@ -23,7 +23,7 @@ export const createSimpleListener = ({
   slug,
   submitSettings,
 }: SimpleListenerType) =>
-  FlatfileListener.create((client: FlatfileListener) => {
+  FlatfileListener.create((client) => {
     if (onRecordHook) {
       client.use(
         recordHook(
@@ -36,37 +36,40 @@ export const createSimpleListener = ({
     }
     if (onSubmit) {
       const onSubmitSettings = { ...DefaultSubmitSettings, ...submitSettings }
-      client.filter({ job: 'workbook:simpleSubmitAction' }, (configure: FlatfileListener) => {
-        configure.on('job:ready', async (event: FlatfileEvent) => {
-          const { jobId, spaceId, workbookId } = event.context
-          try {
-            await api.jobs.ack(jobId, { info: 'Starting job', progress: 10 })
+      client.filter(
+        { job: 'workbook:simpleSubmitAction' },
+        (configure: FlatfileListener) => {
+          configure.on('job:ready', async (event: FlatfileEvent) => {
+            const { jobId, spaceId, workbookId } = event.context
+            try {
+              await api.jobs.ack(jobId, { info: 'Starting job', progress: 10 })
 
-            const job = new JobHandler(jobId)
-            const { data: workbookSheets } = await api.sheets.list({
-              workbookId,
-            })
+              const job = new JobHandler(jobId)
+              const { data: workbookSheets } = await api.sheets.list({
+                workbookId,
+              })
 
-            // this assumes we are only allowing 1 sheet here (which we've talked about doing initially)
-            const sheet = new SheetHandler(workbookSheets[0].id)
+              // this assumes we are only allowing 1 sheet here (which we've talked about doing initially)
+              const sheet = new SheetHandler(workbookSheets[0].id)
 
-            await onSubmit({ job, sheet })
+              await onSubmit({ job, sheet })
 
-            await api.jobs.complete(jobId, {
-              outcome: {
-                message: 'complete',
-              },
-            })
-            if (onSubmitSettings.deleteSpaceAfterSubmit) {
-              await api.spaces.archiveSpace(spaceId)
+              await api.jobs.complete(jobId, {
+                outcome: {
+                  message: 'complete',
+                },
+              })
+              if (onSubmitSettings.deleteSpaceAfterSubmit) {
+                await api.spaces.archiveSpace(spaceId)
+              }
+            } catch (error: any) {
+              if (jobId) {
+                await api.jobs.cancel(jobId)
+              }
+              console.error('Error:', error.stack)
             }
-          } catch (error: any) {
-            if (jobId) {
-              await api.jobs.cancel(jobId)
-            }
-            console.error('Error:', error.stack)
-          }
-        })
-      })
+          })
+        }
+      )
     }
   })
