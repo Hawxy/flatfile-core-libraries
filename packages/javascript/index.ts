@@ -1,6 +1,5 @@
 import api, { Flatfile } from '@flatfile/api'
 import { Browser, FlatfileListener, FlatfileEvent } from '@flatfile/listener'
-import Pubnub from 'pubnub'
 
 import { createIframe } from './src/createIframe'
 import {
@@ -8,7 +7,6 @@ import {
   IThemeConfig,
   IUserInfo,
   NewSpaceFromPublishableKey,
-  initializePubnub,
   SimpleOnboarding,
   JobHandler,
   SheetHandler,
@@ -40,24 +38,14 @@ const displayError = (errorTitle: string, errorMessage: string) => {
 }
 
 async function createlistener(
-  spaceId: string,
   accessToken: string,
   apiUrl: string,
   listener: FlatfileListener,
   closeSpace: NewSpaceFromPublishableKey['closeSpace']
-): Promise<Pubnub> {
-  const pubnub = await initializePubnub({
-    spaceId,
-    accessToken,
-    apiUrl,
-  })
-
+): Promise<() => void> {
   // todo: should we use CrossEnvConfig here?
   // CrossEnvConfig.set('FLATFILE_API_KEY', accessToken)
   ;(window as any).CROSSENV_FLATFILE_API_KEY = accessToken
-
-  const channel = [`space.${spaceId}`]
-  pubnub.subscribe({ channels: channel })
 
   listener.mount(
     new Browser({
@@ -75,22 +63,22 @@ async function createlistener(
     return listener?.dispatchEvent(eventInstance)
   }
 
-  pubnub.addListener({
-    message: (event: { message: string }) => {
-      const eventResponse = JSON.parse(event.message) ?? {}
-      if (
-        eventResponse.topic === 'job:outcome-acknowledged' &&
-        eventResponse.payload.status === 'complete' &&
-        eventResponse.payload.operation === closeSpace?.operation
-      ) {
-        closeSpace?.onClose({})
-      }
+  const handlePostMessage = (event: any) => {
+    const { flatfileEvent } = event.data
+    if (!flatfileEvent) return
+    if (
+      flatfileEvent.topic === 'job:outcome-acknowledged' &&
+      flatfileEvent.payload.status === 'complete' &&
+      flatfileEvent.payload.operation === closeSpace?.operation
+    ) {
+      closeSpace?.onClose({})
+    }
+    dispatchEvent(flatfileEvent)
+  }
 
-      dispatchEvent(eventResponse)
-    },
-  })
-
-  return pubnub
+  window.addEventListener('message', handlePostMessage, false)
+  const removeListener = () => removeEventListener('message', handlePostMessage)
+  return removeListener
 }
 
 export interface UpdateSpaceInfo {
@@ -269,22 +257,20 @@ export async function startFlatfile(options: SimpleOnboarding) {
       throw new Error('Unable to create space, please try again.')
     }
 
-    let pubnubClient: Pubnub | undefined
+    let removeMessageListener: () => void | undefined
 
     const simpleListenerSlug: string =
       createdWorkbook?.sheets?.[0].slug || 'slug'
 
     if (listener) {
-      pubnubClient = await createlistener(
-        spaceData.id,
+      removeMessageListener = await createlistener(
         spaceData.accessToken,
         apiUrl,
         listener,
         closeSpace
       )
     } else {
-      pubnubClient = await createlistener(
-        spaceData.id,
+      removeMessageListener = await createlistener(
         spaceData.accessToken,
         apiUrl,
         createSimpleListener({
@@ -323,7 +309,7 @@ export async function startFlatfile(options: SimpleOnboarding) {
       exitSecondaryButtonText,
       spacesUrl,
       closeSpace,
-      pubnubClient,
+      removeMessageListener,
       onCancel
     )
 

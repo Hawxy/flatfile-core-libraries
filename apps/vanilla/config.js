@@ -1,50 +1,37 @@
 export const config = {
-  name: 'Employees workbook',
+  name: "All Data",
+  labels: ["pinned"],
   sheets: [
     {
-      name: 'TestSheet',
-      slug: 'TestSheet',
+      name: "Contacts",
+      slug: "contacts",
+      allowAdditionalFields: true,
       fields: [
         {
-          key: 'first_name',
-          type: 'string',
-          label: 'First name',
-          constraints: [
-            {
-              type: 'required',
-            },
-          ],
+          key: "firstName",
+          type: "string",
+          label: "First Name",
         },
         {
-          key: 'last_name',
-          type: 'string',
-          label: 'last name',
+          key: "lastName",
+          type: "string",
+          label: "Last Name",
         },
         {
-          key: 'full_name',
-          type: 'string',
-          label: 'full name',
-        },
-      ],
-      actions: [
-        {
-          label: 'Join fields',
-          operation: 'contacts:join-fields',
-          description: 'Would you like to join fields?',
-          mode: 'foreground',
-          confirm: true,
+          key: "email",
+          type: "string",
+          label: "Email",
         },
       ],
     },
   ],
   actions: [
     {
-      label: 'Submit',
-      operation: 'contacts:submit',
-      description: 'Would you like to submit your workbook?',
-      mode: 'foreground',
+      operation: "submitActionFg",
+      mode: "foreground",
+      label: "Submit foreground",
+      description: "Submit data to webhook.site",
       primary: true,
-      confirm: true,
     },
   ],
-}
+};
