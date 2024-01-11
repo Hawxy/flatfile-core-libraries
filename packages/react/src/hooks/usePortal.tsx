@@ -75,7 +75,7 @@ export const usePortal = (props: IReactSimpleOnboarding): JSX.Element => {
                         const sheet = new SheetHandler(workbookSheets[0].id)
 
                         if (config.onSubmit) {
-                          await config.onSubmit({ job, sheet })
+                          await config.onSubmit({ job, sheet, event })
                         }
 
                         await api.jobs.complete(jobId, {

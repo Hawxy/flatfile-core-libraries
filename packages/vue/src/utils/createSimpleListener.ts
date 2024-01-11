@@ -52,7 +52,7 @@ export const createSimpleListener = ({
               // this assumes we are only allowing 1 sheet here (which we've talked about doing initially)
               const sheet = new SheetHandler(workbookSheets[0].id)
 
-              await onSubmit({ job, sheet })
+              await onSubmit({ job, sheet, event })
 
               await api.jobs.complete(jobId, {
                 outcome: {

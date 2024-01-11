@@ -52,6 +52,7 @@ export class SheetHandler {
   async allData(): Promise<DataWithMetadata> {
     const { data } = await api.sheets.get(this.sheetId)
     const records = await api.records.get(this.sheetId)
+
     return {
       sheetId: this.sheetId,
       workbookId: data.workbookId,
@@ -62,6 +63,7 @@ export class SheetHandler {
   async validData(): Promise<DataWithMetadata> {
     const { data } = await api.sheets.get(this.sheetId)
     const records = await api.records.get(this.sheetId, { filter: 'valid' })
+
     return {
       sheetId: this.sheetId,
       workbookId: data.workbookId,
@@ -72,6 +74,7 @@ export class SheetHandler {
   async errorData(): Promise<DataWithMetadata> {
     const { data } = await api.sheets.get(this.sheetId)
     const records = await api.records.get(this.sheetId, { filter: 'error' })
+
     return {
       sheetId: this.sheetId,
       workbookId: data.workbookId,
