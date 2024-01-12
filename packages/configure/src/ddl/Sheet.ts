@@ -13,19 +13,19 @@ import {
   SchemaILToJsonSchema,
 } from '@flatfile/schema'
 
-import { toPairs } from 'remeda'
 import _ from 'lodash'
+import { toPairs } from 'remeda'
 import { isFullyPresent } from '../utils/isFullyPresent'
 
+import { RecordWithLinks } from '@flatfile/api'
+import { SheetAccess, SheetConfig } from '@flatfile/blueprint'
+import { EventHandler, FlatfileEvent, RecordTranslater } from '../utils'
 import { Mountable } from '../utils/mountable'
+import { slugify } from '../utils/slugify'
+import { Action } from './Action'
 import { Agent } from './Agent'
 import { List, SpaceConfig } from './SpaceConfig'
 import { Workbook } from './Workbook'
-import { EventTopic, RecordWithLinks } from '@flatfile/api'
-import { SheetAccess, SheetConfig } from '@flatfile/blueprint'
-import { EventHandler, FlatfileEvent, RecordTranslater } from '../utils'
-import { slugify } from '../utils/slugify'
-import { Action } from './Action'
 
 export type RecordsComputeType = (
   records: FlatfileRecords<any>,
@@ -185,9 +185,7 @@ export class Sheet<FC extends FieldConfig>
     })
     this.fields = malleableFields
     // This only executes in X and takes the place of the legacy lambda router
-    this.on([EventTopic.Recordscreated, EventTopic.Recordsupdated], (e) =>
-      this.recordsChangedEventShim(e)
-    )
+    this.on(['commit:created'], (e) => this.recordsChangedEventShim(e))
 
     const contributedSheetComputes: Record<string, any> = {}
     toPairs(fields).map(([key, field]) => {
