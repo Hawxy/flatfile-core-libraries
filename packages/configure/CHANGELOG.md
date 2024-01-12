@@ -1,5 +1,11 @@
 # @flatfile/configure
 
+## 1.0.0
+
+### Major Changes
+
+- 72a665b: use commit:created for record hooks
+
 ## 0.5.39
 
 ### Patch Changes
