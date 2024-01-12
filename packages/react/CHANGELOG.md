@@ -1,5 +1,14 @@
 # @flatfile/react
 
+## 7.6.1
+
+### Patch Changes
+
+- f6c0122: Fixing alignment of close buttons to not be half-in the modal
+- 62f5ef3: add event to submit context
+- Updated dependencies [62f5ef3]
+  - @flatfile/embedded-utils@1.1.5
+
 ## 7.6.0
 
 ### Minor Changes

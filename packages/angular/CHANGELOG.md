@@ -1,5 +1,11 @@
 # angular
 
+## 0.1.2
+
+### Patch Changes
+
+- f6c0122: Fixing alignment of close buttons to not be half-in the modal.
+
 ## 0.1.1
 
 ### Patch Changes

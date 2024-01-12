@@ -1,5 +1,18 @@
 # @flatfile/javascript
 
+## 1.0.0
+
+### Major Changes
+
+- aa450d6: Remove Pubnub From @flatfile/javascript
+
+### Patch Changes
+
+- f6c0122: Fixing alignment of close buttons to not be half-in the modal
+- 62f5ef3: add event to submit context
+- Updated dependencies [62f5ef3]
+  - @flatfile/embedded-utils@1.1.5
+
 ## 0.3.2
 
 ### Patch Changes
