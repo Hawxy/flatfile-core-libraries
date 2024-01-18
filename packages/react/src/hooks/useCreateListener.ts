@@ -12,7 +12,7 @@ export const useCreateListener = ({
   listener,
   apiUrl = 'https://platform.flatfile.com/api',
 }: Pick<IReactSpaceProps, 'listener'> & {
-  accessToken: string
+  accessToken: string | null
   apiUrl: string
 }) => {
   // set the api key to fully authenticate into Flatfile api
@@ -20,7 +20,7 @@ export const useCreateListener = ({
   ;(window as any).CROSSENV_FLATFILE_API_KEY = accessToken
 
   useEffect(() => {
-    if (listener)
+    if (listener && accessToken)
       listener.mount(
         new Browser({
           apiUrl,
@@ -32,7 +32,7 @@ export const useCreateListener = ({
 
   return {
     dispatchEvent: (event: any) => {
-      if (!event) return
+      if (!event || !accessToken) return
 
       const eventPayload = event.src ? event.src : event
       const eventInstance = new FlatfileEvent(eventPayload, accessToken, apiUrl)

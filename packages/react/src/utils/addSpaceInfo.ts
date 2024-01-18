@@ -1,13 +1,13 @@
 import { FlatfileClient } from '@flatfile/api'
 import {
-  getErrorMessage,
   createWorkbookFromSheet,
+  getErrorMessage,
 } from '@flatfile/embedded-utils'
 import { IReactSimpleOnboarding } from '../types/IReactSimpleOnboarding'
 
 // Given the space is created, add workbook, metadata and document to the space
 export const addSpaceInfo = async (
-  spaceProps: IReactSimpleOnboarding,
+  spaceProps: IReactSimpleOnboarding | any,
   spaceId: string,
   api: FlatfileClient
 ) => {

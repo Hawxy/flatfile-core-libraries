@@ -1,4 +1,3 @@
-import { State } from './State'
 import {
   DefaultSubmitSettings,
   ISpace,
@@ -8,21 +7,23 @@ import {
   ReusedSpaceWithAccessToken,
   SimpleOnboarding,
 } from './Space'
+import { InitState, State } from './State'
 
-import { InitializePubnub } from './InitializePubnub'
 import { ISidebarConfig } from './ISidebarConfig'
 import { IThemeConfig } from './IThemeConfig'
-import { IThemeGenerator } from './ThemeGenerator'
+import { InitializePubnub } from './InitializePubnub'
 import { SpaceComponent } from './SpaceComponent'
+import { IThemeGenerator } from './ThemeGenerator'
 
 export type {
-  InitializePubnub,
   ISidebarConfig,
   ISpace,
   ISpaceInfo,
   IThemeConfig,
   IThemeGenerator,
   IUserInfo,
+  InitState,
+  InitializePubnub,
   NewSpaceFromPublishableKey,
   ReusedSpaceWithAccessToken,
   SimpleOnboarding,

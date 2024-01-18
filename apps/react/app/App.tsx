@@ -1,10 +1,10 @@
 'use client'
+import { sheet } from '@/utils/sheet'
+import { InitSpace, initializeFlatfile, usePortal } from '@flatfile/react'
 import React, { Dispatch, SetStateAction, useState } from 'react'
-import { initializeFlatfile, usePortal } from '@flatfile/react'
+import { config } from './config'
 import { listener } from './listener'
 import styles from './page.module.css'
-import { config } from './config'
-import { sheet } from '@/utils/sheet'
 
 const SPACE_ID = 'us_sp_123456'
 const ENVIRONMENT_ID = 'us_env_O60vqdol'
@@ -36,6 +36,7 @@ const LoadingComponent = () => <label>Loading data....</label>
 function App() {
   const [showSpace, setShowSpace] = useState(false)
   const [showSimplified, setShowSimplified] = useState(false)
+  const [activatePreloaded, setActivatePreloaded] = useState(false)
 
   const { Space, OpenEmbed } = initializeFlatfile({
     ...spaceProps,
@@ -103,6 +104,15 @@ function App() {
           {showSimplified === true ? 'Close' : 'Open'} Simplified
         </button>
       </div>
+      <div className={styles.description}>
+        <button
+          onClick={() => {
+            setActivatePreloaded(!showSimplified)
+          }}
+        >
+          {showSimplified === true ? 'Close' : 'Open'} Pre-loaded
+        </button>
+      </div>
       {showSpace && (
         <div className={styles.spaceWrapper}>
           <Space />
@@ -113,6 +123,17 @@ function App() {
           <SimpleSpace setShowSpace={setShowSimplified} />
         </div>
       )}
+      <InitSpace
+        {...spaceProps}
+        activated={activatePreloaded}
+        loading={<LoadingComponent />}
+        exitPrimaryButtonText={'CLOSE!'}
+        exitSecondaryButtonText={'KEEP IT!'}
+        closeSpace={{
+          operation: 'contacts:submit',
+          onClose: () => setActivatePreloaded(false),
+        }}
+      />
     </div>
   )
 }
