@@ -14,7 +14,6 @@ import url from '@rollup/plugin-url'
 import nested from 'postcss-nested'
 import autoprefixer from 'autoprefixer'
 import typescript from 'rollup-plugin-typescript2'
-import json from '@rollup/plugin-json'
 
 const postcssConfigList = [
   postcssImport({
@@ -84,9 +83,6 @@ const baseConfig = {
       extensions: ['.js', '.jsx', '.vue'],
       babelHelpers: 'bundled',
     },
-    replace: {
-      preventAssignment: true,
-    },
   },
 }
 
@@ -111,10 +107,8 @@ if (!argv.format || argv.format === 'es') {
       dir: 'dist/esm',
     },
     plugins: [
-      json(),
       typescript(),
       replace(baseConfig.plugins.replace),
-      resolve({ preferBuiltins: true }),
       ...baseConfig.plugins.preVue,
       vue(baseConfig.plugins.vue),
       ...baseConfig.plugins.postVue,
@@ -134,10 +128,8 @@ if (!argv.format || argv.format === 'es') {
       file: 'dist/vuelib.esm.js',
     },
     plugins: [
-      json(),
       typescript(),
       replace(baseConfig.plugins.replace),
-      resolve({ preferBuiltins: true }),
       ...baseConfig.plugins.preVue,
       vue(baseConfig.plugins.vue),
       ...baseConfig.plugins.postVue,
@@ -167,10 +159,8 @@ if (!argv.format || argv.format === 'cjs') {
       globals,
     },
     plugins: [
-      json(),
       typescript(),
       replace(baseConfig.plugins.replace),
-      resolve({ preferBuiltins: true }),
       ...baseConfig.plugins.preVue,
       vue({
         ...baseConfig.plugins.vue,
