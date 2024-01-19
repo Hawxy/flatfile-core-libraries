@@ -1,8 +1,6 @@
-import { createModal } from './createModal'
-
 export function createIframe(
   mountElement: string,
-  displayAsModal: string,
+  displayAsModal: boolean,
   spaceId?: string,
   token?: string,
   spacesUrl?: string
