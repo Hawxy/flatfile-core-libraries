@@ -18,7 +18,7 @@ export function validators(sheetSlug: string) {
         const sheetId = event?.context.sheetId
 
         const sheetSessionKey = `sheetConfig-${sheetId}`
-        const sheetConfig = await getSheetConfigFromSession(sheetSessionKey)
+        const sheetConfig = await getSheetConfigFromSession(sheetSessionKey, sheetId)
         const validator = new Validator(sheetConfig)
 
         records.forEach((record) => {
