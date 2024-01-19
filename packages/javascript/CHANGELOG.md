@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 1.1.0
+
+### Minor Changes
+
+- 34b7861: Introduces a new utility allowing the JS Flatfile embed to be preloaded in the background
+
 ## 1.0.0
 
 ### Major Changes
