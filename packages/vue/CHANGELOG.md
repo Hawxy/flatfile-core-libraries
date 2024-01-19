@@ -1,5 +1,12 @@
 # @flatfile/vue
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [101244c]
+  - @flatfile/embedded-utils@1.1.7
+
 ## 0.0.11
 
 ### Patch Changes

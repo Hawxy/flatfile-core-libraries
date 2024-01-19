@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.1.7
+
+### Patch Changes
+
+- 101244c: set actions when creating sheet from workbook
+
 ## 1.1.6
 
 ### Patch Changes
