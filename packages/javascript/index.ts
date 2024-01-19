@@ -1,24 +1,25 @@
 import api, { Flatfile } from '@flatfile/api'
-import { Browser, FlatfileListener, FlatfileEvent } from '@flatfile/listener'
+import { Browser, FlatfileEvent, FlatfileListener } from '@flatfile/listener'
 
-import { createIframe } from './src/createIframe'
 import {
+  DefaultSubmitSettings,
   ISidebarConfig,
   IThemeConfig,
   IUserInfo,
-  NewSpaceFromPublishableKey,
-  SimpleOnboarding,
   JobHandler,
+  NewSpaceFromPublishableKey,
   SheetHandler,
+  SimpleOnboarding,
   createWorkbookFromSheet,
-  DefaultSubmitSettings,
 } from '@flatfile/embedded-utils'
-import { createWorkbook } from './src/services/workbook'
-import { updateSpace } from './src/services/space'
+import { createIframe } from './src/createIframe'
 import { createDocument } from './src/services/document'
+import { updateSpace } from './src/services/space'
+import { createWorkbook } from './src/services/workbook'
 
-import { recordHook } from '@flatfile/plugin-record-hook'
 import { FlatfileRecord } from '@flatfile/hooks'
+import { recordHook } from '@flatfile/plugin-record-hook'
+import { createModal } from './src/createModal'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
@@ -179,6 +180,116 @@ const createSimpleListener = ({
     }
   })
 
+/**
+ * Utility function with the responsibility of mounting the confirmation modal and its
+ * associate behaviors to the iFrame which is actively being mounted (or was previously preloaded)
+ * @param domElement
+ * @param displayAsModal
+ * @param exitTitle
+ * @param exitText
+ * @param exitPrimaryButtonText
+ * @param exitSecondaryButtonText
+ * @param closeSpace
+ * @param removeMessageListener
+ * @param onCancel
+ */
+function initializeIFrameConfirmationModal(
+  domElement: HTMLElement,
+  displayAsModal: boolean,
+  exitTitle: string,
+  exitText: string,
+  exitPrimaryButtonText: string,
+  exitSecondaryButtonText: string,
+  closeSpace?: {
+    operation: string
+    onClose: (data: any) => void
+  },
+  removeMessageListener?: () => void,
+  onCancel?: () => void
+) {
+  // Create the confirmation modal and hide it
+  const confirmModal = createModal(
+    () => {
+      // If user chooses to exit
+      const wrappers = Array.from(
+        document.getElementsByClassName('flatfile_iframe-wrapper')
+      ) as HTMLElement[]
+      const modals = Array.from(
+        document.getElementsByClassName('flatfile_outer-shell')
+      ) as HTMLElement[]
+
+      const elements = [...modals]
+
+      for (let item of elements) {
+        document.body.removeChild(item)
+      }
+
+      domElement.style.display = 'none'
+      if (onCancel) {
+        onCancel()
+      }
+      if (removeMessageListener) removeMessageListener()
+      closeSpace?.onClose({})
+    },
+    () => {
+      // If user chooses to stay, we simply hide the confirm modal
+      confirmModal.style.display = 'none'
+    },
+    exitTitle, // pass exitTitle here
+    exitText, // pass exitText here,
+    exitPrimaryButtonText,
+    exitSecondaryButtonText
+  )
+  confirmModal.style.display = 'none'
+  document.body.appendChild(confirmModal)
+
+  window.addEventListener(
+    'message',
+    (event) => {
+      if (
+        event.data &&
+        event.data.topic === 'job:outcome-acknowledged' &&
+        event.data.payload.status === 'complete' &&
+        event.data.payload.operation === closeSpace?.operation
+      ) {
+        domElement.style.display = 'none'
+      }
+    },
+    false
+  )
+
+  if (displayAsModal) {
+    const closeButton = document.createElement('div')
+    closeButton.innerHTML = `<svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 100 100"
+      >
+        <line x1="10" y1="10" x2="90" y2="90" stroke="white" stroke-width="10" />
+        <line x1="10" y1="90" x2="90" y2="10" stroke="white" stroke-width="10" />
+      </svg>`
+    closeButton.classList.add('flatfile-close-button')
+    // Add the onclick event to the button
+    closeButton.onclick = () => {
+      const outerShell = document.querySelector(
+        '.flatfile_outer-shell'
+      ) as HTMLElement
+      if (outerShell) {
+        outerShell.style.display = 'block'
+      } else {
+        // Show the confirm modal instead of creating a new one
+        confirmModal.style.display = 'block'
+      }
+      if (removeMessageListener) removeMessageListener()
+    }
+
+    domElement
+      .getElementsByClassName('flatfile_iframe-wrapper')[0]
+      .appendChild(closeButton)
+  }
+}
+
 export async function startFlatfile(options: SimpleOnboarding) {
   const {
     publishableKey,
@@ -210,6 +321,16 @@ export async function startFlatfile(options: SimpleOnboarding) {
     onCancel,
   } = options
   const spacesUrl = spaceUrl || baseUrl
+  let mountedIFrame = document.getElementById(mountElement)
+
+  /**
+   * Customers can proactively preload the iFrame into the DOM - If we detect that an iFrame already exists
+   * for the provided mountElementId - we can assume it has been preloaded, and simply make it visible
+   **/
+  if (mountedIFrame) {
+    mountedIFrame.style.display = 'block'
+  }
+
   try {
     const createSpaceEndpoint = `${apiUrl}/v1/spaces`
     let createdWorkbook = workbook
@@ -219,6 +340,12 @@ export async function startFlatfile(options: SimpleOnboarding) {
         autoConfigure: false,
         labels: ['embedded'],
         ...spaceBody,
+        metadata: {
+          theme: themeConfig,
+          sidebarConfig: sidebarConfig ? sidebarConfig : { showSidebar: false },
+          userInfo,
+          ...(spaceBody?.metadata || {}),
+        },
       }
 
       if (!createdWorkbook && !sheet) {
@@ -247,10 +374,6 @@ export async function startFlatfile(options: SimpleOnboarding) {
 
       return result.data
     }
-
-    const iFrameContainer = document.createElement('div')
-    iFrameContainer.id = mountElement
-    document.body.appendChild(iFrameContainer)
 
     const spaceData = await createSpace()
     if (!spaceData?.id || !spaceData?.accessToken) {
@@ -298,20 +421,53 @@ export async function startFlatfile(options: SimpleOnboarding) {
       spaceInfo,
     })
 
-    createIframe(
-      spaceData.id,
-      spaceData.accessToken,
-      displayAsModal,
-      mountElement,
-      exitTitle,
-      exitText,
-      exitPrimaryButtonText,
-      exitSecondaryButtonText,
-      spacesUrl,
-      closeSpace,
-      removeMessageListener,
-      onCancel
-    )
+    /**
+     * Customers can proactively preload the iFrame into the DOM - If we detect that an iFrame already exists
+     * for the provided mountElementId then we pass a message to direct the iFrame to the spaces-UI route for
+     * the created spaceId
+     *
+     * If it has not been created yet, the iFrame is created on-demand, and routed to the specified space-id
+     **/
+    if (!mountedIFrame) {
+      mountedIFrame = createIframe(
+        mountElement,
+        displayAsModal,
+        spaceData.id,
+        spaceData.accessToken,
+        spacesUrl
+      )
+    } else {
+      const iFrameEl = mountedIFrame.getElementsByTagName('iframe')[0]
+      const targetOrigin = new URL(spacesUrl).origin
+      iFrameEl.contentWindow?.postMessage(
+        {
+          flatfileEvent: {
+            topic: 'portal:initialize',
+            payload: {
+              status: 'complete',
+              spaceUrl: `${spacesUrl}/space/${
+                spaceData.id
+              }?token=${encodeURIComponent(spaceData.accessToken)}`,
+            },
+          },
+        },
+        targetOrigin
+      )
+    }
+
+    if (mountedIFrame) {
+      initializeIFrameConfirmationModal(
+        mountedIFrame,
+        displayAsModal,
+        exitTitle,
+        exitText,
+        exitPrimaryButtonText,
+        exitSecondaryButtonText,
+        closeSpace,
+        removeMessageListener,
+        onCancel
+      )
+    }
 
     return { spaceId: spaceData.id }
   } catch (error) {
@@ -322,3 +478,4 @@ export async function startFlatfile(options: SimpleOnboarding) {
 }
 
 export const initializeFlatfile = startFlatfile
+export { createIframe }

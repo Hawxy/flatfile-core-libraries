@@ -1,4 +1,4 @@
-import { initializeFlatfile } from '@flatfile/javascript'
+import { createIframe, initializeFlatfile } from '@flatfile/javascript'
 
 import { config } from './config'
 import { listener } from './listener'
@@ -32,54 +32,69 @@ getSpace()
 //-- end
 */
 
-// ---create a new space each time, load with button click
+const BASE_OPTIONS = {
+  spaceBody: { name: 'Hello' },
+  environmentId: 'us_env_VoiCveIM',
+  // listener,
+  // Additional parameters...
+  workbook: config,
+  exitPrimaryButtonText: 'CLOSE!',
+  exitSecondaryButtonText: 'KEEP IT!',
+  document: {
+    title: 'my title',
+    body: 'my body',
+  },
+  themeConfig: {
+    root: {
+      primaryColor: '#090B2B',
+      dangerColor: '#F44336',
+      warningColor: '#FF9800',
+    },
+    document: {
+      borderColor: '#CAD0DC',
+    },
+    sidebar: {
+      logo: 'https://images.ctfassets.net/hjneo4qi4goj/5DNClD4reUBKoF7u01OgKF/2aa12c49c5ea97bac013a7546e453738/flatfile-white.svg',
+      textColor: '#ECEEFF',
+      titleColor: '#C4C9FF',
+      focusBgColor: '#6673FF',
+      focusTextColor: '#FFF',
+      backgroundColor: '#090B2B',
+      footerTextColor: '#C4C9FF',
+      textUltralightColor: '#B9DDFF',
+      borderColor: '#2E3168',
+      activeTextColor: '#FFF',
+    },
+    table: {},
+  },
+  sidebarConfig: {
+    showGuestInvite: true,
+    showDataChecklist: true,
+    showSidebar: true,
+  },
+  listener,
+}
+// ---Create a new Space + Workbook and load an iFrame
 window.initializeFlatfile = async (publishableKey) => {
   const flatfileOptions = {
+    ...BASE_OPTIONS,
     publishableKey,
-    spaceBody: { name: 'Hello' },
-    environmentId: 'us_env_O60vqdol',
-    // listener,
-    // Additional parameters...
-    workbook: config,
-    exitPrimaryButtonText: 'CLOSE!',
-    exitSecondaryButtonText: 'KEEP IT!',
-    document: {
-      title: 'my title',
-      body: 'my body',
-    },
-    themeConfig: {
-      root: {
-        primaryColor: '#090B2B',
-        dangerColor: '#F44336',
-        warningColor: '#FF9800',
-      },
-      document: {
-        borderColor: '#CAD0DC',
-      },
-      sidebar: {
-        logo: 'https://images.ctfassets.net/hjneo4qi4goj/5DNClD4reUBKoF7u01OgKF/2aa12c49c5ea97bac013a7546e453738/flatfile-white.svg',
-        textColor: '#ECEEFF',
-        titleColor: '#C4C9FF',
-        focusBgColor: '#6673FF',
-        focusTextColor: '#FFF',
-        backgroundColor: '#090B2B',
-        footerTextColor: '#C4C9FF',
-        textUltralightColor: '#B9DDFF',
-        borderColor: '#2E3168',
-        activeTextColor: '#FFF',
-      },
-      table: {},
-    },
-    sidebarConfig: {
-      showGuestInvite: true,
-      showDataChecklist: true,
-      showSidebar: true,
-    },
-    listener,
   }
 
   const space = await initializeFlatfile(flatfileOptions)
-  console.log('Space data:', { space })
+}
+
+// ---Pre-load iFrame by specific mountID for faster initial load-time
+window.preloadFlatfile = () => {
+  createIframe('Flatfile_Preload_Iframe', true)
+  window.initializePreloadedFlatfile = async (publishableKey) => {
+    const flatfileOptions = {
+      ...BASE_OPTIONS,
+      publishableKey,
+      mountElement: 'Flatfile_Preload_Iframe',
+    }
+    await initializeFlatfile(flatfileOptions)
+  }
 }
 //-- end
 

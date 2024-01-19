@@ -1,44 +1,46 @@
 import { createModal } from './createModal'
 
 export function createIframe(
-  spaceId: string,
-  token: string,
-  displayAsModal: boolean,
   mountElement: string,
-  exitTitle: string,
-  exitText: string,
-  exitPrimaryButtonText: string,
-  exitSecondaryButtonText: string,
-  spacesUrl?: string,
-  closeSpace?: {
-    operation: string
-    onClose: (data: any) => void
-  },
-  removeMessageListener?: () => void,
-  onCancel?: () => void
-): void {
+  displayAsModal: string,
+  spaceId?: string,
+  token?: string,
+  spacesUrl?: string
+): HTMLElement | null {
   const spacesURL = spacesUrl || 'https://spaces.flatfile.com'
+  let url: string
+
+  const iFrameContainer = document.createElement('div')
+  iFrameContainer.id = mountElement
+  document.body.appendChild(iFrameContainer)
 
   // Construct the URL with the space ID and the token
-  const url = `${spacesURL}/space/${spaceId}?token=${encodeURIComponent(token)}`
-
-  // Create the close button
-  const closeButton = document.createElement('div')
-  closeButton.innerHTML = `<svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 100 100"
-    >
-      <line x1="10" y1="10" x2="90" y2="90" stroke="white" stroke-width="10" />
-      <line x1="10" y1="90" x2="90" y2="10" stroke="white" stroke-width="10" />
-    </svg>`
-  closeButton.classList.add('flatfile-close-button')
+  if (spaceId && token) {
+    url = `${spacesURL}/space/${spaceId}?token=${encodeURIComponent(token)}`
+  } else {
+    url = `${spacesURL}/space-init`
+    iFrameContainer.style.display = 'none'
+  }
 
   // Create the iframe
   const iframe = document.createElement('iframe')
   iframe.src = url
   iframe.id = 'flatfile_iframe'
+
+  // Create the wrapper
+  const wrapper = document.createElement('div')
+  wrapper.classList.add('flatfile_iframe-wrapper')
+  wrapper.style.display = 'block'
+  if (displayAsModal) wrapper.classList.add('flatfile_displayAsModal')
+
+  const spinner = document.createElement('div')
+  spinner.classList.add('spinner')
+  spinner.style.display = 'block'
+  wrapper.appendChild(spinner)
+  wrapper.appendChild(iframe)
+
+  // Add the inner dom elements to the mountElement
+  iFrameContainer.appendChild(wrapper)
 
   // Add an onload event to handle successful load
   iframe.onload = () => {
@@ -50,97 +52,6 @@ export function createIframe(
   iframe.onerror = () => {
     console.error('An error occurred while loading Flatfile.')
   }
-
-  // Create the wrapper
-  const wrapper = document.createElement('div')
-  wrapper.classList.add('flatfile_iframe-wrapper')
-  wrapper.style.display = 'block'
-
-  const spinner = document.createElement('div')
-  spinner.classList.add('spinner')
-  spinner.style.display = 'block'
-  wrapper.appendChild(spinner)
-
-  // Append the iframe and close button to the wrapper
-  if (displayAsModal) {
-    wrapper.appendChild(closeButton)
-    wrapper.classList.add('flatfile_displayAsModal')
-  }
-
-  wrapper.appendChild(iframe)
-
-  // Create the confirmation modal and hide it
-  const confirmModal = createModal(
-    () => {
-      // If user chooses to exit
-      const wrappers = Array.from(
-        document.getElementsByClassName('flatfile_iframe-wrapper')
-      ) as HTMLElement[]
-      const modals = Array.from(
-        document.getElementsByClassName('flatfile_outer-shell')
-      ) as HTMLElement[]
-
-      const elements = [...wrappers, ...modals]
-
-      for (let item of elements) {
-        item.style.display = 'none'
-      }
-      if (onCancel) {
-        onCancel()
-      }
-      if (removeMessageListener) removeMessageListener()
-      closeSpace?.onClose({})
-    },
-    () => {
-      // If user chooses to stay, we simply hide the confirm modal
-      confirmModal.style.display = 'none'
-    },
-    exitTitle, // pass exitTitle here
-    exitText, // pass exitText here,
-    exitPrimaryButtonText,
-    exitSecondaryButtonText
-  )
-  confirmModal.style.display = 'none'
-  document.body.appendChild(confirmModal)
-
-  // Add the onclick event to the button
-  closeButton.onclick = () => {
-    const outerShell = document.querySelector(
-      '.flatfile_outer-shell'
-    ) as HTMLElement
-    if (outerShell) {
-      outerShell.style.display = 'block'
-    } else {
-      // Show the confirm modal instead of creating a new one
-      confirmModal.style.display = 'block'
-    }
-    if (removeMessageListener) removeMessageListener()
-  }
-
-  // Append the wrapper to the container
-  const mountElementId = mountElement
-  const mountPoint = document.getElementById(mountElementId)
-
-  if (mountPoint) {
-    mountPoint.appendChild(wrapper)
-  } else {
-    console.error('Mount element not found in the DOM.')
-  }
-
-  window.addEventListener(
-    'message',
-    (event) => {
-      if (
-        event.data &&
-        event.data.topic === 'job:outcome-acknowledged' &&
-        event.data.payload.status === 'complete' &&
-        event.data.payload.operation === closeSpace?.operation
-      ) {
-        wrapper.style.display = 'none'
-      }
-    },
-    false
-  )
 
   // Inject styles dynamically
   const styles = `
@@ -322,4 +233,6 @@ export function createIframe(
   const styleElement = document.createElement('style')
   styleElement.innerHTML = styles
   document.head.appendChild(styleElement)
+
+  return iFrameContainer
 }
