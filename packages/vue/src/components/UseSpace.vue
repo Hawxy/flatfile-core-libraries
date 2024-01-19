@@ -2,8 +2,7 @@
   <div>
     <DefaultError v-if="initError" :error="initError" />
     <SpaceC
-      v-if="spaceUrl && pubNub"
-      :pubNub="pubNub"
+      v-if="localSpaceId && spaceUrl && accessTokenLocal"
       :spaceId="localSpaceId"
       :spaceUrl="spaceUrl"
       :accessToken="accessTokenLocal"
@@ -31,13 +30,12 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import useInitializeSpace from '../utils/useInitializeSpace';
-import getSpace from '../utils/getSpace';
-import { initializePubnub } from '@flatfile/embedded-utils'
-import SpaceC from './SpaceC.vue';
-import SpinnerC from './Spinner.vue';
-import DefaultError from './DefaultError.vue';
+import { ref, onMounted } from 'vue'
+import useInitializeSpace from '../utils/useInitializeSpace'
+import getSpace from '../utils/getSpace'
+import SpaceC from './SpaceC.vue'
+import SpinnerC from './Spinner.vue'
+import DefaultError from './DefaultError.vue'
 
 export default {
   props: {
@@ -55,7 +53,7 @@ export default {
     spaceInfo: Object,
     userInfo: Object,
     workbook: Object,
-    onRecordHook: Function, 
+    onRecordHook: Function,
     onSubmit: Function,
     displayAsModal: Boolean,
     iframeStyles: Object,
@@ -65,7 +63,8 @@ export default {
     },
     exitText: {
       type: String,
-      default: 'Are you sure you want to exit? Any unsaved changes will be lost.',
+      default:
+        'Are you sure you want to exit? Any unsaved changes will be lost.',
     },
     exitTitle: {
       type: String,
@@ -85,72 +84,63 @@ export default {
     },
   },
   setup(props) {
-    const { space, initializeSpace, createdWorkbook } = useInitializeSpace(props);
-    const initError = ref(null);
-    const localSpaceId = ref(null);
-    const pubNub = ref(null);
-    const accessTokenLocal = ref(null);
-    const spaceUrl = ref('');
+    const { initializeSpace, createdWorkbook } = useInitializeSpace(props)
+    const initError = ref(null)
+    const localSpaceId = ref(null)
+    const accessTokenLocal = ref(null)
+    const spaceUrl = ref('')
 
     const initSpace = async () => {
       try {
         const data = props.publishableKey
           ? await initializeSpace(props)
-          : await getSpace(props);
-          
+          : await getSpace(props)
+
         if (!data) {
-          throw new Error('Failed to initialize space');
+          throw new Error('Failed to initialize space')
         }
-        
-        const { id: spaceId, accessToken, guestLink } = data.data;
+
+        const { id: spaceId, accessToken, guestLink } = data.data
 
         if (!spaceId) {
-          throw new Error('Missing spaceId from space response');
+          throw new Error('Missing spaceId from space response')
         }
 
         if (!guestLink) {
-          throw new Error('Missing guest link from space response');
+          throw new Error('Missing guest link from space response')
         }
 
         if (!accessToken) {
-          throw new Error('Missing access token from space response');
+          throw new Error('Missing access token from space response')
         }
 
-        const initializedPubNub = await initializePubnub({
-          spaceId,
-          accessToken,
-          apiUrl: props.apiUrl,
-        });
-
-        localSpaceId.value = spaceId;
-        spaceUrl.value = guestLink;
+        localSpaceId.value = spaceId
+        spaceUrl.value = guestLink
         accessTokenLocal.value = accessToken
-        pubNub.value = initializedPubNub;
       } catch (error) {
-        initError.value = error.message;
+        initError.value = error.message
       }
-    };
+    }
 
     onMounted(() => {
-      initSpace();
-    });
+      initSpace()
+    })
 
     return {
       initSpace,
       initError,
       localSpaceId,
       spaceUrl,
-      pubNub,
       accessTokenLocal,
-      createdWorkbook
-    };
+      createdWorkbook,
+    }
   },
   components: {
     SpaceC,
     SpinnerC,
-    DefaultError
+    DefaultError,
   },
-};
+}
 </script>
 
 <style lang="css">

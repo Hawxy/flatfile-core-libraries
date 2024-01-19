@@ -1,4 +1,7 @@
-import { ISpace, getErrorMessage } from '@flatfile/embedded-utils'
+import {
+  ReusedSpaceWithAccessToken,
+  getErrorMessage,
+} from '@flatfile/embedded-utils'
 import authenticate from './authenticate'
 import { Flatfile } from '@flatfile/api'
 
@@ -7,7 +10,7 @@ type IWorkbook = Pick<
   'name' | 'sheets' | 'actions'
 >
 const getSpace = async (
-  spaceProps: ISpace
+  spaceProps: ReusedSpaceWithAccessToken
 ): Promise<{
   space: any
   workbook?: IWorkbook

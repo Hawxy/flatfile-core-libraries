@@ -1,7 +1,7 @@
 <template>
   <div
     class="flatfile_iframe-wrapper"
-    :class="{ 'flatfile_displayAsModal': displayAsModal }"
+    :class="{ flatfile_displayAsModal: displayAsModal }"
     data-testid="space-contents"
     :style="getContainerStyles(displayAsModal)"
   >
@@ -26,28 +26,44 @@
       @click="showExitWarnModal = true"
       data-testid="flatfile-close-button"
       class="flatfile-close-button"
-      style="position: absolute; margin: 30px;"
+      style="position: absolute; margin: 30px"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 100 100">
-        <line x1="10" y1="10" x2="90" y2="90" stroke="white" :stroke-width="10" />
-        <line x1="10" y1="90" x2="90" y2="10" stroke="white" :stroke-width="10" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 100 100"
+      >
+        <line
+          x1="10"
+          y1="10"
+          x2="90"
+          y2="90"
+          stroke="white"
+          :stroke-width="10"
+        />
+        <line
+          x1="10"
+          y1="90"
+          x2="90"
+          y2="10"
+          stroke="white"
+          :stroke-width="10"
+        />
       </svg>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, watch, onMounted, onUnmounted } from 'vue';
-import { Flatfile } from '@flatfile/api';
-import ConfirmModal from './ConfirmCloseModal.vue';
-import authenticate from '../utils/authenticate';
-import { Browser, FlatfileEvent } from '@flatfile/listener';
-import addSpaceInfo from '../utils/addSpaceInfo';
-import {
-  getIframeStyles,
-  getContainerStyles,
-} from './embeddedStyles';
-import { createSimpleListener } from '../utils/createSimpleListener';
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { Flatfile } from '@flatfile/api'
+import ConfirmModal from './ConfirmCloseModal.vue'
+import authenticate from '../utils/authenticate'
+import { Browser, FlatfileEvent } from '@flatfile/listener'
+import addSpaceInfo from '../utils/addSpaceInfo'
+import { getIframeStyles, getContainerStyles } from './embeddedStyles'
+import { createSimpleListener } from '../utils/createSimpleListener'
 
 export default {
   props: {
@@ -58,9 +74,8 @@ export default {
     accessToken: String,
     spaceBody: Object,
     closeSpace: Object,
-    onRecordHook: Function, 
+    onRecordHook: Function,
     onSubmit: Function,
-    pubNub: Object,
     document: Object,
     iframeStyles: Object,
     mountElement: String,
@@ -83,16 +98,25 @@ export default {
 
   async created() {
     const {
-      pubNub, spaceId, listener, apiUrl, accessToken, closeSpace, onRecordHook, onSubmit, workbook
-    } = this;
-
-    const simpleListenerSlug = workbook?.sheets?.[0].slug || workbook?.sheets?.[0].config.slug || 'slug'
-
-    const listenerInstance = listener || createSimpleListener({
+      listener,
+      apiUrl,
+      accessToken,
+      closeSpace,
       onRecordHook,
       onSubmit,
-      slug: simpleListenerSlug,
-    })
+      workbook,
+    } = this
+
+    const simpleListenerSlug =
+      workbook?.sheets?.[0].slug || workbook?.sheets?.[0].config.slug || 'slug'
+
+    const listenerInstance =
+      listener ||
+      createSimpleListener({
+        onRecordHook,
+        onSubmit,
+        slug: simpleListenerSlug,
+      })
 
     if (listenerInstance) {
       listenerInstance.mount(
@@ -113,62 +137,70 @@ export default {
       return listenerInstance?.dispatchEvent(eventInstance)
     }
 
-    const callback = (event) => {
-      const eventResponse = JSON.parse(event.message) ?? {}
+    const handlePostMessage = (event) => {
+      const { flatfileEvent } = event.data
+      if (!flatfileEvent) return
       if (
-        eventResponse.topic === 'job:outcome-acknowledged' &&
-        eventResponse.payload.status === 'complete' &&
-        eventResponse.payload.operation === closeSpace?.operation
+        flatfileEvent.topic === 'job:outcome-acknowledged' &&
+        flatfileEvent.payload.status === 'complete' &&
+        flatfileEvent.payload.operation === closeSpace?.operation
       ) {
         closeSpace?.onClose({})
       }
-
-      dispatchEvent(eventResponse)
+      dispatchEvent(flatfileEvent)
     }
-    
-    const channel = [`space.${spaceId}`]
-    const pubNubListener = { message: callback }
-    pubNub.addListener(pubNubListener)
-    pubNub.subscribe({
-      channels: channel,
-    });
+
+    window.addEventListener('message', handlePostMessage, false)
+    window.handlePostMessageInstance = handlePostMessage
   },
-  
+
   setup(props) {
-    const showExitWarnModal = ref(false);
+    const showExitWarnModal = ref(false)
     const {
-      spaceId, spaceUrl, accessToken, closeSpace, apiUrl, pubNub, 
-      workbook, environmentId, document, themeConfig, sidebarConfig, 
-      spaceInfo, userInfo
-    } = props;
-    const channel = `space.${spaceId}`;
-    
+      spaceId,
+      accessToken,
+      closeSpace,
+      apiUrl,
+      workbook,
+      environmentId,
+      document,
+      themeConfig,
+      sidebarConfig,
+      spaceInfo,
+      userInfo,
+    } = props
+    const channel = `space.${spaceId}`
+
     const handleConfirm = () => {
-      closeSpace?.onClose({});
-    };
+      closeSpace?.onClose({})
+    }
 
     const handleCancel = () => {
-      showExitWarnModal.value = false;
-    };
+      showExitWarnModal.value = false
+    }
 
-    window.CROSSENV_FLATFILE_API_KEY = accessToken;
+    window.CROSSENV_FLATFILE_API_KEY = accessToken
 
     onMounted(async () => {
-      const fullAccessApi = authenticate(accessToken, apiUrl);
-      await addSpaceInfo({
-        workbook, 
-        environmentId, 
-        document, 
-        themeConfig, 
-        sidebarConfig, 
-        spaceInfo, 
-        userInfo
-      }, spaceId, fullAccessApi);
+      const fullAccessApi = authenticate(accessToken, apiUrl)
+      await addSpaceInfo(
+        {
+          workbook,
+          environmentId,
+          document,
+          themeConfig,
+          sidebarConfig,
+          spaceInfo,
+          userInfo,
+        },
+        spaceId,
+        fullAccessApi
+      )
 
-      onUnmounted(() => {
-        pubNub.unsubscribe([channel]);
-      });
-    });
+     onUnmounted(() => {
+       window.removeEventListener('message', window.handlePostMessageInstance)
+     })
+    })
 
     return {
       showExitWarnModal,
@@ -176,9 +208,9 @@ export default {
       handleCancel,
       getIframeStyles,
       getContainerStyles,
-    };
+    }
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -199,7 +231,7 @@ export default {
   cursor: pointer;
   border: none;
   background: #000;
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
   animation: glow 1.5s linear infinite alternate;
   transition: box-shadow 0.3s ease;
   height: 25px;
@@ -227,7 +259,7 @@ export default {
   height: calc(100vh - 60px); /* 30px padding on the top and bottom */
   padding: 30px;
   background: var(--ff-bg-fade);
-  z-index: 1000; 
+  z-index: 1000;
 }
 
 .flatfile-close-button {

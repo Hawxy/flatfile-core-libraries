@@ -1,14 +1,16 @@
 import { ref, reactive, toRefs, h } from 'vue'
 import { initializeSpace } from '../utils/initializeSpace'
 import getSpace from '../utils/getSpace'
-import { initializePubnub, ISpace } from '@flatfile/embedded-utils'
+import {
+  ISpace,
+  ReusedSpaceWithAccessToken,
+  SimpleOnboarding,
+} from '@flatfile/embedded-utils'
 import SpaceC from './SpaceC.vue'
 import SpinnerC from './Spinner.vue'
-import Pubnub from 'pubnub'
 import DefaultError from './DefaultError.vue'
 
 interface State {
-  pubNub: Pubnub | null
   localSpaceId: string
   accessTokenLocal: string
   spaceUrl: string
@@ -24,22 +26,20 @@ export const initializeFlatfile = (props: ISpace) => {
 
   const initError = ref<Error | null>(null)
   const state = reactive<State>({
-    pubNub: null,
     localSpaceId: '',
     accessTokenLocal: '',
     spaceUrl: '',
     workbook: null,
   })
 
-  const { localSpaceId, pubNub, spaceUrl, accessTokenLocal, workbook } =
-    toRefs(state)
+  const { localSpaceId, spaceUrl, accessTokenLocal, workbook } = toRefs(state)
 
   const initSpace = async () => {
     try {
       const result =
         props.publishableKey && !props?.space
-          ? await initializeSpace(props)
-          : await getSpace(props)
+          ? await initializeSpace(props as SimpleOnboarding)
+          : await getSpace(props as ReusedSpaceWithAccessToken)
 
       const data = result?.space?.data
       const workbook = result?.workbook
@@ -67,13 +67,6 @@ export const initializeFlatfile = (props: ISpace) => {
 
       state.accessTokenLocal = accessToken
 
-      const initializedPubNub = await initializePubnub({
-        spaceId,
-        accessToken,
-        apiUrl,
-      })
-
-      state.pubNub = initializedPubNub
       state.workbook = workbook
     } catch (error) {
       initError.value = error as Error
@@ -90,7 +83,7 @@ export const initializeFlatfile = (props: ISpace) => {
   return {
     OpenEmbed: initSpace,
     Space: () =>
-      pubNub.value
+      localSpaceId.value && accessTokenLocal.value && spaceUrl.value
         ? initError.value
           ? errorElement
           : h(SpaceC, {
@@ -98,7 +91,6 @@ export const initializeFlatfile = (props: ISpace) => {
               spaceId: localSpaceId.value,
               spaceUrl: spaceUrl.value,
               accessToken: accessTokenLocal.value,
-              pubNub: pubNub.value,
               workbook: workbook.value,
               apiUrl,
               ...props,
