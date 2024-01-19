@@ -321,14 +321,17 @@ export async function startFlatfile(options: SimpleOnboarding) {
     onCancel,
   } = options
   const spacesUrl = spaceUrl || baseUrl
-  let mountedIFrame = document.getElementById(mountElement)
+  let mountIFrameWrapper = document.getElementById(mountElement)
+  const mountIFrameElement = mountIFrameWrapper
+    ? mountIFrameWrapper.getElementsByTagName('iframe')[0]
+    : null
 
   /**
    * Customers can proactively preload the iFrame into the DOM - If we detect that an iFrame already exists
    * for the provided mountElementId - we can assume it has been preloaded, and simply make it visible
    **/
-  if (mountedIFrame) {
-    mountedIFrame.style.display = 'block'
+  if (mountIFrameWrapper && mountIFrameElement) {
+    mountIFrameWrapper.style.display = 'block'
   }
 
   try {
@@ -428,8 +431,8 @@ export async function startFlatfile(options: SimpleOnboarding) {
      *
      * If it has not been created yet, the iFrame is created on-demand, and routed to the specified space-id
      **/
-    if (!mountedIFrame) {
-      mountedIFrame = createIframe(
+    if (!mountIFrameElement) {
+      mountIFrameWrapper = createIframe(
         mountElement,
         displayAsModal,
         spaceData.id,
@@ -437,9 +440,8 @@ export async function startFlatfile(options: SimpleOnboarding) {
         spacesUrl
       )
     } else {
-      const iFrameEl = mountedIFrame.getElementsByTagName('iframe')[0]
       const targetOrigin = new URL(spacesUrl).origin
-      iFrameEl.contentWindow?.postMessage(
+      mountIFrameElement.contentWindow?.postMessage(
         {
           flatfileEvent: {
             topic: 'portal:initialize',
@@ -455,9 +457,9 @@ export async function startFlatfile(options: SimpleOnboarding) {
       )
     }
 
-    if (mountedIFrame) {
+    if (mountIFrameWrapper) {
       initializeIFrameConfirmationModal(
-        mountedIFrame,
+        mountIFrameWrapper,
         displayAsModal,
         exitTitle,
         exitText,

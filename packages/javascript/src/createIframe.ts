@@ -9,10 +9,13 @@ export function createIframe(
 ): HTMLElement | null {
   const spacesURL = spacesUrl || 'https://spaces.flatfile.com'
   let url: string
+  let iFrameContainer = document.getElementById(mountElement)
 
-  const iFrameContainer = document.createElement('div')
-  iFrameContainer.id = mountElement
-  document.body.appendChild(iFrameContainer)
+  if (!iFrameContainer) {
+    iFrameContainer = document.createElement('div')
+    iFrameContainer.id = mountElement
+    document.body.appendChild(iFrameContainer)
+  }
 
   // Construct the URL with the space ID and the token
   if (spaceId && token) {
