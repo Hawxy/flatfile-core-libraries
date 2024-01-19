@@ -1,5 +1,11 @@
 # @flatfile/v2-shims
 
+## 1.0.0
+
+### Major Changes
+
+- a355323: Update logic to fix sheet config issue
+
 ## 0.0.7
 
 ### Patch Changes

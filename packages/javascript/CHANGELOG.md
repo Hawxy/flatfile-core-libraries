@@ -1,5 +1,12 @@
 # @flatfile/javascript
 
+## 1.1.1
+
+### Patch Changes
+
+- 9225c80: Update deps
+- 4d48e58: Fix potential issue of assuming preload based on existing mountElement instead of checking for mountElement's iFrame
+
 ## 1.1.0
 
 ### Minor Changes

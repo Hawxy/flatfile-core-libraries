@@ -1,5 +1,15 @@
 # @flatfile/vue
 
+## 1.0.0
+
+### Major Changes
+
+- 9225c80: Update deps
+
+### Patch Changes
+
+- b08e694: Remove PubNub dependency
+
 ## 0.0.12
 
 ### Patch Changes

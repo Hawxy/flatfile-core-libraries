@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.7.1
+
+### Patch Changes
+
+- 9225c80: Update deps
+
 ## 7.7.0
 
 ### Minor Changes
