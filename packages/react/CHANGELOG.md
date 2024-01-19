@@ -1,5 +1,16 @@
 # @flatfile/react
 
+## 7.7.0
+
+### Minor Changes
+
+- ea7bd15: Add initSpace()
+
+### Patch Changes
+
+- Updated dependencies [ea7bd15]
+  - @flatfile/embedded-utils@1.1.6
+
 ## 7.6.1
 
 ### Patch Changes

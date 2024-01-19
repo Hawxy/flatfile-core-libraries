@@ -1,5 +1,11 @@
 # embedded-utils
 
+## 1.1.6
+
+### Patch Changes
+
+- ea7bd15: Add initSpace() flow
+
 ## 1.1.5
 
 ### Patch Changes

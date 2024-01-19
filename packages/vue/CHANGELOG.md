@@ -1,5 +1,13 @@
 # @flatfile/vue
 
+## 0.0.11
+
+### Patch Changes
+
+- 05ad3ae: Fix issue rollup
+- Updated dependencies [ea7bd15]
+  - @flatfile/embedded-utils@1.1.6
+
 ## 0.0.10
 
 ### Patch Changes
