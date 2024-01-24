@@ -3,7 +3,8 @@ export function createIframe(
   displayAsModal: boolean,
   spaceId?: string,
   token?: string,
-  spacesUrl?: string
+  spacesUrl?: string,
+  isReusingSpace?: boolean
 ): HTMLElement | null {
   const spacesURL = spacesUrl || 'https://spaces.flatfile.com'
   let url: string
@@ -17,12 +18,16 @@ export function createIframe(
 
   // Construct the URL with the space ID and the token
   if (spaceId && token) {
-    url = `${spacesURL}/space/${spaceId}?token=${encodeURIComponent(token)}`
+    if (isReusingSpace) {
+      url = `${spacesURL}/space/${spaceId}?token=${encodeURIComponent(token)}`
+    } else {
+      url = spacesURL
+    }
   } else {
     url = `${spacesURL}/space-init`
     iFrameContainer.style.display = 'none'
   }
-
+  
   // Create the iframe
   const iframe = document.createElement('iframe')
   iframe.src = url

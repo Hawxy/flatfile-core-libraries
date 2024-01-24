@@ -4,6 +4,7 @@ import { Browser, FlatfileEvent, FlatfileListener } from '@flatfile/listener'
 import {
   DefaultSubmitSettings,
   ISidebarConfig,
+  ISpace,
   IThemeConfig,
   IUserInfo,
   JobHandler,
@@ -20,6 +21,7 @@ import { createWorkbook } from './src/services/workbook'
 import { FlatfileRecord } from '@flatfile/hooks'
 import { recordHook } from '@flatfile/plugin-record-hook'
 import { createModal } from './src/createModal'
+import { CreateWorkbookConfig } from '@flatfile/api/api'
 
 const displayError = (errorTitle: string, errorMessage: string) => {
   const display = document.createElement('div')
@@ -290,13 +292,12 @@ function initializeIFrameConfirmationModal(
   }
 }
 
-export async function startFlatfile(options: SimpleOnboarding) {
+export async function startFlatfile(options: SimpleOnboarding | ISpace) {
   const {
     publishableKey,
     displayAsModal = true,
     mountElement = 'flatfile_iFrameContainer',
     space,
-    sheet,
     spaceBody = null,
     apiUrl = 'https://platform.flatfile.com/api',
     baseUrl = 'https://spaces.flatfile.com',
@@ -316,10 +317,9 @@ export async function startFlatfile(options: SimpleOnboarding) {
     userInfo,
     spaceInfo,
     listener,
-    onRecordHook,
-    onSubmit,
-    onCancel,
   } = options
+  const simpleOnboardingOptions = options as SimpleOnboarding
+  const isReusingSpace = !!(space?.id && space?.accessToken)
   const spacesUrl = spaceUrl || baseUrl
   let mountIFrameWrapper = document.getElementById(mountElement)
   const mountIFrameElement = mountIFrameWrapper
@@ -351,12 +351,12 @@ export async function startFlatfile(options: SimpleOnboarding) {
         },
       }
 
-      if (!createdWorkbook && !sheet) {
+      if (!createdWorkbook && !simpleOnboardingOptions?.sheet) {
         spaceRequestBody.autoConfigure = true
       }
 
-      if (!createdWorkbook && sheet) {
-        createdWorkbook = createWorkbookFromSheet(sheet, !!onSubmit)
+      if (!createdWorkbook && simpleOnboardingOptions?.sheet) {
+        createdWorkbook = createWorkbookFromSheet(simpleOnboardingOptions?.sheet, !!simpleOnboardingOptions?.onSubmit)
       }
 
       const response = await fetch(createSpaceEndpoint, {
@@ -378,7 +378,8 @@ export async function startFlatfile(options: SimpleOnboarding) {
       return result.data
     }
 
-    const spaceData = await createSpace()
+    const spaceData = isReusingSpace ? space : await createSpace()
+
     if (!spaceData?.id || !spaceData?.accessToken) {
       throw new Error('Unable to create space, please try again.')
     }
@@ -400,29 +401,30 @@ export async function startFlatfile(options: SimpleOnboarding) {
         spaceData.accessToken,
         apiUrl,
         createSimpleListener({
-          onRecordHook,
-          onSubmit,
+          onRecordHook: simpleOnboardingOptions?.onRecordHook,
+          onSubmit: simpleOnboardingOptions?.onSubmit,
           slug: simpleListenerSlug,
         }),
         closeSpace
       )
     }
-
-    await updateSpaceInfo({
-      apiUrl,
-      publishableKey,
-      workbook: createdWorkbook,
-      spaceId: spaceData.id,
-      accessToken: spaceData.accessToken,
-      environmentId,
-      mountElement,
-      errorTitle,
-      themeConfig,
-      document: documentConfig,
-      sidebarConfig,
-      userInfo,
-      spaceInfo,
-    })
+    if(!isReusingSpace) {
+      await updateSpaceInfo({
+        apiUrl,
+        publishableKey,
+        workbook: createdWorkbook as Pick<CreateWorkbookConfig, "name" | "sheets" | "actions">,
+        spaceId: spaceData.id,
+        accessToken: spaceData.accessToken,
+        environmentId,
+        mountElement,
+        errorTitle,
+        themeConfig,
+        document: documentConfig,
+        sidebarConfig,
+        userInfo,
+        spaceInfo,
+      })
+    }
 
     /**
      * Customers can proactively preload the iFrame into the DOM - If we detect that an iFrame already exists
@@ -437,7 +439,8 @@ export async function startFlatfile(options: SimpleOnboarding) {
         displayAsModal,
         spaceData.id,
         spaceData.accessToken,
-        spacesUrl
+        spaceData?.guestLink ?? spacesUrl,
+        isReusingSpace
       )
     } else {
       const targetOrigin = new URL(spacesUrl).origin
@@ -467,7 +470,7 @@ export async function startFlatfile(options: SimpleOnboarding) {
         exitSecondaryButtonText,
         closeSpace,
         removeMessageListener,
-        onCancel
+        simpleOnboardingOptions?.onCancel
       )
     }
 
