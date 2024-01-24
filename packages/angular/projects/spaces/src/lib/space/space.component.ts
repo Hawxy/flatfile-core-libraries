@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import type { ISpace, ReusedSpaceWithAccessToken, SimpleOnboarding } from '@flatfile/embedded-utils';
-import { initializePubnub } from '@flatfile/embedded-utils';
 import getSpace from '../../utils/getSpace';
 import useInitializeSpace from '../../utils/useInitializeSpace';
 import { SpaceFramePropsType } from './space-frame/spaceFrame.component';
@@ -57,19 +56,11 @@ export class Space implements OnInit{
       if (!accessToken || typeof accessToken !== 'string') {
         throw new Error('Missing access token from space response')
       }
-      const pubNubData = {
-        spaceId,
-        accessToken,
-        apiUrl: spaceProps.apiUrl || 'https://platform.flatfile.com/api',
-      }
-
-      const initializedPubNub = await initializePubnub(pubNubData)
 
       this.localSpaceData = {
         spaceId,
         spaceUrl: guestLink,
         localAccessToken: accessToken,
-        pubNub: initializedPubNub,
       }
 
       this.loading = false

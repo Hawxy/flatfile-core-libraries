@@ -8,7 +8,7 @@ import createSimpleListener from "../../../utils/createSimpleListener";
 import { SpaceCloseModalPropsType } from "../space-close-modal/spaceCloseModal.component";
 import { getContainerStyles, getIframeStyles } from "./embeddedStyles";
 
-export type SpaceFramePropsType = ISpace & {spaceId: string, spaceUrl: string, localAccessToken: string, pubNub: any}
+export type SpaceFramePropsType = ISpace & {spaceId: string, spaceUrl: string, localAccessToken: string }
 
 @Component({
   selector: 'space-frame',
@@ -22,14 +22,13 @@ export class SpaceFrame implements OnInit {
     {} as SpaceCloseModalPropsType
   iframeWrapperStyle = {}
   iframeStyle = {}
+  handlePostMessageInstance: ((event: MessageEvent<{ flatfileEvent: FlatfileEvent }>) => void) = () => {}
 
   @Input({required: true}) spaceFrameProps: SpaceFramePropsType  = {} as SpaceFramePropsType
   @Input({required: true}) loading: boolean = false
 
   async created() {
-    const {
-      pubNub, spaceId, listener, apiUrl, closeSpace, workbook
-    } = this.spaceFrameProps;
+    const { listener, apiUrl, closeSpace, workbook } = this.spaceFrameProps;
     const accessToken = this.spaceFrameProps.localAccessToken
 
     const simpleListenerSlug = workbook?.sheets?.[0].slug || 'slug'
@@ -58,25 +57,21 @@ export class SpaceFrame implements OnInit {
       return listenerInstance?.dispatchEvent(eventInstance)
     }
 
-    const callback = (event: any) => {
-      const eventResponse = JSON.parse(event.message) ?? {}
+    const handlePostMessage = (event: MessageEvent<{ flatfileEvent:FlatfileEvent }>) => {
+      const { flatfileEvent } = event.data
+      if (!flatfileEvent) return
       if (
-        eventResponse.topic === 'job:outcome-acknowledged' &&
-        eventResponse.payload.status === 'complete' &&
-        eventResponse.payload.operation === closeSpace?.operation
+        flatfileEvent.topic === 'job:outcome-acknowledged' &&
+        flatfileEvent.payload.status === 'complete' &&
+        flatfileEvent.payload.operation === closeSpace?.operation
       ) {
         closeSpace?.onClose({})
       }
-
-      dispatchEvent(eventResponse)
+      dispatchEvent(flatfileEvent)
     }
 
-    const channel = [`space.${spaceId}`]
-    const pubNubListener = { message: callback }
-    pubNub.addListener(pubNubListener)
-    pubNub.subscribe({
-      channels: channel,
-    })
+    window.addEventListener('message', handlePostMessage, false)
+    this.handlePostMessageInstance = handlePostMessage
   }
 
   async initializeSpace() {
@@ -108,12 +103,6 @@ export class SpaceFrame implements OnInit {
       }, spaceId, fullAccessApi);
     }
     
-  }
-
-  async unInitializeSpace(){
-    const {pubNub, spaceId} = this.spaceFrameProps;
-    const channel = `space.${spaceId}`;
-    pubNub?.unsubScripbe?.([channel])
   }
 
   openCloseModalDialog() {
@@ -162,7 +151,7 @@ export class SpaceFrame implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.unInitializeSpace()
+    window.removeEventListener('message', this.handlePostMessageInstance)
   }
 }
 
