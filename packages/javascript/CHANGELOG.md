@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 1.1.2
+
+### Patch Changes
+
+- 6355950: fix issue when reusing space
+
 ## 1.1.1
 
 ### Patch Changes

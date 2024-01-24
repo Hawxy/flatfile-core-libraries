@@ -1,5 +1,11 @@
 # angular
 
+## 0.1.3
+
+### Patch Changes
+
+- 823596f: remove pubnub from @flatfile/angular-sdk
+
 ## 0.1.2
 
 ### Patch Changes
