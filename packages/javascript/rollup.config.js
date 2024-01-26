@@ -5,14 +5,18 @@ import commonjs from '@rollup/plugin-commonjs'
 import resolve from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import terser from '@rollup/plugin-terser'
+import { dts } from 'rollup-plugin-dts'
 
+const PROD = process.env.NODE_ENV === 'production'
+if (!PROD) {
+  console.log('Not in production mode - skipping minification')
+}
 // Consolidated external dependencies
 const external = [
   '@flatfile/api',
   '@flatfile/embedded-utils',
   '@flatfile/listener',
   '@flatfile/plugin-record-hook',
-  'pubnub',
 ]
 
 // Common plugins function
@@ -22,13 +26,18 @@ function commonPlugins() {
     commonjs(),
     css(),
     resolve({ browser: true }),
-    typescript({ outDir: 'dist' }),
+    typescript({
+      tsconfig: 'tsconfig.json',
+      outDir: 'dist',
+      declaration: false,
+      declarationMap: false,
+    }),
     url({
       include: ['**/*.otf'],
       limit: Infinity,
       fileName: '[dirname][name][extname]',
     }),
-    terser(),
+    PROD ? terser() : null,
   ]
 }
 
@@ -63,6 +72,11 @@ const config = [
       name: 'FlatFileJavaScript',
     },
     plugins: commonPlugins(),
+  },
+  {
+    input: 'index.ts',
+    output: [{ file: 'dist/index.d.ts', format: 'es' }],
+    plugins: [dts()],
   },
 ]
 

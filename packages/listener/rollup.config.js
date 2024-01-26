@@ -48,15 +48,6 @@ export default [
         file: 'dist/index.mjs',
         sourcemap: true,
       },
-      {
-        exports: 'auto',
-        sourcemap: false,
-        strict: true,
-        file: 'dist/index.js',
-        format: 'umd',
-        inlineDynamicImports: true,
-        name: 'FlatFileListener',
-      },
     ],
     plugins: commonPlugins(false),
     external,
@@ -80,6 +71,21 @@ export default [
     ],
     plugins: commonPlugins(true),
     external,
+  },
+  {
+    input: 'src/index.ts',
+    output: [
+      {
+        exports: 'auto',
+        sourcemap: false,
+        strict: true,
+        file: 'dist/index.js',
+        format: 'umd',
+        inlineDynamicImports: true,
+        name: 'FlatFileListener',
+      },
+    ],
+    plugins: commonPlugins(true),
   },
   {
     input: 'src/index.ts',
