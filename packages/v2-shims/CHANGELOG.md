@@ -1,5 +1,13 @@
 # @flatfile/v2-shims
 
+## 1.0.1
+
+### Patch Changes
+
+- a36fd7ea: Update dependencies
+- Updated dependencies [066c2cb9]
+  - @flatfile/listener@0.4.1
+
 ## 1.0.0
 
 ### Major Changes

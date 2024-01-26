@@ -1,5 +1,11 @@
 # @flatfile/listener
 
+## 0.4.1
+
+### Patch Changes
+
+- 066c2cb9: Update Exports
+
 ## 0.4.0
 
 ### Minor Changes

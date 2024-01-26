@@ -1,5 +1,13 @@
 # @flatfile/javascript
 
+## 1.1.3
+
+### Patch Changes
+
+- 066c2cb9: Update Exports
+- Updated dependencies [066c2cb9]
+  - @flatfile/listener@0.4.1
+
 ## 1.1.2
 
 ### Patch Changes
