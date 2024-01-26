@@ -2,7 +2,7 @@ import { FlatfileListener } from '@flatfile/listener'
 
 import { Validator } from '../logic/validator'
 import { getSheetConfigFromSession } from '../logic/get.sheet.config.from.session'
-import { bulkRecordHook, recordHook } from '@flatfile/plugin-record-hook'
+import { bulkRecordHook } from '@flatfile/plugin-record-hook'
 import { recordToDictionary } from '../logic/record.hook'
 
 /**
@@ -18,7 +18,10 @@ export function validators(sheetSlug: string) {
         const sheetId = event?.context.sheetId
 
         const sheetSessionKey = `sheetConfig-${sheetId}`
-        const sheetConfig = await getSheetConfigFromSession(sheetSessionKey, sheetId)
+        const sheetConfig = await getSheetConfigFromSession(
+          sheetSessionKey,
+          sheetId
+        )
         const validator = new Validator(sheetConfig)
 
         records.forEach((record) => {
