@@ -1,5 +1,11 @@
 # @flatfile/vue
 
+## 1.0.1
+
+### Patch Changes
+
+- f07d0459: Update close action to be independent of user params
+
 ## 1.0.0
 
 ### Major Changes

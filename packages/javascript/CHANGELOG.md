@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 1.1.4
+
+### Patch Changes
+
+- f07d0459: Update close action to be independent of user params
+
 ## 1.1.3
 
 ### Patch Changes

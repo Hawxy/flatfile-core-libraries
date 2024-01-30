@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.7.2
+
+### Patch Changes
+
+- f07d0459: Update close action to be independent of user params
+
 ## 7.7.1
 
 ### Patch Changes
