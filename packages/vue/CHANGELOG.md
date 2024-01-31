@@ -1,5 +1,13 @@
 # @flatfile/vue
 
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [2ed22cb]
+  - @flatfile/embedded-utils@1.1.8
+  - @flatfile/listener@0.4.2
+
 ## 1.0.1
 
 ### Patch Changes
