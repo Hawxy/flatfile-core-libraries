@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 1.1.6
+
+### Patch Changes
+
+- 76284d9: remove listener after complete submit and close action
+
 ## 1.1.5
 
 ### Patch Changes
