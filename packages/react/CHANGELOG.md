@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.7.4
+
+### Patch Changes
+
+- 4528907: Remove global style overrides from sdks
+
 ## 7.7.3
 
 ### Patch Changes

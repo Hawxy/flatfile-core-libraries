@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 1.1.7
+
+### Patch Changes
+
+- 4528907: Remove global style overrides from sdks
+
 ## 1.1.6
 
 ### Patch Changes

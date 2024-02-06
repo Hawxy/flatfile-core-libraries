@@ -1,5 +1,11 @@
 # @flatfile/vue
 
+## 1.0.3
+
+### Patch Changes
+
+- 4528907: Remove global style overrides from sdks
+
 ## 1.0.2
 
 ### Patch Changes
