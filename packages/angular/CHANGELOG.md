@@ -1,4 +1,4 @@
-# angular
+# @flatfile/angular
 
 ## 0.1.3
 
@@ -6,7 +6,7 @@
 
 ### Patch Changes
 
-- 823596f: remove pubnub from @flatfile/angular-sdk
+Updated the communication mechanism: Replaced PubNub with postMessage for sending and receiving messages, enhancing performance and reliability.
 
 ## 0.1.2
 
@@ -14,7 +14,7 @@
 
 ### Patch Changes
 
-- f6c0122: Fixing alignment of close buttons to not be half-in the modal.
+Adjusted the iFrame's close button alignment to ensure full visibility and prevent it from overlapping with the modal edge.
 
 ## 0.1.1
 
@@ -22,7 +22,7 @@
 
 ### Patch Changes
 
-- ad55584: enable simplified onboarding
+Enabled simplified SDK properties like `sheet`, `onSubmit`, & `onRecordHook`. Learn more: https://flatfile.com/docs/apps/embedding/reference/simple
 
 ## 0.1.0
 
@@ -30,7 +30,7 @@
 
 ### Minor Changes
 
-- e53e359: create trigger for angular sdk
+Implemented a new trigger mechanism for initiating the SDK.
 
 ## 0.0.1
 
@@ -38,4 +38,4 @@
 
 ### Patch Changes
 
-- 6574fcc: sdk build fixes
+Launched initial alpha version of @flatfile/angular.
