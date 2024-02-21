@@ -1,4 +1,4 @@
-import { EventTopic } from '@flatfile/api'
+import { Flatfile } from '@flatfile/api'
 import path from 'path'
 
 export const brandHex = '#4C48EF'
@@ -24,13 +24,13 @@ export const deployTopics = [
   'document:updated',
   'document:deleted',
 
-  'workbook:added', // legacy
+  // 'workbook:added', // legacy
   'workbook:created',
   'workbook:updated',
   'workbook:deleted',
   'workbook:expired',
 
-  'sheet:validated', // legacy
+  // 'sheet:validated', // legacy
   'sheet:created',
   'sheet:updated',
   'sheet:deleted',
@@ -41,14 +41,14 @@ export const deployTopics = [
   'records:updated',
   'records:deleted',
 
-  'upload:completed', // legacy
+  // 'upload:completed', // legacy
   'file:created',
   'file:updated',
   'file:deleted',
 
-  'job:started', // legacy
+  // 'job:started', // legacy
   'job:created',
-  'job:waiting', // legacy
+  // 'job:waiting', // legacy
   'job:updated',
   'job:deleted',
   'job:failed',
@@ -67,9 +67,9 @@ export const deployTopics = [
   'secret:updated',
   'secret:deleted',
 
-  'client:init', // legacy
-  'action:triggered', // legacy
-] as EventTopic[]
+  // 'client:init', // legacy
+  // 'action:triggered', // legacy
+] as Flatfile.EventTopic[]
 
 export const AUTODETECT_FILE_PATHS = [
   path.join(process.cwd(), 'index.js'),
