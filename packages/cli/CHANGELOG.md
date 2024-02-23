@@ -1,5 +1,11 @@
 # flatfile
 
+## 3.6.0
+
+### Minor Changes
+
+- 7b8ae50: Adds the ability to list, delete and deploy agents with slugs
+
 ## 3.5.15
 
 ### Patch Changes
