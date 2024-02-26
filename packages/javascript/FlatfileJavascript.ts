@@ -299,8 +299,8 @@ export async function startFlatfile(options: SimpleOnboarding | ISpace) {
     space,
     spaceBody = null,
     apiUrl = 'https://platform.flatfile.com/api',
-    baseUrl = 'https://spaces.flatfile.com',
-    spaceUrl = 'https://spaces.flatfile.com',
+    baseUrl = 'https://platform.flatfile.com/s',
+    spaceUrl = 'https://platform.flatfile.com/s',
     exitTitle = 'Close Window',
     exitText = 'Are you sure you would like to close this window? This will end your current data import session.',
     exitPrimaryButtonText = 'Yes, exit',
@@ -455,7 +455,7 @@ export async function startFlatfile(options: SimpleOnboarding | ISpace) {
             topic: 'portal:initialize',
             payload: {
               status: 'complete',
-              spaceUrl: `${spacesUrl}/space/${
+              spaceUrl: `${targetOrigin}/space/${
                 spaceData.id
               }?token=${encodeURIComponent(spaceData.accessToken)}`,
             },

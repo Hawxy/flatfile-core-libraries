@@ -10,7 +10,7 @@ export const getSpace = async (
     space,
     apiUrl,
     environmentId,
-    spaceUrl = 'https://spaces.flatfile.com/',
+    spaceUrl = 'https://platform.flatfile.com/s/',
   } = spaceProps
   let spaceResponse
   try {
