@@ -15,6 +15,15 @@ export const initializeSpace = async (
     apiUrl,
     spaceUrl = 'https://platform.flatfile.com/s/',
     workbook,
+    themeConfig,
+    sidebarConfig,
+    spaceInfo,
+    userInfo,
+    metadata,
+    namespace,
+    labels,
+    translationsPath,
+    languageOverride,
   } = flatfileOptions
 
   try {
@@ -27,21 +36,31 @@ export const initializeSpace = async (
     }
 
     const limitedAccessApi = authenticate(publishableKey, apiUrl)
-    const spaceRequestBody = {
+    const createSpaceRequest = {
       name,
+      namespace,
       autoConfigure: false,
-      labels: ['embedded'],
+      environmentId,
       ...spaceBody,
+      labels: ['embedded', ...(labels || [])],
+      translationsPath,
+      languageOverride,
+      metadata: {
+        ...metadata,
+        theme: themeConfig,
+        sidebarConfig: sidebarConfig ? sidebarConfig : { showSidebar: false },
+        userInfo,
+        spaceInfo,
+        ...(spaceBody?.metadata || {}),
+        ...(metadata || {}),
+      },
     }
 
     if (!workbook) {
-      spaceRequestBody.autoConfigure = true
+      createSpaceRequest.autoConfigure = true
     }
     try {
-      space = await limitedAccessApi.spaces.create({
-        environmentId,
-        ...spaceRequestBody,
-      })
+      space = await limitedAccessApi.spaces.create(createSpaceRequest)
     } catch (error) {
       throw new Error(`Failed to create space: ${getErrorMessage(error)}`)
     }

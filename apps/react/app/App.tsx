@@ -23,6 +23,7 @@ const spaceProps = {
   listener: listener,
   publishableKey: PUBLISHABLE_KEY,
   workbook: config,
+  namespace: 'my-namespace',
 }
 
 const simplifiedProps = {
@@ -105,7 +106,7 @@ function App() {
           {showSimplified === true ? 'Close' : 'Open'} Pre-loaded
         </button>
       </div>
-          <Space />
+      <Space />
       {showSimplified && (
         <div>
           <SimpleSpace setShowSpace={setShowSimplified} />

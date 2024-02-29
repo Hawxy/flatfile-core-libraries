@@ -15,7 +15,6 @@ import {
 } from '@flatfile/embedded-utils'
 import { createIframe } from './src/createIframe'
 import { createDocument } from './src/services/document'
-import { updateSpace } from './src/services/space'
 import { createWorkbook } from './src/services/workbook'
 
 import { FlatfileRecord } from '@flatfile/hooks'
@@ -109,7 +108,6 @@ const updateSpaceInfo = async (data: UpdateSpaceInfo) => {
     if (workbook) {
       await createWorkbook(data)
     }
-    await updateSpace(data)
 
     if (documentConfig) {
       await createDocument(data)
@@ -316,6 +314,11 @@ export async function startFlatfile(options: SimpleOnboarding | ISpace) {
     userInfo,
     spaceInfo,
     listener,
+    namespace,
+    metadata,
+    labels,
+    translationsPath,
+    languageOverride,
   } = options
   const simpleOnboardingOptions = options as SimpleOnboarding
   const isReusingSpace = !!(space?.id && space?.accessToken)
@@ -340,13 +343,17 @@ export async function startFlatfile(options: SimpleOnboarding | ISpace) {
       const spaceRequestBody = {
         name: name || 'Embedded Space',
         autoConfigure: false,
-        labels: ['embedded'],
         ...spaceBody,
+        labels: ['embedded', ...(labels || [])],
+        namespace,
+        translationsPath,
+        languageOverride,
         metadata: {
           theme: themeConfig,
           sidebarConfig: sidebarConfig ? sidebarConfig : { showSidebar: false },
           userInfo,
           ...(spaceBody?.metadata || {}),
+          ...(metadata || {}),
         },
       }
 
@@ -414,10 +421,7 @@ export async function startFlatfile(options: SimpleOnboarding | ISpace) {
       await updateSpaceInfo({
         apiUrl,
         publishableKey,
-        workbook: createdWorkbook as Pick<
-          CreateWorkbookConfig,
-          'name' | 'sheets' | 'actions'
-        >,
+        workbook: createdWorkbook as CreateWorkbookConfig,
         spaceId: spaceData.id,
         accessToken: spaceData.accessToken,
         environmentId,
