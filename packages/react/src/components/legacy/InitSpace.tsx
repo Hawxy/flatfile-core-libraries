@@ -1,17 +1,18 @@
 import { InitState } from '@flatfile/embedded-utils'
 import React, { JSX, useEffect, useState } from 'react'
-import { useCreateListener } from '../hooks/useCreateListener'
-import { IReactInitSpaceProps } from '../types'
-import { addSpaceInfo } from '../utils/addSpaceInfo'
-import { authenticate } from '../utils/authenticate'
-import { getSpace } from '../utils/getSpace'
-import { initializeSpace } from '../utils/initializeSpace'
-import ConfirmModal from './ConfirmCloseModal'
-import DefaultError from './Error'
-import { getContainerStyles, getIframeStyles } from './embeddedStyles'
-import './style.scss'
+import { useCreateListener } from '../../hooks/legacy/useCreateListener'
+import { IReactInitSpaceProps } from '../../types'
+import { addSpaceInfo } from '../../utils/addSpaceInfo'
+import { authenticate } from '../../utils/authenticate'
+import { getSpace } from '../../utils/getSpace'
+import { initializeSpace } from '../../utils/initializeSpace'
+import ConfirmModal from '../ConfirmCloseModal'
+import DefaultError from '../Error'
+import { getContainerStyles, getIframeStyles } from '../embeddedStyles'
+import '../style.scss'
 
 /**
+ * @deprecated - use FlatfileProvider and Space components instead
  * @name InitSpace
  * @description Flatfile Embedded Space component which pre-loads an iFrame, improving the load time of the embedded sheet when opened by a user
  * @param props

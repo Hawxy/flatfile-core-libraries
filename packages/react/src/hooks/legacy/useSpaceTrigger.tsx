@@ -1,20 +1,23 @@
-import React, { JSX, useEffect, useState } from 'react'
-import DefaultError from '../components/Error'
-import Space from '../components/Space'
-import Spinner from '../components/Spinner'
+import React, { JSX, useState } from 'react'
+import DefaultError from '../../components/Error'
+import Space from '../../components/legacy/LegacySpace'
+import Spinner from '../../components/Spinner'
 import { State } from '@flatfile/embedded-utils'
-import { initializeSpace } from '../utils/initializeSpace'
-import { getSpace } from '../utils/getSpace'
-import { IReactSpaceProps } from '../types'
+import { initializeSpace } from '../../utils/initializeSpace'
+import { getSpace } from '../../utils/getSpace'
+import { IReactSpaceProps } from '../../types'
 
-export const useSpace = (props: IReactSpaceProps): JSX.Element | null => {
-  const {
-    error: ErrorElement,
-    errorTitle,
-    loading: LoadingElement,
-    apiUrl,
-  } = props
+type IUseSpace = { OpenEmbed: () => Promise<void>; Space: () => JSX.Element }
+
+/**
+ * @deprecated - use FlatfileProvider and Space components instead
+ * This hook is used to initialize a space and return the Space component
+ */
+
+export const initializeFlatfile = (props: IReactSpaceProps): IUseSpace => {
+  const { error: ErrorElement, errorTitle, loading: LoadingElement } = props
   const [initError, setInitError] = useState<Error | string>()
+  const [loading, setLoading] = useState<boolean>(false)
   const [state, setState] = useState<State>({
     localSpaceId: '',
     accessTokenLocal: '',
@@ -27,6 +30,7 @@ export const useSpace = (props: IReactSpaceProps): JSX.Element | null => {
   const initSpace = async () => {
     setCloseInstance(false)
     try {
+      setLoading(true)
       const { data } = props.publishableKey
         ? await initializeSpace(props)
         : await getSpace(props)
@@ -59,14 +63,11 @@ export const useSpace = (props: IReactSpaceProps): JSX.Element | null => {
         ...prevState,
         accessTokenLocal: accessToken,
       }))
+      setLoading(false)
     } catch (error: any) {
       setInitError(error)
     }
   }
-
-  useEffect(() => {
-    initSpace()
-  }, [])
 
   const errorElement = ErrorElement ? (
     // Adding non-null assertion because this will never be hit if error is falsy, ts is unhappy.
@@ -81,28 +82,24 @@ export const useSpace = (props: IReactSpaceProps): JSX.Element | null => {
     </div>
   )
 
-  if (initError) {
-    return errorElement
+  return {
+    OpenEmbed: initSpace,
+    Space: () =>
+      closeInstance ? null : loading ? (
+        loadingElement
+      ) : initError ? (
+        errorElement
+      ) : (
+        <Space
+          key={localSpaceId}
+          spaceId={localSpaceId}
+          spaceUrl={spaceUrl}
+          accessToken={accessTokenLocal}
+          handleCloseInstance={() => setCloseInstance(true)}
+          {...props}
+        />
+      ),
   }
-
-  if (closeInstance) {
-    return null
-  } 
-
-  if (localSpaceId && spaceUrl && accessTokenLocal) {
-    return (
-      <Space
-        key={localSpaceId}
-        spaceId={localSpaceId}
-        spaceUrl={spaceUrl}
-        accessToken={accessTokenLocal}
-        handleCloseInstance={() => setCloseInstance(true)}
-        {...props}
-      />
-    )
-  }
-
-  return loadingElement
 }
 
-export default useSpace
+export default initializeFlatfile

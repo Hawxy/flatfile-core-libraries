@@ -4,7 +4,7 @@ import { authenticate } from './authenticate'
 import { getErrorMessage } from '@flatfile/embedded-utils'
 
 export const initializeSpace = async (
-  flatfileOptions: IReactSpaceProps
+  flatfileOptions: IReactSpaceProps & { sheets?: Flatfile.SheetConfig }
 ): Promise<Flatfile.SpaceResponse> => {
   let space
   const {
@@ -24,6 +24,7 @@ export const initializeSpace = async (
     labels,
     translationsPath,
     languageOverride,
+    sheets,
   } = flatfileOptions
 
   try {
@@ -36,7 +37,7 @@ export const initializeSpace = async (
     try {
       space = await limitedAccessApi.spaces.create({
         name,
-        autoConfigure: !workbook,
+        autoConfigure: !workbook && !sheets,
         ...spaceBody,
         labels: ['embedded', ...(labels || [])],
         ...(environmentId !== undefined && { environmentId }),

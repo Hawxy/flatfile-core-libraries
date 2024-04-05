@@ -1,38 +1,23 @@
 'use client'
-import { workbook } from '@/utils/workbook'
-import { document } from '@/utils/document'
-import {
-  useFlatfile,
-  useListener,
-  usePlugin,
-  useEvent,
-  Workbook,
-  Space,
-  Document,
-  Sheet,
-} from '@flatfile/react'
-import React, { useState } from 'react'
-import styles from './page.module.css'
+import { useFlatfile, useListener, useEvent, Space } from '@flatfile/react'
+import React from 'react'
+import styles from '../page.module.css'
 import { recordHook } from '@flatfile/plugin-record-hook'
 import api from '@flatfile/api'
-import { config } from '../../../packages/cli/src/config'
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const App = () => {
   const { open, openPortal, closePortal } = useFlatfile()
 
-  const [label, setLabel] = useState('Rock')
-
   useListener((listener) => {
-    // currentListener
     listener.on('**', (event) => {
       console.log('FFApp useListener Event => ', event.topic)
       // Handle the workbook:deleted event
     })
   }, [])
 
-  // Both of these also work:
+  // Both of these work:
   // FlatfileListener.create((client) => {
   // useListener(importedListener, [])
 
@@ -50,15 +35,6 @@ const App = () => {
       })
     )
   }, [])
-
-  usePlugin(
-    recordHook('contacts', (record, event) => {
-      console.log('recordHook', { event })
-      record.set('lastName', label)
-      return record
-    }),
-    [label]
-  )
 
   useEvent('workbook:created', (event) => {
     console.log('workbook:created', { event })
@@ -102,9 +78,9 @@ const App = () => {
     }
   })
 
-  const listenerConfig = (label: string) => {
-    setLabel(label)
-  }
+  const SPACE_ID = process.env.NEXT_PUBLIC_FLATFILE_SPACE_ID
+  if (!SPACE_ID) return <>No SPACE_ID Available</>
+
   return (
     <div className={styles.main}>
       <div className={styles.description}>
@@ -115,41 +91,17 @@ const App = () => {
         >
           {open ? 'CLOSE' : 'OPEN'} PORTAL
         </button>
-        <button onClick={() => listenerConfig('blue')}>blue listener</button>
-        <button onClick={() => listenerConfig('green')}>green listener</button>
       </div>
       <Space
         config={{
+          id: SPACE_ID,
           metadata: {
             sidebarConfig: {
               showSidebar: true,
             },
           },
         }}
-      >
-        <Document config={document} />
-        <Workbook
-          config={workbook}
-          onSubmit={(sheet) => {
-            console.log('onSubmit', { sheet })
-          }}
-          onRecordHooks={[
-            [
-              '**',
-              (record) => {
-                record.set('email', 'TEST SHEET RECORD')
-                return record
-              },
-            ],
-          ]}
-        />
-        {/* <Sheet
-          config={workbook.sheets![0]}
-          onSubmit={(sheet) => {
-            console.log('onSubmit', { sheet })
-          }}
-        /> */}
-      </Space>
+      />
     </div>
   )
 }
