@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import FlatfileContext from './FlatfileContext'
+import FlatfileContext, { DEFAULT_CREATE_SPACE } from './FlatfileContext'
 import FlatfileListener, { Browser } from '@flatfile/listener'
 import { Flatfile } from '@flatfile/api'
 import { EmbeddedIFrameWrapper } from './EmbeddedIFrameWrapper'
@@ -24,32 +24,18 @@ export const FlatfileProvider: React.FC<ExclusiveFlatfileProviderProps> = ({
     document: Flatfile.DocumentConfig | undefined
     workbook: Flatfile.CreateWorkbookConfig
     space: Flatfile.SpaceConfig
-  }>({
-    document: undefined,
-    workbook: {
-      name: 'Embedded Workbook',
-      sheets: [],
-    },
-    space: {
-      name: 'Embedded Space',
-      labels: ['embedded'],
-      namespace: 'portal',
-      metadata: {
-        sidebarConfig: { showSidebar: false },
-      },
-    },
-  })
+  }>(DEFAULT_CREATE_SPACE)
 
   const addSheet = (newSheet: Flatfile.SheetConfig) => {
     setCreateSpace((prevSpace) => {
       // Check if the sheet already exists
       const sheetExists = prevSpace.workbook.sheets?.some(
-        (sheet: any) => sheet.slug === newSheet.slug
+        (sheet) => sheet.slug === newSheet.slug
       )
       if (sheetExists) {
-        return prevSpace // Return the state unchanged if the sheet exists
+        return prevSpace
       }
-      // Add the new sheet if it doesn't exist
+
       return {
         ...prevSpace,
         workbook: {
@@ -88,6 +74,15 @@ export const FlatfileProvider: React.FC<ExclusiveFlatfileProviderProps> = ({
       workbook: {
         ...prevSpace.workbook,
         ...workbookUpdates,
+        // Prioritize order of sheets passed along in the Workbook.config then subsequent <Sheet config /> components
+        actions: [
+          ...(workbookUpdates.actions || []),
+          ...(prevSpace.workbook.actions || []),
+        ],
+        sheets: [
+          ...(workbookUpdates.sheets || []),
+          ...(prevSpace.workbook.sheets || []),
+        ],
       },
     }))
   }
@@ -118,6 +113,7 @@ export const FlatfileProvider: React.FC<ExclusiveFlatfileProviderProps> = ({
     listener.dispatchEvent(flatfileEvent)
   }
 
+  // Listen to the postMessage event from the created iFrame
   useEffect(() => {
     window.addEventListener('message', handlePostMessage, false)
     return () => {
@@ -125,6 +121,7 @@ export const FlatfileProvider: React.FC<ExclusiveFlatfileProviderProps> = ({
     }
   }, [listener])
 
+  // Mount the event listener to the FlatfileProvider
   useEffect(() => {
     if (listener && internalAccessToken) {
       listener.mount(

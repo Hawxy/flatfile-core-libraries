@@ -1,20 +1,18 @@
-import { useEffect } from 'react'
-import { useFlatfile } from './useFlatfile'
+import { useContext, useEffect } from 'react'
 import FlatfileListener from '@flatfile/listener'
+import { FlatfileContext } from '../components'
 
 export function usePlugin(
   plugin: (cb: FlatfileListener) => void,
   dependencies: any[] = []
 ) {
-  const { listener } = useFlatfile()
+  const { listener } = useContext(FlatfileContext)
   useEffect(() => {
     if (!listener) return
-    // Call the callback with the listener to set up event handling
-    listener.use(plugin)
 
+    listener.use(plugin)
     return () => {
-      // Assuming 'detach' removes all event listeners from this instance
       listener.detach()
     }
-  }, [...dependencies]) // React will re-run the effect if any dependencies change
+  }, [listener, plugin, ...dependencies])
 }

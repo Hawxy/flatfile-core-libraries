@@ -8,6 +8,23 @@ type ReUseSpace = Partial<Flatfile.SpaceConfig> & {
   id: string
   accessToken: string
 }
+
+export const DEFAULT_CREATE_SPACE = {
+  document: undefined,
+  workbook: {
+    name: 'Embedded Workbook',
+    sheets: [],
+  },
+  space: {
+    name: 'Embedded Space',
+    labels: ['embedded'],
+    namespace: 'portal',
+    metadata: {
+      sidebarConfig: { showSidebar: false },
+    },
+  },
+}
+
 export interface FlatfileContextType {
   publishableKey?: string
   environmentId?: string

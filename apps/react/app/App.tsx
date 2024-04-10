@@ -11,11 +11,11 @@ import {
   Document,
   Sheet,
 } from '@flatfile/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './page.module.css'
 import { recordHook } from '@flatfile/plugin-record-hook'
+
 import api from '@flatfile/api'
-import { config } from '../../../packages/cli/src/config'
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -25,10 +25,8 @@ const App = () => {
   const [label, setLabel] = useState('Rock')
 
   useListener((listener) => {
-    // currentListener
     listener.on('**', (event) => {
       console.log('FFApp useListener Event => ', event.topic)
-      // Handle the workbook:deleted event
     })
   }, [])
 
@@ -41,11 +39,11 @@ const App = () => {
 
   useListener((client) => {
     client.use(
-      recordHook('contacts', (record) => {
+      recordHook('contacts2', (record) => {
         const firstName = record.get('firstName')
         console.log({ firstName })
-        // Gettign the real types here would be nice but seems tricky
-        record.set('email', 'Rock')
+
+        record.set('lastName', 'Rock')
         return record
       })
     )
@@ -60,12 +58,10 @@ const App = () => {
     [label]
   )
 
-  useEvent('workbook:created', (event) => {
-    console.log('workbook:created', { event })
-  })
-
-  useEvent('*:created', (event) => {
-    console.log({ topic: event.topic })
+  useEvent('space:created', async ({ context: { spaceId } }) => {
+    console.log('workbook:created')
+    const { data: space } = await api.spaces.get(spaceId)
+    console.log({ space })
   })
 
   useEvent('job:ready', { job: 'sheet:submitActionFg' }, async (event) => {
@@ -102,9 +98,6 @@ const App = () => {
     }
   })
 
-  const listenerConfig = (label: string) => {
-    setLabel(label)
-  }
   return (
     <div className={styles.main}>
       <div className={styles.description}>
@@ -115,11 +108,12 @@ const App = () => {
         >
           {open ? 'CLOSE' : 'OPEN'} PORTAL
         </button>
-        <button onClick={() => listenerConfig('blue')}>blue listener</button>
-        <button onClick={() => listenerConfig('green')}>green listener</button>
+        <button onClick={() => setLabel('blue')}>blue listener</button>
+        <button onClick={() => setLabel('green')}>green listener</button>
       </div>
       <Space
         config={{
+          name: "Alex's Space",
           metadata: {
             sidebarConfig: {
               showSidebar: true,
@@ -129,26 +123,54 @@ const App = () => {
       >
         <Document config={document} />
         <Workbook
-          config={workbook}
-          onSubmit={(sheet) => {
-            console.log('onSubmit', { sheet })
+          config={{ ...workbook, name: "ALEX'S WORKBOOK" }}
+          onSubmit={async (sheet) => {
+            console.log('on Workbook Submit ', { sheet })
           }}
           onRecordHooks={[
             [
-              '**',
               (record) => {
-                record.set('email', 'TEST SHEET RECORD')
+                record.set('email', 'SHEET 1 RECORDHOOKS')
+                return record
+              },
+            ],
+            [
+              (record) => {
+                record.set('email', 'SHEET 2 RECORDHOOKS')
                 return record
               },
             ],
           ]}
-        />
-        {/* <Sheet
-          config={workbook.sheets![0]}
-          onSubmit={(sheet) => {
-            console.log('onSubmit', { sheet })
-          }}
-        /> */}
+        >
+          <Sheet
+            config={{
+              ...workbook.sheets![0],
+              slug: 'contacts3',
+              name: 'Contacts 3',
+            }}
+            onRecordHook={(record) => {
+              record.set('email', 'SHEET 3 RECORDHOOK')
+              return record
+            }}
+            onSubmit={async (sheet) => {
+              console.log('onSubmit from Sheet 3', { sheet })
+            }}
+          />
+          <Sheet
+            config={{
+              ...workbook.sheets![0],
+              slug: 'contacts4',
+              name: 'Contacts 4',
+            }}
+            onRecordHook={(record) => {
+              record.set('email', 'SHEET 4 RECORDHOOK')
+              return record
+            }}
+            onSubmit={(sheet) => {
+              console.log('onSubmit from Sheet 4', { sheet })
+            }}
+          />
+        </Workbook>
       </Space>
     </div>
   )
