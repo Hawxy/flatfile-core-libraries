@@ -38,10 +38,6 @@ const useInitializeSpace = (
         throw new Error('Missing required publishable key')
       }
 
-      if (!environmentId) {
-        throw new Error('Missing required environment id')
-      }
-
       const limitedAccessApi = authenticate(publishableKey, apiUrl)
       const spaceRequestBody = {
         name,
@@ -60,7 +56,7 @@ const useInitializeSpace = (
 
       try {
         space = await limitedAccessApi.spaces.create({
-          environmentId,
+          ...(environmentId ? { environmentId } : {}),
           ...spaceRequestBody,
         })
       } catch (error) {

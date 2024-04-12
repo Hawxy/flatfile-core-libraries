@@ -1,61 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { Flatfile } from '@flatfile/api'
-
-const sheet = {
-  name: 'Contacts',
-  slug: 'contacts',
-  fields: [
-    {
-      key: 'firstName',
-      type: 'string',
-      label: 'First Name',
-      config: undefined,
-    } as Flatfile.Property.String,
-    {
-      key: 'lastName',
-      type: 'string',
-      label: 'Last Name',
-      config: undefined,
-    } as Flatfile.Property.String,
-    {
-      key: 'email',
-      type: 'string',
-      label: 'Email',
-      config: undefined,
-    } as Flatfile.Property.String,
-  ],
-}
+import { Component, OnInit } from '@angular/core'
+import { sheet } from './sheet'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  showSpace: boolean = false;
-  data: any;
+  showSpace: boolean = false
+  data: any
 
   constructor() {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
-  title = 'angular';
-
+  title = 'angular'
 
   toggleSpace() {
-    this.showSpace = !this.showSpace;
+    this.showSpace = !this.showSpace
   }
 
   closeSpace() {
-    this.showSpace = false;
+    this.showSpace = false
   }
 
   spaceProps = {
     name: 'My space!',
-    environmentId: 'us_env_1234',
     publishableKey: 'sk_1234',
     sheet,
-    onSubmit: async ({ job, sheet, }: { job?: any, sheet?: any }): Promise<any> => {
+    onSubmit: async ({
+      job,
+      sheet,
+    }: {
+      job?: any
+      sheet?: any
+    }): Promise<any> => {
       const data = await sheet.allData()
       console.log('onSubmit', data)
     },
@@ -71,6 +50,6 @@ export class AppComponent implements OnInit {
     closeSpace: {
       operation: 'submitActionFg',
       onClose: this.closeSpace.bind(this),
-    }
+    },
   }
 }
