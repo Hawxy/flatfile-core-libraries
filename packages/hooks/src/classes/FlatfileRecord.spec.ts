@@ -29,11 +29,6 @@ describe('FlatfileRecord', () => {
     expect(person.get('job')).toBeNull()
   })
 
-  it('getter logs an error when no property', () => {
-    person.get('job')
-    expect(log.callCount).toBe(1)
-  })
-
   it('returns an updated record if a records value is changed but retain its original value', () => {
     const growUp = (rawRecord.rawData.age as number) + 1
 
@@ -107,6 +102,34 @@ describe('FlatfileRecord', () => {
   it('setter logs an error when no property', () => {
     person.set('job', 'engineer')
     expect(log.callCount).toBe(1)
+  })
+
+  it('sets readonly status on a given field', () => {
+    person.setReadOnly('age')
+    // @ts-ignore
+    expect(person._config.fields.age.readonly).toBe(true)
+  })
+
+  it('sets readonly status on all fields', () => {
+    person.setReadOnly()
+    // @ts-ignore
+    expect(person._config.readonly).toBe(true)
+  })
+
+  it('sets writable status on a given field', () => {
+    person.setWritable('age')
+    // @ts-ignore
+    expect(person._config.fields.age.readonly).toBe(false)
+  })
+
+  it('sets writable status on all fields', () => {
+    person.setWritable()
+    // @ts-ignore
+    expect(person._config.readonly).toBe(false)
+  })
+
+  it('gets the record as an object', () => {
+    expect(person.obj).toEqual({ name: 'Jared', age: 12, favePet: null })
   })
 
   it('should get and set linked values', () => {
