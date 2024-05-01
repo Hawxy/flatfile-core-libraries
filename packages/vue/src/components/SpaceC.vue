@@ -64,6 +64,7 @@ import { Browser, FlatfileEvent } from '@flatfile/listener'
 import addSpaceInfo from '../utils/addSpaceInfo'
 import { getIframeStyles, getContainerStyles } from './embeddedStyles'
 import { createSimpleListener } from '../utils/createSimpleListener'
+import { handlePostMessage } from '@flatfile/embedded-utils'
 
 export default {
   props: {
@@ -129,30 +130,21 @@ export default {
       )
     }
 
-    const dispatchEvent = (event) => {
-      if (!event) return
-
-      const eventPayload = event.src ? event.src : event
-      const eventInstance = new FlatfileEvent(eventPayload, accessToken, apiUrl)
-
-      return listenerInstance?.dispatchEvent(eventInstance)
-    }
-
-    const handlePostMessage = (event) => {
-      const { flatfileEvent } = event.data
-      if (!flatfileEvent) return
-      if (
-        flatfileEvent.topic === 'job:outcome-acknowledged' &&
-        flatfileEvent.payload.status === 'complete' &&
-        flatfileEvent.payload.operation === closeSpace?.operation
-      ) {
-        closeSpace?.onClose({})
-      }
-      dispatchEvent(flatfileEvent)
-    }
-
-    window.addEventListener('message', handlePostMessage, false)
-    window.handlePostMessageInstance = handlePostMessage
+    window.addEventListener(
+      'message',
+      handlePostMessage(closeSpace, listenerInstance),
+      false
+    )
+    window.removeEventListener(
+      'message',
+      handlePostMessage(closeSpace, listenerInstance),
+      false
+    )
+    window.handlePostMessageInstance = window.removeEventListener(
+      'message',
+      handlePostMessage(closeSpace, listenerInstance),
+      false
+    )
   },
 
   setup(props) {
@@ -200,7 +192,7 @@ export default {
       )
 
       onUnmounted(() => {
-        window.removeEventListener('message', window.handlePostMessageInstance)
+        window.handlePostMessageInstance()
       })
     })
 
