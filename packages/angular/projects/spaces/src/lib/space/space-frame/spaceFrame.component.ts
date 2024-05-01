@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core'
-import { ISpace, SimpleOnboarding } from '@flatfile/embedded-utils'
+import {
+  ISpace,
+  SimpleOnboarding,
+  handlePostMessage,
+} from '@flatfile/embedded-utils'
 import { Browser, FlatfileEvent } from '@flatfile/listener'
 
 import addSpaceInfo from '../../../utils/addSpaceInfo'
@@ -61,32 +65,12 @@ export class SpaceFrame implements OnInit {
       )
     }
 
-    const dispatchEvent = (event: any) => {
-      if (!event) return
-
-      const eventPayload = event.src || event
-      const eventInstance = new FlatfileEvent(eventPayload, accessToken, apiUrl)
-
-      return listenerInstance?.dispatchEvent(eventInstance)
-    }
-
-    const handlePostMessage = (
-      event: MessageEvent<{ flatfileEvent: FlatfileEvent }>
-    ) => {
-      const { flatfileEvent } = event.data
-      if (!flatfileEvent) return
-      if (
-        flatfileEvent.topic === 'job:outcome-acknowledged' &&
-        flatfileEvent.payload.status === 'complete' &&
-        flatfileEvent.payload.operation === closeSpace?.operation
-      ) {
-        closeSpace?.onClose({})
-      }
-      dispatchEvent(flatfileEvent)
-    }
-
-    window.addEventListener('message', handlePostMessage, false)
-    this.handlePostMessageInstance = handlePostMessage
+    const configuredHandlePostMessage = handlePostMessage(
+      closeSpace,
+      listenerInstance
+    )
+    window.addEventListener('message', configuredHandlePostMessage, false)
+    this.handlePostMessageInstance = configuredHandlePostMessage
   }
 
   async initializeSpace() {
@@ -129,7 +113,9 @@ export class SpaceFrame implements OnInit {
 
   handleConfirm() {
     const { closeSpace, handleCloseInstance } = this.spaceFrameProps
-    closeSpace?.onClose({})
+    if (closeSpace?.onClose && typeof closeSpace.onClose === 'function') {
+      closeSpace.onClose({})
+    }
     handleCloseInstance && handleCloseInstance()
   }
 
