@@ -1,5 +1,4 @@
-import {
-  DefaultSubmitSettings,
+import type {
   ISpace,
   ISpaceInfo,
   IUserInfo,
@@ -7,12 +6,12 @@ import {
   ReusedSpaceWithAccessToken,
   SimpleOnboarding,
 } from './Space'
-import { InitState, State } from './State'
+import type { InitState, State } from './State'
 
-import { ISidebarConfig } from './ISidebarConfig'
-import { IThemeConfig } from './IThemeConfig'
-import { SpaceComponent } from './SpaceComponent'
-import { IThemeGenerator } from './ThemeGenerator'
+import type { ISidebarConfig } from './ISidebarConfig'
+import type { IThemeConfig } from './IThemeConfig'
+import type { SpaceComponent } from './SpaceComponent'
+import type { IThemeGenerator } from './ThemeGenerator'
 
 export type {
   ISidebarConfig,
@@ -29,4 +28,4 @@ export type {
   State,
 }
 
-export { DefaultSubmitSettings }
+export { DefaultSubmitSettings } from './Space'
