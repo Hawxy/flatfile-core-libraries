@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Flatfile } from '@flatfile/api'
 import { useContext } from 'react'
 import FlatfileContext from './FlatfileContext'
@@ -17,6 +17,7 @@ type SheetProps = {
   onSubmit?: SimpleOnboarding['onSubmit']
   submitSettings?: SimpleOnboarding['submitSettings']
   onRecordHook?: SimpleOnboarding['onRecordHook']
+  defaultPage?: boolean
 }
 /**
  * `Sheet` component for Flatfile integration.
@@ -62,10 +63,11 @@ type SheetProps = {
  */
 
 export const Sheet = (props: SheetProps) => {
-  const { config, onRecordHook, onSubmit, submitSettings } = props
-  const { addSheet, updateWorkbook, createSpace } = useContext(FlatfileContext)
+  const { config, onRecordHook, onSubmit, submitSettings, defaultPage } = props
+  const { addSheet, updateWorkbook, createSpace, setDefaultPage } =
+    useContext(FlatfileContext)
 
-  const callback = useCallback(() => {
+  useDeepCompareEffect(() => {
     // Manage actions immutably
     if (onSubmit) {
       updateWorkbook({
@@ -76,9 +78,14 @@ export const Sheet = (props: SheetProps) => {
       })
     }
     addSheet(config)
-  }, [config, createSpace, addSheet, updateWorkbook, onSubmit])
-
-  useDeepCompareEffect(callback, [config])
+    if (defaultPage) {
+      setDefaultPage({
+        workbook: {
+          sheet: config.slug,
+        },
+      })
+    }
+  }, [config, defaultPage])
 
   if (onRecordHook) {
     usePlugin(
