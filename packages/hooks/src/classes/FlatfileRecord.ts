@@ -2,10 +2,12 @@ import { digSet } from './utils'
 
 export type TPrimitive = string | boolean | number | null
 
+export type TRecordValue = TPrimitive | Array<TPrimitive>
+
 export type TRecordDataWithLinks<
   T extends TPrimitive | undefined = TPrimitive
 > = {
-  [key: string]: T | { value: T; links: TRecordData<TPrimitive>[] }
+  [key: string]: T | { value: T | Array<T>; links: TRecordData<TPrimitive>[] }
 }
 
 export type TRecordData<T extends TPrimitive | undefined = TPrimitive> = {
@@ -38,6 +40,7 @@ export interface IRecordInfo<
   field: K
   message: string
   stage: TRecordStageLevel
+  path?: string
 }
 
 export interface IRawRecordWithInfo<
@@ -135,7 +138,7 @@ export class FlatfileRecord<
   /**
    * Return the current state of the record as simple key value pairs.
    */
-  get obj(): Record<string, TPrimitive> {
+  get obj(): Record<string, TRecordValue> {
     return Object.fromEntries(
       Object.entries(this.mutated).map(([key, value]) => [
         key,
@@ -160,7 +163,7 @@ export class FlatfileRecord<
     )
   }
 
-  public set(field: string, value: TPrimitive) {
+  public set(field: string, value: TRecordValue) {
     if (!this.verifyField(field)) {
       console.error(`Record does not have field "${field}".`)
       return this
@@ -213,7 +216,7 @@ export class FlatfileRecord<
     return this
   }
 
-  public get(field: string): null | TPrimitive {
+  public get(field: string): null | TRecordValue {
     if (this.verifyField(field)) {
       const value = this.mutated[field]
 
@@ -253,40 +256,66 @@ export class FlatfileRecord<
     return null
   }
 
-  public addInfo(fields: string | string[], message: string): this {
-    return this.pushInfoMessage(fields, message, 'info', 'other')
+  public addInfo(
+    fields: string | string[],
+    message: string,
+    listItem?: string
+  ): this {
+    return this.pushInfoMessage(fields, message, 'info', 'other', listItem)
   }
 
   /**
    * @alias addInfo
    */
-  public addComment(fields: string | string[], message: string): this {
-    return this.addInfo(fields, message)
+  public addComment(
+    fields: string | string[],
+    message: string,
+    listItem?: string
+  ): this {
+    return this.addInfo(fields, message, listItem)
   }
 
-  public addError(fields: string | string[], message: string): this {
-    return this.pushInfoMessage(fields, message, 'error', 'other')
+  public addError(
+    fields: string | string[],
+    message: string,
+    listItem?: string
+  ) {
+    return this.pushInfoMessage(fields, message, 'error', 'other', listItem)
   }
 
-  public addWarning(fields: string | string[], message: string) {
-    return this.pushInfoMessage(fields, message, 'warn', 'other')
+  public addWarning(
+    fields: string | string[],
+    message: string,
+    listItem?: string
+  ) {
+    return this.pushInfoMessage(fields, message, 'warn', 'other', listItem)
   }
 
   public pushInfoMessage(
     fields: string | string[],
     message: string,
     level: IRecordInfo['level'],
-    stage: TRecordStageLevel
+    stage: TRecordStageLevel,
+    listItem?: string
   ): this {
     fields = Array.isArray(fields) ? fields : [fields]
 
     fields.forEach((field) => {
       if (this.verifyField(field)) {
+        let path = undefined
+        if (listItem) {
+          const fieldValue = this.get(field)
+          if (fieldValue && typeof fieldValue === 'object') {
+            const index = fieldValue.findIndex((value) => value === listItem)
+            path = `$.value[${index}]`
+          }
+        }
         this._info.push({
           field,
           message,
           level,
           stage,
+          path,
         })
       }
     })
@@ -296,9 +325,9 @@ export class FlatfileRecord<
   public compute(
     field: string,
     transformation: (
-      value: TPrimitive,
+      value: TRecordValue,
       record: FlatfileRecord<M>
-    ) => TPrimitive,
+    ) => TRecordValue,
     message?: string
   ): this {
     this.set(field, transformation(this.get(field), this))
@@ -311,9 +340,9 @@ export class FlatfileRecord<
   public computeIfPresent(
     field: string,
     transformation: (
-      value: TPrimitive,
+      value: TRecordValue,
       record: FlatfileRecord<M>
-    ) => TPrimitive,
+    ) => TRecordValue,
     message?: string
   ): this {
     if (this.get(field)) {
@@ -324,7 +353,7 @@ export class FlatfileRecord<
 
   public validate(
     field: string,
-    validator: (value: TPrimitive, record: FlatfileRecord<M>) => boolean,
+    validator: (value: TRecordValue, record: FlatfileRecord<M>) => boolean,
     message: string
   ): this {
     if (!validator(this.get(field), this)) {
