@@ -22,6 +22,7 @@
       :style="getIframeStyles(iframeStyles)"
       allow="clipboard-read; clipboard-write"
       id="flatfile_iframe"
+      title="Embedded Portal Content"
     ></iframe>
     <div
       @click="showExitWarnModal = true"
@@ -57,14 +58,13 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue'
-import ConfirmModal from './ConfirmCloseModal.vue'
-import authenticate from '../utils/authenticate'
-import { Browser, FlatfileEvent } from '@flatfile/listener'
-import addSpaceInfo from '../utils/addSpaceInfo'
-import { getIframeStyles, getContainerStyles } from './embeddedStyles'
-import { createSimpleListener } from '../utils/createSimpleListener'
 import { handlePostMessage } from '@flatfile/embedded-utils'
+import { Browser } from '@flatfile/listener'
+import addSpaceInfo from '../utils/addSpaceInfo'
+import authenticate from '../utils/authenticate'
+import { createSimpleListener } from '../utils/createSimpleListener'
+import ConfirmModal from './ConfirmCloseModal.vue'
+import { getContainerStyles, getIframeStyles } from './embeddedStyles'
 
 export default {
   props: {
@@ -98,57 +98,51 @@ export default {
     ConfirmModal,
   },
 
-  async created() {
-    const {
-      listener,
-      apiUrl,
-      accessToken,
-      closeSpace,
-      onRecordHook,
-      onSubmit,
-      workbook,
-    } = this
+  data() {
+    return {
+      showExitWarnModal: false,
+      listenerInstance: null,
+      flatfileMessageHandler: null,
+      browserInstance: null,
+    }
+  },
+  methods: {
+    handleConfirm() {
+      this.closeSpace?.onClose({})
+      this.handleCloseInstance && this.handleCloseInstance()
+    },
 
-    const simpleListenerSlug =
-      workbook?.sheets?.[0].slug || workbook?.sheets?.[0].config.slug || 'slug'
+    handleCancel() {
+      this.showExitWarnModal = false
+    },
 
-    const listenerInstance =
-      listener ||
-      createSimpleListener({
-        onRecordHook,
-        onSubmit,
-        slug: simpleListenerSlug,
-      })
+    createListenerInstance() {
+      const simpleListenerSlug =
+        this.workbook?.sheets?.[0].slug ||
+        this.workbook?.sheets?.[0].config.slug ||
+        'slug'
 
-    if (listenerInstance) {
-      listenerInstance.mount(
-        new Browser({
-          apiUrl,
-          accessToken,
-          fetchApi: fetch,
+      return (
+        this.listener ||
+        createSimpleListener({
+          onRecordHook: this.onRecordHook,
+          onSubmit: this.onSubmit,
+          slug: simpleListenerSlug,
         })
       )
-    }
+    },
 
-    window.addEventListener(
-      'message',
-      handlePostMessage(closeSpace, listenerInstance),
-      false
-    )
-    window.removeEventListener(
-      'message',
-      handlePostMessage(closeSpace, listenerInstance),
-      false
-    )
-    window.handlePostMessageInstance = window.removeEventListener(
-      'message',
-      handlePostMessage(closeSpace, listenerInstance),
-      false
-    )
+    cleanupListener() {
+      window.removeEventListener('message', this.flatfileMessageHandler)
+      if (this.listenerInstance) {
+        this.listenerInstance.unmount(this.browserInstance)
+      }
+    },
+    getContainerStyles,
+    getIframeStyles,
   },
 
-  setup(props) {
-    const showExitWarnModal = ref(false)
+  async mounted() {
     const {
       spaceId,
       accessToken,
@@ -161,48 +155,43 @@ export default {
       sidebarConfig,
       spaceInfo,
       userInfo,
-      handleCloseInstance,
-    } = props
+    } = this
 
-    const handleConfirm = () => {
-      closeSpace?.onClose({})
-      handleCloseInstance && handleCloseInstance()
-    }
-
-    const handleCancel = () => {
-      showExitWarnModal.value = false
-    }
+    this.browserInstance = new Browser({
+      apiUrl,
+      accessToken,
+      fetchApi: fetch,
+    })
 
     window.CROSSENV_FLATFILE_API_KEY = accessToken
 
-    onMounted(async () => {
-      const fullAccessApi = authenticate(accessToken, apiUrl)
-      await addSpaceInfo(
-        {
-          workbook,
-          environmentId,
-          document,
-          themeConfig,
-          sidebarConfig,
-          spaceInfo,
-          userInfo,
-        },
-        spaceId,
-        fullAccessApi
-      )
+    const fullAccessApi = authenticate(accessToken, apiUrl)
+    await addSpaceInfo(
+      {
+        workbook,
+        environmentId,
+        document,
+        themeConfig,
+        sidebarConfig,
+        spaceInfo,
+        userInfo,
+      },
+      spaceId,
+      fullAccessApi
+    )
 
-      onUnmounted(() => {
-        window.handlePostMessageInstance()
-      })
-    })
+    this.listenerInstance = this.createListenerInstance()
+    this.flatfileMessageHandler = handlePostMessage(
+      closeSpace,
+      this.listenerInstance
+    )
 
-    return {
-      showExitWarnModal,
-      handleConfirm,
-      handleCancel,
-      getIframeStyles,
-      getContainerStyles,
-    }
+    this.listenerInstance.mount(this.browserInstance)
+    window.addEventListener('message', this.flatfileMessageHandler, false)
+  },
+
+  beforeUnmount() {
+    this.cleanupListener()
   },
 }
 </script>
