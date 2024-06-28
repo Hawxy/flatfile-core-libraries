@@ -34,18 +34,29 @@ const displayError = (errorTitle: string, errorMessage: string) => {
   return display
 }
 
+/**
+ * Add a listener to handle postMessage events
+ *
+ * @param accessToken
+ * @param apiUrl
+ * @param listener
+ * @param closeSpace
+ * @param onClose
+ * @returns Promise<() => void>
+ */
 async function createlistener(
   accessToken: string,
   apiUrl: string,
   listener: FlatfileListener,
-  closeSpace: NewSpaceFromPublishableKey['closeSpace']
+  closeSpace: NewSpaceFromPublishableKey['closeSpace'],
+  onClose: () => void
 ): Promise<() => void> {
   const browser_instance = new Browser({
     apiUrl,
     accessToken,
     fetchApi: fetch,
   })
-  const ff_message_handler = handlePostMessage(closeSpace, listener)
+  const ff_message_handler = handlePostMessage(closeSpace, listener, onClose)
 
   listener.mount(browser_instance)
   window.addEventListener('message', ff_message_handler, false)
@@ -126,8 +137,8 @@ const createSimpleListener = ({
  * @param exitText
  * @param exitPrimaryButtonText
  * @param exitSecondaryButtonText
+ * @param closeSpaceNow
  * @param closeSpace
- * @param removeMessageListener
  * @param onCancel
  */
 function initializeIFrameConfirmationModal(
@@ -137,8 +148,8 @@ function initializeIFrameConfirmationModal(
   exitText: string,
   exitPrimaryButtonText: string,
   exitSecondaryButtonText: string,
+  closeSpaceNow: () => void,
   closeSpace?: ISpace['closeSpace'],
-  removeMessageListener?: () => void,
   onCancel?: () => void
 ) {
   // Create the confirmation modal and hide it
@@ -175,35 +186,6 @@ function initializeIFrameConfirmationModal(
   )
   confirmModal.style.display = 'none'
   document.body.appendChild(confirmModal)
-
-  function closeFlatfileSpace(event: any) {
-    if (event?.data?.flatfileEvent) {
-      const { flatfileEvent } = event.data
-      if (
-        flatfileEvent.topic === 'job:outcome-acknowledged' &&
-        flatfileEvent.payload.status === 'complete' &&
-        flatfileEvent.payload.operation === closeSpace?.operation
-      ) {
-        closeSpaceNow()
-      }
-    }
-  }
-
-  function closeSpaceNow() {
-    if (removeMessageListener) {
-      removeMessageListener()
-    }
-    window.removeEventListener('message', closeFlatfileSpace, false)
-    const outerShell = document.querySelector(
-      '.flatfile_outer-shell'
-    ) as HTMLElement
-    if (outerShell) {
-      outerShell.remove()
-    }
-    domElement.remove()
-  }
-
-  window.addEventListener('message', closeFlatfileSpace, false)
 
   if (displayAsModal) {
     const closeButton = document.createElement('div')
@@ -461,17 +443,24 @@ export async function startFlatfile(options: SimpleOnboarding | ISpace) {
     }
     // Set these for handy use in the listeners for authenticating the @flatfile/api client
 
-    let removeMessageListener: () => void | undefined
+    let removeMessageListener: (() => void) | undefined
 
     const simpleListenerSlug: string =
       createdWorkbook?.sheets?.[0].slug || 'slug'
+
+    function closeSpaceNow() {
+      removeMessageListener?.()
+      document.querySelector('.flatfile_outer-shell')?.remove?.()
+      mountIFrameWrapper?.remove?.()
+    }
 
     if (listener) {
       removeMessageListener = await createlistener(
         spaceResult.accessToken,
         apiUrl,
         listener,
-        closeSpace
+        closeSpace,
+        closeSpaceNow
       )
     } else {
       removeMessageListener = await createlistener(
@@ -482,7 +471,8 @@ export async function startFlatfile(options: SimpleOnboarding | ISpace) {
           onSubmit: simpleOnboardingOptions?.onSubmit,
           slug: simpleListenerSlug,
         }),
-        closeSpace
+        closeSpace,
+        closeSpaceNow
       )
     }
 
@@ -531,8 +521,8 @@ export async function startFlatfile(options: SimpleOnboarding | ISpace) {
         exitText,
         exitPrimaryButtonText,
         exitSecondaryButtonText,
+        closeSpaceNow,
         closeSpace,
-        removeMessageListener,
         simpleOnboardingOptions?.onCancel
       )
     }
