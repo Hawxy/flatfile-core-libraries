@@ -1,48 +1,52 @@
-
 <script lang="jsx">
-import { ref, onMounted, h, defineComponent } from 'vue';
-import { initializeFlatfile } from '@flatfile/vue';
-import { workbook } from "./config";
+import { ref, onMounted, h, defineComponent } from 'vue'
+import { initializeFlatfile } from '@flatfile/vue'
+import { workbook } from './config'
 import { listener } from './listener'
 
-const SPACE_ID = 'us_sp_12314';
-const ENVIRONMENT_ID = 'us_env_1234';
+const FLATFILE_PUBLISHABLE_KEY = 'your_key'
 
 export default defineComponent({
   setup() {
-    const publishableKey = 'your_key';
-    const environmentId = ENVIRONMENT_ID;
+    const publishableKey = FLATFILE_PUBLISHABLE_KEY
     const spaceProps = ref({
+      // apiUrl: 'https://platform.flatfile.com/api',
       name: 'Trste!',
-      environmentId,
       publishableKey,
       workbook,
       listener,
-      themeConfig: { primaryColor: "#546a76", textColor: "#fff" },
+      document: {
+        title: 'Instructions',
+        body:
+          '# Supported file types\n' +
+          '---\n' +
+          'Please only import CSV and Excel files',
+        defaultPage: true,
+      },
+
+      themeConfig: { primaryColor: '#546a76', textColor: '#fff' },
       userInfo: {
-        name: 'my space name'
+        name: 'my space name',
       },
       spaceInfo: {
-        name: 'my space name'
+        name: 'my space name',
       },
       displayAsModal: true,
-      spaceBody: {
-        metadata: {
-          random: 'param'
-        }
-      }
-    });
+      spaceBody: {},
+      sidebarConfig: {
+        showSidebar: true,
+      },
+    })
 
-
-    const { Space, OpenEmbed } = initializeFlatfile(spaceProps.value);
+    const { Space, OpenEmbed } = initializeFlatfile(spaceProps.value)
 
     const toggleSpace = () => {
       OpenEmbed()
-    };
+    }
 
     return {
       toggleSpace,
-      Space
+      Space,
     }
   },
   render(props, ctx) {
@@ -58,5 +62,5 @@ export default defineComponent({
       </div>
     )
   },
-});
+})
 </script>
