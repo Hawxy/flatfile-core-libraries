@@ -1,5 +1,11 @@
 # @flatfile/react
 
+## 7.10.0
+
+### Minor Changes
+
+- 25a89ef: Adds `styleSheetOptions` to `FlatfileProvider` config for setting nonce value and postion of injected stylesheet
+
 ## 7.9.10
 
 ### Patch Changes
