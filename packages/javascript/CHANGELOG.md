@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 1.3.10
+
+### Patch Changes
+
+- 38dc4a3: Update Rollup configuration to UMD build
+
 ## 1.3.9
 
 ### Patch Changes
