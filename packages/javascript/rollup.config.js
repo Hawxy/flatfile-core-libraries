@@ -23,20 +23,24 @@ const external = [
 ]
 
 // Common plugins function
-function commonPlugins(umd = true) {
+function commonPlugins(excludePeerDeps = false) {
   return [
-    umd
+    !excludePeerDeps
       ? peerDepsExternal({
           includeDependencies: true,
         })
       : null,
-    resolve({ browser: true, extensions: ['.ts'] }),
+    resolve({
+      browser: true,
+      extensions: ['.ts', '.js'],
+      preferBuiltins: false,
+    }),
+    commonjs(),
     sucrase({
       exclude: ['node_modules/**'],
       transforms: ['typescript'],
     }),
     json(),
-    commonjs(),
     css(),
     url({
       include: ['**/*.otf'],
@@ -77,8 +81,7 @@ const config = [
       format: 'umd',
       name: 'FlatFileJavaScript',
     },
-    plugins: commonPlugins(false),
-    include: external,
+    plugins: commonPlugins(true),
   },
   {
     input: 'index.ts',
