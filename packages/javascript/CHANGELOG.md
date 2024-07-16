@@ -1,5 +1,11 @@
 # @flatfile/javascript
 
+## 1.4.0
+
+### Minor Changes
+
+- 8cf905a: Add internationalization support with detected browser language or given override language.
+
 ## 1.3.10
 
 ### Patch Changes
