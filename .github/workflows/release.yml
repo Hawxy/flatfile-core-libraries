@@ -41,5 +41,5 @@ jobs:
         with:
           publish: npm run release
         env:
-          GITHUB_TOKEN: ${{ steps.release_token_token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.release_token.outputs.token }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN  }}
