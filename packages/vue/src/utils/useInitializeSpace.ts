@@ -1,4 +1,4 @@
-import { ref } from '@vue/runtime-dom'
+import { ref } from 'vue'
 import {
   SimpleOnboarding,
   getErrorMessage,

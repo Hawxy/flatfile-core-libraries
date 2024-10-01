@@ -29,7 +29,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, onMounted } from 'vue'
 import useInitializeSpace from '../utils/useInitializeSpace'
 import getSpace from '../utils/getSpace'
@@ -93,7 +93,7 @@ export default {
     const initSpace = async () => {
       try {
         const data = props.publishableKey
-          ? await initializeSpace(props)
+          ? await initializeSpace()
           : await getSpace(props)
 
         if (!data) {

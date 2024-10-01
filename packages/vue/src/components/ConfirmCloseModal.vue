@@ -12,11 +12,11 @@
         <div className="flatfile_button-group">
           <button
             className="flatfile_button flatfile_secondary"
-            @click="onCancel"
+            @click="onCancel()"
           ><div>{{ exitSecondaryButtonText }}</div></button>
           <button
             className="flatfile_button flatfile_primary"
-            @click="onConfirm"
+            @click="onConfirm()"
           ><div>{{ exitPrimaryButtonText }}</div></button>
         </div>
       </div>
@@ -24,29 +24,21 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
+<script setup lang="ts">
+withDefaults(defineProps<{
     onConfirm: Function,
     onCancel: Function,
-    exitText: {
-      type: String,
-      default: 'Are you sure you want to exit? Any unsaved changes will be lost.',
-    },
-    exitTitle: {
-      type: String,
-      default: 'Close Window',
-    },
-    exitPrimaryButtonText: {
-      type: String,
-      default: 'Yes, exit',
-    },
-    exitSecondaryButtonText: {
-      type: String,
-      default: 'No, stay',
-    },
-  },
-};
+    exitText: string,
+    exitTitle: string
+    exitPrimaryButtonText: string
+    exitSecondaryButtonText: string
+}>(), {
+  exitText:'Are you sure you want to exit? Any unsaved changes will be lost.',
+  exitTitle: 'Close Window',
+  exitPrimaryButtonText: 'Yes, exit',
+  exitSecondaryButtonText: 'No, stay'
+});
+
 </script>
 
 <style lang="scss">

@@ -5,20 +5,15 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    error: {
-      type: [String, Error],
-      required: true,
-    },
-  },
-  computed: {
-    errorMessage() {
-      return typeof this.error === 'string' ? this.error : this.error.message;
-    },
-  },
-};
+<script setup lang="ts">
+import { computed } from 'vue';
+
+const props = defineProps<{
+  error: string | Error
+}>()
+
+const errorMessage = computed(() => typeof props.error === 'string' ? props.error : props.error.message)
+
 </script>
 
 <style lang="scss">

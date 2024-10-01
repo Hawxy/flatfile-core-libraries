@@ -4,12 +4,12 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script setup lang="ts" >
 
-export default defineComponent({
-  name: 'SpinnerC',
-});
+defineOptions({
+  name: 'SpinnerC'
+})
+
 </script>
 
 <style scoped>
