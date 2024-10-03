@@ -40,7 +40,6 @@ import FlatfileListener from '@flatfile/listener'
 import {
   ISpace,
   ISpaceInfo,
-  IThemeConfig,
   IUserInfo,
   ReusedSpaceWithAccessToken,
   SimpleOnboarding
@@ -85,15 +84,14 @@ const props = withDefaults(
 
 const { initializeSpace, createdWorkbook } = useInitializeSpace(props as SimpleOnboarding)
 const initError = ref<string | null>(null)
-const localSpaceId = ref<string |null>(null)
-const accessTokenLocal = ref<string | null>(null)
+const localSpaceId = ref<string>('')
+const accessTokenLocal = ref<string>('')
 const spaceUrl = ref('')
 
 const initSpace = async () => {
   try {
     const data = props.publishableKey && !props?.space
     ? await initializeSpace() 
-
     : (await getSpace(props as ReusedSpaceWithAccessToken)).space
 
     if (!data) {

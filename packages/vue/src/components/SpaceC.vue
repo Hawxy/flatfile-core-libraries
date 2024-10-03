@@ -43,7 +43,6 @@ import {
   handlePostMessage,
   ISpace,
   ISpaceInfo,
-  IThemeConfig,
   IUserInfo,
   SimpleOnboarding
 } from '@flatfile/embedded-utils'
@@ -59,21 +58,21 @@ const props = defineProps<{
   spaceId: string
   environmentId: string
   spaceUrl: string
-  listener: FlatfileListener
+  listener?: FlatfileListener
   accessToken: string
-  spaceBody: ISpace['spaceBody']
+  spaceBody?: ISpace['spaceBody']
   closeSpace: ISpace['closeSpace']
   onRecordHook: SimpleOnboarding['onRecordHook']
   onSubmit: SimpleOnboarding['onSubmit']
-  handleCloseInstance: Function
+  handleCloseInstance?: Function
   document: ISpace['document']
   iframeStyles: ISpace['iframeStyles']
-  mountElement: string
-  exitText: string
-  exitTitle: string
+  mountElement?: string
+  exitText?: string
+  exitTitle?: string
   workbook: ISpace['workbook']
-  exitPrimaryButtonText: string
-  exitSecondaryButtonText: string
+  exitPrimaryButtonText?: string
+  exitSecondaryButtonText?: string
   apiUrl: string
   themeConfig: ISpace['themeConfig']
   displayAsModal: boolean

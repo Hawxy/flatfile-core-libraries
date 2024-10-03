@@ -9,7 +9,7 @@ import { Flatfile } from '@flatfile/api'
 export const initializeSpace = async (
   flatfileOptions: SimpleOnboarding
 ): Promise<{
-  space: any
+  space: Flatfile.SpaceResponse
   workbook?: Flatfile.CreateWorkbookConfig
 }> => {
   let space
