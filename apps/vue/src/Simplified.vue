@@ -46,14 +46,13 @@ const sheet = {
 const showSpace = ref(false);
 const publishableKey = 'sk_1234';
 const environmentId = ENVIRONMENT_ID;
-const spaceProps = ref<ISpace>({
+const spaceProps = ref({
   name: 'Trste!',
   environmentId,
   publishableKey,
   sheet,
   onSubmit: async ({ job, sheet }) => {
     const data = await sheet.allData()
-    output.value = JSON.stringify(data, " ", 2)
     console.log('onSubmit', data)
   },
   onRecordHook: (record, event) => {
