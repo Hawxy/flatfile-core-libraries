@@ -5,6 +5,7 @@ import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // @ts-ignore there's a real painful conflict here with the version of vite installed with angular build tools
   plugins: [vue(), dts({ tsconfigPath: 'tsconfig.app.json' })],
   build: {
     lib: {

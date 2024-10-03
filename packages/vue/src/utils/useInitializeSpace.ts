@@ -4,11 +4,12 @@ import {
   getErrorMessage,
   createWorkbookFromSheet,
 } from '@flatfile/embedded-utils'
+import {Flatfile} from '@flatfile/api'
 import authenticate from './authenticate'
 
 const useInitializeSpace = (flatfileOptions: SimpleOnboarding) => {
-  const space = ref()
-  const createdWorkbook = ref()
+  const space = ref<Flatfile.SpaceResponse>()
+  const createdWorkbook = ref<ReturnType<typeof createWorkbookFromSheet>>()
 
   const initializeSpace = async () => {
     try {

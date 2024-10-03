@@ -1,4 +1,6 @@
-export const getIframeStyles = (styles: any) =>
+import { HTMLAttributes } from "vue"
+
+export const getIframeStyles = (styles: any):  HTMLAttributes['style'] =>
   styles ?? {
     width: '100%',
     height: '750px',
@@ -8,7 +10,7 @@ export const getIframeStyles = (styles: any) =>
     padding: '16px',
   }
 
-export const getContainerStyles = (isModal: boolean) => {
+export const getContainerStyles = (isModal: boolean):  HTMLAttributes['style'] => {
   if (isModal) {
     return {
       width: 'calc(100% - 100px)',

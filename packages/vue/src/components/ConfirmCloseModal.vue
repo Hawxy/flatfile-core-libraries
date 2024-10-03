@@ -28,10 +28,10 @@
 withDefaults(defineProps<{
     onConfirm: Function,
     onCancel: Function,
-    exitText: string,
-    exitTitle: string
-    exitPrimaryButtonText: string
-    exitSecondaryButtonText: string
+    exitText?: string,
+    exitTitle?: string
+    exitPrimaryButtonText?: string
+    exitSecondaryButtonText?: string
 }>(), {
   exitText:'Are you sure you want to exit? Any unsaved changes will be lost.',
   exitTitle: 'Close Window',

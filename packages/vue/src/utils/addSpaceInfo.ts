@@ -5,7 +5,7 @@ import {
 } from '@flatfile/embedded-utils'
 
 const addSpaceInfo = async (
-  spaceProps: NewSpaceFromPublishableKey,
+  spaceProps: Omit<NewSpaceFromPublishableKey, 'publishableKey'>,
   spaceId: string,
   api: FlatfileClient
 ) => {

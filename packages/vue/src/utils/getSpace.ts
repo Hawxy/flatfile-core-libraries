@@ -8,7 +8,7 @@ import { Flatfile } from '@flatfile/api'
 const getSpace = async (
   spaceProps: ReusedSpaceWithAccessToken
 ): Promise<{
-  space: any
+  space: Flatfile.SpaceResponse
   workbook?: Flatfile.CreateWorkbookConfig
 }> => {
   const {

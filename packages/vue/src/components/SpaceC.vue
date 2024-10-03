@@ -30,170 +30,155 @@
       class="flatfile-close-button"
       style="position: absolute; margin: 30px"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 100 100"
-      >
-        <line
-          x1="10"
-          y1="10"
-          x2="90"
-          y2="90"
-          stroke="white"
-          :stroke-width="10"
-        />
-        <line
-          x1="10"
-          y1="90"
-          x2="90"
-          y2="10"
-          stroke="white"
-          :stroke-width="10"
-        />
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 100 100">
+        <line x1="10" y1="10" x2="90" y2="90" stroke="white" :stroke-width="10" />
+        <line x1="10" y1="90" x2="90" y2="10" stroke="white" :stroke-width="10" />
       </svg>
     </div>
   </div>
 </template>
 
-<script>
-import { handlePostMessage } from '@flatfile/embedded-utils'
-import { Browser } from '@flatfile/listener'
+<script setup lang="ts">
+import {
+  handlePostMessage,
+  ISpace,
+  ISpaceInfo,
+  IThemeConfig,
+  IUserInfo,
+  SimpleOnboarding
+} from '@flatfile/embedded-utils'
+import FlatfileListener, { Browser, FlatfileEvent } from '@flatfile/listener'
 import addSpaceInfo from '../utils/addSpaceInfo'
 import authenticate from '../utils/authenticate'
 import { createSimpleListener } from '../utils/createSimpleListener'
 import ConfirmModal from './ConfirmCloseModal.vue'
 import { getContainerStyles, getIframeStyles } from './embeddedStyles'
+import { onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
 
-export default {
-  props: {
-    spaceId: String,
-    environmentId: String,
-    spaceUrl: String,
-    listener: Object,
-    accessToken: String,
-    spaceBody: Object,
-    closeSpace: Object,
-    onRecordHook: Function,
-    onSubmit: Function,
-    handleCloseInstance: Function,
-    document: Object,
-    iframeStyles: Object,
-    mountElement: String,
-    exitText: String,
-    exitTitle: String,
-    workbook: Object,
-    exitPrimaryButtonText: String,
-    exitSecondaryButtonText: String,
-    apiUrl: String,
-    themeConfig: Object,
-    displayAsModal: Boolean,
-    sidebarConfig: Object,
-    spaceInfo: Object,
-    userInfo: Object,
-  },
+const props = defineProps<{
+  spaceId: string
+  environmentId: string
+  spaceUrl: string
+  listener: FlatfileListener
+  accessToken: string
+  spaceBody: ISpace['spaceBody']
+  closeSpace: ISpace['closeSpace']
+  onRecordHook: SimpleOnboarding['onRecordHook']
+  onSubmit: SimpleOnboarding['onSubmit']
+  handleCloseInstance: Function
+  document: ISpace['document']
+  iframeStyles: ISpace['iframeStyles']
+  mountElement: string
+  exitText: string
+  exitTitle: string
+  workbook: ISpace['workbook']
+  exitPrimaryButtonText: string
+  exitSecondaryButtonText: string
+  apiUrl: string
+  themeConfig: ISpace['themeConfig']
+  displayAsModal: boolean
+  sidebarConfig: SimpleOnboarding['sidebarConfig']
+  spaceInfo?: Partial<ISpaceInfo>
+  userInfo?: Partial<IUserInfo>
+}>()
 
-  components: {
-    ConfirmModal,
-  },
+const showExitWarnModal = ref<boolean>(false)
 
-  data() {
-    return {
-      showExitWarnModal: false,
-      listenerInstance: null,
-      flatfileMessageHandler: null,
-      browserInstance: null,
-    }
-  },
-  methods: {
-    handleConfirm() {
-      this.closeSpace?.onClose({})
-      this.handleCloseInstance && this.handleCloseInstance()
-    },
+const listenerInstance = ref<FlatfileListener | null>(null)
 
-    handleCancel() {
-      this.showExitWarnModal = false
-    },
+const flatfileMessageHandler = ref<
+  (
+    message: MessageEvent<{
+      flatfileEvent: FlatfileEvent
+    }>
+  ) => void
+>(() => {})
 
-    createListenerInstance() {
-      const simpleListenerSlug =
-        this.workbook?.sheets?.[0].slug ||
-        this.workbook?.sheets?.[0].config.slug ||
-        'slug'
+const browserInstance = ref<Browser | null>(null)
 
-      return (
-        this.listener ||
-        createSimpleListener({
-          onRecordHook: this.onRecordHook,
-          onSubmit: this.onSubmit,
-          slug: simpleListenerSlug,
-        })
-      )
-    },
-
-    cleanupListener() {
-      window.removeEventListener('message', this.flatfileMessageHandler)
-      if (this.listenerInstance) {
-        this.listenerInstance.unmount(this.browserInstance)
-      }
-    },
-    getContainerStyles,
-    getIframeStyles,
-  },
-
-  async mounted() {
-    const {
-      spaceId,
-      accessToken,
-      closeSpace,
-      apiUrl,
-      workbook,
-      environmentId,
-      document,
-      themeConfig,
-      sidebarConfig,
-      spaceInfo,
-      userInfo,
-    } = this
-
-    this.browserInstance = new Browser({
-      apiUrl,
-      accessToken,
-      fetchApi: fetch,
-    })
-
-    window.CROSSENV_FLATFILE_API_KEY = accessToken
-
-    const fullAccessApi = authenticate(accessToken, apiUrl)
-    await addSpaceInfo(
-      {
-        workbook,
-        environmentId,
-        document,
-        themeConfig,
-        sidebarConfig,
-        spaceInfo,
-        userInfo,
-      },
-      spaceId,
-      fullAccessApi
-    )
-
-    this.listenerInstance = this.createListenerInstance()
-    this.flatfileMessageHandler = handlePostMessage(
-      closeSpace,
-      this.listenerInstance
-    )
-
-    this.listenerInstance.mount(this.browserInstance)
-    window.addEventListener('message', this.flatfileMessageHandler, false)
-  },
-
-  beforeUnmount() {
-    this.cleanupListener()
-  },
+const handleConfirm = () => {
+  props.closeSpace?.onClose?.({})
+  props.handleCloseInstance && props.handleCloseInstance()
 }
+
+const handleCancel = () => (showExitWarnModal.value = false)
+
+const createListenerInstance = () => {
+  const simpleListenerSlug =
+    props.workbook?.sheets?.[0].slug ||
+    // @ts-ignore typing issue - config is missing
+    props.workbook?.sheets?.[0].config.slug ||
+    'slug'
+
+  return (
+    props.listener ||
+    createSimpleListener({
+      onRecordHook: props.onRecordHook,
+      onSubmit: props.onSubmit,
+      slug: simpleListenerSlug
+    })
+  )
+}
+
+const cleanupListener = () => {
+  window.removeEventListener('message', flatfileMessageHandler.value)
+  if (listenerInstance.value) {
+    // @ts-ignore internal types conflict
+    listenerInstance.value.unmount(browserInstance.value)
+  }
+}
+
+const {
+  spaceId,
+  accessToken,
+  closeSpace,
+  apiUrl,
+  workbook,
+  environmentId,
+  document,
+  themeConfig,
+  sidebarConfig,
+  spaceInfo,
+  userInfo
+} = toRefs(props)
+
+onMounted(async () => {
+  browserInstance.value = new Browser({
+    apiUrl: apiUrl.value,
+    accessToken: accessToken.value,
+    fetchApi: fetch
+  })
+
+  // @ts-ignore
+  window.CROSSENV_FLATFILE_API_KEY = accessToken
+
+  const fullAccessApi = authenticate(accessToken.value, apiUrl.value)
+  await addSpaceInfo(
+    {
+      workbook: workbook.value,
+      environmentId: environmentId.value,
+      document: document.value,
+      themeConfig: themeConfig.value,
+      sidebarConfig: sidebarConfig.value,
+      spaceInfo: spaceInfo.value,
+      userInfo: userInfo.value
+    },
+    spaceId.value,
+    fullAccessApi
+  )
+
+  listenerInstance.value = createListenerInstance()
+  flatfileMessageHandler.value = handlePostMessage(
+    closeSpace.value,
+    listenerInstance.value as FlatfileListener
+  )
+
+  // @ts-ignore internal types conflict
+  listenerInstance.value.mount(browserInstance.value)
+  window.addEventListener('message', flatfileMessageHandler.value, false)
+})
+
+onBeforeUnmount(() => cleanupListener())
 </script>
 
 <style lang="scss">
@@ -201,6 +186,7 @@ export default {
   border-radius: var(--ff-border-radius);
   background: rgb(255, 255, 255);
 }
+
 .flatfile_displayAsModal .flatfile-close-button {
   position: absolute;
   z-index: 10;
@@ -219,27 +205,34 @@ export default {
   transition: box-shadow 0.3s ease;
   height: 25px;
 }
+
 .flatfile_displayAsModal .flatfile-close-button:hover {
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.8);
 }
+
 .flatfile_displayAsModal .flatfile-close-button svg {
   fill: var(--ff-secondary-color);
   width: 10px;
 }
+
 .flatfile_iframe-wrapper {
   min-width: 768px;
   min-height: 600px;
   width: 992px;
   height: 600px;
 }
+
 .flatfile_iframe-wrapper.flatfile_displayAsModal {
   box-sizing: content-box;
   position: fixed;
   top: 0;
   left: 0;
-  width: calc(100% - 60px); /* 30px padding on the left and right */
-  max-width: 100vw; /* viewport width */
-  height: calc(100vh - 60px); /* 30px padding on the top and bottom */
+  width: calc(100% - 60px);
+  /* 30px padding on the left and right */
+  max-width: 100vw;
+  /* viewport width */
+  height: calc(100vh - 60px);
+  /* 30px padding on the top and bottom */
   padding: 30px;
   background: var(--ff-bg-fade);
   z-index: 1000;
@@ -269,6 +262,7 @@ export default {
     width: 10px;
   }
 }
+
 #flatfile_iframe {
   border-width: 0px;
   width: 100%;

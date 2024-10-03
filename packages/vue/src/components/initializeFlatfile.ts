@@ -81,7 +81,7 @@ export const initializeFlatfile = (props: ISpace) => {
   const errorElement =
     ErrorElement && initError.value
       ? ErrorElement(initError.value)
-      : h(DefaultError, { error: errorTitle || initError.value })
+      : h(DefaultError, { error: errorTitle || initError.value! })
 
   const loadingElement = LoadingElement || h(SpinnerC)
   const handleCloseInstance = () => {

@@ -29,118 +29,102 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import useInitializeSpace from '../utils/useInitializeSpace'
 import getSpace from '../utils/getSpace'
 import SpaceC from './SpaceC.vue'
 import SpinnerC from './Spinner.vue'
 import DefaultError from './DefaultError.vue'
+import FlatfileListener from '@flatfile/listener'
+import {
+  ISpace,
+  ISpaceInfo,
+  IThemeConfig,
+  IUserInfo,
+  ReusedSpaceWithAccessToken,
+  SimpleOnboarding
+} from '@flatfile/embedded-utils'
 
-export default {
-  props: {
-    name: String,
-    publishableKey: String,
-    environmentId: String,
-    closeSpace: Object,
-    space: Object,
-    themeConfig: Object,
-    listener: Object,
-    sidebarConfig: Object,
-    document: Object,
-    sheet: Object,
-    spaceBody: Object,
-    spaceInfo: Object,
-    userInfo: Object,
-    workbook: Object,
-    onRecordHook: Function,
-    onSubmit: Function,
-    displayAsModal: Boolean,
-    iframeStyles: Object,
-    mountElement: {
-      type: String,
-      default: 'flatfile_iFrameContainer',
-    },
-    exitText: {
-      type: String,
-      default:
-        'Are you sure you want to exit? Any unsaved changes will be lost.',
-    },
-    exitTitle: {
-      type: String,
-      default: 'Close Window',
-    },
-    exitPrimaryButtonText: {
-      type: String,
-      default: 'Yes, exit',
-    },
-    exitSecondaryButtonText: {
-      type: String,
-      default: 'No, stay',
-    },
-    apiUrl: {
-      type: String,
-      default: 'https://platform.flatfile.com/api',
-    },
-  },
-  setup(props) {
-    const { initializeSpace, createdWorkbook } = useInitializeSpace(props)
-    const initError = ref(null)
-    const localSpaceId = ref(null)
-    const accessTokenLocal = ref(null)
-    const spaceUrl = ref('')
+const props = withDefaults(
+  defineProps<{
+    name?: string
+    publishableKey?: string
+    environmentId: string
+    closeSpace: ISpace['closeSpace']
+    space: ReusedSpaceWithAccessToken['space'] | SimpleOnboarding['space']
+    themeConfig: ISpace['themeConfig']
+    listener: FlatfileListener
+    sidebarConfig: SimpleOnboarding['sidebarConfig']
+    document: ISpace['document']
+    sheet: SimpleOnboarding['sheet']
+    spaceBody: ISpace['spaceBody']
+    spaceInfo?: Partial<ISpaceInfo>
+    userInfo?: Partial<IUserInfo>
+    workbook: ISpace['workbook']
+    onRecordHook: SimpleOnboarding['onRecordHook']
+    onSubmit: SimpleOnboarding['onSubmit']
+    displayAsModal: boolean
+    iframeStyles: ISpace['iframeStyles']
+    mountElement?: string
+    exitText?: string
+    exitTitle?: string
+    exitPrimaryButtonText?: string
+    exitSecondaryButtonText?: string
+    apiUrl?: string
+  }>(),
+  {
+    mountElement: 'flatfile_iFrameContainer',
+    exitText: 'Are you sure you want to exit? Any unsaved changes will be lost.',
+    exitTitle: 'Close Window',
+    exitPrimaryButtonText: 'Yes, exit',
+    exitSecondaryButtonText: 'No, stay',
+    apiUrl: 'https://platform.flatfile.com/api'
+  }
+)
 
-    const initSpace = async () => {
-      try {
-        const data = props.publishableKey
-          ? await initializeSpace()
-          : await getSpace(props)
+const { initializeSpace, createdWorkbook } = useInitializeSpace(props as SimpleOnboarding)
+const initError = ref<string | null>(null)
+const localSpaceId = ref<string |null>(null)
+const accessTokenLocal = ref<string | null>(null)
+const spaceUrl = ref('')
 
-        if (!data) {
-          throw new Error('Failed to initialize space')
-        }
+const initSpace = async () => {
+  try {
+    const data = props.publishableKey && !props?.space
+    ? await initializeSpace() 
 
-        const { id: spaceId, accessToken, guestLink } = data.data
+    : (await getSpace(props as ReusedSpaceWithAccessToken)).space
 
-        if (!spaceId) {
-          throw new Error('Missing spaceId from space response')
-        }
-
-        if (!guestLink) {
-          throw new Error('Missing guest link from space response')
-        }
-
-        if (!accessToken) {
-          throw new Error('Missing access token from space response')
-        }
-
-        localSpaceId.value = spaceId
-        spaceUrl.value = guestLink
-        accessTokenLocal.value = accessToken
-      } catch (error) {
-        initError.value = error.message
-      }
+    if (!data) {
+      throw new Error('Failed to initialize space')
     }
 
-    onMounted(() => {
-      initSpace()
-    })
+    const { id: spaceId, accessToken, guestLink } = data.data
 
-    return {
-      initSpace,
-      initError,
-      localSpaceId,
-      spaceUrl,
-      accessTokenLocal,
-      createdWorkbook,
+    if (!spaceId) {
+      throw new Error('Missing spaceId from space response')
     }
-  },
-  components: {
-    SpaceC,
-    SpinnerC,
-    DefaultError,
-  },
+
+    if (!guestLink) {
+      throw new Error('Missing guest link from space response')
+    }
+
+    if (!accessToken) {
+      throw new Error('Missing access token from space response')
+    }
+
+    localSpaceId.value = spaceId
+    spaceUrl.value = guestLink
+    accessTokenLocal.value = accessToken
+  } catch (error) {
+    initError.value = (error as Error).message
+  }
 }
+
+onMounted(() => {
+  initSpace()
+})
 </script>
 
 <style lang="css">
