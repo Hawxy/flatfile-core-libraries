@@ -8,13 +8,11 @@
   },
   "dependencies": {
     "@flatfile/vue": "*",
-    "@vue/babel-plugin-jsx": "^1.2.5",
-    "@flatfile/plugin-record-hook": "^1.7.0",
+    "@flatfile/plugin-record-hook": "^1.7.1",
     "vue": "^3.5.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",
-    "@vitejs/plugin-vue-jsx": "^4.0.1",
     "vite": "^5.4.8",
     "vue-tsc": "^2.1.6"
   }
