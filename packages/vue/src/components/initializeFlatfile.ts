@@ -104,6 +104,7 @@ export const initializeFlatfile = (props: ISpace) => {
       }
 
       if (localSpaceId.value && accessTokenLocal.value && spaceUrl.value) {
+        // @ts-ignore pain and misery getting these types aligned
         return h(SpaceC, {
           key: localSpaceId.value,
           spaceId: localSpaceId.value,

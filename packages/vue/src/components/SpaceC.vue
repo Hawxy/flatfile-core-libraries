@@ -42,8 +42,6 @@
 import {
   handlePostMessage,
   ISpace,
-  ISpaceInfo,
-  IUserInfo,
   SimpleOnboarding
 } from '@flatfile/embedded-utils'
 import FlatfileListener, { Browser, FlatfileEvent } from '@flatfile/listener'
@@ -54,32 +52,17 @@ import ConfirmModal from './ConfirmCloseModal.vue'
 import { getContainerStyles, getIframeStyles } from './embeddedStyles'
 import { onBeforeUnmount, onMounted, ref, toRefs } from 'vue'
 
-const props = defineProps<{
-  spaceId: string
-  environmentId: string
-  spaceUrl: string
-  listener?: FlatfileListener
+type SpaceCProps = ISpace & {
+  apiUrl: string
   accessToken: string
-  spaceBody?: ISpace['spaceBody']
-  closeSpace: ISpace['closeSpace']
+  spaceId: string
+  handleCloseInstance?: Function
+  displayAsModal: boolean
   onRecordHook: SimpleOnboarding['onRecordHook']
   onSubmit: SimpleOnboarding['onSubmit']
-  handleCloseInstance?: Function
-  document: ISpace['document']
-  iframeStyles: ISpace['iframeStyles']
-  mountElement?: string
-  exitText?: string
-  exitTitle?: string
-  workbook: ISpace['workbook']
-  exitPrimaryButtonText?: string
-  exitSecondaryButtonText?: string
-  apiUrl: string
-  themeConfig: ISpace['themeConfig']
-  displayAsModal: boolean
-  sidebarConfig: SimpleOnboarding['sidebarConfig']
-  spaceInfo?: Partial<ISpaceInfo>
-  userInfo?: Partial<IUserInfo>
-}>()
+}
+
+const props = defineProps<SpaceCProps>()
 
 const showExitWarnModal = ref<boolean>(false)
 

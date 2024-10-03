@@ -13,8 +13,6 @@ defineOptions({
 </script>
 
 <style scoped>
-@import "@css/main.css";
-
 .ff_spinner {
   border: 4px solid rgba(255, 255, 255, 0.7);
   border-radius: 50%;
